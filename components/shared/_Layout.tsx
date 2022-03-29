@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import { CSSProperties } from 'react';
+import Navbar from './_Navbar';
 
 type Props = {
   children: any;
@@ -28,7 +29,7 @@ export default function Layout({
         <link rel='icon' href='/favicon.ico' />
       </Head>
 
-      {/* {withNavbar && <Navbar />} */}
+      {withNavbar && <Navbar />}
 
       <main
         style={style}
