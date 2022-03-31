@@ -1,8 +1,20 @@
-import '../styles/globals.css'
-import type { AppProps } from 'next/app'
+import '../styles/globals.css';
+import type { AppProps } from 'next/app';
+import { Toaster } from 'react-hot-toast';
+import { useHydrateAtoms } from 'jotai/utils';
+import { semestersAtom } from '../atom';
+import { Semester } from '../models/Semester';
 
 function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
+  const { semesters }: { semesters: Semester[] } = pageProps;
+  useHydrateAtoms([[semestersAtom, semesters]]);
+
+  return (
+    <>
+      <Component {...pageProps} />
+      <Toaster />
+    </>
+  );
 }
 
-export default MyApp
+export default MyApp;

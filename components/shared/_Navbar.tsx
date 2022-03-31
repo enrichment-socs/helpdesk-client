@@ -51,9 +51,8 @@ export default function Navbar() {
       <nav className='flex justify-between max-w-7xl px-2 sm:px-6 lg:px-8 mx-auto'>
         <ul className='flex space-x-4'>
           {links.map((link) => (
-            <Link href={link.href} passHref={true}>
+            <Link key={link.title} href={link.href} passHref={true}>
               <li
-                key={link.title}
                 className={`tracking-wide text-center cursor-pointer hover:text-primary min-w-[3rem] py-4 text-gray-600 font-semibold ${
                   router.pathname === link.href
                     ? 'border-b-2 border-primary font-bold'
