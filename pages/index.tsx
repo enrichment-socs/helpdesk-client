@@ -7,8 +7,17 @@ import toast from 'react-hot-toast';
 import Layout from '../components/shared/_Layout';
 import { Semester } from '../models/Semester';
 import { SemestersService } from '../services/SemestersService';
+import { UsersService } from '../services/UsersService';
 
 const Home: NextPage = () => {
+  const t = async () => {
+    const r = await UsersService.getByIdentifier('lionel.ritchie@binus.ac.id');
+    console.log(r);
+  };
+  useEffect(() => {
+    t();
+  }, []);
+
   return <Layout>Home</Layout>;
 };
 

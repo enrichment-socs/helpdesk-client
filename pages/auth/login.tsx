@@ -14,6 +14,8 @@ import {
   STUDENT_EMAIL_REGEX,
   STUDENT_NUMBER_REGEX,
 } from '../../lib/constant';
+import { signIn } from 'next-auth/react';
+import toast from 'react-hot-toast';
 
 const LoginPage: NextPage = () => {
   const router = useRouter();
@@ -31,7 +33,28 @@ const LoginPage: NextPage = () => {
 
   const onSubmit: SubmitHandler<FormData> = async ({ username, password }) => {
     setIsLoading(true);
-    console.log({ username, password });
+    const result = (await signIn('credentials', {
+      redirect: false,
+      username,
+      password,
+    })) as any;
+
+    setIsLoading(false);
+    toast.dismiss();
+
+    if (!result) {
+      toast.error('Something is wrong with the server, please contact admin');
+      return;
+    }
+
+    if (result.error) {
+      toast.error(result.error);
+      return;
+    } else {
+      toast.success('Login Success');
+      setIsLoading(true);
+      router.push('/');
+    }
   };
 
   return (
