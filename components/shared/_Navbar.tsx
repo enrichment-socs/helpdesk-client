@@ -5,20 +5,60 @@ import SemesterListBox from './SemesterListBox';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { LogoutIcon } from '@heroicons/react/outline';
+import { ROLES } from '../../lib/constant';
+import { If, Else, Then } from 'react-if';
+import DropdownNav from './_DropdownNav';
+import { DropdownNavLink } from '../../models/views/DropDownNavLink';
+import { NavLink } from '../../models/views/NavLink';
 
 export default function Navbar() {
-  const links = [
+  const links: (NavLink | DropdownNavLink)[] = [
     {
       title: 'Home',
       href: '/',
+      roles: [ROLES.USER, ROLES.ADMIN, ROLES.SUPER_ADMIN],
     },
     {
       title: 'Requests',
       href: '/requests',
+      roles: [ROLES.USER, ROLES.ADMIN],
     },
     {
       title: 'FAQ',
       href: '/faq',
+      roles: [ROLES.USER],
+    },
+    {
+      title: 'Manage',
+      href: '/manage',
+      roles: [ROLES.SUPER_ADMIN],
+      children: [
+        {
+          title: 'Semesters',
+          href: '/semesters',
+          roles: [ROLES.SUPER_ADMIN],
+        },
+        {
+          title: 'Roles',
+          href: '/roles',
+          roles: [ROLES.SUPER_ADMIN],
+        },
+        {
+          title: 'Statuses',
+          href: '/statuses',
+          roles: [ROLES.SUPER_ADMIN],
+        },
+        {
+          title: 'FAQ Categories',
+          href: '/faq-categories',
+          roles: [ROLES.SUPER_ADMIN],
+        },
+        {
+          title: 'Categories',
+          href: '/categories',
+          roles: [ROLES.SUPER_ADMIN],
+        },
+      ],
     },
   ];
 
@@ -51,16 +91,25 @@ export default function Navbar() {
       <nav className='flex justify-between max-w-7xl px-2 sm:px-6 lg:px-8 mx-auto'>
         <ul className='flex space-x-4'>
           {links.map((link) => (
-            <Link key={link.title} href={link.href} passHref={true}>
-              <li
-                className={`tracking-wide text-center cursor-pointer hover:text-primary min-w-[3rem] py-4 text-gray-600 font-semibold ${
-                  router.pathname === link.href
-                    ? 'border-b-2 border-primary font-bold'
-                    : ''
-                }`}>
-                {link.title}
-              </li>
-            </Link>
+            <li key={link.title}>
+              <If condition={link.hasOwnProperty('children')}>
+                <Then>
+                  <DropdownNav link={link as DropdownNavLink} />
+                </Then>
+                <Else>
+                  <Link key={link.title} href={link.href} passHref={true}>
+                    <div
+                      className={`tracking-wide text-center cursor-pointer hover:text-primary min-w-[3rem] py-4 text-gray-600 font-semibold ${
+                        router.pathname === link.href
+                          ? 'border-b-2 border-primary font-bold'
+                          : ''
+                      }`}>
+                      {link.title}
+                    </div>
+                  </Link>
+                </Else>
+              </If>
+            </li>
           ))}
         </ul>
 
