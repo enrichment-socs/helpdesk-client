@@ -19,7 +19,7 @@ export class UsersService extends BaseService {
   public static async create(createUserDto: CreateUserDto) {
     try {
       const res: AxiosResponse<SessionUser> = await axios.post(
-        `${this.BASE_URL}/users/`,
+        `${this.BASE_URL}/users`,
         createUserDto,
       );
       return res.data;

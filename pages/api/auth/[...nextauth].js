@@ -41,35 +41,38 @@ export default NextAuth({
         }
 
         let user = null;
+        let studentData = null;
+
         try {
           user = await UsersService.getByIdentifier(username);
         } catch (e) {
           try {
-            const studentData = await BimayService.getStudentData(username);
+            studentData = await BimayService.getStudentData(username);
             if (!studentData) throw new Error('Account does not exist');
-
-            const roles = await RolesService.getAll();
-            const role = roles.find((r) => r.roleName === 'User');
-
-            if (!role) {
-              throw new Error('Specified role does not exist');
-            }
-
-            try {
-              user = await UsersService.create({
-                code: studentData.NIM,
-                email: studentData.Email,
-                name: studentData.Name,
-                department: studentData.Major,
-                roleId: role.id,
-              });
-            } catch (e) {
-              throw new Error(
-                'Failed when registering your account to our database',
-              );
-            }
           } catch (e) {
             throw new Error('Ups, account does not exist');
+          }
+
+          const roles = await RolesService.getAll();
+          const role = roles.find((r) => r.roleName === 'User');
+
+          if (!role) {
+            throw new Error('Specified role does not exist');
+          }
+
+          try {
+            user = await UsersService.create({
+              code: studentData.NIM,
+              email: studentData.Email,
+              name: studentData.Name,
+              department: studentData.Major,
+              roleId: role.id,
+            });
+          } catch (e) {
+            console.error(e);
+            throw new Error(
+              'Failed when registering your account to our database',
+            );
           }
         }
 
