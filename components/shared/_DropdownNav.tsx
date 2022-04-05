@@ -19,7 +19,7 @@ export default function DropdownNav({ link }: Props) {
       }}
       onMouseLeave={() => setOpenDropdown(false)}
       className={`relative tracking-wide text-center cursor-pointer hover:text-primary min-w-[3rem] py-4 text-gray-600 font-semibold ${
-        router.pathname === link.href
+        router.pathname.includes(link.href)
           ? 'border-b-2 border-primary font-bold'
           : ''
       }`}>
@@ -34,8 +34,8 @@ export default function DropdownNav({ link }: Props) {
             <Link href={`${link.href}${child.href}`} passHref={true}>
               <div
                 className={`tracking-wide text-left cursor-pointer hover:text-primary p-4 text-gray-600 font-semibold ${
-                  router.pathname === link.href
-                    ? 'border-b-2 border-primary font-bold'
+                  router.pathname.includes(child.href)
+                    ? 'font-bold text-primary'
                     : ''
                 }`}>
                 {child.title}

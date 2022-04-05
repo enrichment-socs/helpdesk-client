@@ -19,16 +19,6 @@ export default function Navbar() {
       roles: [ROLES.USER, ROLES.ADMIN, ROLES.SUPER_ADMIN],
     },
     {
-      title: 'Requests',
-      href: '/requests',
-      roles: [ROLES.USER, ROLES.ADMIN],
-    },
-    {
-      title: 'FAQ',
-      href: '/faq',
-      roles: [ROLES.USER],
-    },
-    {
       title: 'Manage',
       href: '/manage',
       roles: [ROLES.SUPER_ADMIN],
