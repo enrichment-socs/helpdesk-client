@@ -2,37 +2,37 @@ import { atom, useAtom } from "jotai";
 import { useHydrateAtoms } from "jotai/utils";
 import { NextPage } from "next";
 import { useState } from "react";
-import ManageRolesTable from "../../../components/roles/ManageRolesTable";
-import RoleFormModal from "../../../components/roles/RoleFormModal";
+import FAQCategoryFormModal from "../../../components/faq-categories/FAQCategoryFormModal";
+import ManageFAQCategoriesTable from "../../../components/faq-categories/ManageFAQCategoriesTable";
 import Layout from "../../../components/shared/_Layout";
-import { Role } from "../../../models/Role";
-import { RolesService } from "../../../services/RolesService";
+import { FAQCategory } from "../../../models/FAQCategory";
+import { FAQCategoriesService } from "../../../services/FAQCategoriesService";
 import { SemestersService } from "../../../services/SemestersService";
 
-export const rolesAtom = atom([] as Role[]);
+export const faqCategoriesAtom = atom([] as FAQCategory[]);
 
-const ManageRolesPage: NextPage = ({ currRoles }) => {
-  const [roles] = useAtom(rolesAtom);
+const ManageFAQCategoriesPage: NextPage = ({ currFAQCategories }) => {
+  const [faqCategories] = useAtom(faqCategoriesAtom);
   const [openFormModal, setOpenFormModal] = useState(false);
-  const [selectedRole, setSelectedRole] = useState<Role | null>(null);
+  const [selectedFAQCategory, setSelectedFAQCategory] = useState<FAQCategory | null>(null);
 
-  useHydrateAtoms([[rolesAtom, currRoles]]);
+  useHydrateAtoms([[faqCategoriesAtom, currFAQCategories]]);
 
-  const openModal = (role: Role | null) => {
-    setSelectedRole(role);
+  const openModal = (faqCategory: FAQCategory | null) => {
+    setSelectedFAQCategory(faqCategory);
     setOpenFormModal(true);
   };
 
   return (
     <Layout>
-      <RoleFormModal
+      <FAQCategoryFormModal
         isOpen={openFormModal}
         setIsOpen={setOpenFormModal}
-        role={selectedRole}
+        faqCategory={selectedFAQCategory}
       />
 
       <div className="font-bold text-2xl mb-4 flex items-center justify-between  ">
-        <h1>Manage Roles</h1>
+        <h1>Manage FAQ Categories</h1>
         <button
           type="button"
           onClick={() => openModal(null)}
@@ -41,21 +41,21 @@ const ManageRolesPage: NextPage = ({ currRoles }) => {
           Create
         </button>
       </div>
-      <ManageRolesTable roles={roles} openModal={openModal} />
+      <ManageFAQCategoriesTable faqCategories={faqCategories} openModal={openModal} />
     </Layout>
   );
 };
 
 export async function getServerSideProps() {
-  const currRoles = await RolesService.getAll();
+  const currFAQCategories = await FAQCategoriesService.getAll();
   const semesters = await SemestersService.getSemesters();
 
   return {
     props: {
-      currRoles,
+      currFAQCategories,
       semesters,
     },
   };
 }
 
-export default ManageRolesPage;
+export default ManageFAQCategoriesPage;

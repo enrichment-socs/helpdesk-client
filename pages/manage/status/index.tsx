@@ -1,6 +1,7 @@
 import { atom, useAtom } from "jotai";
+import { useHydrateAtoms } from "jotai/utils";
 import { NextPage } from "next";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Layout from "../../../components/shared/_Layout";
 import ManageStatusTable from "../../../components/status/ManageStatusTable";
 import StatusFormModal from "../../../components/status/StatusFormModal";
@@ -11,13 +12,11 @@ import { StatusService } from "../../../services/StatusService";
 export const statusAtom = atom([] as Status[]);
 
 const ManageStatusPage: NextPage = ({ currStatuses }) => {
-  const [statuses, setStatuses] = useAtom(statusAtom);
+  const [statuses] = useAtom(statusAtom);
   const [openFormModal, setOpenFormModal] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<Status | null>(null);
 
-  useEffect(() => {
-    setStatuses(currStatuses);
-  }, [currStatuses]);
+  useHydrateAtoms([[statusAtom, currStatuses]]);
 
   const openModal = (status: Status | null) => {
     setSelectedStatus(status);
