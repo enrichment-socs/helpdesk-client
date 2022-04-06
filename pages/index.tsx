@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import toast from 'react-hot-toast';
 import Layout from '../components/shared/_Layout';
 import { Semester } from '../models/Semester';
+import { RolesService } from '../services/RolesService';
 import { SemestersService } from '../services/SemestersService';
 import { UsersService } from '../services/UsersService';
 
@@ -117,7 +118,7 @@ const Home: NextPage = () => {
 
 export async function getServerSideProps() {
   const semesters = await SemestersService.getSemesters();
-
+  
   return {
     props: {
       semesters,

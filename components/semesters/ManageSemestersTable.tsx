@@ -39,7 +39,7 @@ export default function ManageSemestersTable({ semesters }: Props) {
                 </tr>
               </thead>
               <tbody>
-                {semesters.map((smt, idx) => (
+                {semesters && semesters.map((smt, idx) => (
                   <tr
                     key={smt.id}
                     className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
