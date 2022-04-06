@@ -1,3 +1,4 @@
+import { confirm } from '../../lib/confirm-dialog-helper';
 import { Semester } from '../../models/Semester';
 type Props = {
   semesters: Semester[];
@@ -5,6 +6,15 @@ type Props = {
 };
 
 export default function ManageSemestersTable({ semesters, openModal }: Props) {
+  const onDelete = async (semester: Semester) => {
+    const message = `Are you sure you want to delete <b>${semester.type} Semester ${semester.startYear}/${semester.endYear}</b> ?`;
+    if (await confirm(message)) {
+      console.log('Ok');
+    } else {
+      console.log('Cancel');
+    }
+  };
+
   return (
     <>
       <div className='flex flex-col'>
@@ -73,6 +83,7 @@ export default function ManageSemestersTable({ semesters, openModal }: Props) {
                           </button>
                           <button
                             type='button'
+                            onClick={() => onDelete(smt)}
                             className='inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500'>
                             Delete
                           </button>
