@@ -40,6 +40,22 @@ export default async function handler(
         roleName: 'User',
       });
 
+      await axios.post(`${process.env.NEXT_PUBLIC_BASE_API_URL}/status`, {
+        statusName: 'Pending',
+      });
+
+      await axios.post(`${process.env.NEXT_PUBLIC_BASE_API_URL}/status`, {
+        statusName: 'Awaiting Approval',
+      });
+
+      await axios.post(`${process.env.NEXT_PUBLIC_BASE_API_URL}/status`, {
+        statusName: 'Awaiting Updates',
+      });
+
+      await axios.post(`${process.env.NEXT_PUBLIC_BASE_API_URL}/status`, {
+        statusName: 'Finished',
+      });
+
       return res.json('Seed Success');
     } else {
       return res.json('Unauthorized');
