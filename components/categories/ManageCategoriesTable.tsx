@@ -17,10 +17,10 @@ export default function ManageCategoriesTable({ categories, openModal }: Prop) {
         const message = `Are you sure you want to delete ${category.categoryName}?`;
         if (await confirm(message)) {
             await toast.promise(CategoriesService.delete(category.id), {
-                loading: 'Deleting status...',
+                loading: 'Deleting category...',
                 success: (r) => {
                     setCategoriesVal(categories.filter((cat) => cat.id !== category.id));
-                    return 'Sucesfully deleted the selected status';
+                    return 'Sucesfully deleted the selected category';
                 },
                 error: (e) => e.toString(),
             });
