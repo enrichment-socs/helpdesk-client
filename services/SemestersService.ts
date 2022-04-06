@@ -31,6 +31,19 @@ export class SemestersService extends BaseService {
     }
   }
 
+  static async updateSemester(dto: CreateSemesterDto, semesterId: string) {
+    try {
+      const result: AxiosResponse<Semester> = await axios.patch(
+        `${this.BASE_URL}/semesters/${semesterId}`,
+        dto,
+      );
+      return result.data;
+    } catch (e) {
+      console.error(e);
+      throw new Error('Ups, something is wrong with the server (Update Semester)');
+    }
+  }
+
   static async deleteSemester(semesterId: string) {
     try {
       const result: AxiosResponse<Semester> = await axios.delete(
