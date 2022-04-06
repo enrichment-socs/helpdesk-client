@@ -1,17 +1,29 @@
 import { confirm } from '../../lib/confirm-dialog-helper';
 import { Semester } from '../../models/Semester';
+import { SemestersService } from '../../services/SemestersService';
+import toast from 'react-hot-toast';
+import { useAtom } from 'jotai';
+import { semestersAtom } from '../../atom';
+
 type Props = {
   semesters: Semester[];
   openModal: (semester: Semester | null) => void;
 };
 
 export default function ManageSemestersTable({ semesters, openModal }: Props) {
+  const [, setSemesters] = useAtom(semestersAtom);
+
   const onDelete = async (semester: Semester) => {
     const message = `Are you sure you want to delete <b>${semester.type} Semester ${semester.startYear}/${semester.endYear}</b> ?`;
     if (await confirm(message)) {
-      console.log('Ok');
-    } else {
-      console.log('Cancel');
+      await toast.promise(SemestersService.deleteSemester(semester.id), {
+        loading: 'Deleting semester...',
+        success: (r) => {
+          setSemesters(semesters.filter((s) => s.id !== semester.id));
+          return 'Sucesfully deleted the selected semester';
+        },
+        error: (e) => e.toString(),
+      });
     }
   };
 

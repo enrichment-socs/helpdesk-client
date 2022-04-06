@@ -30,4 +30,18 @@ export class SemestersService extends BaseService {
       throw new Error('Ups, something is wrong with the server (Add Semester)');
     }
   }
+
+  static async deleteSemester(semesterId: string) {
+    try {
+      const result: AxiosResponse<Semester> = await axios.delete(
+        `${this.BASE_URL}/semesters/${semesterId}`,
+      );
+      return result.data;
+    } catch (e) {
+      console.error(e);
+      throw new Error(
+        'Ups, something is wrong with the server (Delete Semester)',
+      );
+    }
+  }
 }
