@@ -48,6 +48,11 @@ export default function Navbar() {
           href: '/categories',
           roles: [ROLES.SUPER_ADMIN],
         },
+        {
+          title: 'Priorities',
+          href: '/priorities',
+          roles: [ROLES.SUPER_ADMIN],
+        },
       ],
     },
   ];
@@ -89,11 +94,10 @@ export default function Navbar() {
                 <Else>
                   <Link key={link.title} href={link.href} passHref={true}>
                     <div
-                      className={`tracking-wide text-center cursor-pointer hover:text-primary min-w-[3rem] py-4 text-gray-600 font-semibold ${
-                        router.pathname === link.href
+                      className={`tracking-wide text-center cursor-pointer hover:text-primary min-w-[3rem] py-4 text-gray-600 font-semibold ${router.pathname === link.href
                           ? 'border-b-2 border-primary font-bold'
                           : ''
-                      }`}>
+                        }`}>
                       {link.title}
                     </div>
                   </Link>
