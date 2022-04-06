@@ -34,8 +34,8 @@ export default function Navbar() {
           roles: [ROLES.SUPER_ADMIN],
         },
         {
-          title: 'Statuses',
-          href: '/statuses',
+          title: 'Status',
+          href: '/status',
           roles: [ROLES.SUPER_ADMIN],
         },
         {
