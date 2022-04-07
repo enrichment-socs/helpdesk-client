@@ -3,28 +3,12 @@ import {
   GlobeIcon,
   SpeakerphoneIcon,
 } from '@heroicons/react/solid';
-import axios from 'axios';
 import type { NextPage } from 'next';
 import { getSession } from 'next-auth/react';
-import Head from 'next/head';
-import Image from 'next/image';
-import { useEffect } from 'react';
-import toast from 'react-hot-toast';
 import Layout from '../components/shared/_Layout';
-import { Semester } from '../models/Semester';
-import { RolesService } from '../services/RolesService';
 import { SemestersService } from '../services/SemestersService';
-import { UsersService } from '../services/UsersService';
 
 const Home: NextPage = () => {
-  const t = async () => {
-    const r = await UsersService.getByIdentifier('lionel.ritchie@binus.ac.id');
-    console.log(r);
-  };
-  // useEffect(() => {
-  //   t();
-  // }, []);
-
   return (
     <Layout>
       <div className='flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4'>
