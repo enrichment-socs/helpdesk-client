@@ -16,6 +16,7 @@ import {
 } from '../../lib/constant';
 import { signIn, getSession } from 'next-auth/react';
 import toast from 'react-hot-toast';
+import { SemestersService } from '../../services/SemestersService';
 
 const LoginPage: NextPage = () => {
   const router = useRouter();
@@ -163,6 +164,7 @@ const LoginPage: NextPage = () => {
 };
 
 export async function getServerSideProps({ req, res }) {
+  const semesters = await SemestersService.getSemesters();
   const session = await getSession({ req });
 
   if (session) {
@@ -177,6 +179,7 @@ export async function getServerSideProps({ req, res }) {
   return {
     props: {
       session,
+      semesters,
     },
   };
 }

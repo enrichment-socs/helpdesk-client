@@ -12,10 +12,7 @@ import { useEffect } from 'react';
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   const { semesters }: { semesters: Semester[] } = pageProps;
   const [activeSemester, setActiveSemester] = useAtom(activeSemesterAtom);
-
-  if (semesters) {
-    useHydrateAtoms([[semestersAtom, semesters]]);
-  }
+  useHydrateAtoms([[semestersAtom, semesters]]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
