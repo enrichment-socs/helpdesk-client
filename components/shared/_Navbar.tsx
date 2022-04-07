@@ -10,6 +10,7 @@ import { If, Else, Then } from 'react-if';
 import DropdownNav from './_DropdownNav';
 import { DropdownNavLink } from '../../models/views/DropDownNavLink';
 import { NavLink } from '../../models/views/NavLink';
+import { signOut } from 'next-auth/react';
 
 export default function Navbar() {
   const links: (NavLink | DropdownNavLink)[] = [
@@ -99,10 +100,11 @@ export default function Navbar() {
                 <Else>
                   <Link key={link.title} href={link.href} passHref={true}>
                     <div
-                      className={`tracking-wide text-center cursor-pointer hover:text-primary min-w-[3rem] py-4 text-gray-600 font-semibold ${router.pathname === link.href
+                      className={`tracking-wide text-center cursor-pointer hover:text-primary min-w-[3rem] py-4 text-gray-600 font-semibold ${
+                        router.pathname === link.href
                           ? 'border-b-2 border-primary font-bold'
                           : ''
-                        }`}>
+                      }`}>
                       {link.title}
                     </div>
                   </Link>
@@ -112,7 +114,9 @@ export default function Navbar() {
           ))}
         </ul>
 
-        <button className='cursor-pointer hover:text-primary text-gray-600 font-bold flex space-x-1 items-center'>
+        <button
+          onClick={() => signOut({ callbackUrl: '/auth/login' })}
+          className='cursor-pointer hover:text-primary text-gray-600 font-bold flex space-x-1 items-center'>
           <span className='block'>Sign Out</span>{' '}
           <LogoutIcon className='w-5 h-5' />
         </button>

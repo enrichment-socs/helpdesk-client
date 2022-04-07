@@ -4,7 +4,7 @@ import Layout from '../../components/shared/_Layout';
 import ribbon from '../../public/assets/ribbon.png';
 import binus from '../../public/assets/binus.png';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { UserIcon, LockClosedIcon } from '@heroicons/react/solid';
@@ -14,11 +14,12 @@ import {
   STUDENT_EMAIL_REGEX,
   STUDENT_NUMBER_REGEX,
 } from '../../lib/constant';
-import { signIn } from 'next-auth/react';
+import { signIn, getSession } from 'next-auth/react';
 import toast from 'react-hot-toast';
 
 const LoginPage: NextPage = () => {
   const router = useRouter();
+
   const [isLoading, setIsLoading] = useState(false);
   const {
     register,
@@ -53,7 +54,12 @@ const LoginPage: NextPage = () => {
     } else {
       toast.success('Login Success');
       setIsLoading(true);
-      router.push('/');
+
+      if (!router.asPath.includes('/auth/login')) {
+        router.replace(router.asPath);
+      } else {
+        router.replace('/');
+      }
     }
   };
 
@@ -155,5 +161,24 @@ const LoginPage: NextPage = () => {
     </Layout>
   );
 };
+
+export async function getServerSideProps({ req, res }) {
+  const session = await getSession({ req });
+
+  if (session) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {
+      session,
+    },
+  };
+}
 
 export default LoginPage;

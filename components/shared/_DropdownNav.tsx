@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DropdownNavLink } from '../../models/views/DropDownNavLink';
 
 type Props = {
@@ -10,11 +10,9 @@ type Props = {
 export default function DropdownNav({ link }: Props) {
   const router = useRouter();
   const [openDropdown, setOpenDropdown] = useState(false);
-
   return (
     <div
       onMouseEnter={() => {
-        console.log('enter');
         setOpenDropdown(true);
       }}
       onMouseLeave={() => setOpenDropdown(false)}
@@ -27,7 +25,7 @@ export default function DropdownNav({ link }: Props) {
 
       <ul
         className={`absolute bg-white border border-gray-200 rounded-md shadow top-12 transition-all duration-300 ${
-          openDropdown ? 'opacity-100' : 'opacity-0'
+          openDropdown ? 'block' : 'hidden'
         }`}>
         {link.children?.map((child) => (
           <li key={child.title} className='w-44 hover:bg-gray-50'>
