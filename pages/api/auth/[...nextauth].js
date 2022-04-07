@@ -13,7 +13,7 @@ import { RolesService } from '../../../services/RolesService';
 export default NextAuth({
   session: {
     jwt: true,
-    maxAge: 24 * 60 * 60,
+    maxAge: 1 * 60 * 60,
   },
   callbacks: {
     async jwt({ token, user }) {
