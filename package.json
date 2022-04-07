@@ -12,6 +12,7 @@
     "@headlessui/react": "^1.5.0",
     "@heroicons/react": "^1.0.6",
     "axios": "^0.26.1",
+    "date-fns": "^2.28.0",
     "jotai": "^1.6.1",
     "next": "12.1.1",
     "next-auth": "^4.3.1",

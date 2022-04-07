@@ -53,6 +53,11 @@ export default function Navbar() {
           href: '/priorities',
           roles: [ROLES.SUPER_ADMIN],
         },
+        {
+          title: 'Announcements',
+          href: '/announcements',
+          roles: [ROLES.SUPER_ADMIN],
+        }
       ],
     },
   ];
