@@ -113,7 +113,6 @@ const Home: NextPage = () => {
 export async function getServerSideProps({ req, res }) {
   const semesters = await SemestersService.getSemesters();
   const session = await getSession({ req });
-  console.log({ session });
 
   if (!session) {
     return {
