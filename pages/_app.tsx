@@ -11,14 +11,11 @@ import { useEffect } from 'react';
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   const { semesters }: { semesters: Semester[] } = pageProps;
-  const [activeSemester, setActiveSemester] = useAtom(activeSemesterAtom);
-  useHydrateAtoms([[semestersAtom, semesters]]);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      if (!activeSemester) setActiveSemester(semesters.find((s) => s.isActive));
-    }
-  }, []);
+  const [activeSemester] = useAtom(activeSemesterAtom);
+  useHydrateAtoms([
+    [semestersAtom, semesters],
+    [activeSemesterAtom, activeSemester ?? semesters.find((s) => s.isActive)],
+  ]);
 
   return (
     <>
