@@ -13,7 +13,6 @@ export default function DropdownNav({ link }: Props) {
   return (
     <div
       onMouseEnter={() => {
-        console.log('enter');
         setOpenDropdown(true);
       }}
       onMouseLeave={() => setOpenDropdown(false)}
