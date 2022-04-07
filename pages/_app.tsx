@@ -5,15 +5,18 @@ import { useHydrateAtoms } from 'jotai/utils';
 import { semestersAtom } from '../atom';
 import { Semester } from '../models/Semester';
 import NextNProgress from 'nextjs-progressbar';
+import { SessionProvider } from 'next-auth/react';
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   const { semesters }: { semesters: Semester[] } = pageProps;
   useHydrateAtoms([[semestersAtom, semesters]]);
 
   return (
     <>
       <NextNProgress />
-      <Component {...pageProps} />
+      <SessionProvider session={session}>
+        <Component {...pageProps} />
+      </SessionProvider>
       <Toaster />
     </>
   );

@@ -5,6 +5,7 @@ import {
 } from '@heroicons/react/solid';
 import axios from 'axios';
 import type { NextPage } from 'next';
+import { getSession } from 'next-auth/react';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useEffect } from 'react';
@@ -109,12 +110,24 @@ const Home: NextPage = () => {
   );
 };
 
-export async function getServerSideProps() {
+export async function getServerSideProps({ req, res }) {
   const semesters = await SemestersService.getSemesters();
+  const session = await getSession({ req });
+  console.log({ session });
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/auth/login',
+        permanent: false,
+      },
+    };
+  }
 
   return {
     props: {
       semesters,
+      session,
     },
   };
 }

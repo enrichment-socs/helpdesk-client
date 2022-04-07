@@ -14,7 +14,7 @@ import {
   STUDENT_EMAIL_REGEX,
   STUDENT_NUMBER_REGEX,
 } from '../../lib/constant';
-import { signIn } from 'next-auth/react';
+import { signIn, getSession } from 'next-auth/react';
 import toast from 'react-hot-toast';
 
 const LoginPage: NextPage = () => {
@@ -155,5 +155,24 @@ const LoginPage: NextPage = () => {
     </Layout>
   );
 };
+
+export async function getServerSideProps({ req, res }) {
+  const session = await getSession({ req });
+
+  if (session) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {
+      session,
+    },
+  };
+}
 
 export default LoginPage;
