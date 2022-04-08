@@ -44,16 +44,16 @@ export default function AnnouncementFormModal({
   }, [announcement]);
 
   const onSubmit: SubmitHandler<FormData> = async (payload) => {
+    const dto: CreateAnnouncementDto = {
+      ...payload,
+      semesterId: activeSemester.id,
+    };
+
     setLoading(true);
     await toast.promise(
       announcement
-        ? AnnouncementsService.updateAnnouncement(
-            payload as CreateAnnouncementDto,
-            announcement.id,
-          )
-        : AnnouncementsService.addAnnouncement(
-            payload as CreateAnnouncementDto,
-          ),
+        ? AnnouncementsService.updateAnnouncement(dto, announcement.id)
+        : AnnouncementsService.addAnnouncement(dto),
       {
         loading: announcement
           ? 'Updating announcement...'
