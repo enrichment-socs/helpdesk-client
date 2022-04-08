@@ -2,7 +2,7 @@ import { atom, useAtom } from 'jotai';
 import { useHydrateAtoms } from 'jotai/utils';
 import { NextPage } from 'next';
 import { getSession } from 'next-auth/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import AnnouncementFormModal from '../../../components/announcements/AnnouncementFormModal';
 import ManageAnnouncementsTable from '../../../components/announcements/ManageAnnouncementsTable';
 import Layout from '../../../components/shared/_Layout';
@@ -19,13 +19,15 @@ type Props = {
 };
 
 const ManageRolesPage: NextPage<Props> = ({ currAnnouncements }) => {
-  console.log(currAnnouncements);
-  const [announcements] = useAtom(announcementsAtom);
+  useHydrateAtoms([[announcementsAtom, currAnnouncements]] as const);
+  const [announcements, setAnnouncement] = useAtom(announcementsAtom);
   const [openFormModal, setOpenFormModal] = useState(false);
   const [selectedAnnouncement, setSelectedAnnouncement] =
     useState<Announcement | null>(null);
 
-  useHydrateAtoms([[announcementsAtom, currAnnouncements]] as const);
+  useEffect(() => {
+    setAnnouncement(currAnnouncements);
+  }, [currAnnouncements]);
 
   const openModal = (announcement: Announcement | null) => {
     setSelectedAnnouncement(announcement);
