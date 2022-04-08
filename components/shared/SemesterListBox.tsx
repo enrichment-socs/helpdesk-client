@@ -4,18 +4,32 @@ import { CheckIcon, SelectorIcon } from '@heroicons/react/solid';
 import { useAtom } from 'jotai';
 import { activeSemesterAtom, semestersAtom } from '../../atom';
 import { Semester } from '../../models/Semester';
+import { SemestersService } from '../../services/SemestersService';
+import toast from 'react-hot-toast';
+import { useRouter } from 'next/router';
 
 export default function SemesterListBox() {
   const [semesters] = useAtom(semestersAtom);
   const [selectedSemester, setSelected] = useAtom(activeSemesterAtom);
+  const router = useRouter();
 
   const getDescription = (semester: Semester | null) => {
     if (!semester) return 'No Semester';
     return `${semester.type} Semester ${semester.startYear}/${semester.endYear}`;
   };
 
+  const onChangeSemester = async (semester: Semester) => {
+    const s = await toast.promise(SemestersService.changeSemester(semester), {
+      loading: 'Changing semester...',
+      success: 'Change semester success',
+      error: (e) => e.toString(),
+    });
+    await setSelected(s);
+    await router.replace(router.asPath);
+  };
+
   return (
-    <Listbox value={selectedSemester} onChange={setSelected}>
+    <Listbox value={selectedSemester} onChange={onChangeSemester}>
       <div className='relative mt-1'>
         <Listbox.Button className='w-64 relative cursor-pointer border border-gray-200 w-full py-2 pl-3 pr-10 text-left bg-white rounded-lg shadow-sm cursor-default focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white focus-visible:ring-offset-primary focus-visible:ring-offset-2 focus-visible:border-primary sm:text-sm'>
           <span className='block truncate text-base'>

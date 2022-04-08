@@ -59,4 +59,17 @@ export class SemestersService extends BaseService {
       );
     }
   }
+
+  static async changeSemester(semester: Semester) {
+    try {
+      const result: AxiosResponse<Semester> = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_LOCAL_API_URL}/change-semester`,
+        { semester },
+      );
+      return result.data;
+    } catch (e) {
+      console.error(e);
+      throw new Error('Ups, something is wrong when changing semester');
+    }
+  }
 }

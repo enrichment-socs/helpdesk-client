@@ -1,7 +1,11 @@
 // this file is a wrapper with defaults to be used in both API routes and `getServerSideProps` functions
 import type { IronSessionOptions } from 'iron-session';
-import { withIronSessionSsr } from 'iron-session/next';
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import { withIronSessionApiRoute, withIronSessionSsr } from 'iron-session/next';
+import {
+  GetServerSidePropsContext,
+  GetServerSidePropsResult,
+  NextApiHandler,
+} from 'next';
 import { Semester } from '../models/Semester';
 
 export const sessionOptions: IronSessionOptions = {
@@ -11,6 +15,10 @@ export const sessionOptions: IronSessionOptions = {
     secure: process.env.NODE_ENV === 'production',
   },
 };
+
+export function withSessionRoute(handler: NextApiHandler) {
+  return withIronSessionApiRoute(handler, sessionOptions);
+}
 
 export function withSessionSsr<
   P extends { [key: string]: unknown } = { [key: string]: unknown },
