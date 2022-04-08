@@ -9,13 +9,17 @@ import { SessionProvider } from 'next-auth/react';
 import { useAtom } from 'jotai';
 import { useEffect } from 'react';
 
+type GlobalProps = {
+  semesters: Semester[];
+  sessionActiveSemester: Semester;
+};
+
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
-  const { semesters }: { semesters: Semester[] } = pageProps;
-  const [activeSemester] = useAtom(activeSemesterAtom);
+  const { semesters, sessionActiveSemester }: GlobalProps = pageProps;
   useHydrateAtoms([
     [semestersAtom, semesters],
-    [activeSemesterAtom, activeSemester ?? semesters.find((s) => s.isActive)],
-  ]);
+    [activeSemesterAtom, sessionActiveSemester],
+  ] as const);
 
   return (
     <>

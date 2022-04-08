@@ -6,6 +6,8 @@ import {
 import type { NextPage } from 'next';
 import { getSession } from 'next-auth/react';
 import Layout from '../components/shared/_Layout';
+import { getInitialServerProps } from '../lib/initialize-server-props';
+import { withSessionSsr } from '../lib/session';
 import { SemestersService } from '../services/SemestersService';
 
 const Home: NextPage = () => {
@@ -94,25 +96,28 @@ const Home: NextPage = () => {
   );
 };
 
-export async function getServerSideProps({ req, res }) {
-  const semesters = await SemestersService.getSemesters();
-  const session = await getSession({ req });
+export const getServerSideProps = withSessionSsr(
+  async function getServerSideProps({ req }) {
+    const { session, semesters, sessionActiveSemester } =
+      await getInitialServerProps(req, getSession, new SemestersService());
 
-  if (!session) {
+    if (!session) {
+      return {
+        redirect: {
+          destination: '/auth/login',
+          permanent: false,
+        },
+      };
+    }
+
     return {
-      redirect: {
-        destination: '/auth/login',
-        permanent: false,
+      props: {
+        semesters,
+        session,
+        sessionActiveSemester,
       },
     };
-  }
-
-  return {
-    props: {
-      semesters,
-      session,
-    },
-  };
-}
+  },
+);
 
 export default Home;

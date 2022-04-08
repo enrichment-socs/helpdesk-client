@@ -1,10 +1,13 @@
 import { useAtom } from 'jotai';
 import { NextPage } from 'next';
+import { getSession } from 'next-auth/react';
 import { useState } from 'react';
 import { semestersAtom } from '../../../atom';
 import ManageSemestersTable from '../../../components/semesters/ManageSemestersTable';
 import SemesterFormModal from '../../../components/semesters/SemesterFormModal';
 import Layout from '../../../components/shared/_Layout';
+import { getInitialServerProps } from '../../../lib/initialize-server-props';
+import { withSessionSsr } from '../../../lib/session';
 import { Semester } from '../../../models/Semester';
 import { SemestersService } from '../../../services/SemestersService';
 
@@ -42,14 +45,19 @@ const ManageSemestersPage: NextPage = () => {
   );
 };
 
-export async function getServerSideProps() {
-  const semesters = await SemestersService.getSemesters();
+export const getServerSideProps = withSessionSsr(
+  async function getServerSideProps({ req }) {
+    const { session, semesters, sessionActiveSemester } =
+      await getInitialServerProps(req, getSession, new SemestersService());
 
-  return {
-    props: {
-      semesters,
-    },
-  };
-}
+    return {
+      props: {
+        semesters,
+        session,
+        sessionActiveSemester,
+      },
+    };
+  },
+);
 
 export default ManageSemestersPage;

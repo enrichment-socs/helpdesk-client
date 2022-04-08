@@ -17,6 +17,9 @@ import {
 import { signIn, getSession } from 'next-auth/react';
 import toast from 'react-hot-toast';
 import { SemestersService } from '../../services/SemestersService';
+import { withIronSessionSsr } from 'iron-session/next';
+import { withSessionSsr } from '../../lib/session';
+import { getInitialServerProps } from '../../lib/initialize-server-props';
 
 const LoginPage: NextPage = () => {
   const router = useRouter();
@@ -163,25 +166,28 @@ const LoginPage: NextPage = () => {
   );
 };
 
-export async function getServerSideProps({ req, res }) {
-  const semesters = await SemestersService.getSemesters();
-  const session = await getSession({ req });
+export const getServerSideProps = withSessionSsr(
+  async function getServerSideProps({ req }) {
+    const { session, semesters, sessionActiveSemester } =
+      await getInitialServerProps(req, getSession, new SemestersService());
 
-  if (session) {
+    if (session) {
+      return {
+        redirect: {
+          destination: '/',
+          permanent: false,
+        },
+      };
+    }
+
     return {
-      redirect: {
-        destination: '/',
-        permanent: false,
+      props: {
+        session,
+        semesters,
+        sessionActiveSemester,
       },
     };
-  }
-
-  return {
-    props: {
-      session,
-      semesters,
-    },
-  };
-}
+  },
+);
 
 export default LoginPage;
