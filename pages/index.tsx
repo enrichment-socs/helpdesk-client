@@ -9,67 +9,21 @@ import Layout from '../components/shared/_Layout';
 import { getInitialServerProps } from '../lib/initialize-server-props';
 import { withSessionSsr } from '../lib/session';
 import { SemestersService } from '../services/SemestersService';
+import { AnnouncementsService } from '../services/AnnouncementService';
+import { Announcement } from '../models/Announcement';
+import AnnouncementContainer from '../components/pages/home/AnnouncementContainer';
 
-const Home: NextPage = () => {
+type Props = {
+  announcements: Announcement[];
+};
+
+const Home: NextPage<Props> = ({ announcements }) => {
+  console.log(announcements);
   return (
     <Layout>
       <div className='flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4'>
-        <div className='mx-2 p-2 border-2 md:w-3/4 rounded divide-y'>
-          <div className='text-lg font-bold mb-3 flex items-center'>
-            <SpeakerphoneIcon className='h-5 w-5' />
-            <span className='ml-3'>Announcement</span>
-          </div>
+        <AnnouncementContainer announcements={announcements} />
 
-          {/* Announcement Content */}
-
-          <div className='p-3'>
-            <div className='font-semibold'>Dummy Test</div>
-            <div className='mt-1 flex divide-x'>
-              <div className='pr-3 flex flex-col justify-center items-center text-center md:flex-row'>
-                <span className='text-slate-600'>From :</span>
-                <span className='md:ml-2 font-medium'>
-                  Apr 04, 2022 00:00 AM
-                </span>
-              </div>
-              <div className='px-3 flex flex-col justify-center items-center text-center md:flex-row'>
-                <GlobeIcon className='h-5 w-5' />
-                <span className='text-slate-600 md:ml-1'>Public</span>
-              </div>
-              <div className='px-3 flex flex-col justify-center items-center text-center md:flex-row'>
-                <span className='text-slate-600'>Priority:</span>
-                <span className='md:ml-2 font-medium'>-</span>
-              </div>
-              <div className='px-3 flex flex-col justify-center items-center text-center md:flex-row'>
-                <span className='text-slate-600'>Announcement Type: </span>
-                <span className='md: ml-2 font-medium'>-</span>
-              </div>
-            </div>
-          </div>
-
-          <div className='p-3'>
-            <div className='font-semibold'>Dummy Test</div>
-            <div className='mt-1 flex divide-x'>
-              <div className='pr-3 flex flex-col justify-center items-center text-center md:flex-row'>
-                <span className='text-slate-600'>From :</span>
-                <span className='md:ml-2 font-medium'>
-                  Apr 04, 2022 00:00 AM
-                </span>
-              </div>
-              <div className='px-3 flex flex-col justify-center items-center text-center md:flex-row'>
-                <GlobeIcon className='h-5 w-5' />
-                <span className='text-slate-600 md:ml-1'>Public</span>
-              </div>
-              <div className='px-3 flex flex-col justify-center items-center text-center md:flex-row'>
-                <span className='text-slate-600'>Priority:</span>
-                <span className='md:ml-2 font-medium'>-</span>
-              </div>
-              <div className='px-3 flex flex-col justify-center items-center text-center md:flex-row'>
-                <span className='text-slate-600'>Announcement Type: </span>
-                <span className='md: ml-2 font-medium'>-</span>
-              </div>
-            </div>
-          </div>
-        </div>
         <div className='mx-2 p-2 border-2 md:w-1/4 rounded divide-y'>
           <div className='text-lg font-bold mb-3 flex items-center'>
             <ChartBarIcon className='h-5 w-5' />
@@ -100,6 +54,9 @@ export const getServerSideProps = withSessionSsr(
   async function getServerSideProps({ req }) {
     const { session, semesters, sessionActiveSemester } =
       await getInitialServerProps(req, getSession, new SemestersService());
+    const announcements = await AnnouncementsService.getBySemester(
+      sessionActiveSemester.id,
+    );
 
     if (!session) {
       return {
@@ -115,6 +72,7 @@ export const getServerSideProps = withSessionSsr(
         semesters,
         session,
         sessionActiveSemester,
+        announcements,
       },
     };
   },

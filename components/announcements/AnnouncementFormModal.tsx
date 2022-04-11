@@ -18,7 +18,8 @@ type Props = {
 type FormData = {
   title: string;
   body: string;
-  due_by: Date;
+  startDate: Date;
+  endDate: Date;
 };
 
 export default function AnnouncementFormModal({
@@ -40,7 +41,8 @@ export default function AnnouncementFormModal({
   useEffect(() => {
     setValue('title', announcement?.title);
     setValue('body', announcement?.body);
-    setValue('due_by', announcement?.due_by);
+    setValue('startDate', announcement?.startDate);
+    setValue('endDate', announcement?.endDate);
   }, [announcement]);
 
   const onSubmit: SubmitHandler<FormData> = async (payload) => {
@@ -174,26 +176,52 @@ export default function AnnouncementFormModal({
 
                   <div>
                     <label className='block text-sm font-medium text-gray-700'>
-                      Announcement Due By
+                      Announcement Show Start Date
                     </label>
                     <div className='mt-1'>
                       <input
-                        {...register('due_by', {
+                        {...register('startDate', {
                           required: true,
                           setValueAs: (value) => new Date(value),
                         })}
                         type='datetime-local'
                         className={`${
-                          errors.due_by
+                          errors.startDate
                             ? 'border-red-300'
                             : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
                         } mt-1 block w-full outline-none p-2 text-base border sm:text-sm rounded-md`}
                         placeholder='Select a date'
                       />
                     </div>
-                    {errors.due_by?.type === 'required' && (
+                    {errors.startDate?.type === 'required' && (
                       <small className='text-red-500'>
-                        Due by must be chosen
+                        Start Date must be chosen
+                      </small>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className='block text-sm font-medium text-gray-700'>
+                      Announcement Show End Date
+                    </label>
+                    <div className='mt-1'>
+                      <input
+                        {...register('endDate', {
+                          required: true,
+                          setValueAs: (value) => new Date(value),
+                        })}
+                        type='datetime-local'
+                        className={`${
+                          errors.endDate
+                            ? 'border-red-300'
+                            : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+                        } mt-1 block w-full outline-none p-2 text-base border sm:text-sm rounded-md`}
+                        placeholder='Select a date'
+                      />
+                    </div>
+                    {errors.endDate?.type === 'required' && (
+                      <small className='text-red-500'>
+                        End Date must be chosen
                       </small>
                     )}
                   </div>

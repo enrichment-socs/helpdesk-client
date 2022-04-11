@@ -1,6 +1,7 @@
 export interface CreateAnnouncementDto {
   title: string;
   body: string;
-  due_by: Date;
+  startDate: Date;
+  endDate: Date;
   semesterId: string;
 }
