@@ -1,12 +1,25 @@
 import { Announcement } from '../../../models/Announcement';
 import { GlobeIcon, SpeakerphoneIcon } from '@heroicons/react/solid';
 import { format } from 'date-fns';
+import { Dispatch } from 'react';
+import { SetStateAction } from 'jotai';
 
 type Props = {
   announcements: Announcement[];
+  setOpenAnnouncementModal: Dispatch<SetStateAction<boolean>>;
+  setOpenAnnouncement: Dispatch<SetStateAction<Announcement>>;
 };
 
-export default function AnnouncementContainer({ announcements }: Props) {
+export default function AnnouncementContainer({
+  announcements,
+  setOpenAnnouncement,
+  setOpenAnnouncementModal,
+}: Props) {
+  const onAnnouncementClick = (ann: Announcement) => {
+    setOpenAnnouncement(ann);
+    setOpenAnnouncementModal(true);
+  };
+
   return (
     <div className='mx-2 p-2 border-2 md:w-3/4 rounded divide-y'>
       <div className='text-lg font-bold mb-3 flex items-center'>
@@ -23,6 +36,7 @@ export default function AnnouncementContainer({ announcements }: Props) {
 
       {announcements.map((announcement) => (
         <div
+          onClick={() => onAnnouncementClick(announcement)}
           className='p-3 hover:bg-gray-50 rounded cursor-pointer'
           key={announcement.id}>
           <div className='font-semibold'>{announcement.title}</div>

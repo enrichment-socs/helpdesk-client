@@ -12,17 +12,31 @@ import { SemestersService } from '../services/SemestersService';
 import { AnnouncementsService } from '../services/AnnouncementService';
 import { Announcement } from '../models/Announcement';
 import AnnouncementContainer from '../components/pages/home/AnnouncementContainer';
+import AnnouncementDetailModal from '../components/announcements/AnnouncementDetailModal';
+import { useState } from 'react';
 
 type Props = {
   announcements: Announcement[];
 };
 
 const Home: NextPage<Props> = ({ announcements }) => {
-  console.log(announcements);
+  const [openAnnouncementModal, setOpenAnnouncementModal] = useState(false);
+  const [openAnnouncement, setOpenAnnouncement] = useState<Announcement>(null);
+
   return (
     <Layout>
+      <AnnouncementDetailModal
+        announcement={openAnnouncement}
+        isOpen={openAnnouncementModal}
+        setIsOpen={setOpenAnnouncementModal}
+      />
+
       <div className='flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4'>
-        <AnnouncementContainer announcements={announcements} />
+        <AnnouncementContainer
+          setOpenAnnouncement={setOpenAnnouncement}
+          setOpenAnnouncementModal={setOpenAnnouncementModal}
+          announcements={announcements}
+        />
 
         <div className='mx-2 p-2 border-2 md:w-1/4 rounded divide-y'>
           <div className='text-lg font-bold mb-3 flex items-center'>

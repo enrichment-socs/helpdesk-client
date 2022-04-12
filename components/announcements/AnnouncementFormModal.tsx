@@ -60,6 +60,7 @@ export default function AnnouncementFormModal({
   } = useForm<FormData>();
 
   useEffect(() => {
+    console.log(announcement);
     setValue('title', announcement?.title);
 
     register('startDate', { required: true });
