@@ -8,6 +8,26 @@ import { CreateAnnouncementDto } from '../../models/dto/announcements/create-ann
 import { announcementsAtom } from '../../pages/manage/announcements';
 import { AnnouncementsService } from '../../services/AnnouncementService';
 import { activeSemesterAtom } from '../../atom';
+import dynamic from 'next/dynamic';
+import { add } from 'date-fns';
+const QuillNoSSRWrapper = dynamic(import('react-quill'), {
+  ssr: false,
+  loading: () => <p>Loading ...</p>,
+});
+const DatePicker = dynamic(import('react-datepicker'), { ssr: false });
+
+const modules = {
+  toolbar: [
+    [{ size: [] }],
+    ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+    [{ list: 'ordered' }, { list: 'bullet' }],
+    ['link', 'image', 'video'],
+  ],
+  clipboard: {
+    // toggle to add extra line breaks when pasting HTML:
+    matchVisual: false,
+  },
+};
 
 type Props = {
   isOpen: boolean;
@@ -35,21 +55,45 @@ export default function AnnouncementFormModal({
     register,
     handleSubmit,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<FormData>();
 
   useEffect(() => {
     setValue('title', announcement?.title);
+
+    register('startDate', { required: true });
+    setValue(
+      'startDate',
+      announcement ? new Date(announcement.startDate) : new Date(),
+    );
+
+    register('endDate', { required: true });
+    setValue(
+      'endDate',
+      announcement
+        ? new Date(announcement.endDate)
+        : add(new Date(), { weeks: 1 }),
+    );
+
+    register('body', { required: true });
     setValue('body', announcement?.body);
-    setValue('startDate', announcement?.startDate);
-    setValue('endDate', announcement?.endDate);
-  }, [announcement]);
+  }, [announcement, register]);
+
+  const bodyContent = watch('body') || '';
+  const startDateVal = watch('startDate') || new Date();
+  const endDateVal = watch('endDate') || new Date();
+
+  const onBodyChange = (val) => setValue('body', val);
+  const onStartDateChange = (date) => setValue('startDate', date);
+  const onEndDateChange = (date) => setValue('endDate', date);
 
   const onSubmit: SubmitHandler<FormData> = async (payload) => {
     const dto: CreateAnnouncementDto = {
       ...payload,
-      semesterId: activeSemester.id,
     };
+
+    if (!announcement) dto.semesterId = activeSemester.id;
 
     setLoading(true);
     await toast.promise(
@@ -116,7 +160,7 @@ export default function AnnouncementFormModal({
               leave='ease-in duration-200'
               leaveFrom='opacity-100 scale-100'
               leaveTo='opacity-0 scale-95'>
-              <div className='inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl'>
+              <div className='inline-block w-full max-w-4xl p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl'>
                 <Dialog.Title
                   as='h3'
                   className='text-lg font-medium leading-6 text-gray-900'>
@@ -155,16 +199,11 @@ export default function AnnouncementFormModal({
                       Announcement Body
                     </label>
                     <div className='mt-1'>
-                      <textarea
-                        {...register('body', {
-                          required: true,
-                        })}
-                        className={`${
-                          errors.body
-                            ? 'border-red-300'
-                            : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
-                        } mt-1 block w-full outline-none p-2 text-base border sm:text-sm rounded-md`}
-                        placeholder='Information Details'
+                      <QuillNoSSRWrapper
+                        modules={modules}
+                        theme='snow'
+                        value={bodyContent}
+                        onChange={(content) => onBodyChange(content)}
                       />
                     </div>
                     {errors.body?.type === 'required' && (
@@ -179,18 +218,16 @@ export default function AnnouncementFormModal({
                       Announcement Show Start Date
                     </label>
                     <div className='mt-1'>
-                      <input
-                        {...register('startDate', {
-                          required: true,
-                          setValueAs: (value) => new Date(value),
-                        })}
-                        type='datetime-local'
+                      <DatePicker
+                        selected={startDateVal}
+                        showTimeSelect
+                        dateFormat='Pp'
+                        onChange={onStartDateChange}
                         className={`${
                           errors.startDate
                             ? 'border-red-300'
                             : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
                         } mt-1 block w-full outline-none p-2 text-base border sm:text-sm rounded-md`}
-                        placeholder='Select a date'
                       />
                     </div>
                     {errors.startDate?.type === 'required' && (
@@ -205,18 +242,16 @@ export default function AnnouncementFormModal({
                       Announcement Show End Date
                     </label>
                     <div className='mt-1'>
-                      <input
-                        {...register('endDate', {
-                          required: true,
-                          setValueAs: (value) => new Date(value),
-                        })}
-                        type='datetime-local'
+                      <DatePicker
+                        selected={endDateVal}
+                        showTimeSelect
+                        dateFormat='Pp'
+                        onChange={onEndDateChange}
                         className={`${
                           errors.endDate
                             ? 'border-red-300'
                             : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
                         } mt-1 block w-full outline-none p-2 text-base border sm:text-sm rounded-md`}
-                        placeholder='Select a date'
                       />
                     </div>
                     {errors.endDate?.type === 'required' && (

@@ -6,8 +6,8 @@ import { semestersAtom, activeSemesterAtom } from '../atom';
 import { Semester } from '../models/Semester';
 import NextNProgress from 'nextjs-progressbar';
 import { SessionProvider } from 'next-auth/react';
-import { useAtom } from 'jotai';
-import { useEffect } from 'react';
+import 'react-quill/dist/quill.snow.css';
+import 'react-datepicker/dist/react-datepicker.css';
 
 type GlobalProps = {
   semesters: Semester[];

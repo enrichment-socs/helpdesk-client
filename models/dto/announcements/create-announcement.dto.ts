@@ -3,5 +3,5 @@ export interface CreateAnnouncementDto {
   body: string;
   startDate: Date;
   endDate: Date;
-  semesterId: string;
+  semesterId?: string;
 }
