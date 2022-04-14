@@ -1,10 +1,6 @@
-import {
-  ChartBarIcon,
-  GlobeIcon,
-  SpeakerphoneIcon,
-} from '@heroicons/react/solid';
+import { ChartBarIcon, GlobeIcon, SpeakerphoneIcon } from '@heroicons/react/solid';
 import type { NextPage } from 'next';
-import { getSession } from 'next-auth/react';
+import { getSession, useSession } from 'next-auth/react';
 import Layout from '../components/shared/_Layout';
 import { getInitialServerProps } from '../lib/initialize-server-props';
 import { withSessionSsr } from '../lib/session';
@@ -14,6 +10,7 @@ import { Announcement } from '../models/Announcement';
 import AnnouncementContainer from '../components/pages/home/AnnouncementContainer';
 import AnnouncementDetailModal from '../components/announcements/AnnouncementDetailModal';
 import { useState } from 'react';
+import { getToken } from 'next-auth/jwt';
 
 type Props = {
   announcements: Announcement[];
@@ -22,6 +19,8 @@ type Props = {
 const Home: NextPage<Props> = ({ announcements }) => {
   const [openAnnouncementModal, setOpenAnnouncementModal] = useState(false);
   const [openAnnouncement, setOpenAnnouncement] = useState<Announcement>(null);
+  const session = useSession();
+  console.log(session);
 
   return (
     <Layout>
@@ -64,32 +63,33 @@ const Home: NextPage<Props> = ({ announcements }) => {
   );
 };
 
-export const getServerSideProps = withSessionSsr(
-  async function getServerSideProps({ req }) {
-    const { session, semesters, sessionActiveSemester } =
-      await getInitialServerProps(req, getSession, new SemestersService());
-    const announcements = await AnnouncementsService.getBySemester(
-      sessionActiveSemester.id,
-    );
+export const getServerSideProps = withSessionSsr(async function getServerSideProps({ req }) {
+  const token = await getToken({ req, secret: 'hesoyam' });
+  console.log(token);
+  const { session, semesters, sessionActiveSemester } = await getInitialServerProps(
+    req,
+    getSession,
+    new SemestersService(),
+  );
+  const announcements = await AnnouncementsService.getBySemester(sessionActiveSemester.id);
 
-    if (!session) {
-      return {
-        redirect: {
-          destination: '/auth/login',
-          permanent: false,
-        },
-      };
-    }
-
+  if (!session) {
     return {
-      props: {
-        semesters,
-        session,
-        sessionActiveSemester,
-        announcements,
+      redirect: {
+        destination: '/auth/login',
+        permanent: false,
       },
     };
-  },
-);
+  }
+
+  return {
+    props: {
+      semesters,
+      session,
+      sessionActiveSemester,
+      announcements,
+    },
+  };
+});
 
 export default Home;

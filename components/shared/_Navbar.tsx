@@ -9,8 +9,11 @@ import { ROLES } from '../../lib/constant';
 import { If, Else, Then } from 'react-if';
 import DropdownNav from './_DropdownNav';
 import { DropdownNavLink } from '../../models/views/DropDownNavLink';
+import { SessionUser } from '../../models/SessionUser';
 import { NavLink } from '../../models/views/NavLink';
 import { signOut } from 'next-auth/react';
+import axios from 'axios';
+import { useSession } from 'next-auth/react';
 
 export default function Navbar() {
   const links: (NavLink | DropdownNavLink)[] = [
@@ -58,12 +61,20 @@ export default function Navbar() {
           title: 'Announcements',
           href: '/announcements',
           roles: [ROLES.SUPER_ADMIN],
-        }
+        },
       ],
     },
   ];
 
   const router = useRouter();
+  const session = useSession();
+  const user = session.data.user as SessionUser;
+
+  const logOut = async () => {
+    const apiUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+    await axios.delete(`${apiUrl}/auth`, { data: { refreshToken: user.refreshToken } });
+    signOut({ callbackUrl: '/auth/login' });
+  };
 
   return (
     <div>
@@ -79,7 +90,7 @@ export default function Navbar() {
 
         <div className='text-right mt-4'>
           <div className='font-bold text-gray-600'>
-            Welcome, <span className='text-primary'>Lionel Ritchie</span>
+            Welcome, <span className='text-primary'>{user.name}</span>
           </div>
           <div className='mt-2'>
             <SemesterListBox />
@@ -101,9 +112,7 @@ export default function Navbar() {
                   <Link key={link.title} href={link.href} passHref={true}>
                     <div
                       className={`tracking-wide text-center cursor-pointer hover:text-primary min-w-[3rem] py-4 text-gray-600 font-semibold ${
-                        router.pathname === link.href
-                          ? 'border-b-2 border-primary font-bold'
-                          : ''
+                        router.pathname === link.href ? 'border-b-2 border-primary font-bold' : ''
                       }`}>
                       {link.title}
                     </div>
@@ -115,10 +124,9 @@ export default function Navbar() {
         </ul>
 
         <button
-          onClick={() => signOut({ callbackUrl: '/auth/login' })}
+          onClick={() => logOut()}
           className='cursor-pointer hover:text-primary text-gray-600 font-bold flex space-x-1 items-center'>
-          <span className='block'>Sign Out</span>{' '}
-          <LogoutIcon className='w-5 h-5' />
+          <span className='block'>Sign Out</span> <LogoutIcon className='w-5 h-5' />
         </button>
       </nav>
 
