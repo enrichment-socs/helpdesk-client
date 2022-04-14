@@ -8,4 +8,6 @@ export class SessionUser {
   roleName: string;
   accessToken: string;
   refreshToken: string;
+  exp: number;
+  iat: number;
 }
