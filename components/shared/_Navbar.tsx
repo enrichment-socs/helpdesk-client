@@ -23,6 +23,11 @@ export default function Navbar() {
       roles: [ROLES.USER, ROLES.ADMIN, ROLES.SUPER_ADMIN],
     },
     {
+      title: 'Requests',
+      href: '/requests',
+      roles: [ROLES.USER, ROLES.ADMIN, ROLES.SUPER_ADMIN],
+    },
+    {
       title: 'Manage',
       href: '/manage',
       roles: [ROLES.SUPER_ADMIN],

@@ -36,16 +36,6 @@ export default function ManageAnnouncementsTable({
     }
   };
 
-  const convertDateTimeFormat = (datetime) => {
-    const date = new Date(datetime);
-
-    return `${date.getDate()}-${
-      date.getMonth() + 1
-    }-${date.getFullYear()} ${date.getHours()}:${String(
-      date.getMinutes(),
-    ).padStart(2, '0')}`;
-  };
-
   return (
     <div className='flex flex-col'>
       <div className='-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8'>
