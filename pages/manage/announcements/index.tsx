@@ -11,6 +11,7 @@ import { withSessionSsr } from '../../../lib/session';
 import { Announcement } from '../../../models/Announcement';
 import { AnnouncementsService } from '../../../services/AnnouncementService';
 import { SemestersService } from '../../../services/SemestersService';
+import { SessionUser } from '../../../models/SessionUser';
 
 export const announcementsAtom = atom([] as Announcement[]);
 
@@ -22,8 +23,7 @@ const ManageRolesPage: NextPage<Props> = ({ currAnnouncements }) => {
   useHydrateAtoms([[announcementsAtom, currAnnouncements]] as const);
   const [announcements, setAnnouncement] = useAtom(announcementsAtom);
   const [openFormModal, setOpenFormModal] = useState(false);
-  const [selectedAnnouncement, setSelectedAnnouncement] =
-    useState<Announcement | null>(null);
+  const [selectedAnnouncement, setSelectedAnnouncement] = useState<Announcement | null>(null);
 
   useEffect(() => {
     setAnnouncement(currAnnouncements);
@@ -51,31 +51,41 @@ const ManageRolesPage: NextPage<Props> = ({ currAnnouncements }) => {
           Create
         </button>
       </div>
-      <ManageAnnouncementsTable
-        announcements={announcements}
-        openModal={openModal}
-      />
+      <ManageAnnouncementsTable announcements={announcements} openModal={openModal} />
     </Layout>
   );
 };
 
-export const getServerSideProps = withSessionSsr(
-  async function getServerSideProps({ req }) {
-    const { session, semesters, sessionActiveSemester } =
-      await getInitialServerProps(req, getSession, new SemestersService());
-    const currAnnouncements = await AnnouncementsService.getBySemester(
-      sessionActiveSemester.id,
-    );
+export const getServerSideProps = withSessionSsr(async function getServerSideProps({ req }) {
+  const { session, semesters, sessionActiveSemester } = await getInitialServerProps(
+    req,
+    getSession,
+    new SemestersService(),
+  );
 
+  if (!session) {
     return {
-      props: {
-        semesters,
-        session,
-        sessionActiveSemester,
-        currAnnouncements,
+      redirect: {
+        destination: '/auth/login',
+        permanent: false,
       },
     };
-  },
-);
+  }
+  const user = session.user as SessionUser;
+
+  const currAnnouncements = await AnnouncementsService.getBySemester(
+    sessionActiveSemester.id,
+    user.accessToken,
+  );
+
+  return {
+    props: {
+      semesters,
+      session,
+      sessionActiveSemester,
+      currAnnouncements,
+    },
+  };
+});
 
 export default ManageRolesPage;

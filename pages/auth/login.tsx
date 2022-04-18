@@ -87,10 +87,7 @@ const LoginPage: NextPage = () => {
           <div className='p-8'>
             <div className='mt-1 relative rounded-md shadow-sm'>
               <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
-                <UserIcon
-                  className='h-5 w-5 text-gray-400'
-                  aria-hidden='true'
-                />
+                <UserIcon className='h-5 w-5 text-gray-400' aria-hidden='true' />
               </div>
               <input
                 type='text'
@@ -112,17 +109,12 @@ const LoginPage: NextPage = () => {
               <small className='text-red-500'>Username must be filled</small>
             )}
             {errors.username?.type === 'validate' && (
-              <small className='text-red-500'>
-                Username must be a valid NIM or Binus Email
-              </small>
+              <small className='text-red-500'>Username must be a valid NIM or Binus Email</small>
             )}
 
             <div className='mt-2 relative rounded-md shadow-sm'>
               <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
-                <LockClosedIcon
-                  className='h-5 w-5 text-gray-400'
-                  aria-hidden='true'
-                />
+                <LockClosedIcon className='h-5 w-5 text-gray-400' aria-hidden='true' />
               </div>
               <input
                 type='password'
@@ -133,9 +125,7 @@ const LoginPage: NextPage = () => {
                 placeholder='Password'
               />
             </div>
-            {errors.password && (
-              <small className='text-red-500'>Password must be filled</small>
-            )}
+            {errors.password && <small className='text-red-500'>Password must be filled</small>}
 
             <button
               type='submit'
@@ -152,12 +142,12 @@ const LoginPage: NextPage = () => {
           <h1>Note</h1>
           <ul className='space-y-2'>
             <li>
-              - <b>Employee</b>: Use your <b>binus.edu</b> email for username
-              and the password is the same as your email password
+              - <b>Employee</b>: Use your <b>binus.edu</b> email for username and the password is
+              the same as your email password
             </li>
             <li>
-              - <b>Student</b>: Use your <b>NIM</b> as username and the password
-              is the same as your Binusmaya password
+              - <b>Student</b>: Use your <b>NIM</b> as username and the password is the same as your
+              Binusmaya password
             </li>
           </ul>
         </div>
@@ -166,28 +156,29 @@ const LoginPage: NextPage = () => {
   );
 };
 
-export const getServerSideProps = withSessionSsr(
-  async function getServerSideProps({ req }) {
-    const { session, semesters, sessionActiveSemester } =
-      await getInitialServerProps(req, getSession, new SemestersService());
+export const getServerSideProps = withSessionSsr(async function getServerSideProps({ req }) {
+  const { session, semesters, sessionActiveSemester } = await getInitialServerProps(
+    req,
+    getSession,
+    new SemestersService(),
+  );
 
-    if (session) {
-      return {
-        redirect: {
-          destination: '/',
-          permanent: false,
-        },
-      };
-    }
-
+  if (session) {
     return {
-      props: {
-        session,
-        semesters,
-        sessionActiveSemester,
+      redirect: {
+        destination: '/',
+        permanent: false,
       },
     };
-  },
-);
+  }
+
+  return {
+    props: {
+      session,
+      semesters,
+      sessionActiveSemester,
+    },
+  };
+});
 
 export default LoginPage;

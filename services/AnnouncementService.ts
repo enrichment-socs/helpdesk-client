@@ -19,9 +19,7 @@ export class AnnouncementsService extends BaseService {
 
   static async getAll() {
     try {
-      const res: AxiosResponse<Announcement[]> = await axios.get(
-        `${this.BASE_URL}/announcements`,
-      );
+      const res: AxiosResponse<Announcement[]> = await axios.get(`${this.BASE_URL}/announcements`);
 
       return res.data;
     } catch (e) {
@@ -30,15 +28,15 @@ export class AnnouncementsService extends BaseService {
     }
   }
 
-  static async getBySemester(semesterId: string) {
+  static async getBySemester(semesterId: string, token: string) {
     try {
       const res: AxiosResponse<Announcement[]> = await axios.get(
         `${this.BASE_URL}/announcements/${semesterId}`,
+        this.headersWithToken(token),
       );
 
       return res.data;
     } catch (e) {
-      console.error(e);
       throw new Error('Failed when getting announcements from server');
     }
   }
@@ -53,16 +51,11 @@ export class AnnouncementsService extends BaseService {
       return result.data;
     } catch (e) {
       console.error(e);
-      throw new Error(
-        'Ups, something is wrong with the server (Add Announcement)',
-      );
+      throw new Error('Ups, something is wrong with the server (Add Announcement)');
     }
   }
 
-  static async updateAnnouncement(
-    dto: CreateAnnouncementDto,
-    announcementId: string,
-  ) {
+  static async updateAnnouncement(dto: CreateAnnouncementDto, announcementId: string) {
     try {
       const result: AxiosResponse<Announcement> = await axios.patch(
         `${this.BASE_URL}/announcements/${announcementId}`,
@@ -72,9 +65,7 @@ export class AnnouncementsService extends BaseService {
       return result.data;
     } catch (e) {
       console.log(e);
-      throw new Error(
-        'Ups, somehting is wrong with the server (Update Announcement)',
-      );
+      throw new Error('Ups, somehting is wrong with the server (Update Announcement)');
     }
   }
 
@@ -87,9 +78,7 @@ export class AnnouncementsService extends BaseService {
       return result.data;
     } catch (e) {
       console.error(e);
-      throw new Error(
-        'Ups, something is wrong with the server (Delete Announcement)',
-      );
+      throw new Error('Ups, something is wrong with the server (Delete Announcement)');
     }
   }
 }

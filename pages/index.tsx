@@ -11,6 +11,7 @@ import AnnouncementContainer from '../components/pages/home/AnnouncementContaine
 import AnnouncementDetailModal from '../components/announcements/AnnouncementDetailModal';
 import { useState } from 'react';
 import { getToken } from 'next-auth/jwt';
+import { SessionUser } from '../models/SessionUser';
 
 type Props = {
   announcements: Announcement[];
@@ -19,8 +20,6 @@ type Props = {
 const Home: NextPage<Props> = ({ announcements }) => {
   const [openAnnouncementModal, setOpenAnnouncementModal] = useState(false);
   const [openAnnouncement, setOpenAnnouncement] = useState<Announcement>(null);
-  const session = useSession();
-  console.log(session);
 
   return (
     <Layout>
@@ -64,14 +63,11 @@ const Home: NextPage<Props> = ({ announcements }) => {
 };
 
 export const getServerSideProps = withSessionSsr(async function getServerSideProps({ req }) {
-  const token = await getToken({ req, secret: 'hesoyam' });
-  console.log(token);
   const { session, semesters, sessionActiveSemester } = await getInitialServerProps(
     req,
     getSession,
     new SemestersService(),
   );
-  const announcements = await AnnouncementsService.getBySemester(sessionActiveSemester.id);
 
   if (!session) {
     return {
@@ -81,6 +77,12 @@ export const getServerSideProps = withSessionSsr(async function getServerSidePro
       },
     };
   }
+
+  const user = session.user as SessionUser;
+  const announcements = await AnnouncementsService.getBySemester(
+    sessionActiveSemester.id,
+    user.accessToken,
+  );
 
   return {
     props: {
