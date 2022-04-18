@@ -58,7 +58,7 @@ export default NextAuth({
             refreshToken: refresh_token,
           };
         } catch (e) {
-          throw new Error(e.message);
+          throw new Error(e.response.data.message);
         }
       },
     }),
