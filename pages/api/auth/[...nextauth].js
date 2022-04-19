@@ -63,5 +63,4 @@ export default NextAuth({
       },
     }),
   ],
-  secret: 'hesoyam',
 });
