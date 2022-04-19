@@ -56,32 +56,32 @@ const RequestDetailInformation = () => {
             <table className="border">
               <tbody>
                 <tr className="border-b">
-                  <td className="px-6 py-4 font-bold border-r">Employee ID</td>
-                  <td className="px-6 py-4 w-48 break-all">BN000012345</td>
+                  <td className="px-6 py-3 font-bold border-r">Employee ID</td>
+                  <td className="px-6 py-3 w-48 break-all">BN000012345</td>
                 </tr>
                 <tr className="border-b">
-                  <td className="px-6 py-4 font-bold border-r">
+                  <td className="px-6 py-3 font-bold border-r">
                     Department Name
                   </td>
-                  <td className="px-6 py-4 break-all">
+                  <td className="px-6 py-3 break-all">
                     asdfasdfasdfasdfasdfasdfasdfasdfsadf
                   </td>
                 </tr>
                 <tr className="border-b">
-                  <td className="px-6 py-4 font-bold border-r">Phone</td>
-                  <td className="px-6 py-4 break-all">-</td>
+                  <td className="px-6 py-3 font-bold border-r">Phone</td>
+                  <td className="px-6 py-3 break-all">-</td>
                 </tr>
                 <tr className="border-b">
-                  <td className="px-6 py-4 font-bold border-r">Job Title</td>
-                  <td className="px-6 py-4 break-all">-</td>
+                  <td className="px-6 py-3 font-bold border-r">Job Title</td>
+                  <td className="px-6 py-3 break-all">-</td>
                 </tr>
                 <tr className="border-b">
-                  <td className="px-6 py-4 font-bold border-r">Reporting To</td>
-                  <td className="px-6 py-4 break-all">-</td>
+                  <td className="px-6 py-3 font-bold border-r">Reporting To</td>
+                  <td className="px-6 py-3 break-all">-</td>
                 </tr>
                 <tr className="border-b">
-                  <td className="px-6 py-4 font-bold border-r">Mobile</td>
-                  <td className="px-6 py-4 break-all">-</td>
+                  <td className="px-6 py-3 font-bold border-r">Mobile</td>
+                  <td className="px-6 py-3 break-all">-</td>
                 </tr>
               </tbody>
             </table>

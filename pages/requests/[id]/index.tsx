@@ -43,7 +43,7 @@ const RequestsDetailPage: NextPage = () => {
         <div
           className={`mx-2 p-2 border-2 ${
             isShowInformation ? 'md:w-3/4' : 'md:w-full'
-          }  rounded divide-y transition-width ease-in-out delay-300`}>
+          }  rounded divide-y transition-all ease-in-out delay-300`}>
           <div className='flex items-center pb-3'>
             <TicketIcon className='h-10 w-10' />
             <div className='font-medium text-2xl ml-5'>

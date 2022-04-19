@@ -60,7 +60,7 @@ export default function AnnouncementDetailModal({
                   </Dialog.Title>
 
                   <button onClick={() => setIsOpen(false)}>
-                    <XIcon className='w-5 h-5' />
+                    <XIcon className='w-5 h-5 hover:fill-red-500' />
                   </button>
                 </div>
 
