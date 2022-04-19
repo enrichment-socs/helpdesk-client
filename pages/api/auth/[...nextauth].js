@@ -5,6 +5,7 @@ import {
   EMPLOYEE_EMAIL_REGEX,
   STUDENT_EMAIL_REGEX,
   STUDENT_NUMBER_REGEX,
+  ADMIN_USERNAME,
 } from '../../../lib/constant';
 import jwt_decode from 'jwt-decode';
 import axios from 'axios';
@@ -39,7 +40,8 @@ export default NextAuth({
             !STUDENT_EMAIL_REGEX.test(username) &&
             !STUDENT_NUMBER_REGEX.test(username) &&
             !EMPLOYEE_EMAIL_REGEX.test(username) &&
-            !AST_INITIAL_REGEX.test(username)
+            !AST_INITIAL_REGEX.test(username) &&
+            username !== ADMIN_USERNAME
           ) {
             throw new Error('Username must be a valid NIM or Binus Email');
           }
