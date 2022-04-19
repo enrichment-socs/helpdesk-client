@@ -25,7 +25,7 @@ export default function Navbar() {
     {
       title: 'Requests',
       href: '/requests',
-      roles: [ROLES.USER, ROLES.ADMIN, ROLES.SUPER_ADMIN],
+      roles: [ROLES.USER, ROLES.ADMIN],
     },
     {
       title: 'Manage',
@@ -107,25 +107,30 @@ export default function Navbar() {
 
       <nav className='flex justify-between max-w-7xl px-2 sm:px-6 lg:px-8 mx-auto'>
         <ul className='flex space-x-4'>
-          {links.map((link) => (
-            <li key={link.title}>
-              <If condition={link.hasOwnProperty('children')}>
-                <Then>
-                  <DropdownNav link={link as DropdownNavLink} />
-                </Then>
-                <Else>
-                  <Link key={link.title} href={link.href} passHref={true}>
-                    <div
-                      className={`tracking-wide text-center cursor-pointer hover:text-primary min-w-[3rem] py-4 text-gray-600 font-semibold ${
-                        router.pathname === link.href ? 'border-b-2 border-primary font-bold' : ''
-                      }`}>
-                      {link.title}
-                    </div>
-                  </Link>
-                </Else>
-              </If>
-            </li>
-          ))}
+          {links.map(
+            (link) =>
+              link.roles.includes(user?.roleName) && (
+                <li key={link.title}>
+                  <If condition={link.hasOwnProperty('children')}>
+                    <Then>
+                      <DropdownNav link={link as DropdownNavLink} />
+                    </Then>
+                    <Else>
+                      <Link key={link.title} href={link.href} passHref={true}>
+                        <div
+                          className={`tracking-wide text-center cursor-pointer hover:text-primary min-w-[3rem] py-4 text-gray-600 font-semibold ${
+                            router.pathname === link.href
+                              ? 'border-b-2 border-primary font-bold'
+                              : ''
+                          }`}>
+                          {link.title}
+                        </div>
+                      </Link>
+                    </Else>
+                  </If>
+                </li>
+              ),
+          )}
         </ul>
 
         <button
