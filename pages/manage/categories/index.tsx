@@ -6,6 +6,8 @@ import { useState } from 'react';
 import CategoriesFormModal from '../../../components/categories/CategoriesFormModal';
 import ManageCategoriesTable from '../../../components/categories/ManageCategoriesTable';
 import Layout from '../../../components/shared/_Layout';
+import { AuthHelper } from '../../../lib/auth-helper';
+import { ROLES } from '../../../lib/constant';
 import { getInitialServerProps } from '../../../lib/initialize-server-props';
 import { withSessionSsr } from '../../../lib/session';
 import { Category } from '../../../models/Category';
@@ -21,9 +23,7 @@ export const categoriesAtom = atom([] as Category[]);
 const ManageCategoriesPage: NextPage<Props> = ({ categories }) => {
   const [categoriesVal] = useAtom(categoriesAtom);
   const [openFormModal, setOpenFormModal] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
-    null,
-  );
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
 
   useHydrateAtoms([[categoriesAtom, categories]] as const);
 
@@ -54,21 +54,32 @@ const ManageCategoriesPage: NextPage<Props> = ({ categories }) => {
   );
 };
 
-export const getServerSideProps = withSessionSsr(
-  async function getServerSideProps({ req }) {
-    const { session, semesters, sessionActiveSemester } =
-      await getInitialServerProps(req, getSession, new SemestersService());
-    const categories = await CategoriesService.getAll();
+export const getServerSideProps = withSessionSsr(async function getServerSideProps({ req }) {
+  const { session, semesters, sessionActiveSemester } = await getInitialServerProps(
+    req,
+    getSession,
+    new SemestersService(),
+  );
 
+  if (!AuthHelper.isLoggedInAndHasRole(session, [ROLES.SUPER_ADMIN])) {
     return {
-      props: {
-        semesters,
-        session,
-        sessionActiveSemester,
-        categories,
+      redirect: {
+        destination: '/',
+        permanent: false,
       },
     };
-  },
-);
+  }
+
+  const categories = await CategoriesService.getAll();
+
+  return {
+    props: {
+      semesters,
+      session,
+      sessionActiveSemester,
+      categories,
+    },
+  };
+});
 
 export default ManageCategoriesPage;

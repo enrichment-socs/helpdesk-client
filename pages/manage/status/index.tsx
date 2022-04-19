@@ -6,6 +6,8 @@ import { useState } from 'react';
 import Layout from '../../../components/shared/_Layout';
 import ManageStatusTable from '../../../components/status/ManageStatusTable';
 import StatusFormModal from '../../../components/status/StatusFormModal';
+import { AuthHelper } from '../../../lib/auth-helper';
+import { ROLES } from '../../../lib/constant';
 import { getInitialServerProps } from '../../../lib/initialize-server-props';
 import { withSessionSsr } from '../../../lib/session';
 import { Status } from '../../../models/Status';
@@ -52,21 +54,32 @@ const ManageStatusPage: NextPage<Props> = ({ currStatuses }) => {
   );
 };
 
-export const getServerSideProps = withSessionSsr(
-  async function getServerSideProps({ req }) {
-    const currStatuses = await StatusService.getAll();
-    const { session, semesters, sessionActiveSemester } =
-      await getInitialServerProps(req, getSession, new SemestersService());
+export const getServerSideProps = withSessionSsr(async function getServerSideProps({ req }) {
+  const { session, semesters, sessionActiveSemester } = await getInitialServerProps(
+    req,
+    getSession,
+    new SemestersService(),
+  );
 
+  if (!AuthHelper.isLoggedInAndHasRole(session, [ROLES.SUPER_ADMIN])) {
     return {
-      props: {
-        currStatuses,
-        semesters,
-        session,
-        sessionActiveSemester,
+      redirect: {
+        destination: '/',
+        permanent: false,
       },
     };
-  },
-);
+  }
+
+  const currStatuses = await StatusService.getAll();
+
+  return {
+    props: {
+      currStatuses,
+      semesters,
+      session,
+      sessionActiveSemester,
+    },
+  };
+});
 
 export default ManageStatusPage;

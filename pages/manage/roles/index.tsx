@@ -6,6 +6,8 @@ import { useState } from 'react';
 import ManageRolesTable from '../../../components/roles/ManageRolesTable';
 import RoleFormModal from '../../../components/roles/RoleFormModal';
 import Layout from '../../../components/shared/_Layout';
+import { AuthHelper } from '../../../lib/auth-helper';
+import { ROLES } from '../../../lib/constant';
 import { getInitialServerProps } from '../../../lib/initialize-server-props';
 import { withSessionSsr } from '../../../lib/session';
 import { Role } from '../../../models/Role';
@@ -32,11 +34,7 @@ const ManageRolesPage: NextPage<Props> = ({ currRoles }) => {
 
   return (
     <Layout>
-      <RoleFormModal
-        isOpen={openFormModal}
-        setIsOpen={setOpenFormModal}
-        role={selectedRole}
-      />
+      <RoleFormModal isOpen={openFormModal} setIsOpen={setOpenFormModal} role={selectedRole} />
 
       <div className='font-bold text-2xl mb-4 flex items-center justify-between  '>
         <h1>Manage Roles</h1>
@@ -52,21 +50,32 @@ const ManageRolesPage: NextPage<Props> = ({ currRoles }) => {
   );
 };
 
-export const getServerSideProps = withSessionSsr(
-  async function getServerSideProps({ req }) {
-    const { session, semesters, sessionActiveSemester } =
-      await getInitialServerProps(req, getSession, new SemestersService());
-    const currRoles = await RolesService.getAll();
+export const getServerSideProps = withSessionSsr(async function getServerSideProps({ req }) {
+  const { session, semesters, sessionActiveSemester } = await getInitialServerProps(
+    req,
+    getSession,
+    new SemestersService(),
+  );
 
+  if (!AuthHelper.isLoggedInAndHasRole(session, [ROLES.SUPER_ADMIN])) {
     return {
-      props: {
-        semesters,
-        session,
-        sessionActiveSemester,
-        currRoles,
+      redirect: {
+        destination: '/',
+        permanent: false,
       },
     };
-  },
-);
+  }
+
+  const currRoles = await RolesService.getAll();
+
+  return {
+    props: {
+      semesters,
+      session,
+      sessionActiveSemester,
+      currRoles,
+    },
+  };
+});
 
 export default ManageRolesPage;

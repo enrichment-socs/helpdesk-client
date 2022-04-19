@@ -10,13 +10,13 @@ import { getInitialServerProps } from '../../../lib/initialize-server-props';
 import { withSessionSsr } from '../../../lib/session';
 import { Semester } from '../../../models/Semester';
 import { SemestersService } from '../../../services/SemestersService';
+import { AuthHelper } from '../../../lib/auth-helper';
+import { ROLES } from '../../../lib/constant';
 
 const ManageSemestersPage: NextPage = () => {
   const [semesters] = useAtom(semestersAtom);
   const [openFormModal, setOpenFormModal] = useState(false);
-  const [selectedSemester, setSelectedSemester] = useState<Semester | null>(
-    null,
-  );
+  const [selectedSemester, setSelectedSemester] = useState<Semester | null>(null);
 
   const openModal = (semester: Semester | null) => {
     setSelectedSemester(semester);
@@ -45,19 +45,29 @@ const ManageSemestersPage: NextPage = () => {
   );
 };
 
-export const getServerSideProps = withSessionSsr(
-  async function getServerSideProps({ req }) {
-    const { session, semesters, sessionActiveSemester } =
-      await getInitialServerProps(req, getSession, new SemestersService());
+export const getServerSideProps = withSessionSsr(async function getServerSideProps({ req }) {
+  const { session, semesters, sessionActiveSemester } = await getInitialServerProps(
+    req,
+    getSession,
+    new SemestersService(),
+  );
 
+  if (!AuthHelper.isLoggedInAndHasRole(session, [ROLES.SUPER_ADMIN])) {
     return {
-      props: {
-        semesters,
-        session,
-        sessionActiveSemester,
+      redirect: {
+        destination: '/',
+        permanent: false,
       },
     };
-  },
-);
+  }
+
+  return {
+    props: {
+      semesters,
+      session,
+      sessionActiveSemester,
+    },
+  };
+});
 
 export default ManageSemestersPage;

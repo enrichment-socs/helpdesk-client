@@ -12,6 +12,8 @@ import { Announcement } from '../../../models/Announcement';
 import { AnnouncementsService } from '../../../services/AnnouncementService';
 import { SemestersService } from '../../../services/SemestersService';
 import { SessionUser } from '../../../models/SessionUser';
+import { AuthHelper } from '../../../lib/auth-helper';
+import { ROLES } from '../../../lib/constant';
 
 export const announcementsAtom = atom([] as Announcement[]);
 
@@ -63,14 +65,15 @@ export const getServerSideProps = withSessionSsr(async function getServerSidePro
     new SemestersService(),
   );
 
-  if (!session) {
+  if (!AuthHelper.isLoggedInAndHasRole(session, [ROLES.SUPER_ADMIN])) {
     return {
       redirect: {
-        destination: '/auth/login',
+        destination: '/',
         permanent: false,
       },
     };
   }
+
   const user = session.user as SessionUser;
 
   const currAnnouncements = await AnnouncementsService.getBySemester(

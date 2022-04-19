@@ -6,6 +6,8 @@ import { useState } from 'react';
 import ManagePrioritiesTable from '../../../components/priority/ManagePrioritiesTable';
 import PrioritiesFormModal from '../../../components/priority/PrioritiesFormModal';
 import Layout from '../../../components/shared/_Layout';
+import { AuthHelper } from '../../../lib/auth-helper';
+import { ROLES } from '../../../lib/constant';
 import { getInitialServerProps } from '../../../lib/initialize-server-props';
 import { withSessionSsr } from '../../../lib/session';
 import { Priority } from '../../../models/Priority';
@@ -21,9 +23,7 @@ export const prioritiesAtom = atom([] as Priority[]);
 const ManageCategoriesPage: NextPage<Props> = ({ priorities }) => {
   const [prioritiesVal] = useAtom(prioritiesAtom);
   const [openFormModal, setOpenFormModal] = useState(false);
-  const [selectedPriority, setSelectedPriority] = useState<Priority | null>(
-    null,
-  );
+  const [selectedPriority, setSelectedPriority] = useState<Priority | null>(null);
 
   useHydrateAtoms([[prioritiesAtom, priorities]] as const);
 
@@ -54,21 +54,32 @@ const ManageCategoriesPage: NextPage<Props> = ({ priorities }) => {
   );
 };
 
-export const getServerSideProps = withSessionSsr(
-  async function getServerSideProps({ req }) {
-    const { session, semesters, sessionActiveSemester } =
-      await getInitialServerProps(req, getSession, new SemestersService());
-    const priorities = await PrioritiesService.getAll();
+export const getServerSideProps = withSessionSsr(async function getServerSideProps({ req }) {
+  const { session, semesters, sessionActiveSemester } = await getInitialServerProps(
+    req,
+    getSession,
+    new SemestersService(),
+  );
 
+  if (!AuthHelper.isLoggedInAndHasRole(session, [ROLES.SUPER_ADMIN])) {
     return {
-      props: {
-        priorities,
-        semesters,
-        session,
-        sessionActiveSemester,
+      redirect: {
+        destination: '/',
+        permanent: false,
       },
     };
-  },
-);
+  }
+
+  const priorities = await PrioritiesService.getAll();
+
+  return {
+    props: {
+      priorities,
+      semesters,
+      session,
+      sessionActiveSemester,
+    },
+  };
+});
 
 export default ManageCategoriesPage;

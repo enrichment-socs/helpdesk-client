@@ -6,6 +6,8 @@ import { useState } from 'react';
 import FAQCategoryFormModal from '../../../components/faq-categories/FAQCategoryFormModal';
 import ManageFAQCategoriesTable from '../../../components/faq-categories/ManageFAQCategoriesTable';
 import Layout from '../../../components/shared/_Layout';
+import { AuthHelper } from '../../../lib/auth-helper';
+import { ROLES } from '../../../lib/constant';
 import { getInitialServerProps } from '../../../lib/initialize-server-props';
 import { withSessionSsr } from '../../../lib/session';
 import { FAQCategory } from '../../../models/FAQCategory';
@@ -21,8 +23,7 @@ type Props = {
 const ManageFAQCategoriesPage: NextPage<Props> = ({ currFAQCategories }) => {
   const [faqCategories] = useAtom(faqCategoriesAtom);
   const [openFormModal, setOpenFormModal] = useState(false);
-  const [selectedFAQCategory, setSelectedFAQCategory] =
-    useState<FAQCategory | null>(null);
+  const [selectedFAQCategory, setSelectedFAQCategory] = useState<FAQCategory | null>(null);
 
   useHydrateAtoms([[faqCategoriesAtom, currFAQCategories]] as const);
 
@@ -48,29 +49,37 @@ const ManageFAQCategoriesPage: NextPage<Props> = ({ currFAQCategories }) => {
           Create
         </button>
       </div>
-      <ManageFAQCategoriesTable
-        faqCategories={faqCategories}
-        openModal={openModal}
-      />
+      <ManageFAQCategoriesTable faqCategories={faqCategories} openModal={openModal} />
     </Layout>
   );
 };
 
-export const getServerSideProps = withSessionSsr(
-  async function getServerSideProps({ req }) {
-    const { session, semesters, sessionActiveSemester } =
-      await getInitialServerProps(req, getSession, new SemestersService());
-    const currFAQCategories = await FAQCategoriesService.getAll();
+export const getServerSideProps = withSessionSsr(async function getServerSideProps({ req }) {
+  const { session, semesters, sessionActiveSemester } = await getInitialServerProps(
+    req,
+    getSession,
+    new SemestersService(),
+  );
 
+  if (!AuthHelper.isLoggedInAndHasRole(session, [ROLES.SUPER_ADMIN])) {
     return {
-      props: {
-        semesters,
-        session,
-        sessionActiveSemester,
-        currFAQCategories,
+      redirect: {
+        destination: '/',
+        permanent: false,
       },
     };
-  },
-);
+  }
+
+  const currFAQCategories = await FAQCategoriesService.getAll();
+
+  return {
+    props: {
+      semesters,
+      session,
+      sessionActiveSemester,
+      currFAQCategories,
+    },
+  };
+});
 
 export default ManageFAQCategoriesPage;
