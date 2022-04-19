@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { UserIcon, LockClosedIcon } from '@heroicons/react/solid';
 import {
+  ADMIN_USERNAME,
   AST_INITIAL_REGEX,
   EMPLOYEE_EMAIL_REGEX,
   STUDENT_EMAIL_REGEX,
@@ -97,7 +98,8 @@ const LoginPage: NextPage = () => {
                     STUDENT_EMAIL_REGEX.test(value) ||
                     EMPLOYEE_EMAIL_REGEX.test(value) ||
                     STUDENT_NUMBER_REGEX.test(value) ||
-                    AST_INITIAL_REGEX.test(value),
+                    AST_INITIAL_REGEX.test(value) ||
+                    value === ADMIN_USERNAME,
                 })}
                 className={`outline-none block w-full pl-10 sm:text-sm p-2 border rounded-md ${
                   errors.username ? 'border-red-300' : 'border-gray-300'
