@@ -10,13 +10,7 @@ type Props = {
   style?: CSSProperties;
 };
 
-export default function Layout({
-  children,
-  withNavbar,
-  className,
-  controlWidth,
-  style,
-}: Props) {
+export default function Layout({ children, withNavbar, className, controlWidth, style }: Props) {
   withNavbar = withNavbar ?? true;
   controlWidth = controlWidth ?? true;
   style = style ?? {};
@@ -34,7 +28,7 @@ export default function Layout({
       <main
         style={style}
         className={`min-h-screen ${
-          controlWidth ? 'max-w-7xl px-2 sm:px-6 lg:px-8 mx-auto' : ''
+          controlWidth ? 'max-w-7xl px-2 sm:px-6 lg:px-8 mx-auto mb-8' : ''
         } ${className ?? ''}`}>
         {children}
       </main>
