@@ -42,11 +42,7 @@ type FormData = {
   endDate: Date;
 };
 
-export default function AnnouncementFormModal({
-  isOpen,
-  setIsOpen,
-  announcement,
-}: Props) {
+export default function AnnouncementFormModal({ isOpen, setIsOpen, announcement }: Props) {
   const [announcements, setAnnouncements] = useAtom(announcementsAtom);
   const [loading, setLoading] = useState(false);
   const [activeSemester] = useAtom(activeSemesterAtom);
@@ -56,6 +52,7 @@ export default function AnnouncementFormModal({
     handleSubmit,
     setValue,
     watch,
+    reset,
     formState: { errors },
   } = useForm<FormData>();
 
@@ -64,17 +61,12 @@ export default function AnnouncementFormModal({
     setValue('title', announcement?.title);
 
     register('startDate', { required: true });
-    setValue(
-      'startDate',
-      announcement ? new Date(announcement.startDate) : new Date(),
-    );
+    setValue('startDate', announcement ? new Date(announcement.startDate) : new Date());
 
     register('endDate', { required: true });
     setValue(
       'endDate',
-      announcement
-        ? new Date(announcement.endDate)
-        : add(new Date(), { weeks: 1 }),
+      announcement ? new Date(announcement.endDate) : add(new Date(), { weeks: 1 }),
     );
 
     register('body', { required: true });
@@ -102,9 +94,7 @@ export default function AnnouncementFormModal({
         ? AnnouncementsService.updateAnnouncement(dto, announcement.id)
         : AnnouncementsService.addAnnouncement(dto),
       {
-        loading: announcement
-          ? 'Updating announcement...'
-          : 'Adding announcement...',
+        loading: announcement ? 'Updating announcement...' : 'Adding announcement...',
         success: (result) => {
           announcement
             ? setAnnouncements(
@@ -124,6 +114,7 @@ export default function AnnouncementFormModal({
       },
     );
     setLoading(false);
+    reset();
   };
 
   return (
@@ -133,9 +124,7 @@ export default function AnnouncementFormModal({
           as='div'
           className='fixed inset-0 z-10 overflow-y-auto'
           onClose={() => setIsOpen(false)}>
-          <div
-            className='min-h-screen px-4 text-center'
-            style={{ background: 'rgba(0,0,0,0.6)' }}>
+          <div className='min-h-screen px-4 text-center' style={{ background: 'rgba(0,0,0,0.6)' }}>
             <Transition.Child
               as={Fragment}
               enter='ease-out duration-300'
@@ -148,9 +137,7 @@ export default function AnnouncementFormModal({
             </Transition.Child>
 
             {/* This element is to trick the browser into centering the modal contents. */}
-            <span
-              className='inline-block h-screen align-middle'
-              aria-hidden='true'>
+            <span className='inline-block h-screen align-middle' aria-hidden='true'>
               &#8203;
             </span>
             <Transition.Child
@@ -162,14 +149,10 @@ export default function AnnouncementFormModal({
               leaveFrom='opacity-100 scale-100'
               leaveTo='opacity-0 scale-95'>
               <div className='inline-block w-full max-w-4xl p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl'>
-                <Dialog.Title
-                  as='h3'
-                  className='text-lg font-medium leading-6 text-gray-900'>
+                <Dialog.Title as='h3' className='text-lg font-medium leading-6 text-gray-900'>
                   {announcement ? 'Update' : 'Create'} Announcement
                 </Dialog.Title>
-                <form
-                  onSubmit={handleSubmit(onSubmit)}
-                  className='mt-2 space-y-2'>
+                <form onSubmit={handleSubmit(onSubmit)} className='mt-2 space-y-2'>
                   <div>
                     <label className='block text-sm font-medium text-gray-700'>
                       Announcement Title
@@ -189,9 +172,7 @@ export default function AnnouncementFormModal({
                       />
                     </div>
                     {errors.title?.type === 'required' && (
-                      <small className='text-red-500'>
-                        Title must be filled
-                      </small>
+                      <small className='text-red-500'>Title must be filled</small>
                     )}
                   </div>
 
@@ -208,9 +189,7 @@ export default function AnnouncementFormModal({
                       />
                     </div>
                     {errors.body?.type === 'required' && (
-                      <small className='text-red-500'>
-                        Body must be filled
-                      </small>
+                      <small className='text-red-500'>Body must be filled</small>
                     )}
                   </div>
 
@@ -232,9 +211,7 @@ export default function AnnouncementFormModal({
                       />
                     </div>
                     {errors.startDate?.type === 'required' && (
-                      <small className='text-red-500'>
-                        Start Date must be chosen
-                      </small>
+                      <small className='text-red-500'>Start Date must be chosen</small>
                     )}
                   </div>
 
@@ -256,9 +233,7 @@ export default function AnnouncementFormModal({
                       />
                     </div>
                     {errors.endDate?.type === 'required' && (
-                      <small className='text-red-500'>
-                        End Date must be chosen
-                      </small>
+                      <small className='text-red-500'>End Date must be chosen</small>
                     )}
                   </div>
 
