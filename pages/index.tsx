@@ -15,10 +15,11 @@ import MessagesTable from '../components/messages/MessagesTable';
 import MessageDetailModal from '../components/messages/MessageDetailModal';
 import { GraphApiService } from '../services/GraphApiService';
 import { Message } from '../models/Message';
+import { ROLES } from '../lib/constant';
 
 type Props = {
   announcements: Announcement[];
-  messages: Message[];
+  messages: Message[] | null;
 };
 
 const Home: NextPage<Props> = ({ announcements, messages }) => {
@@ -75,19 +76,21 @@ const Home: NextPage<Props> = ({ announcements, messages }) => {
           </div>
         </div>
 
-        <div className='ml-2 mt-5 p-2 border-2 rounded divide-y'>
-          <div className='text-lg font-bold mb-3 flex items-center'>
-            <MailIcon className='h-5 w-5' />
-            <span className='ml-3'>Messages</span>
+        {messages && (
+          <div className='ml-2 mt-5 p-2 border-2 rounded divide-y'>
+            <div className='text-lg font-bold mb-3 flex items-center'>
+              <MailIcon className='h-5 w-5' />
+              <span className='ml-3'>Messages</span>
+            </div>
+            <div className='p-1'>
+              <MessagesTable
+                messages={messages}
+                setOpenMessageIndex={setOpenMessageIndex}
+                setOpenMessageModal={setOpenMessageModal}
+              />
+            </div>
           </div>
-          <div className='p-1'>
-            <MessagesTable
-              messages={messages}
-              setOpenMessageIndex={setOpenMessageIndex}
-              setOpenMessageModal={setOpenMessageModal}
-            />
-          </div>
-        </div>
+        )}
       </div>
     </Layout>
   );
@@ -114,7 +117,9 @@ export const getServerSideProps = withSessionSsr(async function getServerSidePro
     sessionActiveSemester.id,
     user.accessToken,
   );
-  const messages = await GraphApiService.getMessages(user.accessToken);
+
+  const messages =
+    user.roleName === ROLES.USER ? null : await GraphApiService.getMessages(user.accessToken);
 
   return {
     props: {
