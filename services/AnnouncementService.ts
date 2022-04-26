@@ -17,9 +17,12 @@ export class AnnouncementsService extends BaseService {
     }
   }
 
-  static async getAll() {
+  static async getAll(token: string) {
     try {
-      const res: AxiosResponse<Announcement[]> = await axios.get(`${this.BASE_URL}/announcements`);
+      const res: AxiosResponse<Announcement[]> = await axios.get(
+        `${this.BASE_URL}/announcements`,
+        this.headersWithToken(token),
+      );
 
       return res.data;
     } catch (e) {
@@ -31,7 +34,7 @@ export class AnnouncementsService extends BaseService {
   static async getBySemester(semesterId: string, token: string) {
     try {
       const res: AxiosResponse<Announcement[]> = await axios.get(
-        `${this.BASE_URL}/announcements/${semesterId}`,
+        `${this.BASE_URL}/announcements?semesterId=${semesterId}`,
         this.headersWithToken(token),
       );
 
@@ -41,11 +44,12 @@ export class AnnouncementsService extends BaseService {
     }
   }
 
-  static async addAnnouncement(dto: CreateAnnouncementDto) {
+  static async addAnnouncement(dto: CreateAnnouncementDto, token: string) {
     try {
       const result: AxiosResponse<Announcement> = await axios.post(
         `${this.BASE_URL}/announcements`,
         dto,
+        this.headersWithToken(token),
       );
 
       return result.data;
@@ -55,11 +59,16 @@ export class AnnouncementsService extends BaseService {
     }
   }
 
-  static async updateAnnouncement(dto: CreateAnnouncementDto, announcementId: string) {
+  static async updateAnnouncement(
+    dto: CreateAnnouncementDto,
+    announcementId: string,
+    token: string,
+  ) {
     try {
       const result: AxiosResponse<Announcement> = await axios.patch(
         `${this.BASE_URL}/announcements/${announcementId}`,
         dto,
+        this.headersWithToken(token),
       );
 
       return result.data;
@@ -69,10 +78,11 @@ export class AnnouncementsService extends BaseService {
     }
   }
 
-  static async deleteAnnouncement(announcementId: string) {
+  static async deleteAnnouncement(announcementId: string, token: string) {
     try {
       const result: AxiosResponse<Announcement> = await axios.delete(
         `${this.BASE_URL}/announcements/${announcementId}`,
+        this.headersWithToken(token),
       );
 
       return result.data;

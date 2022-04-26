@@ -6,23 +6,20 @@ import { BaseService } from './BaseService';
 export class SemestersService extends BaseService {
   static async getSemesters(): Promise<Semester[]> {
     try {
-      const result: AxiosResponse<Semester[]> = await axios.get(
-        `${this.BASE_URL}/semesters`,
-      );
+      const result: AxiosResponse<Semester[]> = await axios.get(`${this.BASE_URL}/semesters`);
       return result.data;
     } catch (e) {
       console.error(e);
-      throw new Error(
-        'Ups, something is wrong with the server (Get Semesters)',
-      );
+      throw new Error('Ups, something is wrong with the server (Get Semesters)');
     }
   }
 
-  static async addSemester(dto: CreateSemesterDto) {
+  static async addSemester(dto: CreateSemesterDto, token: string) {
     try {
       const result: AxiosResponse<Semester> = await axios.post(
         `${this.BASE_URL}/semesters`,
         dto,
+        this.headersWithToken(token),
       );
       return result.data;
     } catch (e) {
@@ -31,32 +28,30 @@ export class SemestersService extends BaseService {
     }
   }
 
-  static async updateSemester(dto: CreateSemesterDto, semesterId: string) {
+  static async updateSemester(dto: CreateSemesterDto, semesterId: string, token: string) {
     try {
       const result: AxiosResponse<Semester> = await axios.put(
         `${this.BASE_URL}/semesters/${semesterId}`,
         dto,
+        this.headersWithToken(token),
       );
       return result.data;
     } catch (e) {
       console.error(e);
-      throw new Error(
-        'Ups, something is wrong with the server (Update Semester)',
-      );
+      throw new Error('Ups, something is wrong with the server (Update Semester)');
     }
   }
 
-  static async deleteSemester(semesterId: string) {
+  static async deleteSemester(semesterId: string, token: string) {
     try {
       const result: AxiosResponse<Semester> = await axios.delete(
         `${this.BASE_URL}/semesters/${semesterId}`,
+        this.headersWithToken(token),
       );
       return result.data;
     } catch (e) {
       console.error(e);
-      throw new Error(
-        'Ups, something is wrong with the server (Delete Semester)',
-      );
+      throw new Error('Ups, something is wrong with the server (Delete Semester)');
     }
   }
 

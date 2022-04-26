@@ -29,7 +29,7 @@ const ManageRolesPage: NextPage<Props> = ({ currAnnouncements }) => {
 
   useEffect(() => {
     setAnnouncement(currAnnouncements);
-  }, [currAnnouncements]);
+  }, [currAnnouncements, setAnnouncement]);
 
   const openModal = (announcement: Announcement | null) => {
     setSelectedAnnouncement(announcement);

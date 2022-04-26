@@ -5,29 +5,29 @@ import { Announcement } from '../../models/Announcement';
 import { announcementsAtom } from '../../pages/manage/announcements';
 import { AnnouncementsService } from '../../services/AnnouncementService';
 import { format } from 'date-fns';
+import { useSession } from 'next-auth/react';
+import { SessionUser } from '../../models/SessionUser';
 
 type Props = {
   announcements: Announcement[];
   openModal: (announcement: Announcement | null) => void;
 };
 
-export default function ManageAnnouncementsTable({
-  announcements,
-  openModal,
-}: Props) {
+export default function ManageAnnouncementsTable({ announcements, openModal }: Props) {
   const [, setAnnouncements] = useAtom(announcementsAtom);
+
+  const session = useSession();
+  const user = session?.data?.user as SessionUser;
 
   const onDelete = async (announcement: Announcement) => {
     const message = `Are you sure you want to delete <b>${announcement.title} </b> ?`;
     if (await confirm(message)) {
       await toast.promise(
-        AnnouncementsService.deleteAnnouncement(announcement.id),
+        AnnouncementsService.deleteAnnouncement(announcement.id, user.accessToken),
         {
           loading: 'Deleting announcement...',
           success: (r) => {
-            setAnnouncements(
-              announcements.filter((a) => a.id !== announcement.id),
-            );
+            setAnnouncements(announcements.filter((a) => a.id !== announcement.id));
             return 'Sucesfully deleted the selected announcement';
           },
           error: (e) => e.toString(),
@@ -74,23 +74,15 @@ export default function ManageAnnouncementsTable({
                 )}
                 {announcements &&
                   announcements.map((announcement, idx) => (
-                    <tr
-                      key={announcement.id}
-                      className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                    <tr key={announcement.id} className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
                       <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>
                         {announcement.title}
                       </td>
                       <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>
-                        {format(
-                          new Date(announcement.startDate),
-                          'yyyy-MM-dd HH:mm',
-                        )}
+                        {format(new Date(announcement.startDate), 'yyyy-MM-dd HH:mm')}
                       </td>
                       <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>
-                        {format(
-                          new Date(announcement.endDate),
-                          'yyyy-MM-dd HH:mm',
-                        )}
+                        {format(new Date(announcement.endDate), 'yyyy-MM-dd HH:mm')}
                       </td>
                       <td className='px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-1'>
                         <button

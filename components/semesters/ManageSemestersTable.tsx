@@ -4,6 +4,8 @@ import { SemestersService } from '../../services/SemestersService';
 import toast from 'react-hot-toast';
 import { useAtom } from 'jotai';
 import { semestersAtom } from '../../atom';
+import { useSession } from 'next-auth/react';
+import { SessionUser } from '../../models/SessionUser';
 
 type Props = {
   semesters: Semester[];
@@ -12,11 +14,13 @@ type Props = {
 
 export default function ManageSemestersTable({ semesters, openModal }: Props) {
   const [, setSemesters] = useAtom(semestersAtom);
+  const session = useSession();
+  const user = session?.data?.user as SessionUser;
 
   const onDelete = async (semester: Semester) => {
     const message = `Are you sure you want to delete <b>${semester.type} Semester ${semester.startYear}/${semester.endYear}</b> ?`;
     if (await confirm(message)) {
-      await toast.promise(SemestersService.deleteSemester(semester.id), {
+      await toast.promise(SemestersService.deleteSemester(semester.id, user.accessToken), {
         loading: 'Deleting semester...',
         success: (r) => {
           setSemesters(semesters.filter((s) => s.id !== semester.id));
@@ -64,9 +68,7 @@ export default function ManageSemestersTable({ semesters, openModal }: Props) {
                 <tbody>
                   {semesters &&
                     semesters.map((smt, idx) => (
-                      <tr
-                        key={smt.id}
-                        className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                      <tr key={smt.id} className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
                         <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>
                           {smt.type}
                         </td>
