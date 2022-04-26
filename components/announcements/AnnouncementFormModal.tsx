@@ -56,6 +56,7 @@ export default function AnnouncementFormModal({ isOpen, setIsOpen, announcement 
     handleSubmit,
     setValue,
     watch,
+    reset,
     formState: { errors },
   } = useForm<FormData>();
 
@@ -116,6 +117,7 @@ export default function AnnouncementFormModal({ isOpen, setIsOpen, announcement 
       },
     );
     setLoading(false);
+    reset();
   };
 
   return (

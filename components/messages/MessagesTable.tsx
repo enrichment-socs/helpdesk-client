@@ -17,7 +17,7 @@ const MessagesTable = ({ setOpenMessageModal, setOpenMessageIndex, messages }: P
     <div className='flex flex-col'>
       <div className='overflow-x-auto'>
         <div className='py-2 align-middle inline-block min-w-full'>
-          <div className='shadow max-h-[40rem] overflow-auto border-b border-gray-200'>
+          <div className='max-h-[40rem] overflow-auto border border-gray-200'>
             <table className='min-w-full divide-y divide-gray-200 relative'>
               <thead className='bg-slate-500'>
                 <tr>
@@ -49,6 +49,14 @@ const MessagesTable = ({ setOpenMessageModal, setOpenMessageIndex, messages }: P
                 </tr>
               </thead>
               <tbody>
+                {messages.length == 0 && (
+                  <tr className='text-center'>
+                    <td colSpan={5} className='p-4'>
+                      There are currently no messages
+                    </td>
+                  </tr>
+                )}
+
                 {messages.map((message, index) => (
                   <tr
                     key={index}
