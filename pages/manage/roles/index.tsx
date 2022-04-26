@@ -34,14 +34,18 @@ const ManageRolesPage: NextPage<Props> = ({ currRoles }) => {
 
   return (
     <Layout>
-      <RoleFormModal isOpen={openFormModal} setIsOpen={setOpenFormModal} role={selectedRole} />
+      <RoleFormModal
+        isOpen={openFormModal}
+        setIsOpen={setOpenFormModal}
+        role={selectedRole}
+      />
 
-      <div className='font-bold text-2xl mb-4 flex items-center justify-between  '>
+      <div className="font-bold text-2xl mb-4 flex items-center justify-between  ">
         <h1>Manage Roles</h1>
         <button
-          type='button'
+          type="button"
           onClick={() => openModal(null)}
-          className='inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'>
+          className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
           Create
         </button>
       </div>
@@ -50,32 +54,31 @@ const ManageRolesPage: NextPage<Props> = ({ currRoles }) => {
   );
 };
 
-export const getServerSideProps = withSessionSsr(async function getServerSideProps({ req }) {
-  const { session, semesters, sessionActiveSemester } = await getInitialServerProps(
-    req,
-    getSession,
-    new SemestersService(),
-  );
+export const getServerSideProps = withSessionSsr(
+  async function getServerSideProps({ req }) {
+    const { session, semesters, sessionActiveSemester } =
+      await getInitialServerProps(req, getSession, new SemestersService());
 
-  if (!AuthHelper.isLoggedInAndHasRole(session, [ROLES.SUPER_ADMIN])) {
+    if (!AuthHelper.isLoggedInAndHasRole(session, [ROLES.SUPER_ADMIN])) {
+      return {
+        redirect: {
+          destination: '/',
+          permanent: false,
+        },
+      };
+    }
+
+    const currRoles = await RolesService.getAll();
+
     return {
-      redirect: {
-        destination: '/',
-        permanent: false,
+      props: {
+        semesters,
+        session,
+        sessionActiveSemester,
+        currRoles,
       },
     };
   }
-
-  const currRoles = await RolesService.getAll();
-
-  return {
-    props: {
-      semesters,
-      session,
-      sessionActiveSemester,
-      currRoles,
-    },
-  };
-});
+);
 
 export default ManageRolesPage;

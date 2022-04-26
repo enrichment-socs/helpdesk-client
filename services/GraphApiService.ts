@@ -7,12 +7,14 @@ export class GraphApiService extends BaseService {
     try {
       const result: AxiosResponse<Message[]> = await axios.get(
         `${this.BASE_URL}/graph-api/messages`,
-        this.headersWithToken(accessToken),
+        this.headersWithToken(accessToken)
       );
       return result.data;
     } catch (e) {
       console.error(e);
-      throw new Error('Ups, something is wrong when getting messages from server');
+      throw new Error(
+        'Ups, something is wrong when getting messages from server'
+      );
     }
   }
 }

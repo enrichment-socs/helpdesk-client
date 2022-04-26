@@ -7,7 +7,7 @@ export class UsersService extends BaseService {
   public static async getByIdentifier(identifier: string) {
     try {
       const res: AxiosResponse<SessionUser> = await axios.get(
-        `${this.BASE_URL}/users/find?identifier=${identifier}`,
+        `${this.BASE_URL}/users/find?identifier=${identifier}`
       );
       return res.data;
     } catch (e) {
@@ -20,7 +20,7 @@ export class UsersService extends BaseService {
     try {
       const res: AxiosResponse<SessionUser> = await axios.post(
         `${this.BASE_URL}/users`,
-        createUserDto,
+        createUserDto
       );
       return res.data;
     } catch (e) {

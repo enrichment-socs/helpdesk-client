@@ -16,28 +16,27 @@ const RequestsHeaderPage: NextPage = () => {
   );
 };
 
-export const getServerSideProps = withSessionSsr(async function getServerSideProps({ req }) {
-  const { session, semesters, sessionActiveSemester } = await getInitialServerProps(
-    req,
-    getSession,
-    new SemestersService(),
-  );
+export const getServerSideProps = withSessionSsr(
+  async function getServerSideProps({ req }) {
+    const { session, semesters, sessionActiveSemester } =
+      await getInitialServerProps(req, getSession, new SemestersService());
 
-  if (!AuthHelper.isLoggedInAndHasRole(session, [ROLES.ADMIN, ROLES.USER]))
+    if (!AuthHelper.isLoggedInAndHasRole(session, [ROLES.ADMIN, ROLES.USER]))
+      return {
+        redirect: {
+          destination: '/',
+          permanent: false,
+        },
+      };
+
     return {
-      redirect: {
-        destination: '/',
-        permanent: false,
+      props: {
+        semesters,
+        session,
+        sessionActiveSemester,
       },
     };
-
-  return {
-    props: {
-      semesters,
-      session,
-      sessionActiveSemester,
-    },
-  };
-});
+  }
+);
 
 export default RequestsHeaderPage;

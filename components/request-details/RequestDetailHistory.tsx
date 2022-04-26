@@ -1,5 +1,5 @@
-import { Disclosure, Transition } from "@headlessui/react";
-import { ChevronUpIcon, PencilAltIcon } from "@heroicons/react/solid";
+import { Disclosure, Transition } from '@headlessui/react';
+import { ChevronUpIcon, PencilAltIcon } from '@heroicons/react/solid';
 
 const RequestDetailHistory = () => {
   return (
@@ -11,7 +11,7 @@ const RequestDetailHistory = () => {
               <span className="font-bold">Apr 9, 2022</span>
               <ChevronUpIcon
                 className={`${
-                  open ? "transform rotate-180" : ""
+                  open ? 'transform rotate-180' : ''
                 } w-5 h-5 text-sky-500`}
               />
             </Disclosure.Button>
@@ -21,8 +21,7 @@ const RequestDetailHistory = () => {
               enterTo="transform scale-100 opacity-100"
               leave="transition duration-300 ease-in"
               leaveFrom="transform scale-100 opacity-100"
-              leaveTo="transform scale-50 opacity-0"
-            >
+              leaveTo="transform scale-50 opacity-0">
               <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-700">
                 <div>
                   <table className="min-w-full">

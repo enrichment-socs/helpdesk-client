@@ -1,3 +1,3 @@
 export interface CreateFAQCategoryDto {
-    categoryName: string,
+  categoryName: string;
 }

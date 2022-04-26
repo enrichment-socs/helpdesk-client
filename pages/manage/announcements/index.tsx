@@ -25,7 +25,8 @@ const ManageRolesPage: NextPage<Props> = ({ currAnnouncements }) => {
   useHydrateAtoms([[announcementsAtom, currAnnouncements]] as const);
   const [announcements, setAnnouncement] = useAtom(announcementsAtom);
   const [openFormModal, setOpenFormModal] = useState(false);
-  const [selectedAnnouncement, setSelectedAnnouncement] = useState<Announcement | null>(null);
+  const [selectedAnnouncement, setSelectedAnnouncement] =
+    useState<Announcement | null>(null);
 
   useEffect(() => {
     setAnnouncement(currAnnouncements);
@@ -44,51 +45,53 @@ const ManageRolesPage: NextPage<Props> = ({ currAnnouncements }) => {
         announcement={selectedAnnouncement}
       />
 
-      <div className='font-bold text-2xl mb-4 flex items-center justify-between  '>
+      <div className="font-bold text-2xl mb-4 flex items-center justify-between  ">
         <h1>Manage Announcements</h1>
         <button
-          type='button'
+          type="button"
           onClick={() => openModal(null)}
-          className='inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'>
+          className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
           Create
         </button>
       </div>
-      <ManageAnnouncementsTable announcements={announcements} openModal={openModal} />
+      <ManageAnnouncementsTable
+        announcements={announcements}
+        openModal={openModal}
+      />
     </Layout>
   );
 };
 
-export const getServerSideProps = withSessionSsr(async function getServerSideProps({ req }) {
-  const { session, semesters, sessionActiveSemester } = await getInitialServerProps(
-    req,
-    getSession,
-    new SemestersService(),
-  );
+export const getServerSideProps = withSessionSsr(
+  async function getServerSideProps({ req }) {
+    const { session, semesters, sessionActiveSemester } =
+      await getInitialServerProps(req, getSession, new SemestersService());
 
-  if (!AuthHelper.isLoggedInAndHasRole(session, [ROLES.SUPER_ADMIN])) {
+    if (!AuthHelper.isLoggedInAndHasRole(session, [ROLES.SUPER_ADMIN])) {
+      return {
+        redirect: {
+          destination: '/',
+          permanent: false,
+        },
+      };
+    }
+
+    const user = session.user as SessionUser;
+
+    const currAnnouncements = await AnnouncementsService.getBySemester(
+      sessionActiveSemester.id,
+      user.accessToken
+    );
+
     return {
-      redirect: {
-        destination: '/',
-        permanent: false,
+      props: {
+        semesters,
+        session,
+        sessionActiveSemester,
+        currAnnouncements,
       },
     };
   }
-
-  const user = session.user as SessionUser;
-
-  const currAnnouncements = await AnnouncementsService.getBySemester(
-    sessionActiveSemester.id,
-    user.accessToken,
-  );
-
-  return {
-    props: {
-      semesters,
-      session,
-      sessionActiveSemester,
-      currAnnouncements,
-    },
-  };
-});
+);
 
 export default ManageRolesPage;

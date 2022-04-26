@@ -12,12 +12,8 @@ const RequestDetailResolution = ({ isResolved }: Prop) => {
         possimus atque?
       </div>
       <div className="mt-3 border-2 divide-y">
-        <div className="font-bold p-3">
-          Attachments
-        </div>
-        <div className="p-5">
-          There are no files attached
-        </div>
+        <div className="font-bold p-3">Attachments</div>
+        <div className="p-5">There are no files attached</div>
       </div>
     </div>
   );

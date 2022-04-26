@@ -1,7 +1,7 @@
-import { Dialog, Transition } from "@headlessui/react";
-import { XIcon } from "@heroicons/react/solid";
-import { SetStateAction } from "jotai";
-import { Dispatch, Fragment } from "react";
+import { Dialog, Transition } from '@headlessui/react';
+import { XIcon } from '@heroicons/react/solid';
+import { SetStateAction } from 'jotai';
+import { Dispatch, Fragment } from 'react';
 
 type Props = {
   isOpen: boolean;
@@ -20,12 +20,10 @@ const MessageDetailModal = ({
         <Dialog
           as="div"
           className="fixed inset-0 z-10 overflow-y-auto"
-          onClose={() => setIsOpen(false)}
-        >
+          onClose={() => setIsOpen(false)}>
           <div
             className="min-h-screen px-4 text-center"
-            style={{ background: "rgba(0,0,0,0.6)" }}
-          >
+            style={{ background: 'rgba(0,0,0,0.6)' }}>
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
@@ -33,17 +31,15 @@ const MessageDetailModal = ({
               enterTo="opacity-100"
               leave="ease-in duration-200"
               leaveFrom="opacity-100"
-              leaveTo="opacity-0"
-            >
+              leaveTo="opacity-0">
               <Dialog.Overlay className="fixed inset-0" />
             </Transition.Child>
 
             {/* This element is to trick the browser into centering the modal contents. */}
             <span
               className="inline-block h-screen align-middle"
-              style={{ background: "rgba(0,0,0,0.6)" }}
-              aria-hidden="true"
-            >
+              style={{ background: 'rgba(0,0,0,0.6)' }}
+              aria-hidden="true">
               &#8203;
             </span>
             <Transition.Child
@@ -53,14 +49,12 @@ const MessageDetailModal = ({
               enterTo="opacity-100 scale-100"
               leave="ease-in duration-200"
               leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-95"
-            >
+              leaveTo="opacity-0 scale-95">
               <div className="inline-block w-full max-w-4xl my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded">
                 <div className="text-lg items-center flex bg-gray-100 justify-between px-6 py-3">
                   <Dialog.Title
                     as="h3"
-                    className="font-medium leading-6 text-gray-900"
-                  >
+                    className="font-medium leading-6 text-gray-900">
                     Message Detail
                   </Dialog.Title>
 
@@ -151,8 +145,7 @@ const MessageDetailModal = ({
                     <select
                       className="bg-gray-50 border-gray-300 text-gray-700 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 mt-3 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       name="category"
-                      id="category"
-                    >
+                      id="category">
                       <option value="Category 1">Category 1</option>
                       <option value="Category 2">Category 2</option>
                     </select>
@@ -161,8 +154,7 @@ const MessageDetailModal = ({
                   <div className="flex justify-end">
                     <button
                       type="button"
-                      className="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 font-medium rounded text-sm px-3 py-1.5 mt-3 dark:bg-blue-500 dark:hover:bg-blue-600 focus:outline-none dark:focus:ring-blue-700"
-                    >
+                      className="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 font-medium rounded text-sm px-3 py-1.5 mt-3 dark:bg-blue-500 dark:hover:bg-blue-600 focus:outline-none dark:focus:ring-blue-700">
                       Submit Message
                     </button>
                   </div>

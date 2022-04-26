@@ -16,7 +16,9 @@ import { ROLES } from '../../../lib/constant';
 const ManageSemestersPage: NextPage = () => {
   const [semesters] = useAtom(semestersAtom);
   const [openFormModal, setOpenFormModal] = useState(false);
-  const [selectedSemester, setSelectedSemester] = useState<Semester | null>(null);
+  const [selectedSemester, setSelectedSemester] = useState<Semester | null>(
+    null
+  );
 
   const openModal = (semester: Semester | null) => {
     setSelectedSemester(semester);
@@ -31,12 +33,12 @@ const ManageSemestersPage: NextPage = () => {
         semester={selectedSemester}
       />
 
-      <div className='font-bold text-2xl mb-4 flex items-center justify-between  '>
+      <div className="font-bold text-2xl mb-4 flex items-center justify-between  ">
         <h1>Manage Semesters</h1>
         <button
           onClick={() => openModal(null)}
-          type='button'
-          className='inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'>
+          type="button"
+          className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
           Create
         </button>
       </div>
@@ -45,29 +47,28 @@ const ManageSemestersPage: NextPage = () => {
   );
 };
 
-export const getServerSideProps = withSessionSsr(async function getServerSideProps({ req }) {
-  const { session, semesters, sessionActiveSemester } = await getInitialServerProps(
-    req,
-    getSession,
-    new SemestersService(),
-  );
+export const getServerSideProps = withSessionSsr(
+  async function getServerSideProps({ req }) {
+    const { session, semesters, sessionActiveSemester } =
+      await getInitialServerProps(req, getSession, new SemestersService());
 
-  if (!AuthHelper.isLoggedInAndHasRole(session, [ROLES.SUPER_ADMIN])) {
+    if (!AuthHelper.isLoggedInAndHasRole(session, [ROLES.SUPER_ADMIN])) {
+      return {
+        redirect: {
+          destination: '/',
+          permanent: false,
+        },
+      };
+    }
+
     return {
-      redirect: {
-        destination: '/',
-        permanent: false,
+      props: {
+        semesters,
+        session,
+        sessionActiveSemester,
       },
     };
   }
-
-  return {
-    props: {
-      semesters,
-      session,
-      sessionActiveSemester,
-    },
-  };
-});
+);
 
 export default ManageSemestersPage;

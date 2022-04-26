@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from 'next/image';
 
 const RequestDetailInformation = () => {
   return (
@@ -41,7 +41,7 @@ const RequestDetailInformation = () => {
         <div className="p-2">
           <div className="flex">
             <Image
-              src={"https://picsum.photos/200"}
+              src={'https://picsum.photos/200'}
               className="rounded-full"
               height={50}
               width={50}

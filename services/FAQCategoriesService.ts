@@ -7,7 +7,7 @@ export class FAQCategoriesService extends BaseService {
   public static async get(id: string) {
     try {
       const res: AxiosResponse<FAQCategory> = await axios.get(
-        `${this.BASE_URL}/faq-categories/${id}`,
+        `${this.BASE_URL}/faq-categories/${id}`
       );
       return res.data;
     } catch (e) {
@@ -19,7 +19,7 @@ export class FAQCategoriesService extends BaseService {
   public static async getAll() {
     try {
       const res: AxiosResponse<FAQCategory[]> = await axios.get(
-        `${this.BASE_URL}/faq-categories`,
+        `${this.BASE_URL}/faq-categories`
       );
       return res.data;
     } catch (e) {
@@ -32,39 +32,45 @@ export class FAQCategoriesService extends BaseService {
     try {
       const result: AxiosResponse<FAQCategory> = await axios.post(
         `${this.BASE_URL}/faq-categories`,
-        dto,
+        dto
       );
       return result.data;
     } catch (e) {
       console.error(e);
-      throw new Error('Ups, something is wrong with the server (Add FAQ Category)');
+      throw new Error(
+        'Ups, something is wrong with the server (Add FAQ Category)'
+      );
     }
   }
 
-  static async updateFAQCategory(dto: CreateFAQCategoryDto, categoryId: string)
-  {
+  static async updateFAQCategory(
+    dto: CreateFAQCategoryDto,
+    categoryId: string
+  ) {
     try {
       const result: AxiosResponse<FAQCategory> = await axios.patch(
         `${this.BASE_URL}/faq-categories/${categoryId}`,
-        dto,
-      )
+        dto
+      );
       return result.data;
     } catch (e) {
       console.log(e);
-      throw new Error('Ups, something is wrong with the server (Update FAQ Category)');
+      throw new Error(
+        'Ups, something is wrong with the server (Update FAQ Category)'
+      );
     }
   }
 
   static async deleteFAQCategory(categoryId: string) {
     try {
       const result: AxiosResponse<FAQCategory> = await axios.delete(
-        `${this.BASE_URL}/faq-categories/${categoryId}`,
+        `${this.BASE_URL}/faq-categories/${categoryId}`
       );
       return result.data;
     } catch (e) {
       console.error(e);
       throw new Error(
-        'Ups, something is wrong with the server (Delete FAQ Category)',
+        'Ups, something is wrong with the server (Delete FAQ Category)'
       );
     }
   }

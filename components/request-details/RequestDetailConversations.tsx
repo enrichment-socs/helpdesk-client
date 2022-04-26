@@ -1,5 +1,5 @@
-import { Disclosure, Transition } from "@headlessui/react";
-import { ChevronUpIcon } from "@heroicons/react/solid";
+import { Disclosure, Transition } from '@headlessui/react';
+import { ChevronUpIcon } from '@heroicons/react/solid';
 
 type Prop = {
   conversationData: {
@@ -24,7 +24,7 @@ const RequestDetailConversations = ({ conversationData }: Prop) => {
             </span>
             <ChevronUpIcon
               className={`${
-                open ? "transform rotate-180" : ""
+                open ? 'transform rotate-180' : ''
               } w-5 h-5 text-slate-500`}
             />
           </Disclosure.Button>
@@ -34,8 +34,7 @@ const RequestDetailConversations = ({ conversationData }: Prop) => {
             enterTo="transform scale-100 opacity-100"
             leave="transition duration-300 ease-in"
             leaveFrom="transform scale-100 opacity-100"
-            leaveTo="transform scale-50 opacity-0"
-          >
+            leaveTo="transform scale-50 opacity-0">
             <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-500">
               <div className="divide-y">
                 <div className="pb-2">

@@ -1,27 +1,27 @@
-import { Disclosure, Transition } from "@headlessui/react";
-import { ChevronUpIcon } from "@heroicons/react/solid";
-import RequestDetailConversations from "./RequestDetailConversations";
-import RequestDetailProperties from "./RequestDetailProperties";
+import { Disclosure, Transition } from '@headlessui/react';
+import { ChevronUpIcon } from '@heroicons/react/solid';
+import RequestDetailConversations from './RequestDetailConversations';
+import RequestDetailProperties from './RequestDetailProperties';
 
 const RequestDetailDetails = () => {
   const conversationsData = [
     {
       id: 1,
-      sender: "Dummy User 1",
-      sent_date: "2020-01-01",
-      recipient_email: "enrichment.socs@binus.edu",
-      subject: "Dummy Subject 1",
+      sender: 'Dummy User 1',
+      sent_date: '2020-01-01',
+      recipient_email: 'enrichment.socs@binus.edu',
+      subject: 'Dummy Subject 1',
       content:
-        "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Exercitationem ex aliquid deserunt sint itaque autem tenetur, velit odit natus. Iure aliquid ab natus provident amet voluptate est neque consequuntur harum!",
+        'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Exercitationem ex aliquid deserunt sint itaque autem tenetur, velit odit natus. Iure aliquid ab natus provident amet voluptate est neque consequuntur harum!',
     },
     {
       id: 2,
-      sender: "Dummy User 2",
-      sent_date: "2020-07-07",
-      recipient_email: "dummy@dummy.com",
-      subject: "Dummy Subject 2",
+      sender: 'Dummy User 2',
+      sent_date: '2020-07-07',
+      recipient_email: 'dummy@dummy.com',
+      subject: 'Dummy Subject 2',
       content:
-        "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Exercitationem ex aliquid deserunt sint itaque autem tenetur, velit odit natus. Iure aliquid ab natus provident amet voluptate est neque consequuntur harum!",
+        'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Exercitationem ex aliquid deserunt sint itaque autem tenetur, velit odit natus. Iure aliquid ab natus provident amet voluptate est neque consequuntur harum!',
     },
   ];
 
@@ -35,7 +35,7 @@ const RequestDetailDetails = () => {
                 <span className="font-bold">Description</span>
                 <ChevronUpIcon
                   className={`${
-                    open ? "transform rotate-180" : ""
+                    open ? 'transform rotate-180' : ''
                   } w-5 h-5 text-sky-500`}
                 />
               </Disclosure.Button>
@@ -45,8 +45,7 @@ const RequestDetailDetails = () => {
                 enterTo="transform scale-100 opacity-100"
                 leave="transition duration-300 ease-in"
                 leaveFrom="transform scale-100 opacity-100"
-                leaveTo="transform scale-50 opacity-0"
-              >
+                leaveTo="transform scale-50 opacity-0">
                 <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-700">
                   <div className="divide-y">
                     <div className="pb-2">
@@ -72,7 +71,7 @@ const RequestDetailDetails = () => {
                 <span className="font-bold">Conversations</span>
                 <ChevronUpIcon
                   className={`${
-                    open ? "transform rotate-180" : ""
+                    open ? 'transform rotate-180' : ''
                   } w-5 h-5 text-sky-500`}
                 />
               </Disclosure.Button>
@@ -82,8 +81,7 @@ const RequestDetailDetails = () => {
                 enterTo="transform scale-100 opacity-100"
                 leave="transition duration-300 ease-in"
                 leaveFrom="transform scale-100 opacity-100"
-                leaveTo="transform scale-50 opacity-0"
-              >
+                leaveTo="transform scale-50 opacity-0">
                 <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-500">
                   {conversationsData.map((conversation) => (
                     <RequestDetailConversations
@@ -104,7 +102,7 @@ const RequestDetailDetails = () => {
                 <span className="font-bold">More Properties</span>
                 <ChevronUpIcon
                   className={`${
-                    open ? "transform rotate-180" : ""
+                    open ? 'transform rotate-180' : ''
                   } w-5 h-5 text-sky-500`}
                 />
               </Disclosure.Button>
@@ -114,8 +112,7 @@ const RequestDetailDetails = () => {
                 enterTo="transform scale-100 opacity-100"
                 leave="transition duration-300 ease-in"
                 leaveFrom="transform scale-100 opacity-100"
-                leaveTo="transform scale-50 opacity-0"
-              >
+                leaveTo="transform scale-50 opacity-0">
                 <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-500">
                   <RequestDetailProperties />
                 </Disclosure.Panel>

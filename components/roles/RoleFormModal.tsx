@@ -1,12 +1,12 @@
-import { Dialog, Transition } from "@headlessui/react";
-import { SetStateAction, useAtom } from "jotai";
-import { Dispatch, Fragment, useEffect, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import toast from "react-hot-toast";
-import { CreateRoleDto } from "../../models/dto/roles/create-role.dto";
-import { Role } from "../../models/Role";
-import { rolesAtom } from "../../pages/manage/roles";
-import { RolesService } from "../../services/RolesService";
+import { Dialog, Transition } from '@headlessui/react';
+import { SetStateAction, useAtom } from 'jotai';
+import { Dispatch, Fragment, useEffect, useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
+import { CreateRoleDto } from '../../models/dto/roles/create-role.dto';
+import { Role } from '../../models/Role';
+import { rolesAtom } from '../../pages/manage/roles';
+import { RolesService } from '../../services/RolesService';
 
 type Props = {
   isOpen: boolean;
@@ -30,7 +30,7 @@ export default function RoleFormModal({ isOpen, setIsOpen, role }: Props) {
   } = useForm<FormData>();
 
   useEffect(() => {
-    setValue("roleName", role?.roleName);
+    setValue('roleName', role?.roleName);
   }, [role]);
 
   const onSubmit: SubmitHandler<FormData> = async (payload) => {
@@ -40,7 +40,7 @@ export default function RoleFormModal({ isOpen, setIsOpen, role }: Props) {
         ? RolesService.updateRole(payload as CreateRoleDto, role.id)
         : RolesService.addRole(payload as CreateRoleDto),
       {
-        loading: role ? "Updating role..." : "Adding role...",
+        loading: role ? 'Updating role...' : 'Adding role...',
         success: (result) => {
           role
             ? setRoles(
@@ -51,7 +51,7 @@ export default function RoleFormModal({ isOpen, setIsOpen, role }: Props) {
               )
             : setRoles([result, ...roles]);
           setIsOpen(false);
-          setValue("roleName", "");
+          setValue('roleName', '');
           return role
             ? `Successfully updated the role`
             : `Succesfully added new role`;
@@ -68,12 +68,10 @@ export default function RoleFormModal({ isOpen, setIsOpen, role }: Props) {
         <Dialog
           as="div"
           className="fixed inset-0 z-10 overflow-y-auto"
-          onClose={() => setIsOpen(false)}
-        >
+          onClose={() => setIsOpen(false)}>
           <div
             className="min-h-screen px-4 text-center"
-            style={{ background: "rgba(0,0,0,0.6)" }}
-          >
+            style={{ background: 'rgba(0,0,0,0.6)' }}>
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
@@ -81,16 +79,14 @@ export default function RoleFormModal({ isOpen, setIsOpen, role }: Props) {
               enterTo="opacity-100"
               leave="ease-in duration-200"
               leaveFrom="opacity-100"
-              leaveTo="opacity-0"
-            >
+              leaveTo="opacity-0">
               <Dialog.Overlay className="fixed inset-0" />
             </Transition.Child>
 
             {/* This element is to trick the browser into centering the modal contents. */}
             <span
               className="inline-block h-screen align-middle"
-              aria-hidden="true"
-            >
+              aria-hidden="true">
               &#8203;
             </span>
             <Transition.Child
@@ -100,38 +96,35 @@ export default function RoleFormModal({ isOpen, setIsOpen, role }: Props) {
               enterTo="opacity-100 scale-100"
               leave="ease-in duration-200"
               leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-95"
-            >
+              leaveTo="opacity-0 scale-95">
               <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
                 <Dialog.Title
                   as="h3"
-                  className="text-lg font-medium leading-6 text-gray-900"
-                >
-                  {role ? "Update" : "Create"} Role
+                  className="text-lg font-medium leading-6 text-gray-900">
+                  {role ? 'Update' : 'Create'} Role
                 </Dialog.Title>
                 <form
                   onSubmit={handleSubmit(onSubmit)}
-                  className="mt-2 space-y-2"
-                >
+                  className="mt-2 space-y-2">
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
                       Role Name
                     </label>
                     <div className="mt-1">
                       <input
-                        {...register("roleName", {
+                        {...register('roleName', {
                           required: true,
                         })}
                         type="text"
                         className={`${
                           errors.roleName
-                            ? "border-red-300"
-                            : "border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                            ? 'border-red-300'
+                            : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
                         } mt-1 block w-full outline-none p-2 text-base border sm:text-sm rounded-md`}
                         placeholder="User"
                       />
                     </div>
-                    {errors.roleName?.type === "required" && (
+                    {errors.roleName?.type === 'required' && (
                       <small className="text-red-500">
                         Role name must be filled
                       </small>
@@ -144,11 +137,10 @@ export default function RoleFormModal({ isOpen, setIsOpen, role }: Props) {
                       disabled={loading}
                       className={`${
                         loading
-                          ? "text-gray-600 bg-gray-400"
-                          : "text-blue-900 bg-blue-100 hover:bg-blue-200"
-                      } inline-flex justify-center px-4 py-2 text-sm font-medium border border-transparent rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500`}
-                    >
-                      {role ? "Update" : "Create"}
+                          ? 'text-gray-600 bg-gray-400'
+                          : 'text-blue-900 bg-blue-100 hover:bg-blue-200'
+                      } inline-flex justify-center px-4 py-2 text-sm font-medium border border-transparent rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500`}>
+                      {role ? 'Update' : 'Create'}
                     </button>
                   </div>
                 </form>

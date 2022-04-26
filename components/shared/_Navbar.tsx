@@ -77,36 +77,38 @@ export default function Navbar() {
 
   const logOut = async () => {
     const apiUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
-    await axios.delete(`${apiUrl}/auth`, { data: { refreshToken: user.refreshToken } });
+    await axios.delete(`${apiUrl}/auth`, {
+      data: { refreshToken: user.refreshToken },
+    });
     signOut({ callbackUrl: '/auth/login' });
   };
 
   return (
     <div>
-      <div className='flex justify-between items-center max-w-7xl px-2 sm:px-6 lg:px-8 mx-auto'>
-        <div className='flex'>
+      <div className="flex justify-between items-center max-w-7xl px-2 sm:px-6 lg:px-8 mx-auto">
+        <div className="flex">
           <div>
-            <Image src={ribbon} height={110} width={38} alt='' />
+            <Image src={ribbon} height={110} width={38} alt="" />
           </div>
-          <div className='ml-2 mt-1 '>
-            <Image src={logo} height={85} width={130} alt='' />
+          <div className="ml-2 mt-1 ">
+            <Image src={logo} height={85} width={130} alt="" />
           </div>
         </div>
 
-        <div className='text-right mt-4'>
-          <div className='font-bold text-gray-600'>
-            Welcome, <span className='text-primary'>{user.name}</span>
+        <div className="text-right mt-4">
+          <div className="font-bold text-gray-600">
+            Welcome, <span className="text-primary">{user.name}</span>
           </div>
-          <div className='mt-2'>
+          <div className="mt-2">
             <SemesterListBox />
           </div>
         </div>
       </div>
 
-      <div className='border-b border-gray-200 mt-4'></div>
+      <div className="border-b border-gray-200 mt-4"></div>
 
-      <nav className='flex justify-between max-w-7xl px-2 sm:px-6 lg:px-8 mx-auto'>
-        <ul className='flex space-x-4'>
+      <nav className="flex justify-between max-w-7xl px-2 sm:px-6 lg:px-8 mx-auto">
+        <ul className="flex space-x-4">
           {links.map(
             (link) =>
               link.roles.includes(user?.roleName) && (
@@ -129,18 +131,19 @@ export default function Navbar() {
                     </Else>
                   </If>
                 </li>
-              ),
+              )
           )}
         </ul>
 
         <button
           onClick={() => logOut()}
-          className='cursor-pointer hover:text-primary text-gray-600 font-bold flex space-x-1 items-center'>
-          <span className='block'>Sign Out</span> <LogoutIcon className='w-5 h-5' />
+          className="cursor-pointer hover:text-primary text-gray-600 font-bold flex space-x-1 items-center">
+          <span className="block">Sign Out</span>{' '}
+          <LogoutIcon className="w-5 h-5" />
         </button>
       </nav>
 
-      <div className='border-b border-gray-200 mb-6'></div>
+      <div className="border-b border-gray-200 mb-6"></div>
     </div>
   );
 }

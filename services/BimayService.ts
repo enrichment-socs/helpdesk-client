@@ -37,7 +37,7 @@ export class BimayService extends BaseService {
           headers: {
             Authorization: `Basic ${buffer.toString('base64')}`,
           },
-        },
+        }
       );
       return result.data.Data.Token;
     } catch (e) {
@@ -46,7 +46,7 @@ export class BimayService extends BaseService {
   }
 
   public static async getStudentData(
-    username: string,
+    username: string
   ): Promise<StudentData | null> {
     if (!username) return null;
     const token = await BimayService.getToken();
@@ -66,7 +66,7 @@ export class BimayService extends BaseService {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      },
+      }
     );
 
     return result.data.StudentData;
@@ -74,7 +74,7 @@ export class BimayService extends BaseService {
 
   public static async loginBinusmaya(
     email: string,
-    password: string,
+    password: string
   ): Promise<boolean> {
     if (EMPLOYEE_EMAIL_REGEX.test(email)) {
       email = email.substring(0, email.indexOf('@'));
@@ -87,7 +87,7 @@ export class BimayService extends BaseService {
 
     const result: AxiosResponse<'1' | '0'> = await axios.post(
       this.BINUSMAYA_LOGIN_API_URL,
-      payload,
+      payload
     );
     console.log(`Login result: ${result.data === '1'} for ${email}`);
     return result.data === '1';

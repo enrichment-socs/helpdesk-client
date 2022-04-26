@@ -39,12 +39,12 @@ const ManageStatusPage: NextPage<Props> = ({ currStatuses }) => {
         setIsOpen={setOpenFormModal}
         status={selectedStatus}
       />
-      <div className='font-bold text-2xl mb-4 flex items-center justify-between  '>
+      <div className="font-bold text-2xl mb-4 flex items-center justify-between  ">
         <h1>Manage Status</h1>
         <button
-          type='button'
+          type="button"
           onClick={() => openModal(null)}
-          className='inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'>
+          className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
           Create
         </button>
       </div>
@@ -54,32 +54,31 @@ const ManageStatusPage: NextPage<Props> = ({ currStatuses }) => {
   );
 };
 
-export const getServerSideProps = withSessionSsr(async function getServerSideProps({ req }) {
-  const { session, semesters, sessionActiveSemester } = await getInitialServerProps(
-    req,
-    getSession,
-    new SemestersService(),
-  );
+export const getServerSideProps = withSessionSsr(
+  async function getServerSideProps({ req }) {
+    const { session, semesters, sessionActiveSemester } =
+      await getInitialServerProps(req, getSession, new SemestersService());
 
-  if (!AuthHelper.isLoggedInAndHasRole(session, [ROLES.SUPER_ADMIN])) {
+    if (!AuthHelper.isLoggedInAndHasRole(session, [ROLES.SUPER_ADMIN])) {
+      return {
+        redirect: {
+          destination: '/',
+          permanent: false,
+        },
+      };
+    }
+
+    const currStatuses = await StatusService.getAll();
+
     return {
-      redirect: {
-        destination: '/',
-        permanent: false,
+      props: {
+        currStatuses,
+        semesters,
+        session,
+        sessionActiveSemester,
       },
     };
   }
-
-  const currStatuses = await StatusService.getAll();
-
-  return {
-    props: {
-      currStatuses,
-      semesters,
-      session,
-      sessionActiveSemester,
-    },
-  };
-});
+);
 
 export default ManageStatusPage;

@@ -44,7 +44,11 @@ type FormData = {
   endDate: Date;
 };
 
-export default function AnnouncementFormModal({ isOpen, setIsOpen, announcement }: Props) {
+export default function AnnouncementFormModal({
+  isOpen,
+  setIsOpen,
+  announcement,
+}: Props) {
   const [announcements, setAnnouncements] = useAtom(announcementsAtom);
   const [loading, setLoading] = useState(false);
   const [activeSemester] = useAtom(activeSemesterAtom);
@@ -64,12 +68,17 @@ export default function AnnouncementFormModal({ isOpen, setIsOpen, announcement 
     setValue('title', announcement?.title);
 
     register('startDate', { required: true });
-    setValue('startDate', announcement ? new Date(announcement.startDate) : new Date());
+    setValue(
+      'startDate',
+      announcement ? new Date(announcement.startDate) : new Date()
+    );
 
     register('endDate', { required: true });
     setValue(
       'endDate',
-      announcement ? new Date(announcement.endDate) : add(new Date(), { weeks: 1 }),
+      announcement
+        ? new Date(announcement.endDate)
+        : add(new Date(), { weeks: 1 })
     );
 
     register('body', { required: true });
@@ -94,17 +103,23 @@ export default function AnnouncementFormModal({ isOpen, setIsOpen, announcement 
     setLoading(true);
     await toast.promise(
       announcement
-        ? AnnouncementsService.updateAnnouncement(dto, announcement.id, user.accessToken)
+        ? AnnouncementsService.updateAnnouncement(
+            dto,
+            announcement.id,
+            user.accessToken
+          )
         : AnnouncementsService.addAnnouncement(dto, user.accessToken),
       {
-        loading: announcement ? 'Updating announcement...' : 'Adding announcement...',
+        loading: announcement
+          ? 'Updating announcement...'
+          : 'Adding announcement...',
         success: (result) => {
           announcement
             ? setAnnouncements(
                 announcements.map((a) => {
                   if (a.id === announcement.id) return result;
                   else return a;
-                }),
+                })
               )
             : setAnnouncements([result, ...announcements]);
           setIsOpen(false);
@@ -114,7 +129,7 @@ export default function AnnouncementFormModal({ isOpen, setIsOpen, announcement 
             : `Succesfully added new announcement`;
         },
         error: (e) => e.toString(),
-      },
+      }
     );
     setLoading(false);
     reset();
@@ -124,87 +139,99 @@ export default function AnnouncementFormModal({ isOpen, setIsOpen, announcement 
     <>
       <Transition appear show={isOpen} as={Fragment}>
         <Dialog
-          as='div'
-          className='fixed inset-0 z-10 overflow-y-auto'
+          as="div"
+          className="fixed inset-0 z-10 overflow-y-auto"
           onClose={() => setIsOpen(false)}>
-          <div className='min-h-screen px-4 text-center' style={{ background: 'rgba(0,0,0,0.6)' }}>
+          <div
+            className="min-h-screen px-4 text-center"
+            style={{ background: 'rgba(0,0,0,0.6)' }}>
             <Transition.Child
               as={Fragment}
-              enter='ease-out duration-300'
-              enterFrom='opacity-0'
-              enterTo='opacity-100'
-              leave='ease-in duration-200'
-              leaveFrom='opacity-100'
-              leaveTo='opacity-0'>
-              <Dialog.Overlay className='fixed inset-0' />
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0">
+              <Dialog.Overlay className="fixed inset-0" />
             </Transition.Child>
 
             {/* This element is to trick the browser into centering the modal contents. */}
-            <span className='inline-block h-screen align-middle' aria-hidden='true'>
+            <span
+              className="inline-block h-screen align-middle"
+              aria-hidden="true">
               &#8203;
             </span>
             <Transition.Child
               as={Fragment}
-              enter='ease-out duration-300'
-              enterFrom='opacity-0 scale-95'
-              enterTo='opacity-100 scale-100'
-              leave='ease-in duration-200'
-              leaveFrom='opacity-100 scale-100'
-              leaveTo='opacity-0 scale-95'>
-              <div className='inline-block w-full max-w-4xl p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl'>
-                <Dialog.Title as='h3' className='text-lg font-medium leading-6 text-gray-900'>
+              enter="ease-out duration-300"
+              enterFrom="opacity-0 scale-95"
+              enterTo="opacity-100 scale-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100 scale-100"
+              leaveTo="opacity-0 scale-95">
+              <div className="inline-block w-full max-w-4xl p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                <Dialog.Title
+                  as="h3"
+                  className="text-lg font-medium leading-6 text-gray-900">
                   {announcement ? 'Update' : 'Create'} Announcement
                 </Dialog.Title>
-                <form onSubmit={handleSubmit(onSubmit)} className='mt-2 space-y-2'>
+                <form
+                  onSubmit={handleSubmit(onSubmit)}
+                  className="mt-2 space-y-2">
                   <div>
-                    <label className='block text-sm font-medium text-gray-700'>
+                    <label className="block text-sm font-medium text-gray-700">
                       Announcement Title
                     </label>
-                    <div className='mt-1'>
+                    <div className="mt-1">
                       <input
                         {...register('title', {
                           required: true,
                         })}
-                        type='text'
+                        type="text"
                         className={`${
                           errors.title
                             ? 'border-red-300'
                             : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
                         } mt-1 block w-full outline-none p-2 text-base border sm:text-sm rounded-md`}
-                        placeholder='Learning Plan Information'
+                        placeholder="Learning Plan Information"
                       />
                     </div>
                     {errors.title?.type === 'required' && (
-                      <small className='text-red-500'>Title must be filled</small>
+                      <small className="text-red-500">
+                        Title must be filled
+                      </small>
                     )}
                   </div>
 
                   <div>
-                    <label className='block text-sm font-medium text-gray-700'>
+                    <label className="block text-sm font-medium text-gray-700">
                       Announcement Body
                     </label>
-                    <div className='mt-1'>
+                    <div className="mt-1">
                       <QuillNoSSRWrapper
                         modules={modules}
-                        theme='snow'
+                        theme="snow"
                         value={bodyContent}
                         onChange={(content) => onBodyChange(content)}
                       />
                     </div>
                     {errors.body?.type === 'required' && (
-                      <small className='text-red-500'>Body must be filled</small>
+                      <small className="text-red-500">
+                        Body must be filled
+                      </small>
                     )}
                   </div>
 
                   <div>
-                    <label className='block text-sm font-medium text-gray-700'>
+                    <label className="block text-sm font-medium text-gray-700">
                       Announcement Show Start Date
                     </label>
-                    <div className='mt-1'>
+                    <div className="mt-1">
                       <DatePicker
                         selected={startDateVal}
                         showTimeSelect
-                        dateFormat='Pp'
+                        dateFormat="Pp"
                         onChange={onStartDateChange}
                         className={`${
                           errors.startDate
@@ -214,19 +241,21 @@ export default function AnnouncementFormModal({ isOpen, setIsOpen, announcement 
                       />
                     </div>
                     {errors.startDate?.type === 'required' && (
-                      <small className='text-red-500'>Start Date must be chosen</small>
+                      <small className="text-red-500">
+                        Start Date must be chosen
+                      </small>
                     )}
                   </div>
 
                   <div>
-                    <label className='block text-sm font-medium text-gray-700'>
+                    <label className="block text-sm font-medium text-gray-700">
                       Announcement Show End Date
                     </label>
-                    <div className='mt-1'>
+                    <div className="mt-1">
                       <DatePicker
                         selected={endDateVal}
                         showTimeSelect
-                        dateFormat='Pp'
+                        dateFormat="Pp"
                         onChange={onEndDateChange}
                         className={`${
                           errors.endDate
@@ -236,13 +265,15 @@ export default function AnnouncementFormModal({ isOpen, setIsOpen, announcement 
                       />
                     </div>
                     {errors.endDate?.type === 'required' && (
-                      <small className='text-red-500'>End Date must be chosen</small>
+                      <small className="text-red-500">
+                        End Date must be chosen
+                      </small>
                     )}
                   </div>
 
-                  <div className='mt-4 text-right'>
+                  <div className="mt-4 text-right">
                     <button
-                      type='submit'
+                      type="submit"
                       disabled={loading}
                       className={`${
                         loading

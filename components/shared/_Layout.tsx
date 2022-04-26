@@ -10,7 +10,13 @@ type Props = {
   style?: CSSProperties;
 };
 
-export default function Layout({ children, withNavbar, className, controlWidth, style }: Props) {
+export default function Layout({
+  children,
+  withNavbar,
+  className,
+  controlWidth,
+  style,
+}: Props) {
   withNavbar = withNavbar ?? true;
   controlWidth = controlWidth ?? true;
   style = style ?? {};
@@ -19,8 +25,8 @@ export default function Layout({ children, withNavbar, className, controlWidth, 
     <div>
       <Head>
         <title>Enrichment SoCS Helpdesk</title>
-        <meta name='description' content='Enrichment SoCS Consultation App' />
-        <link rel='icon' href='/favicon.ico' />
+        <meta name="description" content="Enrichment SoCS Consultation App" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       {withNavbar && <Navbar />}

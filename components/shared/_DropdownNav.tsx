@@ -28,7 +28,7 @@ export default function DropdownNav({ link }: Props) {
           openDropdown ? 'block' : 'hidden'
         }`}>
         {link.children?.map((child) => (
-          <li key={child.title} className='w-44 hover:bg-gray-50'>
+          <li key={child.title} className="w-44 hover:bg-gray-50">
             <Link href={`${link.href}${child.href}`} passHref={true}>
               <div
                 className={`tracking-wide text-left cursor-pointer hover:text-primary p-4 text-gray-600 font-semibold ${

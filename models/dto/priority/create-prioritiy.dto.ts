@@ -1,4 +1,4 @@
 export interface CreatePriorityDto {
-    priorityName: string;
-    priorityIndex: number;
+  priorityName: string;
+  priorityIndex: number;
 }

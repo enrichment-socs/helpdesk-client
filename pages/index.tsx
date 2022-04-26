@@ -1,4 +1,9 @@
-import { ChartBarIcon, GlobeIcon, MailIcon, SpeakerphoneIcon } from '@heroicons/react/solid';
+import {
+  ChartBarIcon,
+  GlobeIcon,
+  MailIcon,
+  SpeakerphoneIcon,
+} from '@heroicons/react/solid';
 import type { NextPage } from 'next';
 import { getSession, useSession } from 'next-auth/react';
 import Layout from '../components/shared/_Layout';
@@ -45,44 +50,44 @@ const Home: NextPage<Props> = ({ announcements, messages }) => {
 
       <div>
         <div>
-          <div className='flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4'>
+          <div className="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4">
             <AnnouncementContainer
               setOpenAnnouncement={setOpenAnnouncement}
               setOpenAnnouncementModal={setOpenAnnouncementModal}
               announcements={announcements}
             />
 
-            <div className='mx-2 p-2 border-2 md:w-1/4 rounded divide-y'>
-              <div className='text-lg font-bold mb-3 flex items-center'>
-                <ChartBarIcon className='h-5 w-5' />
-                <span className='ml-3'>My Request Summary</span>
+            <div className="mx-2 p-2 border-2 md:w-1/4 rounded divide-y">
+              <div className="text-lg font-bold mb-3 flex items-center">
+                <ChartBarIcon className="h-5 w-5" />
+                <span className="ml-3">My Request Summary</span>
               </div>
 
-              <div className='p-3'>
-                <div className='font-semibold'>Pending</div>
-                <div className='text-slate-600 text-4xl'>0</div>
+              <div className="p-3">
+                <div className="font-semibold">Pending</div>
+                <div className="text-slate-600 text-4xl">0</div>
               </div>
 
-              <div className='p-3'>
-                <div className='font-semibold'>Awaiting Approval</div>
-                <div className='text-slate-600 text-4xl'>0</div>
+              <div className="p-3">
+                <div className="font-semibold">Awaiting Approval</div>
+                <div className="text-slate-600 text-4xl">0</div>
               </div>
 
-              <div className='p-3'>
-                <div className='font-semibold'>Awaiting Updates</div>
-                <div className='text-slate-600 text-4xl'>0</div>
+              <div className="p-3">
+                <div className="font-semibold">Awaiting Updates</div>
+                <div className="text-slate-600 text-4xl">0</div>
               </div>
             </div>
           </div>
         </div>
 
         {messages && (
-          <div className='ml-2 mt-5 p-2 border-2 rounded divide-y'>
-            <div className='text-lg font-bold mb-3 flex items-center'>
-              <MailIcon className='h-5 w-5' />
-              <span className='ml-3'>Messages</span>
+          <div className="ml-2 mt-5 p-2 border-2 rounded divide-y">
+            <div className="text-lg font-bold mb-3 flex items-center">
+              <MailIcon className="h-5 w-5" />
+              <span className="ml-3">Messages</span>
             </div>
-            <div className='p-1'>
+            <div className="p-1">
               <MessagesTable
                 messages={messages}
                 setOpenMessageIndex={setOpenMessageIndex}
@@ -96,40 +101,41 @@ const Home: NextPage<Props> = ({ announcements, messages }) => {
   );
 };
 
-export const getServerSideProps = withSessionSsr(async function getServerSideProps({ req }) {
-  const { session, semesters, sessionActiveSemester } = await getInitialServerProps(
-    req,
-    getSession,
-    new SemestersService(),
-  );
+export const getServerSideProps = withSessionSsr(
+  async function getServerSideProps({ req }) {
+    const { session, semesters, sessionActiveSemester } =
+      await getInitialServerProps(req, getSession, new SemestersService());
 
-  if (!session) {
+    if (!session) {
+      return {
+        redirect: {
+          destination: '/auth/login',
+          permanent: false,
+        },
+      };
+    }
+
+    const user = session.user as SessionUser;
+    const announcements = await AnnouncementsService.getBySemester(
+      sessionActiveSemester.id,
+      user.accessToken
+    );
+
+    const messages =
+      user.roleName === ROLES.USER
+        ? null
+        : await GraphApiService.getMessages(user.accessToken);
+
     return {
-      redirect: {
-        destination: '/auth/login',
-        permanent: false,
+      props: {
+        semesters,
+        session,
+        sessionActiveSemester,
+        announcements,
+        messages,
       },
     };
   }
-
-  const user = session.user as SessionUser;
-  const announcements = await AnnouncementsService.getBySemester(
-    sessionActiveSemester.id,
-    user.accessToken,
-  );
-
-  const messages =
-    user.roleName === ROLES.USER ? null : await GraphApiService.getMessages(user.accessToken);
-
-  return {
-    props: {
-      semesters,
-      session,
-      sessionActiveSemester,
-      announcements,
-      messages,
-    },
-  };
-});
+);
 
 export default Home;

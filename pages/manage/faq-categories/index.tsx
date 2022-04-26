@@ -23,7 +23,8 @@ type Props = {
 const ManageFAQCategoriesPage: NextPage<Props> = ({ currFAQCategories }) => {
   const [faqCategories] = useAtom(faqCategoriesAtom);
   const [openFormModal, setOpenFormModal] = useState(false);
-  const [selectedFAQCategory, setSelectedFAQCategory] = useState<FAQCategory | null>(null);
+  const [selectedFAQCategory, setSelectedFAQCategory] =
+    useState<FAQCategory | null>(null);
 
   useHydrateAtoms([[faqCategoriesAtom, currFAQCategories]] as const);
 
@@ -40,46 +41,48 @@ const ManageFAQCategoriesPage: NextPage<Props> = ({ currFAQCategories }) => {
         faqCategory={selectedFAQCategory}
       />
 
-      <div className='font-bold text-2xl mb-4 flex items-center justify-between  '>
+      <div className="font-bold text-2xl mb-4 flex items-center justify-between  ">
         <h1>Manage FAQ Categories</h1>
         <button
-          type='button'
+          type="button"
           onClick={() => openModal(null)}
-          className='inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'>
+          className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
           Create
         </button>
       </div>
-      <ManageFAQCategoriesTable faqCategories={faqCategories} openModal={openModal} />
+      <ManageFAQCategoriesTable
+        faqCategories={faqCategories}
+        openModal={openModal}
+      />
     </Layout>
   );
 };
 
-export const getServerSideProps = withSessionSsr(async function getServerSideProps({ req }) {
-  const { session, semesters, sessionActiveSemester } = await getInitialServerProps(
-    req,
-    getSession,
-    new SemestersService(),
-  );
+export const getServerSideProps = withSessionSsr(
+  async function getServerSideProps({ req }) {
+    const { session, semesters, sessionActiveSemester } =
+      await getInitialServerProps(req, getSession, new SemestersService());
 
-  if (!AuthHelper.isLoggedInAndHasRole(session, [ROLES.SUPER_ADMIN])) {
+    if (!AuthHelper.isLoggedInAndHasRole(session, [ROLES.SUPER_ADMIN])) {
+      return {
+        redirect: {
+          destination: '/',
+          permanent: false,
+        },
+      };
+    }
+
+    const currFAQCategories = await FAQCategoriesService.getAll();
+
     return {
-      redirect: {
-        destination: '/',
-        permanent: false,
+      props: {
+        semesters,
+        session,
+        sessionActiveSemester,
+        currFAQCategories,
       },
     };
   }
-
-  const currFAQCategories = await FAQCategoriesService.getAll();
-
-  return {
-    props: {
-      semesters,
-      session,
-      sessionActiveSemester,
-      currFAQCategories,
-    },
-  };
-});
+);
 
 export default ManageFAQCategoriesPage;
