@@ -76,10 +76,6 @@ export default function Navbar() {
   const user = session.data.user as SessionUser;
 
   const logOut = async () => {
-    const apiUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
-    await axios.delete(`${apiUrl}/auth`, {
-      data: { refreshToken: user.refreshToken },
-    });
     signOut({ callbackUrl: '/auth/login' });
   };
 

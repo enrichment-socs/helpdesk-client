@@ -51,13 +51,12 @@ export default NextAuth({
             username,
             password,
           });
-          const { access_token, refresh_token } = result.data;
+          const { access_token } = result.data;
           const payload = jwt_decode(access_token);
 
           return {
             ...payload,
             accessToken: access_token,
-            refreshToken: refresh_token,
           };
         } catch (e) {
           throw new Error(e.response.data.message);

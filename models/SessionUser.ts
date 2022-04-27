@@ -7,7 +7,6 @@ export class SessionUser {
   roleId: string;
   roleName: string;
   accessToken: string;
-  refreshToken: string;
   exp: number;
   iat: number;
 }
