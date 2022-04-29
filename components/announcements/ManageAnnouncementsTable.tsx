@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai';
 import toast from 'react-hot-toast';
-import { confirm } from '../../lib/confirm-dialog-helper';
+import { confirm } from '../../shared/libs/confirm-dialog-helper';
 import { Announcement } from '../../models/Announcement';
 import { announcementsAtom } from '../../pages/manage/announcements';
 import { AnnouncementsService } from '../../services/AnnouncementService';

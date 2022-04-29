@@ -9,11 +9,11 @@ import RequestDetailDetails from '../../../components/request-details/RequestDet
 import RequestDetailHistory from '../../../components/request-details/RequestDetailHistory';
 import RequestDetailInformation from '../../../components/request-details/RequestDetailInformation';
 import RequestDetailResolution from '../../../components/request-details/RequestDetailResolution';
-import Layout from '../../../components/shared/_Layout';
-import { AuthHelper } from '../../../lib/auth-helper';
-import { ROLES } from '../../../lib/constant';
-import { getInitialServerProps } from '../../../lib/initialize-server-props';
-import { withSessionSsr } from '../../../lib/session';
+import Layout from '../../../widgets/_Layout';
+import { AuthHelper } from '../../../shared/libs/auth-helper';
+import { ROLES } from '../../../shared/constants/roles';
+import { getInitialServerProps } from '../../../shared/libs/initialize-server-props';
+import { withSessionSsr } from '../../../shared/libs/session';
 import { SemestersService } from '../../../services/SemestersService';
 
 const RequestsDetailPage: NextPage = () => {

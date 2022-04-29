@@ -1,18 +1,17 @@
-import ribbon from '../../public/assets/ribbon.png';
-import logo from '../../public/assets/binus.png';
+import ribbon from '../public/assets/ribbon.png';
+import logo from '../public/assets/binus.png';
 import Image from 'next/image';
 import SemesterListBox from './SemesterListBox';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { LogoutIcon } from '@heroicons/react/outline';
-import { ROLES } from '../../lib/constant';
+import { ROLES } from '../shared/constants/roles';
 import { If, Else, Then } from 'react-if';
 import DropdownNav from './_DropdownNav';
-import { DropdownNavLink } from '../../models/views/DropDownNavLink';
-import { SessionUser } from '../../models/SessionUser';
-import { NavLink } from '../../models/views/NavLink';
+import { DropdownNavLink } from '../models/views/DropdownNavLink';
+import { SessionUser } from '../models/SessionUser';
+import { NavLink } from '../models/views/NavLink';
 import { signOut } from 'next-auth/react';
-import axios from 'axios';
 import { useSession } from 'next-auth/react';
 
 export default function Navbar() {

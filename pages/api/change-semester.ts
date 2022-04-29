@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { withSessionRoute } from '../../lib/session';
+import { withSessionRoute } from '../../shared/libs/session';
 
 export default withSessionRoute(handler);
 

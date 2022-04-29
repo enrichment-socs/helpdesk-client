@@ -1,8 +1,8 @@
 import { IncomingMessage } from 'http';
 import { Session } from 'next-auth';
 import { GetSessionParams } from 'next-auth/react';
-import { Semester } from '../models/Semester';
-import { SemestersService } from '../services/SemestersService';
+import { Semester } from '../../models/Semester';
+import { SemestersService } from '../../services/SemestersService';
 
 type Props = {
   session: Session;

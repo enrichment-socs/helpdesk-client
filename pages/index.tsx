@@ -6,9 +6,9 @@ import {
 } from '@heroicons/react/solid';
 import type { NextPage } from 'next';
 import { getSession, useSession } from 'next-auth/react';
-import Layout from '../components/shared/_Layout';
-import { getInitialServerProps } from '../lib/initialize-server-props';
-import { withSessionSsr } from '../lib/session';
+import Layout from '../widgets/_Layout';
+import { getInitialServerProps } from '../shared/libs/initialize-server-props';
+import { withSessionSsr } from '../shared/libs/session';
 import { SemestersService } from '../services/SemestersService';
 import { AnnouncementsService } from '../services/AnnouncementService';
 import { Announcement } from '../models/Announcement';
@@ -20,7 +20,7 @@ import MessagesTable from '../components/messages/MessagesTable';
 import MessageDetailModal from '../components/messages/MessageDetailModal';
 import { GraphApiService } from '../services/GraphApiService';
 import { Message } from '../models/Message';
-import { ROLES } from '../lib/constant';
+import { ROLES } from '../shared/constants/roles';
 
 type Props = {
   announcements: Announcement[];

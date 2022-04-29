@@ -1,5 +1,5 @@
 import { Session } from 'next-auth';
-import { SessionUser } from '../models/SessionUser';
+import { SessionUser } from '../../models/SessionUser';
 
 export const AuthHelper = {
   isLoggedInAndHasRole(session: Session, allowedRoles: string[]) {

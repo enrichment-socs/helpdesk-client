@@ -1,6 +1,6 @@
 import { NextPage } from 'next';
 import Image from 'next/image';
-import Layout from '../../components/shared/_Layout';
+import Layout from '../../widgets/_Layout';
 import ribbon from '../../public/assets/ribbon.png';
 import binus from '../../public/assets/binus.png';
 import { useRouter } from 'next/router';
@@ -14,13 +14,13 @@ import {
   EMPLOYEE_EMAIL_REGEX,
   STUDENT_EMAIL_REGEX,
   STUDENT_NUMBER_REGEX,
-} from '../../lib/constant';
+} from '../../shared/constants/regex';
 import { signIn, getSession } from 'next-auth/react';
 import toast from 'react-hot-toast';
 import { SemestersService } from '../../services/SemestersService';
 import { withIronSessionSsr } from 'iron-session/next';
-import { withSessionSsr } from '../../lib/session';
-import { getInitialServerProps } from '../../lib/initialize-server-props';
+import { withSessionSsr } from '../../shared/libs/session';
+import { getInitialServerProps } from '../../shared/libs/initialize-server-props';
 
 const LoginPage: NextPage = () => {
   const router = useRouter();

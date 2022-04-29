@@ -2,9 +2,9 @@ import { Fragment, useState } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
 import { CheckIcon, SelectorIcon } from '@heroicons/react/solid';
 import { useAtom } from 'jotai';
-import { activeSemesterAtom, semestersAtom } from '../../atom';
-import { Semester } from '../../models/Semester';
-import { SemestersService } from '../../services/SemestersService';
+import { activeSemesterAtom, semestersAtom } from '../atom';
+import { Semester } from '../models/Semester';
+import { SemestersService } from '../services/SemestersService';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/router';
 

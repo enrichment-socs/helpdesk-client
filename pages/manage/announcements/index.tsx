@@ -5,15 +5,15 @@ import { getSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import AnnouncementFormModal from '../../../components/announcements/AnnouncementFormModal';
 import ManageAnnouncementsTable from '../../../components/announcements/ManageAnnouncementsTable';
-import Layout from '../../../components/shared/_Layout';
-import { getInitialServerProps } from '../../../lib/initialize-server-props';
-import { withSessionSsr } from '../../../lib/session';
+import Layout from '../../../widgets/_Layout';
+import { getInitialServerProps } from '../../../shared/libs/initialize-server-props';
+import { withSessionSsr } from '../../../shared/libs/session';
 import { Announcement } from '../../../models/Announcement';
 import { AnnouncementsService } from '../../../services/AnnouncementService';
 import { SemestersService } from '../../../services/SemestersService';
 import { SessionUser } from '../../../models/SessionUser';
-import { AuthHelper } from '../../../lib/auth-helper';
-import { ROLES } from '../../../lib/constant';
+import { AuthHelper } from '../../../shared/libs/auth-helper';
+import { ROLES } from '../../../shared/constants/roles';
 
 export const announcementsAtom = atom([] as Announcement[]);
 

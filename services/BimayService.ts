@@ -1,5 +1,8 @@
 import axios, { AxiosResponse } from 'axios';
-import { EMPLOYEE_EMAIL_REGEX, STUDENT_NUMBER_REGEX } from '../lib/constant';
+import {
+  EMPLOYEE_EMAIL_REGEX,
+  STUDENT_NUMBER_REGEX,
+} from '../shared/constants/regex';
 import { BaseService } from './BaseService';
 
 type GetTokenResponse = {

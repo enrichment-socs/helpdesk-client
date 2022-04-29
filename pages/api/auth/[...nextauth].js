@@ -6,7 +6,7 @@ import {
   STUDENT_EMAIL_REGEX,
   STUDENT_NUMBER_REGEX,
   ADMIN_USERNAME,
-} from '../../../lib/constant';
+} from '../../../shared/constants/regex';
 import jwt_decode from 'jwt-decode';
 import axios from 'axios';
 

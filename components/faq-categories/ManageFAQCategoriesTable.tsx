@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai';
 import toast from 'react-hot-toast';
-import { confirm } from '../../lib/confirm-dialog-helper';
+import { confirm } from '../../shared/libs/confirm-dialog-helper';
 import { FAQCategory } from '../../models/FAQCategory';
 import { faqCategoriesAtom } from '../../pages/manage/faq-categories';
 import { FAQCategoriesService } from '../../services/FAQCategoriesService';

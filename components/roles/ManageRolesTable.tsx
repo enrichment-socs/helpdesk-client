@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai';
 import toast from 'react-hot-toast';
-import { confirm } from '../../lib/confirm-dialog-helper';
+import { confirm } from '../../shared/libs/confirm-dialog-helper';
 import { Role } from '../../models/Role';
 import { rolesAtom } from '../../pages/manage/roles';
 import { RolesService } from '../../services/RolesService';

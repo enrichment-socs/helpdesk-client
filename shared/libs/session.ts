@@ -6,7 +6,7 @@ import {
   GetServerSidePropsResult,
   NextApiHandler,
 } from 'next';
-import { Semester } from '../models/Semester';
+import { Semester } from '../../models/Semester';
 
 export const sessionOptions: IronSessionOptions = {
   password: process.env.SECRET_COOKIE_PASSWORD as string,

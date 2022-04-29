@@ -1,4 +1,4 @@
-import { confirm } from '../../lib/confirm-dialog-helper';
+import { confirm } from '../../shared/libs/confirm-dialog-helper';
 import { Semester } from '../../models/Semester';
 import { SemestersService } from '../../services/SemestersService';
 import toast from 'react-hot-toast';

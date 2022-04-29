@@ -1,4 +1,4 @@
-import ConfirmDialog from '../components/shared/ConfirmDialog';
+import ConfirmDialog from '../../widgets/ConfirmDialog';
 import { createConfirmation } from 'react-confirm';
 
 export const confirm = (confirmation) => {
