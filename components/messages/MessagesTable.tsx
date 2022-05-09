@@ -43,11 +43,6 @@ const MessagesTable = ({
                   <th
                     scope="col"
                     className="bg-slate-500 sticky top-0 px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                    Preview Body
-                  </th>
-                  <th
-                    scope="col"
-                    className="bg-slate-500 sticky top-0 px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                     Received Date
                   </th>
                 </tr>
@@ -76,9 +71,6 @@ const MessagesTable = ({
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                       {message.subject}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {message.bodyPreview}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                       {message.receivedDateTime}

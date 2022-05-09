@@ -17,4 +17,19 @@ export class GraphApiService extends BaseService {
       );
     }
   }
+
+  public static async syncMessages(accessToken: string): Promise<void> {
+    try {
+      await axios.post(
+        `${this.BASE_URL}/graph-api/sync`,
+        {},
+        this.headersWithToken(accessToken)
+      );
+    } catch (e) {
+      console.error(e);
+      throw new Error(
+        'Ups, something is wrong when syncing messages from server'
+      );
+    }
+  }
 }
