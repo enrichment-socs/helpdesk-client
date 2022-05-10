@@ -37,8 +37,34 @@ const MessageDetailModal = ({
       messageId,
       user.accessToken
     );
+
+    const contentIds = result.body.content.match(
+      /cid["']?((?:.(?!["']?\s+(?:\S+)=|[>"']))+.)?/g
+    );
+
+    if (contentIds) {
+      const messageAttachment = await GraphApiService.getMessageAttachments(
+        messageId,
+        user.accessToken
+      );
+      let content = result.body.content;
+      console.log({ messageAttachment });
+
+      messageAttachment.value
+        .filter(
+          (att) => att.isInline && contentIds.includes(`cid:${att.contentId}`)
+        )
+        .forEach((attachment) => {
+          content = content.replace(
+            `cid:${attachment.contentId}`,
+            `data:image/jpeg;base64,${attachment.contentBytes}`
+          );
+        });
+
+      result.body.content = content;
+    }
+
     setMessage(result);
-    console.log({ result });
   };
 
   useEffect(() => {
@@ -83,7 +109,7 @@ const MessageDetailModal = ({
         <Dialog
           as="div"
           className="fixed inset-0 z-10 overflow-y-auto"
-          onClose={() => setIsOpen(false)}>
+          onClose={close}>
           <div
             className="min-h-screen px-4 text-center"
             style={{ background: 'rgba(0,0,0,0.6)' }}>
@@ -137,7 +163,9 @@ const MessageDetailModal = ({
                         <div className="w-1/4 py-2 border-r border-gray-200">
                           Subject
                         </div>
-                        <div className="w-3/4 py-2 ml-4">{message.subject}</div>
+                        <div className="w-3/4 py-2 ml-4">
+                          {message ? message.subject : 'Loading...'}
+                        </div>
                       </li>
 
                       <li className="flex px-6 border-b border-gray-200 w-full">
