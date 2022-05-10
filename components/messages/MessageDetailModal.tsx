@@ -1,19 +1,82 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { XIcon } from '@heroicons/react/solid';
+import axios from 'axios';
+import { format } from 'date-fns';
 import { SetStateAction } from 'jotai';
-import { Dispatch, Fragment } from 'react';
+import { useSession } from 'next-auth/react';
+import { Dispatch, Fragment, useEffect, useState } from 'react';
+import { OutlookMessage } from '../../models/OutlookMessage';
+import { SessionUser } from '../../models/SessionUser';
+import { GraphApiService } from '../../services/GraphApiService';
 
 type Props = {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
-  conversationIndex: string;
+  messageId: string;
+  conversationId: string;
 };
 
 const MessageDetailModal = ({
   isOpen,
   setIsOpen,
-  conversationIndex,
+  messageId,
+  conversationId,
 }: Props) => {
+  const session = useSession();
+  const user = session?.data?.user as SessionUser;
+
+  const [message, setMessage] = useState<OutlookMessage>(null);
+
+  const close = () => {
+    setIsOpen(false);
+    setMessage(null);
+  };
+
+  const fetchMessage = async () => {
+    const result = await GraphApiService.getMessageById(
+      messageId,
+      user.accessToken
+    );
+    setMessage(result);
+    console.log({ result });
+  };
+
+  useEffect(() => {
+    if (messageId) {
+      fetchMessage();
+    }
+  }, [messageId, conversationId]);
+
+  const getSenderInfo = () => {
+    return message ? message.sender.emailAddress.address : 'Loading...';
+  };
+
+  const getToRecipientsInfo = () => {
+    if (!message) return 'Loading...';
+
+    const recipients = message.toRecipients
+      .map((recipient) => recipient.emailAddress.address)
+      .join(', ');
+
+    return recipients || '-';
+  };
+
+  const getCcRecipientsInfo = () => {
+    if (!message) return 'Loading...';
+
+    const recipients = message.ccRecipients
+      .map((recipient) => recipient.emailAddress.address)
+      .join(', ');
+
+    return recipients || '-';
+  };
+
+  const getReceivedDateTimeInfo = () => {
+    return message
+      ? format(new Date(message.receivedDateTime), 'dd MMM yyy, kk:mm')
+      : 'Loading...';
+  };
+
   return (
     <>
       <Transition appear show={isOpen} as={Fragment}>
@@ -50,7 +113,7 @@ const MessageDetailModal = ({
               leave="ease-in duration-200"
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95">
-              <div className="inline-block w-full max-w-4xl my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded">
+              <div className="inline-block w-full max-w-6xl my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded">
                 <div className="text-lg items-center flex bg-gray-100 justify-between px-6 py-3">
                   <Dialog.Title
                     as="h3"
@@ -58,105 +121,78 @@ const MessageDetailModal = ({
                     Message Detail
                   </Dialog.Title>
 
-                  <button onClick={() => setIsOpen(false)}>
+                  <button onClick={close}>
                     <XIcon className="w-5 h-5 hover:fill-red-500" />
                   </button>
                 </div>
 
                 <div className="mt-2 p-6">
-                  <table className="border w-full">
-                    <tbody>
-                      <tr className="border-b">
-                        <td className="px-6 py-3 w-20 font-bold border-r">
-                          Email ID
-                        </td>
-                        <td className="px-6 py-3 break-all">
-                          91a9132c-bfbe-11ec-9d64-0242ac120002
-                        </td>
-                      </tr>
-                      <tr className="border-b">
-                        <td className="px-6 py-3 w-20 font-bold border-r">
-                          Conversation ID
-                        </td>
-                        <td className="px-6 py-3 break-all">
-                          91a9132c-bfbe-11ec-9d64-0242ac120002
-                        </td>
-                      </tr>
-                      <tr className="border-b">
-                        <td className="px-6 py-3 w-20 font-bold border-r">
-                          Conversation Index
-                        </td>
-                        <td className="px-6 py-3 break-all">
-                          91a9132c-bfbe-11ec-9d64-0242ac120002
-                        </td>
-                      </tr>
-                      <tr className="border-b">
-                        <td className="px-6 py-3 w-20 font-bold border-r">
-                          Sender Email
-                        </td>
-                        <td className="px-6 py-3 break-all">test@email.com</td>
-                      </tr>
-                      <tr className="border-b">
-                        <td className="px-6 py-3 w-20 font-bold border-r">
-                          Sender Name
-                        </td>
-                        <td className="px-6 py-3 break-all">Dummy Name</td>
-                      </tr>
-                      <tr className="border-b">
-                        <td className="px-6 py-3 font-bold border-r">
-                          Subject
-                        </td>
-                        <td className="px-6 py-3 break-all">Test Subject</td>
-                      </tr>
-                      <tr className="border-b">
-                        <td className="px-6 py-3 font-bold border-r">Body</td>
-                        <td className="px-6 py-3 break-all">
-                          Lorem ipsum dolor sit amet consectetur adipisicing
-                          elit. Exercitationem maiores blanditiis illo deserunt
-                          itaque nihil ipsum mollitia ullam, quae sapiente amet
-                          adipisci quam expedita possimus! Aliquam sint quae
-                          autem cum?
-                        </td>
-                      </tr>
-                      <tr className="border-b">
-                        <td className="px-6 py-3 font-bold border-r">
-                          Sent Date
-                        </td>
-                        <td className="px-6 py-3 break-all">2022-04-19</td>
-                      </tr>
-                      <tr className="border-b">
-                        <td className="px-6 py-3 font-bold border-r">
-                          Received Date
-                        </td>
-                        <td className="px-6 py-3 break-all">2022-04-19</td>
-                      </tr>
-                      <tr className="border-b">
-                        <td className="px-6 py-3 font-bold border-r">
-                          Web Link
-                        </td>
-                        <td className="px-6 py-3 break-all">Dummy Link</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                  <div className="mt-5">
-                    <div className="font-bold text-xl">
-                      Select Message Category
+                  <div className="border border-gray-300 rounded">
+                    <div className="bg-gray-300 text-gray-700 p-2">
+                      Information
                     </div>
-                    <select
-                      className="bg-gray-50 border-gray-300 text-gray-700 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 mt-3 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      name="category"
-                      id="category">
-                      <option value="Category 1">Category 1</option>
-                      <option value="Category 2">Category 2</option>
-                    </select>
+
+                    <ul className="bg-white border border-gray-200 text-gray-900">
+                      <li className="flex px-6 border-b border-gray-200 w-full">
+                        <div className="w-1/4 py-2 border-r border-gray-200">
+                          Subject
+                        </div>
+                        <div className="w-3/4 py-2 ml-4">{message.subject}</div>
+                      </li>
+
+                      <li className="flex px-6 border-b border-gray-200 w-full">
+                        <div className="w-1/4 py-2 border-r border-gray-200">
+                          From
+                        </div>
+                        <div className="w-3/4 py-2 ml-4">{getSenderInfo()}</div>
+                      </li>
+
+                      <li className="flex px-6 border-b border-gray-200 w-full">
+                        <div className="w-1/4 py-2 border-r border-gray-200">
+                          To
+                        </div>
+                        <div className="w-3/4 py-2 ml-4">
+                          {getToRecipientsInfo()}
+                        </div>
+                      </li>
+
+                      <li className="flex px-6 border-b border-gray-200 w-full">
+                        <div className="w-1/4 py-2 border-r border-gray-200">
+                          Cc
+                        </div>
+                        <div className="w-3/4 py-2 ml-4">
+                          {getCcRecipientsInfo()}
+                        </div>
+                      </li>
+
+                      <li className="flex px-6 w-full">
+                        <div className="w-1/4 py-2 border-r border-gray-200">
+                          Received at
+                        </div>
+                        <div className="w-3/4 py-2 ml-4">
+                          {getReceivedDateTimeInfo()}
+                        </div>
+                      </li>
+                    </ul>
                   </div>
 
-                  <div className="flex justify-end">
-                    <button
-                      type="button"
-                      className="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 font-medium rounded text-sm px-3 py-1.5 mt-3 dark:bg-blue-500 dark:hover:bg-blue-600 focus:outline-none dark:focus:ring-blue-700">
-                      Submit Message
-                    </button>
+                  <div className="border border-gray-300 rounded mt-4">
+                    <div className="bg-gray-300 text-gray-700 p-2">Content</div>
+                    <div className="p-4">
+                      {!message ? (
+                        'Loading...'
+                      ) : (
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: message.body.content,
+                          }}></div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="border border-gray-300 rounded mt-8">
+                    <div className="bg-gray-300 text-gray-700 p-2">Action</div>
+                    <div className="p-4">lorem ipsum</div>
                   </div>
                 </div>
               </div>

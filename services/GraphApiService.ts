@@ -1,6 +1,7 @@
 import { BaseService } from './BaseService';
 import axios, { AxiosResponse } from 'axios';
 import { Message } from '../models/Message';
+import { OutlookMessage } from '../models/OutlookMessage';
 
 export class GraphApiService extends BaseService {
   public static async getMessages(accessToken: string): Promise<Message[]> {
@@ -29,6 +30,24 @@ export class GraphApiService extends BaseService {
       console.error(e);
       throw new Error(
         'Ups, something is wrong when syncing messages from server'
+      );
+    }
+  }
+
+  public static async getMessageById(
+    id: string,
+    accessToken: string
+  ): Promise<OutlookMessage> {
+    try {
+      const result = await axios.get(
+        `${this.BASE_URL}/graph-api/messages/${id}`,
+        this.headersWithToken(accessToken)
+      );
+      return result.data;
+    } catch (e) {
+      console.error(e);
+      throw new Error(
+        'Ups, something is wrong when retrieving message from server'
       );
     }
   }

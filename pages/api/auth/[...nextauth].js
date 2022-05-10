@@ -27,7 +27,11 @@ export default NextAuth({
       return token;
     },
     async session({ session, token }) {
+      const payload = jwt_decode(token.accessToken);
+      const expDate = new Date(payload.exp * 1000);
+
       session.user = token;
+      session.expires = expDate.toISOString();
       return session;
     },
   },

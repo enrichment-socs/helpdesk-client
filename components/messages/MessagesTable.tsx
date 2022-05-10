@@ -1,20 +1,29 @@
 import { format } from 'date-fns';
+import { useAtom } from 'jotai';
+import { useSession } from 'next-auth/react';
 import { Dispatch, SetStateAction } from 'react';
 import { Message } from '../../models/Message';
+import { SessionUser } from '../../models/SessionUser';
+import { messagesAtom } from '../../pages';
+import { GraphApiService } from '../../services/GraphApiService';
 
 type Props = {
   setOpenMessageModal: Dispatch<SetStateAction<boolean>>;
-  setOpenMessageIndex: Dispatch<SetStateAction<string>>;
-  messages: Message[];
+  setSelectedMessageId: Dispatch<SetStateAction<string>>;
+  setSelectedMessageConversationId: Dispatch<SetStateAction<string>>;
 };
 
 const MessagesTable = ({
   setOpenMessageModal,
-  setOpenMessageIndex,
-  messages,
+  setSelectedMessageId,
+  setSelectedMessageConversationId,
 }: Props) => {
-  const onMessageClick = (index: string) => {
-    setOpenMessageIndex(index);
+  const [messages] = useAtom(messagesAtom);
+  const session = useSession();
+
+  const onMessageClick = async (messageId: string, conversationId: string) => {
+    setSelectedMessageId(messageId);
+    setSelectedMessageConversationId(conversationId);
     setOpenMessageModal(true);
   };
 
@@ -63,7 +72,9 @@ const MessagesTable = ({
                     className={`cursor-pointer ${
                       index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
                     } transition duration-300 ease-in-out hover:bg-sky-100`}
-                    onClick={() => onMessageClick(message.conversationIndex)}>
+                    onClick={() =>
+                      onMessageClick(message.messageId, message.conversationId)
+                    }>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {index + 1}
                     </td>
