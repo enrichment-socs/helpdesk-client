@@ -1,13 +1,14 @@
 import { Dialog, Transition } from '@headlessui/react';
-import { XIcon } from '@heroicons/react/solid';
-import axios from 'axios';
+import { DownloadIcon, XIcon } from '@heroicons/react/solid';
 import { format } from 'date-fns';
 import { SetStateAction } from 'jotai';
 import { useSession } from 'next-auth/react';
 import { Dispatch, Fragment, useEffect, useState } from 'react';
 import { OutlookMessage } from '../../models/OutlookMessage';
+import { OutlookMessageAttachmentValue } from '../../models/OutlookMessageAttachment';
 import { SessionUser } from '../../models/SessionUser';
 import { GraphApiService } from '../../services/GraphApiService';
+import { DownloadHelper } from '../../shared/libs/download-helper';
 
 type Props = {
   isOpen: boolean;
@@ -26,13 +27,23 @@ const MessageDetailModal = ({
   const user = session?.data?.user as SessionUser;
 
   const [message, setMessage] = useState<OutlookMessage>(null);
+  const [attachments, setAttachments] = useState<
+    OutlookMessageAttachmentValue[]
+  >([]);
 
   const close = () => {
     setIsOpen(false);
     setMessage(null);
   };
 
+  useEffect(() => {
+    if (messageId) {
+      fetchMessage();
+    }
+  }, [messageId, conversationId]);
+
   const fetchMessage = async () => {
+    console.log({ messageId });
     const result = await GraphApiService.getMessageById(
       messageId,
       user.accessToken
@@ -42,13 +53,13 @@ const MessageDetailModal = ({
       /cid["']?((?:.(?!["']?\s+(?:\S+)=|[>"']))+.)?/g
     );
 
-    if (contentIds) {
+    if (contentIds || result.hasAttachments) {
       const messageAttachment = await GraphApiService.getMessageAttachments(
         messageId,
         user.accessToken
       );
+
       let content = result.body.content;
-      console.log({ messageAttachment });
 
       messageAttachment.value
         .filter(
@@ -62,16 +73,11 @@ const MessageDetailModal = ({
         });
 
       result.body.content = content;
+      setAttachments(messageAttachment.value);
     }
 
     setMessage(result);
   };
-
-  useEffect(() => {
-    if (messageId) {
-      fetchMessage();
-    }
-  }, [messageId, conversationId]);
 
   const getSenderInfo = () => {
     return message ? message.sender.emailAddress.address : 'Loading...';
@@ -101,6 +107,14 @@ const MessageDetailModal = ({
     return message
       ? format(new Date(message.receivedDateTime), 'dd MMM yyy, kk:mm')
       : 'Loading...';
+  };
+
+  const downloadAttachment = (attachment: OutlookMessageAttachmentValue) => {
+    DownloadHelper.download(
+      attachment.name,
+      attachment.contentBytes,
+      attachment.contentType
+    );
   };
 
   return (
@@ -210,10 +224,36 @@ const MessageDetailModal = ({
                       {!message ? (
                         'Loading...'
                       ) : (
-                        <div
-                          dangerouslySetInnerHTML={{
-                            __html: message.body.content,
-                          }}></div>
+                        <div>
+                          <div
+                            dangerouslySetInnerHTML={{
+                              __html: message.body.content,
+                            }}></div>
+                          {message.hasAttachments && (
+                            <div>
+                              <h3 className="font-semibold text-sm">
+                                Attachments
+                              </h3>
+
+                              <ul className="flex flex-wrap space-x-2">
+                                {attachments
+                                  .filter((att) => !att.isInline)
+                                  .map((attachment) => (
+                                    <li key={attachment.contentId}>
+                                      <button
+                                        onClick={() =>
+                                          downloadAttachment(attachment)
+                                        }
+                                        className="flex space-x-2 items-center border border-blue-100 py-2 px-4 text-sm rounded bg-blue-100 hover:bg-blue-200">
+                                        <span>{attachment.name}</span>
+                                        <DownloadIcon className="w-4 h-4 ml-2" />
+                                      </button>
+                                    </li>
+                                  ))}
+                              </ul>
+                            </div>
+                          )}
+                        </div>
                       )}
                     </div>
                   </div>
