@@ -11,6 +11,8 @@ import { GraphApiService } from '../../services/GraphApiService';
 import { DownloadHelper } from '../../shared/libs/download-helper';
 import MultiLineSkeletonLoading from '../../widgets/MultiLineSkeletonLoading';
 import SkeletonLoading from '../../widgets/SkeletonLoading';
+import toast from 'react-hot-toast';
+import { ClientPromiseWrapper } from '../../shared/libs/client-promise-wrapper';
 
 type Props = {
   isOpen: boolean;
@@ -43,7 +45,8 @@ const MessageDetailModal = ({
 
   useEffect(() => {
     if (messageId) {
-      fetchMessage();
+      const wrapper = new ClientPromiseWrapper(toast);
+      wrapper.handle(fetchMessage());
     }
   }, [messageId, conversationId]);
 
@@ -52,6 +55,7 @@ const MessageDetailModal = ({
       messageId,
       user.accessToken
     );
+
     const firstMessageFromThisConversation =
       await GraphApiService.getFirstMessageByConversation(
         messageResult.conversationId,
@@ -89,11 +93,15 @@ const MessageDetailModal = ({
   };
 
   const getSenderInfo = () => {
-    return message ? message.sender.emailAddress.address : <SkeletonLoading />;
+    return message ? (
+      message.sender.emailAddress.address
+    ) : (
+      <SkeletonLoading width="100%" />
+    );
   };
 
   const getToRecipientsInfo = () => {
-    if (!message) return <SkeletonLoading />;
+    if (!message) return <SkeletonLoading width="100%" />;
 
     const recipients = message.toRecipients
       .map((recipient) => recipient.emailAddress.address)
@@ -103,7 +111,7 @@ const MessageDetailModal = ({
   };
 
   const getCcRecipientsInfo = () => {
-    if (!message) return <SkeletonLoading />;
+    if (!message) return <SkeletonLoading width="100%" />;
 
     const recipients = message.ccRecipients
       .map((recipient) => recipient.emailAddress.address)
@@ -116,7 +124,7 @@ const MessageDetailModal = ({
     return message ? (
       format(new Date(message.receivedDateTime), 'dd MMM yyy, kk:mm')
     ) : (
-      <SkeletonLoading />
+      <SkeletonLoading width="100%" />
     );
   };
 
@@ -189,7 +197,11 @@ const MessageDetailModal = ({
                           Subject
                         </div>
                         <div className="w-3/4 py-2 ml-4">
-                          {message ? message.subject : <SkeletonLoading />}
+                          {message ? (
+                            message.subject
+                          ) : (
+                            <SkeletonLoading width="100%" />
+                          )}
                         </div>
                       </li>
 
@@ -249,8 +261,8 @@ const MessageDetailModal = ({
                               <ul className="flex flex-wrap space-x-2">
                                 {attachments
                                   .filter((att) => !att.isInline)
-                                  .map((attachment) => (
-                                    <li key={attachment.contentId}>
+                                  .map((attachment, idx) => (
+                                    <li key={idx}>
                                       <button
                                         onClick={() =>
                                           downloadAttachment(attachment)
