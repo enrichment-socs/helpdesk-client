@@ -53,6 +53,42 @@ export class GraphApiService extends BaseService {
     }
   }
 
+  public static async getMessagesByConversation(
+    conversationId: string,
+    accessToken: string
+  ): Promise<OutlookMessage[]> {
+    try {
+      const result = await axios.get(
+        `${this.BASE_URL}/graph-api/messages/conversations/${conversationId}`,
+        this.headersWithToken(accessToken)
+      );
+      return result.data.value;
+    } catch (e) {
+      console.error(e);
+      throw new Error(
+        'Ups, something is wrong when retrieving messages from server'
+      );
+    }
+  }
+
+  public static async getFirstMessageByConversation(
+    conversationId: string,
+    accessToken: string
+  ): Promise<OutlookMessage> {
+    try {
+      const result = await axios.get(
+        `${this.BASE_URL}/graph-api/messages/conversations/${conversationId}/first`,
+        this.headersWithToken(accessToken)
+      );
+      return result.data;
+    } catch (e) {
+      console.error(e);
+      throw new Error(
+        'Ups, something is wrong when retrieving messages from server'
+      );
+    }
+  }
+
   public static async getMessageAttachments(
     id: string,
     accessToken: string
