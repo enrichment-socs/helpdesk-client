@@ -16,9 +16,6 @@ export default NextAuth({
     maxAge: 1 * 60 * 60,
     strategy: 'jwt',
   },
-  // jwt: {
-
-  // }
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
@@ -28,10 +25,10 @@ export default NextAuth({
     },
     async session({ session, token }) {
       const payload = jwt_decode(token.accessToken);
-      const expDate = new Date(payload.exp * 1000);
 
+      token.iat = payload.iat;
+      token.exp = payload.exp;
       session.user = token;
-      session.expires = expDate.toISOString();
       return session;
     },
   },

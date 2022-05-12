@@ -7,7 +7,6 @@ export default function AuthHandlerWrapper() {
   const clientSession = useSession();
   useEffect(() => {
     const user = clientSession?.data?.user as SessionUser;
-    console.log({ user });
     if (user) {
       const tokenPayload: any = jwt_decode(user.accessToken);
       const expDate = new Date(tokenPayload.exp * 1000);
@@ -16,5 +15,5 @@ export default function AuthHandlerWrapper() {
     }
   }, [clientSession]);
 
-  return <span></span>;
+  return <></>;
 }
