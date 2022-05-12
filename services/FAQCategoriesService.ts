@@ -4,74 +4,41 @@ import { FAQCategory } from '../models/FAQCategory';
 import { BaseService } from './BaseService';
 
 export class FAQCategoriesService extends BaseService {
-  public static async get(id: string) {
-    try {
-      const res: AxiosResponse<FAQCategory> = await axios.get(
-        `${this.BASE_URL}/faq-categories/${id}`
-      );
-      return res.data;
-    } catch (e) {
-      console.error(e);
-      throw new Error('Failed when getting specified faq category from server');
-    }
+  public async get(id: string) {
+    const res: AxiosResponse<FAQCategory> = await this.wrapper.handle(
+      axios.get(`${this.BASE_URL}/faq-categories/${id}`)
+    );
+    return res.data;
   }
 
-  public static async getAll() {
-    try {
-      const res: AxiosResponse<FAQCategory[]> = await axios.get(
-        `${this.BASE_URL}/faq-categories`
-      );
-      return res.data;
-    } catch (e) {
-      console.error(e);
-      throw new Error('Failed when getting faq categories from server');
-    }
+  public async getAll() {
+    const res: AxiosResponse<FAQCategory[]> = await this.wrapper.handle(
+      axios.get(`${this.BASE_URL}/faq-categories`)
+    );
+    return res.data;
   }
 
-  static async addFAQCategory(dto: CreateFAQCategoryDto) {
-    try {
-      const result: AxiosResponse<FAQCategory> = await axios.post(
-        `${this.BASE_URL}/faq-categories`,
-        dto
-      );
-      return result.data;
-    } catch (e) {
-      console.error(e);
-      throw new Error(
-        'Ups, something is wrong with the server (Add FAQ Category)'
-      );
-    }
+  public async addFAQCategory(dto: CreateFAQCategoryDto) {
+    const result: AxiosResponse<FAQCategory> = await this.wrapper.handle(
+      axios.post(`${this.BASE_URL}/faq-categories`, dto)
+    );
+    return result.data;
   }
 
-  static async updateFAQCategory(
+  public async updateFAQCategory(
     dto: CreateFAQCategoryDto,
     categoryId: string
   ) {
-    try {
-      const result: AxiosResponse<FAQCategory> = await axios.patch(
-        `${this.BASE_URL}/faq-categories/${categoryId}`,
-        dto
-      );
-      return result.data;
-    } catch (e) {
-      console.log(e);
-      throw new Error(
-        'Ups, something is wrong with the server (Update FAQ Category)'
-      );
-    }
+    const result: AxiosResponse<FAQCategory> = await this.wrapper.handle(
+      axios.patch(`${this.BASE_URL}/faq-categories/${categoryId}`, dto)
+    );
+    return result.data;
   }
 
-  static async deleteFAQCategory(categoryId: string) {
-    try {
-      const result: AxiosResponse<FAQCategory> = await axios.delete(
-        `${this.BASE_URL}/faq-categories/${categoryId}`
-      );
-      return result.data;
-    } catch (e) {
-      console.error(e);
-      throw new Error(
-        'Ups, something is wrong with the server (Delete FAQ Category)'
-      );
-    }
+  public async deleteFAQCategory(categoryId: string) {
+    const result: AxiosResponse<FAQCategory> = await this.wrapper.handle(
+      axios.delete(`${this.BASE_URL}/faq-categories/${categoryId}`)
+    );
+    return result.data;
   }
 }

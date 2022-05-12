@@ -77,10 +77,10 @@ export const getServerSideProps = withSessionSsr(
     }
 
     const user = session.user as SessionUser;
+    const announcementService = new AnnouncementsService(user.accessToken);
 
-    const currAnnouncements = await AnnouncementsService.getBySemester(
-      sessionActiveSemester.id,
-      user.accessToken
+    const currAnnouncements = await announcementService.getBySemester(
+      sessionActiveSemester.id
     );
 
     return {

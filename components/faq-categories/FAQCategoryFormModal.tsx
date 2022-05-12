@@ -7,6 +7,8 @@ import { CreateFAQCategoryDto } from '../../models/dto/faq-categories/create-faq
 import { FAQCategory } from '../../models/FAQCategory';
 import { faqCategoriesAtom } from '../../pages/manage/faq-categories';
 import { FAQCategoriesService } from '../../services/FAQCategoriesService';
+import { useSession } from 'next-auth/react';
+import { SessionUser } from '../../models/SessionUser';
 
 type Props = {
   isOpen: boolean;
@@ -25,6 +27,8 @@ export default function FAQCategoryFormModal({
 }: Props) {
   const [faqCategories, setFAQCategories] = useAtom(faqCategoriesAtom);
   const [loading, setLoading] = useState(false);
+  const session = useSession();
+  const user = session?.data?.user as SessionUser;
 
   const {
     register,
@@ -39,13 +43,14 @@ export default function FAQCategoryFormModal({
 
   const onSubmit: SubmitHandler<FormData> = async (payload) => {
     setLoading(true);
+    const faqCategoriesService = new FAQCategoriesService(user.accessToken);
     await toast.promise(
       faqCategory
-        ? FAQCategoriesService.updateFAQCategory(
+        ? faqCategoriesService.updateFAQCategory(
             payload as CreateFAQCategoryDto,
             faqCategory.id
           )
-        : FAQCategoriesService.addFAQCategory(payload as CreateFAQCategoryDto),
+        : faqCategoriesService.addFAQCategory(payload as CreateFAQCategoryDto),
       {
         loading: faqCategory
           ? 'Updating FAQ category...'

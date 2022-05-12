@@ -4,6 +4,8 @@ import { confirm } from '../../shared/libs/confirm-dialog-helper';
 import { Status } from '../../models/Status';
 import { statusAtom } from '../../pages/manage/status';
 import { StatusService } from '../../services/StatusService';
+import { useSession } from 'next-auth/react';
+import { SessionUser } from '../../models/SessionUser';
 
 type Props = {
   statuses: Status[];
@@ -12,11 +14,14 @@ type Props = {
 
 export default function ManageStatusTable({ statuses, openModal }: Props) {
   const [, setStatuses] = useAtom(statusAtom);
+  const session = useSession();
+  const user = session?.data?.user as SessionUser;
+  const statusService = new StatusService(user.accessToken);
 
   const onDelete = async (status: Status) => {
     const message = `Are you sure you want to delete <b>${status.statusName} </b> ?`;
     if (await confirm(message)) {
-      await toast.promise(StatusService.deleteStatus(status.id), {
+      await toast.promise(statusService.deleteStatus(status.id), {
         loading: 'Deleting status...',
         success: (r) => {
           setStatuses(statuses.filter((s) => s.id !== status.id));

@@ -4,6 +4,8 @@ import { confirm } from '../../shared/libs/confirm-dialog-helper';
 import { Role } from '../../models/Role';
 import { rolesAtom } from '../../pages/manage/roles';
 import { RolesService } from '../../services/RolesService';
+import { useSession } from 'next-auth/react';
+import { SessionUser } from '../../models/SessionUser';
 
 type Props = {
   roles: Role[];
@@ -12,11 +14,14 @@ type Props = {
 
 export default function ManageRolesTable({ roles, openModal }: Props) {
   const [, setRoles] = useAtom(rolesAtom);
+  const session = useSession();
+  const user = session?.data?.user as SessionUser;
+  const rolesService = new RolesService(user.accessToken);
 
   const onDelete = async (role: Role) => {
     const message = `Are you sure you want to delete <b>${role.roleName} </b> ?`;
     if (await confirm(message)) {
-      await toast.promise(RolesService.deleteRole(role.id), {
+      await toast.promise(rolesService.deleteRole(role.id), {
         loading: 'Deleting role...',
         success: (r) => {
           setRoles(roles.filter((s) => s.id !== role.id));

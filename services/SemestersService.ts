@@ -4,79 +4,48 @@ import { Semester } from '../models/Semester';
 import { BaseService } from './BaseService';
 
 export class SemestersService extends BaseService {
-  static async getSemesters(): Promise<Semester[]> {
-    try {
-      const result: AxiosResponse<Semester[]> = await axios.get(
-        `${this.BASE_URL}/semesters`
-      );
-      return result.data;
-    } catch (e) {
-      console.error(e);
-      throw new Error(
-        'Ups, something is wrong with the server (Get Semesters)'
-      );
-    }
+  public async getSemesters(): Promise<Semester[]> {
+    const result: AxiosResponse<Semester[]> = await this.wrapper.handle(
+      axios.get(`${this.BASE_URL}/semesters`)
+    );
+    return result.data;
   }
 
-  static async addSemester(dto: CreateSemesterDto, token: string) {
-    try {
-      const result: AxiosResponse<Semester> = await axios.post(
-        `${this.BASE_URL}/semesters`,
-        dto,
-        this.headersWithToken(token)
-      );
-      return result.data;
-    } catch (e) {
-      console.error(e);
-      throw new Error('Ups, something is wrong with the server (Add Semester)');
-    }
+  public async addSemester(dto: CreateSemesterDto) {
+    const result: AxiosResponse<Semester> = await this.wrapper.handle(
+      axios.post(`${this.BASE_URL}/semesters`, dto, this.headersWithToken())
+    );
+    return result.data;
   }
 
-  static async updateSemester(
-    dto: CreateSemesterDto,
-    semesterId: string,
-    token: string
-  ) {
-    try {
-      const result: AxiosResponse<Semester> = await axios.put(
+  public async updateSemester(dto: CreateSemesterDto, semesterId: string) {
+    const result: AxiosResponse<Semester> = await this.wrapper.handle(
+      axios.put(
         `${this.BASE_URL}/semesters/${semesterId}`,
         dto,
-        this.headersWithToken(token)
-      );
-      return result.data;
-    } catch (e) {
-      console.error(e);
-      throw new Error(
-        'Ups, something is wrong with the server (Update Semester)'
-      );
-    }
+        this.headersWithToken()
+      )
+    );
+    return result.data;
   }
 
-  static async deleteSemester(semesterId: string, token: string) {
-    try {
-      const result: AxiosResponse<Semester> = await axios.delete(
+  public async deleteSemester(semesterId: string) {
+    const result: AxiosResponse<Semester> = await this.wrapper.handle(
+      axios.delete(
         `${this.BASE_URL}/semesters/${semesterId}`,
-        this.headersWithToken(token)
-      );
-      return result.data;
-    } catch (e) {
-      console.error(e);
-      throw new Error(
-        'Ups, something is wrong with the server (Delete Semester)'
-      );
-    }
+        this.headersWithToken()
+      )
+    );
+    return result.data;
   }
 
-  static async changeSemester(semester: Semester) {
-    try {
-      const result: AxiosResponse<Semester> = await axios.post(
+  public async changeSemester(semester: Semester) {
+    const result: AxiosResponse<Semester> = await this.wrapper.handle(
+      axios.post(
         `${process.env.NEXT_PUBLIC_BASE_LOCAL_API_URL}/change-semester`,
         { semester }
-      );
-      return result.data;
-    } catch (e) {
-      console.error(e);
-      throw new Error('Ups, something is wrong when changing semester');
-    }
+      )
+    );
+    return result.data;
   }
 }

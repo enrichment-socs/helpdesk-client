@@ -13,6 +13,7 @@ import { withSessionSsr } from '../../../shared/libs/session';
 import { Role } from '../../../models/Role';
 import { RolesService } from '../../../services/RolesService';
 import { SemestersService } from '../../../services/SemestersService';
+import { SessionUser } from '../../../models/SessionUser';
 
 export const rolesAtom = atom([] as Role[]);
 
@@ -68,7 +69,9 @@ export const getServerSideProps = withSessionSsr(
       };
     }
 
-    const currRoles = await RolesService.getAll();
+    const user = session.user as SessionUser;
+    const rolesService = new RolesService(user.accessToken);
+    const currRoles = await rolesService.getAll();
 
     return {
       props: {

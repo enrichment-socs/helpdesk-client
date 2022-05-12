@@ -20,10 +20,11 @@ export default function MessageContainer() {
 
   const session = useSession();
   const user = session?.data?.user as SessionUser;
+  const graphApiService = new GraphApiService(user.accessToken);
 
   const syncAndGetMessages = async () => {
-    await GraphApiService.syncMessages(user.accessToken);
-    return GraphApiService.getMessages(user.accessToken);
+    await graphApiService.syncMessages();
+    return graphApiService.getMessages();
   };
 
   const handleSyncMessages = async () => {

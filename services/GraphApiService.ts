@@ -5,105 +5,62 @@ import { OutlookMessage } from '../models/OutlookMessage';
 import { OutlookMessageAttachment } from '../models/OutlookMessageAttachment';
 
 export class GraphApiService extends BaseService {
-  public static async getMessages(accessToken: string): Promise<Message[]> {
-    try {
-      const result: AxiosResponse<Message[]> = await axios.get(
-        `${this.BASE_URL}/graph-api/messages`,
-        this.headersWithToken(accessToken)
-      );
-      return result.data;
-    } catch (e) {
-      console.error(e);
-      throw new Error(
-        'Ups, something is wrong when getting messages from server'
-      );
-    }
+  public async getMessages(): Promise<Message[]> {
+    const result: AxiosResponse<Message[]> = await this.wrapper.handle(
+      axios.get(`${this.BASE_URL}/graph-api/messages`, this.headersWithToken())
+    );
+    return result.data;
   }
 
-  public static async syncMessages(accessToken: string): Promise<void> {
-    try {
-      await axios.post(
-        `${this.BASE_URL}/graph-api/sync`,
-        {},
-        this.headersWithToken(accessToken)
-      );
-    } catch (e) {
-      console.error(e);
-      throw new Error(
-        'Ups, something is wrong when syncing messages from server'
-      );
-    }
+  public async syncMessages(): Promise<void> {
+    await this.wrapper.handle(
+      axios.post(`${this.BASE_URL}/graph-api/sync`, {}, this.headersWithToken())
+    );
   }
 
-  public static async getMessageById(
-    id: string,
-    accessToken: string
-  ): Promise<OutlookMessage> {
-    try {
-      const result = await axios.get(
+  public async getMessageById(id: string): Promise<OutlookMessage> {
+    const result: AxiosResponse<OutlookMessage> = await this.wrapper.handle(
+      axios.get(
         `${this.BASE_URL}/graph-api/messages/${id}`,
-        this.headersWithToken(accessToken)
-      );
-      return result.data;
-    } catch (e) {
-      console.error(e);
-      throw new Error(
-        'Ups, something is wrong when retrieving message from server'
-      );
-    }
+        this.headersWithToken()
+      )
+    );
+    return result.data;
   }
 
-  public static async getMessagesByConversation(
-    conversationId: string,
-    accessToken: string
+  public async getMessagesByConversation(
+    conversationId: string
   ): Promise<OutlookMessage[]> {
-    try {
-      const result = await axios.get(
+    const result = await this.wrapper.handle(
+      axios.get(
         `${this.BASE_URL}/graph-api/messages/conversations/${conversationId}`,
-        this.headersWithToken(accessToken)
-      );
-      return result.data.value;
-    } catch (e) {
-      console.error(e);
-      throw new Error(
-        'Ups, something is wrong when retrieving messages from server'
-      );
-    }
+        this.headersWithToken()
+      )
+    );
+    return result.data.value;
   }
 
-  public static async getFirstMessageByConversation(
-    conversationId: string,
-    accessToken: string
+  public async getFirstMessageByConversation(
+    conversationId: string
   ): Promise<OutlookMessage> {
-    try {
-      const result = await axios.get(
+    const result = await this.wrapper.handle(
+      axios.get(
         `${this.BASE_URL}/graph-api/messages/conversations/${conversationId}/first`,
-        this.headersWithToken(accessToken)
-      );
-      return result.data;
-    } catch (e) {
-      console.error(e);
-      throw new Error(
-        'Ups, something is wrong when retrieving messages from server'
-      );
-    }
+        this.headersWithToken()
+      )
+    );
+    return result.data;
   }
 
-  public static async getMessageAttachments(
-    id: string,
-    accessToken: string
+  public async getMessageAttachments(
+    id: string
   ): Promise<OutlookMessageAttachment> {
-    try {
-      const result = await axios.get(
+    const result = await this.wrapper.handle(
+      axios.get(
         `${this.BASE_URL}/graph-api/messages/${id}/attachments`,
-        this.headersWithToken(accessToken)
-      );
-      return result.data;
-    } catch (e) {
-      console.error(e);
-      throw new Error(
-        'Ups, something is wrong when retrieving message from server'
-      );
-    }
+        this.headersWithToken()
+      )
+    );
+    return result.data;
   }
 }

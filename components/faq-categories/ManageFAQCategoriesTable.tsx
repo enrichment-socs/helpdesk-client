@@ -4,6 +4,8 @@ import { confirm } from '../../shared/libs/confirm-dialog-helper';
 import { FAQCategory } from '../../models/FAQCategory';
 import { faqCategoriesAtom } from '../../pages/manage/faq-categories';
 import { FAQCategoriesService } from '../../services/FAQCategoriesService';
+import { useSession } from 'next-auth/react';
+import { SessionUser } from '../../models/SessionUser';
 
 type Props = {
   faqCategories: FAQCategory[];
@@ -15,12 +17,15 @@ export default function ManageFAQCategoriesTable({
   openModal,
 }: Props) {
   const [, setFAQCategories] = useAtom(faqCategoriesAtom);
+  const session = useSession();
+  const user = session?.data?.user as SessionUser;
 
   const onDelete = async (faqCategory: FAQCategory) => {
+    const faqCategoriesService = new FAQCategoriesService(user.accessToken);
     const message = `Are you sure you want to delete <b>${faqCategory.categoryName} </b> ?`;
     if (await confirm(message)) {
       await toast.promise(
-        FAQCategoriesService.deleteFAQCategory(faqCategory.id),
+        faqCategoriesService.deleteFAQCategory(faqCategory.id),
         {
           loading: 'Deleting FAQ category...',
           success: (r) => {

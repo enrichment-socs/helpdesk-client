@@ -99,16 +99,17 @@ export default function AnnouncementFormModal({
     };
 
     if (!announcement) dto.semesterId = activeSemester.id;
+    const announcementService = new AnnouncementsService(user.accessToken);
 
     setLoading(true);
     await toast.promise(
       announcement
-        ? AnnouncementsService.updateAnnouncement(
+        ? announcementService.updateAnnouncement(
             dto,
             announcement.id,
             user.accessToken
           )
-        : AnnouncementsService.addAnnouncement(dto, user.accessToken),
+        : announcementService.addAnnouncement(dto, user.accessToken),
       {
         loading: announcement
           ? 'Updating announcement...'

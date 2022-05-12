@@ -13,6 +13,7 @@ import { withSessionSsr } from '../../../shared/libs/session';
 import { Priority } from '../../../models/Priority';
 import { PrioritiesService } from '../../../services/PrioritiesService';
 import { SemestersService } from '../../../services/SemestersService';
+import { SessionUser } from '../../../models/SessionUser';
 
 type Props = {
   priorities: Priority[];
@@ -70,7 +71,9 @@ export const getServerSideProps = withSessionSsr(
       };
     }
 
-    const priorities = await PrioritiesService.getAll();
+    const user = session.user as SessionUser;
+    const prioritiesService = new PrioritiesService(user.accessToken);
+    const priorities = await prioritiesService.getAll();
 
     return {
       props: {

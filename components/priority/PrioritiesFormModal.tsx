@@ -1,10 +1,12 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { SetStateAction, useAtom } from 'jotai';
+import { useSession } from 'next-auth/react';
 import { Dispatch, Fragment, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { CreatePriorityDto } from '../../models/dto/priority/create-prioritiy.dto';
 import { Priority } from '../../models/Priority';
+import { SessionUser } from '../../models/SessionUser';
 import { prioritiesAtom } from '../../pages/manage/priorities';
 import { PrioritiesService } from '../../services/PrioritiesService';
 
@@ -26,6 +28,9 @@ export default function PrioritiesFormModal({
 }: Props) {
   const [prioritiesVal, setprioritiesVal] = useAtom(prioritiesAtom);
   const [loading, setLoading] = useState(false);
+  const session = useSession();
+  const user = session?.data?.user as SessionUser;
+  const prioritiesService = new PrioritiesService(user.accessToken);
 
   const {
     register,
@@ -43,8 +48,8 @@ export default function PrioritiesFormModal({
     setLoading(true);
     await toast.promise(
       priority
-        ? PrioritiesService.update(payload as CreatePriorityDto, priority.id)
-        : PrioritiesService.add(payload as CreatePriorityDto),
+        ? prioritiesService.update(payload as CreatePriorityDto, priority.id)
+        : prioritiesService.add(payload as CreatePriorityDto),
       {
         loading: priority ? 'Updating priority...' : 'Adding priority...',
         success: (result) => {

@@ -13,6 +13,7 @@ import { withSessionSsr } from '../../../shared/libs/session';
 import { Category } from '../../../models/Category';
 import { CategoriesService } from '../../../services/CategoriesService';
 import { SemestersService } from '../../../services/SemestersService';
+import { SessionUser } from '../../../models/SessionUser';
 
 type Props = {
   categories: Category[];
@@ -70,7 +71,9 @@ export const getServerSideProps = withSessionSsr(
       };
     }
 
-    const categories = await CategoriesService.getAll();
+    const user = session.user as SessionUser;
+    const categoriesService = new CategoriesService(user.accessToken);
+    const categories = await categoriesService.getAll();
 
     return {
       props: {

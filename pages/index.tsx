@@ -96,15 +96,15 @@ export const getServerSideProps = withSessionSsr(
     }
 
     const user = session.user as SessionUser;
-    const announcements = await AnnouncementsService.getBySemester(
-      sessionActiveSemester.id,
-      user.accessToken
+    const announcementService = new AnnouncementsService(user.accessToken);
+    const graphApiService = new GraphApiService(user.accessToken);
+
+    const announcements = await announcementService.getBySemester(
+      sessionActiveSemester.id
     );
 
     const messages =
-      user.roleName === ROLES.USER
-        ? []
-        : await GraphApiService.getMessages(user.accessToken);
+      user.roleName === ROLES.USER ? [] : await graphApiService.getMessages();
 
     return {
       props: {

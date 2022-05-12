@@ -4,57 +4,31 @@ import { Status } from '../models/Status';
 import { BaseService } from './BaseService';
 
 export class StatusService extends BaseService {
-  static async getAll(): Promise<Status[]> {
-    try {
-      const result: AxiosResponse<Status[]> = await axios.get(
-        `${this.BASE_URL}/status`
-      );
-      return result.data;
-    } catch (e) {
-      console.error(e);
-      throw new Error('Ups, something is wrong with the server (Get Status)');
-    }
+  public async getAll(): Promise<Status[]> {
+    const result: AxiosResponse<Status[]> = await this.wrapper.handle(
+      axios.get(`${this.BASE_URL}/status`)
+    );
+    return result.data;
   }
 
-  static async addStatus(dto: CreateStatusDto) {
-    try {
-      const result: AxiosResponse<Status> = await axios.post(
-        `${this.BASE_URL}/status`,
-        dto
-      );
-      return result.data;
-    } catch (e) {
-      console.error(e);
-      throw new Error('Ups, something is wrong with the server (Add Status)');
-    }
+  public async addStatus(dto: CreateStatusDto) {
+    const result: AxiosResponse<Status> = await this.wrapper.handle(
+      axios.post(`${this.BASE_URL}/status`, dto)
+    );
+    return result.data;
   }
 
-  static async updateStatus(dto: CreateStatusDto, statusId: string) {
-    try {
-      const result: AxiosResponse<Status> = await axios.patch(
-        `${this.BASE_URL}/status/${statusId}`,
-        dto
-      );
-      return result.data;
-    } catch (e) {
-      console.log(e);
-      throw new Error(
-        'Ups, something is wrong with the server (Update Status)'
-      );
-    }
+  public async updateStatus(dto: CreateStatusDto, statusId: string) {
+    const result: AxiosResponse<Status> = await this.wrapper.handle(
+      axios.patch(`${this.BASE_URL}/status/${statusId}`, dto)
+    );
+    return result.data;
   }
 
-  static async deleteStatus(statusId: string) {
-    try {
-      const result: AxiosResponse<Status> = await axios.delete(
-        `${this.BASE_URL}/status/${statusId}`
-      );
-      return result.data;
-    } catch (e) {
-      console.error(e);
-      throw new Error(
-        'Ups, something is wrong with the server (Delete Status)'
-      );
-    }
+  public async deleteStatus(statusId: string) {
+    const result: AxiosResponse<Status> = await this.wrapper.handle(
+      axios.delete(`${this.BASE_URL}/status/${statusId}`)
+    );
+    return result.data;
   }
 }

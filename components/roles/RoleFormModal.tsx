@@ -7,6 +7,8 @@ import { CreateRoleDto } from '../../models/dto/roles/create-role.dto';
 import { Role } from '../../models/Role';
 import { rolesAtom } from '../../pages/manage/roles';
 import { RolesService } from '../../services/RolesService';
+import { useSession } from 'next-auth/react';
+import { SessionUser } from '../../models/SessionUser';
 
 type Props = {
   isOpen: boolean;
@@ -21,6 +23,9 @@ type FormData = {
 export default function RoleFormModal({ isOpen, setIsOpen, role }: Props) {
   const [roles, setRoles] = useAtom(rolesAtom);
   const [loading, setLoading] = useState(false);
+  const session = useSession();
+  const user = session?.data?.user as SessionUser;
+  const rolesService = new RolesService(user.accessToken);
 
   const {
     register,
@@ -37,8 +42,8 @@ export default function RoleFormModal({ isOpen, setIsOpen, role }: Props) {
     setLoading(true);
     await toast.promise(
       role
-        ? RolesService.updateRole(payload as CreateRoleDto, role.id)
-        : RolesService.addRole(payload as CreateRoleDto),
+        ? rolesService.updateRole(payload as CreateRoleDto, role.id)
+        : rolesService.addRole(payload as CreateRoleDto),
       {
         loading: role ? 'Updating role...' : 'Adding role...',
         success: (result) => {

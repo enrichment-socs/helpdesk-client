@@ -16,9 +16,7 @@ export const getInitialServerProps = async (
   getSession: (params?: GetSessionParams) => Promise<Session | null>,
   semesterService: SemestersService
 ): Promise<Props> => {
-  const semesters = await Object.getPrototypeOf(
-    semesterService
-  ).constructor.getSemesters();
+  const semesters = await semesterService.getSemesters();
   const session = await getSession({ req });
   const dbActiveSemester = semesters.find((s) => s.isActive);
   const activeSemester = req.session.activeSemester ?? dbActiveSemester;

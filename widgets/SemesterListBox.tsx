@@ -7,11 +7,15 @@ import { Semester } from '../models/Semester';
 import { SemestersService } from '../services/SemestersService';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
+import { SessionUser } from '../models/SessionUser';
 
 export default function SemesterListBox() {
   const [semesters] = useAtom(semestersAtom);
   const [selectedSemester, setSelected] = useAtom(activeSemesterAtom);
   const router = useRouter();
+  const session = useSession();
+  const user = session?.data?.user as SessionUser;
 
   const getDescription = (semester: Semester | null) => {
     if (!semester) return 'No Semester';
@@ -19,7 +23,8 @@ export default function SemesterListBox() {
   };
 
   const onChangeSemester = async (semester: Semester) => {
-    const s = await toast.promise(SemestersService.changeSemester(semester), {
+    const semestersService = new SemestersService(user.accessToken);
+    const s = await toast.promise(semestersService.changeSemester(semester), {
       loading: 'Changing semester...',
       success: 'Change semester success',
       error: (e) => e.toString(),

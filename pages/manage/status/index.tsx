@@ -13,6 +13,7 @@ import { withSessionSsr } from '../../../shared/libs/session';
 import { Status } from '../../../models/Status';
 import { SemestersService } from '../../../services/SemestersService';
 import { StatusService } from '../../../services/StatusService';
+import { SessionUser } from '../../../models/SessionUser';
 
 export const statusAtom = atom([] as Status[]);
 
@@ -68,7 +69,9 @@ export const getServerSideProps = withSessionSsr(
       };
     }
 
-    const currStatuses = await StatusService.getAll();
+    const user = session.user as SessionUser;
+    const statusService = new StatusService(user.accessToken);
+    const currStatuses = await statusService.getAll();
 
     return {
       props: {

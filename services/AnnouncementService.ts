@@ -4,97 +4,64 @@ import { CreateAnnouncementDto } from '../models/dto/announcements/create-announ
 import { BaseService } from './BaseService';
 
 export class AnnouncementsService extends BaseService {
-  static async get(id: string) {
-    try {
-      const res: AxiosResponse<Announcement> = await axios.get(
-        `${this.BASE_URL}/announcements/${id}`
-      );
+  public async get(id: string) {
+    const res: AxiosResponse<Announcement> = await this.wrapper.handle(
+      axios.get(`${this.BASE_URL}/announcements/${id}`)
+    );
 
-      return res.data;
-    } catch (e) {
-      console.error(e);
-      throw new Error('Failed when getting specified announcement from server');
-    }
+    return res.data;
   }
 
-  static async getAll(token: string) {
-    try {
-      const res: AxiosResponse<Announcement[]> = await axios.get(
-        `${this.BASE_URL}/announcements`,
-        this.headersWithToken(token)
-      );
+  public async getAll() {
+    const res: AxiosResponse<Announcement[]> = await this.wrapper.handle(
+      axios.get(`${this.BASE_URL}/announcements`, this.headersWithToken())
+    );
 
-      return res.data;
-    } catch (e) {
-      console.error(e);
-      throw new Error('Failed when getting announcements from server');
-    }
+    return res.data;
   }
 
-  static async getBySemester(semesterId: string, token: string) {
-    try {
-      const res: AxiosResponse<Announcement[]> = await axios.get(
+  public async getBySemester(semesterId: string) {
+    const res: AxiosResponse<Announcement[]> = await this.wrapper.handle(
+      axios.get(
         `${this.BASE_URL}/announcements?semesterId=${semesterId}`,
-        this.headersWithToken(token)
-      );
+        this.headersWithToken()
+      )
+    );
 
-      return res.data;
-    } catch (e) {
-      throw new Error('Failed when getting announcements from server');
-    }
+    return res.data;
   }
 
-  static async addAnnouncement(dto: CreateAnnouncementDto, token: string) {
-    try {
-      const result: AxiosResponse<Announcement> = await axios.post(
-        `${this.BASE_URL}/announcements`,
-        dto,
-        this.headersWithToken(token)
-      );
+  public async addAnnouncement(dto: CreateAnnouncementDto) {
+    const result: AxiosResponse<Announcement> = await this.wrapper.handle(
+      axios.post(`${this.BASE_URL}/announcements`, dto, this.headersWithToken())
+    );
 
-      return result.data;
-    } catch (e) {
-      console.error(e);
-      throw new Error(
-        'Ups, something is wrong with the server (Add Announcement)'
-      );
-    }
+    return result.data;
   }
 
-  static async updateAnnouncement(
+  public async updateAnnouncement(
     dto: CreateAnnouncementDto,
-    announcementId: string,
-    token: string
+    announcementId: string
   ) {
-    try {
-      const result: AxiosResponse<Announcement> = await axios.patch(
+    const result: AxiosResponse<Announcement> = await this.wrapper.handle(
+      axios.patch(
         `${this.BASE_URL}/announcements/${announcementId}`,
         dto,
-        this.headersWithToken(token)
-      );
+        this.headersWithToken()
+      )
+    );
 
-      return result.data;
-    } catch (e) {
-      console.log(e);
-      throw new Error(
-        'Ups, somehting is wrong with the server (Update Announcement)'
-      );
-    }
+    return result.data;
   }
 
-  static async deleteAnnouncement(announcementId: string, token: string) {
-    try {
-      const result: AxiosResponse<Announcement> = await axios.delete(
+  public async deleteAnnouncement(announcementId: string) {
+    const result: AxiosResponse<Announcement> = await this.wrapper.handle(
+      axios.delete(
         `${this.BASE_URL}/announcements/${announcementId}`,
-        this.headersWithToken(token)
-      );
+        this.headersWithToken()
+      )
+    );
 
-      return result.data;
-    } catch (e) {
-      console.error(e);
-      throw new Error(
-        'Ups, something is wrong with the server (Delete Announcement)'
-      );
-    }
+    return result.data;
   }
 }

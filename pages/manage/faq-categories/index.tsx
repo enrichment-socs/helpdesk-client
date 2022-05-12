@@ -13,6 +13,7 @@ import { withSessionSsr } from '../../../shared/libs/session';
 import { FAQCategory } from '../../../models/FAQCategory';
 import { FAQCategoriesService } from '../../../services/FAQCategoriesService';
 import { SemestersService } from '../../../services/SemestersService';
+import { SessionUser } from '../../../models/SessionUser';
 
 export const faqCategoriesAtom = atom([] as FAQCategory[]);
 
@@ -72,7 +73,9 @@ export const getServerSideProps = withSessionSsr(
       };
     }
 
-    const currFAQCategories = await FAQCategoriesService.getAll();
+    const user = session.user as SessionUser;
+    const faqCategoriesService = new FAQCategoriesService(user.accessToken);
+    const currFAQCategories = await faqCategoriesService.getAll();
 
     return {
       props: {

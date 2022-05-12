@@ -31,6 +31,7 @@ const MessageDetailModal = ({
 }: Props) => {
   const session = useSession();
   const user = session?.data?.user as SessionUser;
+  const graphApiService = new GraphApiService(user.accessToken);
 
   const [message, setMessage] = useState<OutlookMessage>(null);
   const [attachments, setAttachments] = useState<
@@ -51,15 +52,11 @@ const MessageDetailModal = ({
   }, [messageId, conversationId]);
 
   const fetchMessage = async () => {
-    const messageResult = await GraphApiService.getMessageById(
-      messageId,
-      user.accessToken
-    );
+    const messageResult = await graphApiService.getMessageById(messageId);
 
     const firstMessageFromThisConversation =
-      await GraphApiService.getFirstMessageByConversation(
-        messageResult.conversationId,
-        user.accessToken
+      await graphApiService.getFirstMessageByConversation(
+        messageResult.conversationId
       );
 
     const contentIds = messageResult.body.content.match(
@@ -67,9 +64,8 @@ const MessageDetailModal = ({
     );
 
     if (contentIds || messageResult.hasAttachments) {
-      const messageAttachment = await GraphApiService.getMessageAttachments(
-        messageId,
-        user.accessToken
+      const messageAttachment = await graphApiService.getMessageAttachments(
+        messageId
       );
 
       let content = messageResult.body.content;

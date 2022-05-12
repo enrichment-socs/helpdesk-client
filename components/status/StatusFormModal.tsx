@@ -1,9 +1,11 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { SetStateAction, useAtom } from 'jotai';
+import { useSession } from 'next-auth/react';
 import { Dispatch, Fragment, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { CreateStatusDto } from '../../models/dto/status/create-status.dto';
+import { SessionUser } from '../../models/SessionUser';
 import { Status } from '../../models/Status';
 import { statusAtom } from '../../pages/manage/status';
 import { StatusService } from '../../services/StatusService';
@@ -21,6 +23,9 @@ type FormData = {
 export default function StatusFormModal({ isOpen, setIsOpen, status }: Props) {
   const [statuses, setStatuses] = useAtom(statusAtom);
   const [loading, setLoading] = useState(false);
+  const session = useSession();
+  const user = session?.data?.user as SessionUser;
+  const statusService = new StatusService(user.accessToken);
 
   const {
     register,
@@ -37,8 +42,8 @@ export default function StatusFormModal({ isOpen, setIsOpen, status }: Props) {
     setLoading(true);
     await toast.promise(
       status
-        ? StatusService.updateStatus(payload as CreateStatusDto, status.id)
-        : StatusService.addStatus(payload as CreateStatusDto),
+        ? statusService.updateStatus(payload as CreateStatusDto, status.id)
+        : statusService.addStatus(payload as CreateStatusDto),
       {
         loading: status ? 'Updating status...' : 'Adding status...',
         success: (result) => {

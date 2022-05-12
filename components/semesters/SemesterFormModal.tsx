@@ -32,6 +32,7 @@ export default function SemesterFormModal({
   const [loading, setLoading] = useState(false);
   const session = useSession();
   const user = session?.data?.user as SessionUser;
+  const semestersService = new SemestersService(user.accessToken);
 
   const {
     register,
@@ -51,15 +52,11 @@ export default function SemesterFormModal({
     setLoading(true);
     await toast.promise(
       semester
-        ? SemestersService.updateSemester(
+        ? semestersService.updateSemester(
             payload as CreateSemesterDto,
-            semester.id,
-            user.accessToken
+            semester.id
           )
-        : SemestersService.addSemester(
-            payload as CreateSemesterDto,
-            user.accessToken
-          ),
+        : semestersService.addSemester(payload as CreateSemesterDto),
       {
         loading: semester ? 'Updating semester...' : 'Adding semester...',
         success: (result) => {

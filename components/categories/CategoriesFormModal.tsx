@@ -1,10 +1,12 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { useAtom } from 'jotai';
+import { useSession } from 'next-auth/react';
 import { Dispatch, Fragment, SetStateAction, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { Category } from '../../models/Category';
 import { CreateCategoryDto } from '../../models/dto/categories/create-category-dto';
+import { SessionUser } from '../../models/SessionUser';
 import { categoriesAtom } from '../../pages/manage/categories';
 import { CategoriesService } from '../../services/CategoriesService';
 
@@ -25,6 +27,8 @@ export default function CategoriesFormModal({
 }: Props) {
   const [categoriesVal, setCategoriesVal] = useAtom(categoriesAtom);
   const [loading, setLoading] = useState(false);
+  const session = useSession();
+  const user = session?.data?.user as SessionUser;
 
   const {
     register,
@@ -39,10 +43,11 @@ export default function CategoriesFormModal({
 
   const onSubmit: SubmitHandler<FormData> = async (payload) => {
     setLoading(true);
+    const categoryService = new CategoriesService(user.accessToken);
     await toast.promise(
       category
-        ? CategoriesService.update(payload as CreateCategoryDto, category.id)
-        : CategoriesService.add(payload as CreateCategoryDto),
+        ? categoryService.update(payload as CreateCategoryDto, category.id)
+        : categoryService.add(payload as CreateCategoryDto),
       {
         loading: category ? 'Updating category...' : 'Adding category...',
         success: (result) => {

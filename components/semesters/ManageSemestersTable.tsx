@@ -16,21 +16,19 @@ export default function ManageSemestersTable({ semesters, openModal }: Props) {
   const [, setSemesters] = useAtom(semestersAtom);
   const session = useSession();
   const user = session?.data?.user as SessionUser;
+  const semestersService = new SemestersService(user.accessToken);
 
   const onDelete = async (semester: Semester) => {
     const message = `Are you sure you want to delete <b>${semester.type} Semester ${semester.startYear}/${semester.endYear}</b> ?`;
     if (await confirm(message)) {
-      await toast.promise(
-        SemestersService.deleteSemester(semester.id, user.accessToken),
-        {
-          loading: 'Deleting semester...',
-          success: (r) => {
-            setSemesters(semesters.filter((s) => s.id !== semester.id));
-            return 'Sucesfully deleted the selected semester';
-          },
-          error: (e) => e.toString(),
-        }
-      );
+      await toast.promise(semestersService.deleteSemester(semester.id), {
+        loading: 'Deleting semester...',
+        success: (r) => {
+          setSemesters(semesters.filter((s) => s.id !== semester.id));
+          return 'Sucesfully deleted the selected semester';
+        },
+        error: (e) => e.toString(),
+      });
     }
   };
 

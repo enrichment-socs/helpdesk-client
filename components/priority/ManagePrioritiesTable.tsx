@@ -1,6 +1,8 @@
 import { useAtom } from 'jotai';
+import { useSession } from 'next-auth/react';
 import toast from 'react-hot-toast';
 import { Priority } from '../../models/Priority';
+import { SessionUser } from '../../models/SessionUser';
 import { prioritiesAtom } from '../../pages/manage/priorities';
 import { PrioritiesService } from '../../services/PrioritiesService';
 
@@ -11,11 +13,14 @@ type Prop = {
 
 export default function ManagePrioritiesTable({ priorities, openModal }: Prop) {
   const [, setPrioritiesVal] = useAtom(prioritiesAtom);
+  const session = useSession();
+  const user = session?.data?.user as SessionUser;
+  const prioritiesService = new PrioritiesService(user.accessToken);
 
   const onDelete = async (priority: Priority) => {
     const message = `Are you sure you want to delete ${priority.priorityName}?`;
     if (await confirm(message)) {
-      await toast.promise(PrioritiesService.delete(priority.id), {
+      await toast.promise(prioritiesService.delete(priority.id), {
         loading: 'Deleting priority...',
         success: (r) => {
           setPrioritiesVal(priorities.filter((cat) => cat.id !== priority.id));

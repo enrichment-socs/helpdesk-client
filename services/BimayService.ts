@@ -31,7 +31,7 @@ export type StudentData = {
 };
 
 export class BimayService extends BaseService {
-  public static async getToken(): Promise<string> {
+  public async getToken(): Promise<string> {
     const buffer = Buffer.from(this.DIVISON_ID);
     try {
       const result: AxiosResponse<GetTokenResponse> = await axios.get(
@@ -48,11 +48,9 @@ export class BimayService extends BaseService {
     }
   }
 
-  public static async getStudentData(
-    username: string
-  ): Promise<StudentData | null> {
+  public async getStudentData(username: string): Promise<StudentData | null> {
     if (!username) return null;
-    const token = await BimayService.getToken();
+    const token = await this.getToken();
     if (!token) return null;
 
     let payload: { NIM?: string; Email?: string } = {};
@@ -75,7 +73,7 @@ export class BimayService extends BaseService {
     return result.data.StudentData;
   }
 
-  public static async loginBinusmaya(
+  public async loginBinusmaya(
     email: string,
     password: string
   ): Promise<boolean> {

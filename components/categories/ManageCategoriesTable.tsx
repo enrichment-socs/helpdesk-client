@@ -1,6 +1,8 @@
 import { useAtom } from 'jotai';
+import { useSession } from 'next-auth/react';
 import toast from 'react-hot-toast';
 import { Category } from '../../models/Category';
+import { SessionUser } from '../../models/SessionUser';
 import { categoriesAtom } from '../../pages/manage/categories';
 import { CategoriesService } from '../../services/CategoriesService';
 
@@ -11,11 +13,14 @@ type Prop = {
 
 export default function ManageCategoriesTable({ categories, openModal }: Prop) {
   const [, setCategoriesVal] = useAtom(categoriesAtom);
+  const session = useSession();
+  const user = session?.data?.user as SessionUser;
 
   const onDelete = async (category: Category) => {
+    const categoriesService = new CategoriesService(user.accessToken);
     const message = `Are you sure you want to delete ${category.categoryName}?`;
     if (await confirm(message)) {
-      await toast.promise(CategoriesService.delete(category.id), {
+      await toast.promise(categoriesService.delete(category.id), {
         loading: 'Deleting category...',
         success: (r) => {
           setCategoriesVal(categories.filter((cat) => cat.id !== category.id));
