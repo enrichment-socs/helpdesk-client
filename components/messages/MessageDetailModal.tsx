@@ -9,12 +9,15 @@ import { OutlookMessageAttachmentValue } from '../../models/OutlookMessageAttach
 import { SessionUser } from '../../models/SessionUser';
 import { GraphApiService } from '../../services/GraphApiService';
 import { DownloadHelper } from '../../shared/libs/download-helper';
+import MultiLineSkeletonLoading from '../../widgets/MultiLineSkeletonLoading';
+import SkeletonLoading from '../../widgets/SkeletonLoading';
 
 type Props = {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   messageId: string;
   conversationId: string;
+  setMessageId: Dispatch<SetStateAction<string>>;
 };
 
 const MessageDetailModal = ({
@@ -22,6 +25,7 @@ const MessageDetailModal = ({
   setIsOpen,
   messageId,
   conversationId,
+  setMessageId,
 }: Props) => {
   const session = useSession();
   const user = session?.data?.user as SessionUser;
@@ -34,6 +38,7 @@ const MessageDetailModal = ({
   const close = () => {
     setIsOpen(false);
     setMessage(null);
+    setMessageId(null);
   };
 
   useEffect(() => {
@@ -43,23 +48,27 @@ const MessageDetailModal = ({
   }, [messageId, conversationId]);
 
   const fetchMessage = async () => {
-    console.log({ messageId });
-    const result = await GraphApiService.getMessageById(
+    const messageResult = await GraphApiService.getMessageById(
       messageId,
       user.accessToken
     );
+    const firstMessageFromThisConversation =
+      await GraphApiService.getFirstMessageByConversation(
+        messageResult.conversationId,
+        user.accessToken
+      );
 
-    const contentIds = result.body.content.match(
+    const contentIds = messageResult.body.content.match(
       /cid["']?((?:.(?!["']?\s+(?:\S+)=|[>"']))+.)?/g
     );
 
-    if (contentIds || result.hasAttachments) {
+    if (contentIds || messageResult.hasAttachments) {
       const messageAttachment = await GraphApiService.getMessageAttachments(
         messageId,
         user.accessToken
       );
 
-      let content = result.body.content;
+      let content = messageResult.body.content;
 
       messageAttachment.value
         .filter(
@@ -72,19 +81,19 @@ const MessageDetailModal = ({
           );
         });
 
-      result.body.content = content;
+      messageResult.body.content = content;
       setAttachments(messageAttachment.value);
     }
 
-    setMessage(result);
+    setMessage(messageResult);
   };
 
   const getSenderInfo = () => {
-    return message ? message.sender.emailAddress.address : 'Loading...';
+    return message ? message.sender.emailAddress.address : <SkeletonLoading />;
   };
 
   const getToRecipientsInfo = () => {
-    if (!message) return 'Loading...';
+    if (!message) return <SkeletonLoading />;
 
     const recipients = message.toRecipients
       .map((recipient) => recipient.emailAddress.address)
@@ -94,7 +103,7 @@ const MessageDetailModal = ({
   };
 
   const getCcRecipientsInfo = () => {
-    if (!message) return 'Loading...';
+    if (!message) return <SkeletonLoading />;
 
     const recipients = message.ccRecipients
       .map((recipient) => recipient.emailAddress.address)
@@ -104,9 +113,11 @@ const MessageDetailModal = ({
   };
 
   const getReceivedDateTimeInfo = () => {
-    return message
-      ? format(new Date(message.receivedDateTime), 'dd MMM yyy, kk:mm')
-      : 'Loading...';
+    return message ? (
+      format(new Date(message.receivedDateTime), 'dd MMM yyy, kk:mm')
+    ) : (
+      <SkeletonLoading />
+    );
   };
 
   const downloadAttachment = (attachment: OutlookMessageAttachmentValue) => {
@@ -178,7 +189,7 @@ const MessageDetailModal = ({
                           Subject
                         </div>
                         <div className="w-3/4 py-2 ml-4">
-                          {message ? message.subject : 'Loading...'}
+                          {message ? message.subject : <SkeletonLoading />}
                         </div>
                       </li>
 
@@ -222,7 +233,7 @@ const MessageDetailModal = ({
                     <div className="bg-gray-300 text-gray-700 p-2">Content</div>
                     <div className="p-4">
                       {!message ? (
-                        'Loading...'
+                        <MultiLineSkeletonLoading />
                       ) : (
                         <div>
                           <div

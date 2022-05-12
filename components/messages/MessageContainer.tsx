@@ -44,6 +44,7 @@ export default function MessageContainer() {
         setIsOpen={setOpenMessageModal}
         messageId={selectedMessageId}
         conversationId={selectedMessageConversationId}
+        setMessageId={setSelectedMessageId}
       />
       <div className="ml-2 mt-5 p-2 border-2 rounded divide-y">
         <div className="flex justify-between">
