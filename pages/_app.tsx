@@ -8,6 +8,7 @@ import NextNProgress from 'nextjs-progressbar';
 import { SessionProvider } from 'next-auth/react';
 import 'react-quill/dist/quill.snow.css';
 import 'react-datepicker/dist/react-datepicker.css';
+import AuthHandlerWrapper from '../components/AuthHandlerWrapper';
 
 type GlobalProps = {
   semesters: Semester[];
@@ -25,6 +26,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
     <>
       <NextNProgress />
       <SessionProvider session={session}>
+        <AuthHandlerWrapper />
         <Component {...pageProps} />
       </SessionProvider>
       <Toaster />
