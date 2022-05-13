@@ -13,6 +13,8 @@ import MultiLineSkeletonLoading from '../../widgets/MultiLineSkeletonLoading';
 import SkeletonLoading from '../../widgets/SkeletonLoading';
 import toast from 'react-hot-toast';
 import { ClientPromiseWrapper } from '../../shared/libs/client-promise-wrapper';
+import { CONTENT_ID_REGEX } from '../../shared/constants/regex';
+import MessageDetailAction from './MessageDetailAction';
 
 type Props = {
   isOpen: boolean;
@@ -59,33 +61,44 @@ const MessageDetailModal = ({
         messageResult.conversationId
       );
 
-    const contentIds = messageResult.body.content.match(
-      /cid["']?((?:.(?!["']?\s+(?:\S+)=|[>"']))+.)?/g
-    );
+    const bodyContent = messageResult.body.content;
+    const contentIds = bodyContent.match(CONTENT_ID_REGEX);
 
     if (contentIds || messageResult.hasAttachments) {
       const messageAttachment = await graphApiService.getMessageAttachments(
         messageId
       );
 
-      let content = messageResult.body.content;
+      let processedContent = replaceBodyImageWithCorrectSource(
+        bodyContent,
+        contentIds,
+        messageAttachment.value
+      );
 
-      messageAttachment.value
-        .filter(
-          (att) => att.isInline && contentIds.includes(`cid:${att.contentId}`)
-        )
-        .forEach((attachment) => {
-          content = content.replace(
-            `cid:${attachment.contentId}`,
-            `data:image/jpeg;base64,${attachment.contentBytes}`
-          );
-        });
-
-      messageResult.body.content = content;
+      messageResult.body.content = processedContent;
       setAttachments(messageAttachment.value);
     }
 
     setMessage(messageResult);
+  };
+
+  const replaceBodyImageWithCorrectSource = (
+    bodyContent: string,
+    contentIds: string[],
+    attachments: OutlookMessageAttachmentValue[]
+  ) => {
+    let content = bodyContent;
+    attachments
+      .filter(
+        (att) => att.isInline && contentIds.includes(`cid:${att.contentId}`)
+      )
+      .forEach((attachment) => {
+        content = content.replace(
+          `cid:${attachment.contentId}`,
+          `data:image/jpeg;base64,${attachment.contentBytes}`
+        );
+      });
+    return content;
   };
 
   const getSenderInfo = () => {
@@ -277,10 +290,7 @@ const MessageDetailModal = ({
                     </div>
                   </div>
 
-                  <div className="border border-gray-300 rounded mt-8">
-                    <div className="bg-gray-300 text-gray-700 p-2">Action</div>
-                    <div className="p-4">lorem ipsum</div>
-                  </div>
+                  <MessageDetailAction onClose={close} />
                 </div>
               </div>
             </Transition.Child>
