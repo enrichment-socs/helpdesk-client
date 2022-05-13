@@ -7,7 +7,7 @@ import { SessionUser } from '../../models/SessionUser';
 import { messagesAtom } from '../../pages';
 import { GraphApiService } from '../../services/GraphApiService';
 import MessagesTable from './MessagesTable';
-import MessageDetailModal from '../../components/messages/MessageDetailModal';
+import MessageDetailModal from '../message-detail-modal/MessageDetailModal';
 
 export default function MessageContainer() {
   const [, setMessages] = useAtom(messagesAtom);

@@ -5,7 +5,7 @@ type Props = {
   onClose: () => void;
 };
 
-export default function MessageDetailAction({ onClose }: Props) {
+export default function MessageDetailModalAction({ onClose }: Props) {
   const types = ['Case', 'Information'];
   const [selectedType, setSelectedType] = useState(types[0]);
 
