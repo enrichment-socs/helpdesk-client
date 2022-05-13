@@ -20,7 +20,7 @@ export class FAQCategoriesService extends BaseService {
 
   public async addFAQCategory(dto: CreateFAQCategoryDto) {
     const result: AxiosResponse<FAQCategory> = await this.wrapper.handle(
-      axios.post(`${this.BASE_URL}/faq-categories`, dto)
+      axios.post(`${this.BASE_URL}/faq-categories`, dto, this.headersWithToken())
     );
     return result.data;
   }
@@ -30,14 +30,14 @@ export class FAQCategoriesService extends BaseService {
     categoryId: string
   ) {
     const result: AxiosResponse<FAQCategory> = await this.wrapper.handle(
-      axios.patch(`${this.BASE_URL}/faq-categories/${categoryId}`, dto)
+      axios.patch(`${this.BASE_URL}/faq-categories/${categoryId}`, dto, this.headersWithToken())
     );
     return result.data;
   }
 
   public async deleteFAQCategory(categoryId: string) {
     const result: AxiosResponse<FAQCategory> = await this.wrapper.handle(
-      axios.delete(`${this.BASE_URL}/faq-categories/${categoryId}`)
+      axios.delete(`${this.BASE_URL}/faq-categories/${categoryId}`, this.headersWithToken())
     );
     return result.data;
   }
