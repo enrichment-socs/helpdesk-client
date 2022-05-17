@@ -1,3 +1,4 @@
+import { LinkIcon } from '@heroicons/react/solid';
 import { format } from 'date-fns';
 import { OutlookMessage } from '../../models/OutlookMessage';
 import SkeletonLoading from '../../widgets/SkeletonLoading';
@@ -45,8 +46,13 @@ export default function MessageDetailModalHeader({ message }: Props) {
 
   const getWebLink = () => {
     return message ? (
-      <a href={message.webLink} target="_blank" rel="noreferrer">
-        Open in Outlook Web
+      <a
+        href={message.webLink}
+        className="underline text-blue-600 flex items-center space-x-1"
+        target="_blank"
+        rel="noreferrer">
+        <LinkIcon className="w-4 h-4 text-gray-700" />
+        <span className="block">Open in Outlook Web</span>{' '}
       </a>
     ) : (
       <SkeletonLoading width="100%" />
