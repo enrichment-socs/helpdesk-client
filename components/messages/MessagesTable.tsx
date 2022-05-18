@@ -11,12 +11,14 @@ type Props = {
   setOpenMessageModal: Dispatch<SetStateAction<boolean>>;
   setSelectedMessageId: Dispatch<SetStateAction<string>>;
   setSelectedMessageConversationId: Dispatch<SetStateAction<string>>;
+  startNumber: number;
 };
 
 const MessagesTable = ({
   setOpenMessageModal,
   setSelectedMessageId,
   setSelectedMessageConversationId,
+  startNumber,
 }: Props) => {
   const [messages] = useAtom(messagesAtom);
   const session = useSession();
@@ -76,7 +78,7 @@ const MessagesTable = ({
                       onMessageClick(message.messageId, message.conversationId)
                     }>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {index + 1}
+                      {startNumber++}
                     </td>
                     <td className="max-w-[16rem] px-6 py-4 truncate text-sm font-medium text-gray-900">
                       {message.sender}

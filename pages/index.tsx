@@ -21,11 +21,20 @@ import MessageContainer from '../components/messages/MessageContainer';
 type Props = {
   announcements: Announcement[];
   messages: Message[] | [];
+  initialTake: number;
+  initialSkip: number;
+  messageCount: number;
 };
 
 export const messagesAtom = atom([] as Message[]);
 
-const Home: NextPage<Props> = ({ announcements, messages: serverMessages }) => {
+const Home: NextPage<Props> = ({
+  announcements,
+  messages: serverMessages,
+  initialTake,
+  initialSkip,
+  messageCount,
+}) => {
   useHydrateAtoms([[messagesAtom, serverMessages]] as const);
 
   const [openAnnouncementModal, setOpenAnnouncementModal] = useState(false);
@@ -33,6 +42,8 @@ const Home: NextPage<Props> = ({ announcements, messages: serverMessages }) => {
 
   const session = useSession();
   const user = session?.data?.user as SessionUser;
+
+  const [skipMessageCount, setSkipMessageCount] = useState(initialSkip);
 
   return (
     <Layout>
@@ -75,7 +86,14 @@ const Home: NextPage<Props> = ({ announcements, messages: serverMessages }) => {
           </div>
         </div>
 
-        {user.roleName !== ROLES.USER && <MessageContainer />}
+        {user.roleName !== ROLES.USER && (
+          <MessageContainer
+            take={initialTake}
+            skip={skipMessageCount}
+            setSkip={setSkipMessageCount}
+            totalCount={messageCount}
+          />
+        )}
       </div>
     </Layout>
   );
@@ -103,8 +121,12 @@ export const getServerSideProps = withSessionSsr(
       sessionActiveSemester.id
     );
 
-    const messages =
-      user.roleName === ROLES.USER ? [] : await graphApiService.getMessages();
+    const initialTake = 10;
+    const initialSkip = 0;
+    const { messages, count } = await graphApiService.getMessages(
+      initialTake,
+      initialSkip
+    );
 
     return {
       props: {
@@ -112,7 +134,10 @@ export const getServerSideProps = withSessionSsr(
         session,
         sessionActiveSemester,
         announcements,
-        messages,
+        messages: user.roleName == ROLES.USER ? [] : messages,
+        messageCount: user.roleName === ROLES.USER ? 0 : count,
+        initialTake,
+        initialSkip,
       },
     };
   }

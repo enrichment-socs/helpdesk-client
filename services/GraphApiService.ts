@@ -4,11 +4,23 @@ import { Message } from '../models/Message';
 import { OutlookMessage } from '../models/OutlookMessage';
 import { OutlookMessageAttachment } from '../models/OutlookMessageAttachment';
 
+type GetMessagesResult = {
+  messages: Message[];
+  count: number;
+};
+
 export class GraphApiService extends BaseService {
-  public async getMessages(): Promise<Message[]> {
-    const result: AxiosResponse<Message[]> = await this.wrapper.handle(
-      axios.get(`${this.BASE_URL}/graph-api/messages`, this.headersWithToken())
+  public async getMessages(
+    take?: number,
+    skip?: number
+  ): Promise<GetMessagesResult> {
+    const result: AxiosResponse<GetMessagesResult> = await this.wrapper.handle(
+      axios.get(
+        `${this.BASE_URL}/graph-api/messages?take=${take}&skip=${skip}`,
+        this.headersWithToken()
+      )
     );
+
     return result.data;
   }
 

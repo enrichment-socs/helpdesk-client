@@ -1,17 +1,33 @@
-import { ChartBarIcon, MailIcon, RefreshIcon } from '@heroicons/react/solid';
+import { MailIcon, RefreshIcon } from '@heroicons/react/solid';
 import { useAtom } from 'jotai';
 import { useSession } from 'next-auth/react';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import toast from 'react-hot-toast';
 import { SessionUser } from '../../models/SessionUser';
 import { messagesAtom } from '../../pages';
 import { GraphApiService } from '../../services/GraphApiService';
 import MessagesTable from './MessagesTable';
 import MessageDetailModal from '../message-detail-modal/MessageDetailModal';
+import MessagePaginator from './MessagePaginator';
 
-export default function MessageContainer() {
+type Props = {
+  take: number;
+  skip: number;
+  setSkip: Dispatch<SetStateAction<number>>;
+  totalCount: number;
+};
+
+export default function MessageContainer({
+  take,
+  skip,
+  totalCount,
+  setSkip,
+}: Props) {
   const [, setMessages] = useAtom(messagesAtom);
   const [isSync, setIsSync] = useState(false);
+
+  const [pageNumber, setPageNumber] = useState(1);
+  const [threeFirstPageNumber, setThreeFirstPageNumber] = useState([1, 2, 3]);
 
   const [openMessageModal, setOpenMessageModal] = useState(false);
   const [selectedMessageId, setSelectedMessageId] = useState<string>(null);
@@ -24,7 +40,8 @@ export default function MessageContainer() {
 
   const syncAndGetMessages = async () => {
     await graphApiService.syncMessages();
-    return graphApiService.getMessages();
+    const { messages } = await graphApiService.getMessages(take, 0);
+    return messages;
   };
 
   const handleSyncMessages = async () => {
@@ -35,6 +52,9 @@ export default function MessageContainer() {
       error: (e) => e.toString(),
     });
     setMessages(messages);
+    setPageNumber(1);
+    setSkip(0);
+    setThreeFirstPageNumber([1, 2, 3]);
     setIsSync(false);
   };
 
@@ -68,9 +88,21 @@ export default function MessageContainer() {
         </div>
         <div className="p-1">
           <MessagesTable
+            startNumber={skip + 1}
             setOpenMessageModal={setOpenMessageModal}
             setSelectedMessageId={setSelectedMessageId}
             setSelectedMessageConversationId={setSelectedMessageConversationId}
+          />
+
+          <MessagePaginator
+            take={take}
+            skip={skip}
+            totalCount={totalCount}
+            setSkip={setSkip}
+            pageNumber={pageNumber}
+            setPageNumber={setPageNumber}
+            threeFirstPageNumbers={threeFirstPageNumber}
+            setThreeFirstPageNumbers={setThreeFirstPageNumber}
           />
         </div>
       </div>
