@@ -123,10 +123,10 @@ export const getServerSideProps = withSessionSsr(
 
     const initialTake = 10;
     const initialSkip = 0;
-    const { messages, count } = await graphApiService.getMessages(
-      initialTake,
-      initialSkip
-    );
+    const { messages, count } =
+      user.roleName === ROLES.USER
+        ? { messages: [], count: 0 }
+        : await graphApiService.getMessages(initialTake, initialSkip);
 
     return {
       props: {
@@ -134,8 +134,8 @@ export const getServerSideProps = withSessionSsr(
         session,
         sessionActiveSemester,
         announcements,
-        messages: user.roleName == ROLES.USER ? [] : messages,
-        messageCount: user.roleName === ROLES.USER ? 0 : count,
+        messages,
+        messageCount: count,
         initialTake,
         initialSkip,
       },

@@ -76,6 +76,7 @@ const LoginPage: NextPage = () => {
         backgroundPosition: 'center',
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat',
+        backgroundColor: '#005AA1',
       }}>
       <div className="w-full md:w-1/2 flex justify-center md:justify-end items-center">
         <div className="max-w-[21rem] text-gray-300 text-sm md:text-base mt-4 md:mt-0">
@@ -93,6 +94,7 @@ const LoginPage: NextPage = () => {
 
           <small className="block mt-4">
             <a
+              tabIndex={-1}
               target="_blank"
               rel="noreferrer"
               className="underline"
@@ -125,6 +127,7 @@ const LoginPage: NextPage = () => {
                   />
                 </div>
                 <input
+                  autoFocus
                   type="text"
                   {...register('username', {
                     required: true,
