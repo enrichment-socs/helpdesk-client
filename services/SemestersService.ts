@@ -11,6 +11,14 @@ export class SemestersService extends BaseService {
     return result.data;
   }
 
+  public async getActiveSemester() {
+    const result: AxiosResponse<Semester> = await this.wrapper.handle(
+      axios.get(`${this.BASE_URL}/semesters/active`)
+    );
+
+    return result.data;
+  }
+
   public async addSemester(dto: CreateSemesterDto) {
     const result: AxiosResponse<Semester> = await this.wrapper.handle(
       axios.post(`${this.BASE_URL}/semesters`, dto, this.headersWithToken())

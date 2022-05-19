@@ -38,6 +38,8 @@ export default function SemesterFormModal({
     register,
     handleSubmit,
     setValue,
+    getValues,
+    clearErrors,
     formState: { errors },
   } = useForm<FormData>();
 
@@ -45,8 +47,23 @@ export default function SemesterFormModal({
     setValue('startYear', semester?.startYear);
     setValue('endYear', semester?.endYear);
     setValue('type', semester?.type);
-    setValue('isActive', false);
-  }, [semester, setValue]);
+    setValue('isActive', semester?.isActive);
+    clearErrors('isActive');
+  }, [semester, setValue, clearErrors]);
+
+  const isActiveSemesterExist = async () => {
+    const formData = getValues();
+    if (formData.isActive) {
+      const activeSemester = await semestersService.getActiveSemester();
+      return (
+        activeSemester !== null &&
+        Object.keys(activeSemester).length !== 0 &&
+        activeSemester?.id !== semester?.id
+      );
+    }
+
+    return false;
+  };
 
   const onSubmit: SubmitHandler<FormData> = async (payload) => {
     setLoading(true);
@@ -193,6 +210,35 @@ export default function SemesterFormModal({
                     {errors.endYear?.type === 'required' && (
                       <small className="text-red-500">
                         End year must be filled
+                      </small>
+                    )}
+                  </div>
+
+                  <div>
+                    <div className="flex items-center">
+                      <input
+                        {...register('isActive', {
+                          validate: {
+                            exist: async () => {
+                              const isExist = await isActiveSemesterExist();
+                              return !isExist;
+                            },
+                          },
+                        })}
+                        className={`h-4 w-4 border ${
+                          errors.isActive ? 'border-red-300' : 'border-gray-300'
+                        } rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer`}
+                        type="checkbox"
+                      />
+                      <label
+                        className="inline-block text-sm font-medium text-gray-700"
+                        htmlFor="flexCheckDefault">
+                        Is Active
+                      </label>
+                    </div>
+                    {errors.isActive?.type === 'exist' && (
+                      <small className="text-red-500">
+                        Only one active semester is allowed
                       </small>
                     )}
                   </div>
