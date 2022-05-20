@@ -5,6 +5,7 @@ import { Priority } from '../../models/Priority';
 import { SessionUser } from '../../models/SessionUser';
 import { prioritiesAtom } from '../../pages/manage/priorities';
 import { PrioritiesService } from '../../services/PrioritiesService';
+import { confirm } from '../../shared/libs/confirm-dialog-helper';
 
 type Prop = {
   priorities: Priority[];
@@ -18,7 +19,7 @@ export default function ManagePrioritiesTable({ priorities, openModal }: Prop) {
   const prioritiesService = new PrioritiesService(user.accessToken);
 
   const onDelete = async (priority: Priority) => {
-    const message = `Are you sure you want to delete ${priority.priorityName}?`;
+    const message = `Are you sure you want to delete <b>${priority.priorityName}</b>?`;
     if (await confirm(message)) {
       await toast.promise(prioritiesService.delete(priority.id), {
         loading: 'Deleting priority...',

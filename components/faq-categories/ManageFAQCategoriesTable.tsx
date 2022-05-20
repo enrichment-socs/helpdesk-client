@@ -22,7 +22,7 @@ export default function ManageFAQCategoriesTable({
 
   const onDelete = async (faqCategory: FAQCategory) => {
     const faqCategoriesService = new FAQCategoriesService(user.accessToken);
-    const message = `Are you sure you want to delete <b>${faqCategory.categoryName} </b> ?`;
+    const message = `Are you sure you want to delete <b>${faqCategory.categoryName}</b> ?`;
     if (await confirm(message)) {
       await toast.promise(
         faqCategoriesService.deleteFAQCategory(faqCategory.id),

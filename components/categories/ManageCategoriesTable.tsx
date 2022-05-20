@@ -5,6 +5,7 @@ import { Category } from '../../models/Category';
 import { SessionUser } from '../../models/SessionUser';
 import { categoriesAtom } from '../../pages/manage/categories';
 import { CategoriesService } from '../../services/CategoriesService';
+import { confirm } from '../../shared/libs/confirm-dialog-helper';
 
 type Prop = {
   categories: Category[];
@@ -18,7 +19,7 @@ export default function ManageCategoriesTable({ categories, openModal }: Prop) {
 
   const onDelete = async (category: Category) => {
     const categoriesService = new CategoriesService(user.accessToken);
-    const message = `Are you sure you want to delete ${category.categoryName}?`;
+    const message = `Are you sure you want to delete <b>${category.categoryName}</b>?`;
     if (await confirm(message)) {
       await toast.promise(categoriesService.delete(category.id), {
         loading: 'Deleting category...',
