@@ -47,8 +47,6 @@ const Home: NextPage<Props> = ({
 
   const [skipMessageCount, setSkipMessageCount] = useState(initialSkip);
 
-  console.log(user);
-
   return (
     <Layout>
       <AnnouncementDetailModal
