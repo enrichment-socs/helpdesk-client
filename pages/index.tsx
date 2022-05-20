@@ -17,6 +17,8 @@ import { ROLES } from '../shared/constants/roles';
 import { useHydrateAtoms } from 'jotai/utils';
 import { atom } from 'jotai';
 import MessageContainer from '../components/messages/MessageContainer';
+import AdminRequestSummaryContainer from '../components/request-summaries/admin/AdminRequestSummaryContainer';
+import UserRequestSummaryContainer from '../components/request-summaries/user/UserRequestSummaryContainer';
 
 type Props = {
   announcements: Announcement[];
@@ -45,6 +47,8 @@ const Home: NextPage<Props> = ({
 
   const [skipMessageCount, setSkipMessageCount] = useState(initialSkip);
 
+  console.log(user);
+
   return (
     <Layout>
       <AnnouncementDetailModal
@@ -62,27 +66,11 @@ const Home: NextPage<Props> = ({
               announcements={announcements}
             />
 
-            <div className="mx-2 p-2 border-2 md:w-1/4 rounded divide-y">
-              <div className="text-lg font-bold mb-3 flex items-center">
-                <ChartBarIcon className="h-5 w-5" />
-                <span className="ml-3">My Request Summary</span>
-              </div>
-
-              <div className="p-3">
-                <div className="font-semibold">Pending</div>
-                <div className="text-slate-600 text-4xl">0</div>
-              </div>
-
-              <div className="p-3">
-                <div className="font-semibold">Awaiting Approval</div>
-                <div className="text-slate-600 text-4xl">0</div>
-              </div>
-
-              <div className="p-3">
-                <div className="font-semibold">Awaiting Updates</div>
-                <div className="text-slate-600 text-4xl">0</div>
-              </div>
-            </div>
+            {user.roleName === ROLES.ADMIN ? (
+              <AdminRequestSummaryContainer />
+            ) : user.roleName === ROLES.USER ? (
+              <UserRequestSummaryContainer />
+            ) : null}
           </div>
         </div>
 

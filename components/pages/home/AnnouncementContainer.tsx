@@ -3,6 +3,9 @@ import { GlobeIcon, SpeakerphoneIcon } from '@heroicons/react/solid';
 import { format } from 'date-fns';
 import { Dispatch } from 'react';
 import { SetStateAction } from 'jotai';
+import { useSession } from 'next-auth/react';
+import { SessionUser } from '../../../models/SessionUser';
+import { ROLES } from '../../../shared/constants/roles';
 
 type Props = {
   announcements: Announcement[];
@@ -15,13 +18,19 @@ export default function AnnouncementContainer({
   setOpenAnnouncement,
   setOpenAnnouncementModal,
 }: Props) {
+  const session = useSession();
+  const user = session?.data?.user as SessionUser;
+
   const onAnnouncementClick = (ann: Announcement) => {
     setOpenAnnouncement(ann);
     setOpenAnnouncementModal(true);
   };
 
   return (
-    <div className="mx-2 p-2 border-2 md:w-3/4 rounded divide-y">
+    <div
+      className={`mx-2 p-2 border-2 ${
+        user.roleName !== ROLES.SUPER_ADMIN ? 'md:w-3/4' : 'md:w-full'
+      } rounded divide-y`}>
       <div className="text-lg font-bold mb-3 flex items-center">
         <SpeakerphoneIcon className="h-5 w-5" />
         <span className="ml-3">Announcement</span>
