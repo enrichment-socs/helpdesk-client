@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 import { CreateUserDto } from '../models/dto/create-user.dto';
 import { SessionUser } from '../models/SessionUser';
+import { User } from '../models/User';
 import { BaseService } from './BaseService';
 
 export class UsersService extends BaseService {
@@ -14,6 +15,13 @@ export class UsersService extends BaseService {
   public async create(createUserDto: CreateUserDto) {
     const res: AxiosResponse<SessionUser> = await this.wrapper.handle(
       axios.post(`${this.BASE_URL}/users`, createUserDto)
+    );
+    return res.data;
+  }
+
+  public async getUsersWithAdminRole(): Promise<User[]> {
+    const res: AxiosResponse<User[]> = await this.wrapper.handle(
+      axios.get(`${this.BASE_URL}/users/admin`, this.headersWithToken())
     );
     return res.data;
   }

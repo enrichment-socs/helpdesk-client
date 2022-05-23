@@ -17,6 +17,7 @@ import { CONTENT_ID_REGEX } from '../../shared/constants/regex';
 import MessageDetailModalAction from './MessageDetailModalAction';
 import MessageDetailModalHeader from './MessageDetailModalHeader';
 import MessageDetailModalBody from './MessageDetailModalBody';
+import { If, Then } from 'react-if';
 
 type Props = {
   isOpen: boolean;
@@ -158,7 +159,15 @@ const MessageDetailModal = ({
                     message={message}
                     attachments={attachments}
                   />
-                  <MessageDetailModalAction onClose={close} />
+
+                  <If condition={message !== null && message !== undefined}>
+                    <Then>
+                      <MessageDetailModalAction
+                        onClose={close}
+                        conversationId={conversationId}
+                      />
+                    </Then>
+                  </If>
                 </div>
               </div>
             </Transition.Child>

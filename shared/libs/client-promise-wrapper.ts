@@ -8,11 +8,11 @@ export class ClientPromiseWrapper extends PromiseWrapper {
     this.toast = toast;
   }
 
-  public async handle<T>(promise: Promise<T>): Promise<T> {
+  public async handle<T>(promise: Promise<T>, message?: string): Promise<T> {
     return promise.catch((e) => {
       console.error(e.message);
-      this.toast.error(e.message);
-      return Promise.reject(e.message);
+      this.toast.error(message || e.message);
+      return Promise.reject(message || e.message);
     });
   }
 }
