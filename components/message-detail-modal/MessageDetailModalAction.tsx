@@ -1,6 +1,5 @@
 import { useAtom } from 'jotai';
 import { useSession } from 'next-auth/react';
-import { setPriority } from 'os';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { If, Then } from 'react-if';
@@ -9,13 +8,14 @@ import { Category } from '../../models/Category';
 import { CreateCaseDto } from '../../models/dto/cases/create-case.dto';
 import { Priority } from '../../models/Priority';
 import { SessionUser } from '../../models/SessionUser';
-import { Status } from '../../models/Status';
 import { User } from '../../models/User';
 import { CasesService } from '../../services/CasesService';
 import { CategoriesService } from '../../services/CategoriesService';
 import { PrioritiesService } from '../../services/PrioritiesService';
 import { StatusService } from '../../services/StatusService';
 import { UsersService } from '../../services/UsersService';
+import { MESSAGE_TYPE } from '../../shared/constants/message-type';
+import { STATUS } from '../../shared/constants/status';
 import { ClientPromiseWrapper } from '../../shared/libs/client-promise-wrapper';
 
 type Props = {
@@ -30,7 +30,7 @@ export default function MessageDetailModalAction({
   const session = useSession();
   const user = session?.data?.user as SessionUser;
 
-  const types = ['Case', 'Information'];
+  const types = Object.keys(MESSAGE_TYPE).map((key) => MESSAGE_TYPE[key]);
   const [canSave, setCanSave] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [priorities, setPriorities] = useState<Priority[]>([]);
@@ -75,9 +75,9 @@ export default function MessageDetailModalAction({
 
     setCanSave(false);
     toast('Saving...');
-    if (selectedType === 'Case') {
+    if (selectedType === MESSAGE_TYPE.CASE) {
       await wrapper.handle(saveCase());
-    } else {
+    } else if (selectedType === MESSAGE_TYPE.INFORMATION) {
     }
 
     toast.dismiss();
@@ -88,7 +88,7 @@ export default function MessageDetailModalAction({
   const saveCase = async () => {
     const statusService = new StatusService(user?.accessToken);
     const statuses = await statusService.getAll();
-    const newStatus = statuses.find((s) => s.statusName === 'New');
+    const newStatus = statuses.find((s) => s.statusName === STATUS.NEW);
 
     const dto: CreateCaseDto = {
       statusId: newStatus.id,
