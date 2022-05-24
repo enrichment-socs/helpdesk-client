@@ -19,6 +19,7 @@ import { atom } from 'jotai';
 import MessageContainer from '../components/messages/MessageContainer';
 import AdminRequestSummaryContainer from '../components/request-summaries/admin/AdminRequestSummaryContainer';
 import UserRequestSummaryContainer from '../components/request-summaries/user/UserRequestSummaryContainer';
+import { MessageService } from '../services/MessageService';
 
 type Props = {
   announcements: Announcement[];
@@ -102,6 +103,7 @@ export const getServerSideProps = withSessionSsr(
     const user = session.user as SessionUser;
     const announcementService = new AnnouncementService(user.accessToken);
     const graphApiService = new GraphApiService(user.accessToken);
+    const messageService = new MessageService(user.accessToken);
 
     const announcements = await announcementService.getBySemester(
       sessionActiveSemester.id
@@ -112,7 +114,7 @@ export const getServerSideProps = withSessionSsr(
     const { messages, count } =
       user.roleName === ROLES.USER
         ? { messages: [], count: 0 }
-        : await graphApiService.getMessages(initialTake, initialSkip);
+        : await messageService.getMessages(initialTake, initialSkip);
 
     return {
       props: {

@@ -9,6 +9,7 @@ import { GraphApiService } from '../../services/GraphApiService';
 import MessagesTable from './MessagesTable';
 import MessageDetailModal from '../message-detail-modal/MessageDetailModal';
 import MessagePaginator from './MessagePaginator';
+import { MessageService } from '../../services/MessageService';
 
 type Props = {
   take: number;
@@ -37,10 +38,11 @@ export default function MessageContainer({
   const session = useSession();
   const user = session?.data?.user as SessionUser;
   const graphApiService = new GraphApiService(user.accessToken);
+  const messageService = new MessageService(user.accessToken);
 
   const syncAndGetMessages = async () => {
     await graphApiService.syncMessages();
-    const { messages } = await graphApiService.getMessages(take, 0);
+    const { messages } = await messageService.getMessages(take, 0);
     return messages;
   };
 
