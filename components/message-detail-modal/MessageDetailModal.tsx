@@ -8,9 +8,6 @@ import { OutlookMessage } from '../../models/OutlookMessage';
 import { OutlookMessageAttachmentValue } from '../../models/OutlookMessageAttachment';
 import { SessionUser } from '../../models/SessionUser';
 import { GraphApiService } from '../../services/GraphApiService';
-import { DownloadHelper } from '../../shared/libs/download-helper';
-import MultiLineSkeletonLoading from '../../widgets/MultiLineSkeletonLoading';
-import SkeletonLoading from '../../widgets/SkeletonLoading';
 import toast from 'react-hot-toast';
 import { ClientPromiseWrapper } from '../../shared/libs/client-promise-wrapper';
 import { CONTENT_ID_REGEX } from '../../shared/constants/regex';
@@ -23,19 +20,15 @@ import { Message } from '../../models/Message';
 type Props = {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
-  messageId: string;
-  conversationId: string;
   setMessage: Dispatch<SetStateAction<Message>>;
-  savedAs: string;
+  message: Message;
 };
 
 const MessageDetailModal = ({
   isOpen,
   setIsOpen,
-  messageId,
-  conversationId,
   setMessage,
-  savedAs,
+  message,
 }: Props) => {
   const session = useSession();
   const user = session?.data?.user as SessionUser;
@@ -53,14 +46,16 @@ const MessageDetailModal = ({
   };
 
   useEffect(() => {
-    if (messageId) {
+    if (message?.messageId) {
       const wrapper = new ClientPromiseWrapper(toast);
       wrapper.handle(fetchMessage());
     }
-  }, [messageId, conversationId]);
+  }, [message]);
 
   const fetchMessage = async () => {
-    const messageResult = await graphApiService.getMessageById(messageId);
+    const messageResult = await graphApiService.getMessageById(
+      message.messageId
+    );
 
     const firstMessageFromThisConversation =
       await graphApiService.getFirstMessageByConversation(
@@ -72,7 +67,7 @@ const MessageDetailModal = ({
 
     if (contentIds || messageResult.hasAttachments) {
       const messageAttachment = await graphApiService.getMessageAttachments(
-        messageId
+        message.messageId
       );
 
       let processedContent = replaceBodyImageWithCorrectSource(
@@ -169,9 +164,10 @@ const MessageDetailModal = ({
                     }>
                     <Then>
                       <MessageDetailModalAction
-                        savedAs={savedAs}
+                        savedAs={message?.savedAs}
                         onClose={close}
-                        conversationId={conversationId}
+                        conversationId={message?.conversationId}
+                        messageId={message?.id}
                       />
                     </Then>
                   </If>

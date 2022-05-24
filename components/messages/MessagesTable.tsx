@@ -10,14 +10,12 @@ import { GraphApiService } from '../../services/GraphApiService';
 type Props = {
   setOpenMessageModal: Dispatch<SetStateAction<boolean>>;
   setSelectedMessage: Dispatch<SetStateAction<Message>>;
-  setSelectedMessageConversationId: Dispatch<SetStateAction<string>>;
   startNumber: number;
 };
 
 const MessagesTable = ({
   setOpenMessageModal,
   setSelectedMessage,
-  setSelectedMessageConversationId,
   startNumber,
 }: Props) => {
   const [messages] = useAtom(messagesAtom);
@@ -25,7 +23,6 @@ const MessagesTable = ({
 
   const onMessageClick = async (message: Message) => {
     setSelectedMessage(message);
-    setSelectedMessageConversationId(message.conversationId);
     setOpenMessageModal(true);
   };
 

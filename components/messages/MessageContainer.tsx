@@ -33,8 +33,7 @@ export default function MessageContainer({
 
   const [openMessageModal, setOpenMessageModal] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState<Message>(null);
-  const [selectedMessageConversationId, setSelectedMessageConversationId] =
-    useState<string>(null);
+  useState<string>(null);
 
   const session = useSession();
   const user = session?.data?.user as SessionUser;
@@ -66,10 +65,8 @@ export default function MessageContainer({
       <MessageDetailModal
         isOpen={openMessageModal}
         setIsOpen={setOpenMessageModal}
-        messageId={selectedMessage?.messageId}
-        conversationId={selectedMessageConversationId}
         setMessage={setSelectedMessage}
-        savedAs={selectedMessage?.savedAs}
+        message={selectedMessage}
       />
       <div className="ml-2 mt-5 p-2 border-2 rounded divide-y">
         <div className="flex justify-between">
@@ -95,7 +92,6 @@ export default function MessageContainer({
             startNumber={skip + 1}
             setOpenMessageModal={setOpenMessageModal}
             setSelectedMessage={setSelectedMessage}
-            setSelectedMessageConversationId={setSelectedMessageConversationId}
           />
 
           <MessagePaginator

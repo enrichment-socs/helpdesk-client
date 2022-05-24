@@ -10,6 +10,7 @@ import { CreateInformationDto } from '../../models/dto/informations/create-infor
 import { Priority } from '../../models/Priority';
 import { SessionUser } from '../../models/SessionUser';
 import { User } from '../../models/User';
+import { messagesAtom } from '../../pages';
 import { CaseService } from '../../services/CaseService';
 import { CategoryService } from '../../services/CategoryService';
 import { InformationService } from '../../services/InformationService';
@@ -24,15 +25,19 @@ type Props = {
   savedAs: string;
   onClose: () => void;
   conversationId: string;
+  messageId: string;
 };
 
 export default function MessageDetailModalAction({
   onClose,
   conversationId,
   savedAs,
+  messageId,
 }: Props) {
   const session = useSession();
   const user = session?.data?.user as SessionUser;
+
+  const [messages, setMessages] = useAtom(messagesAtom);
 
   const types = Object.keys(MESSAGE_TYPE).map((key) => MESSAGE_TYPE[key]);
   const [canSave, setCanSave] = useState(false);
@@ -88,6 +93,7 @@ export default function MessageDetailModalAction({
     toast.dismiss();
     toast.success(`Message saved to ${selectedType} succesfully!`);
     setCanSave(true);
+    updateMessageState();
   };
 
   const saveCase = async () => {
@@ -116,6 +122,16 @@ export default function MessageDetailModalAction({
 
     const infoService = new InformationService(user?.accessToken);
     await infoService.add(dto);
+  };
+
+  const updateMessageState = () => {
+    const newMessages = messages.map((message) => {
+      if (message.id === messageId) {
+        message.savedAs = selectedType;
+      }
+      return message;
+    });
+    setMessages(newMessages);
   };
 
   const isSaved = () => {
