@@ -3,7 +3,7 @@ import { CreatePriorityDto } from '../models/dto/priority/create-prioritiy.dto';
 import { Priority } from '../models/Priority';
 import { BaseService } from './BaseService';
 
-export class PrioritiesService extends BaseService {
+export class PriorityService extends BaseService {
   public async getAll(): Promise<Priority[]> {
     const result: AxiosResponse<Priority[]> = await this.wrapper.handle(
       axios.get(`${this.BASE_URL}/priority`, this.headersWithToken())

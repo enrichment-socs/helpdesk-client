@@ -4,8 +4,8 @@ import { getSession, useSession } from 'next-auth/react';
 import Layout from '../widgets/_Layout';
 import { getInitialServerProps } from '../shared/libs/initialize-server-props';
 import { withSessionSsr } from '../shared/libs/session';
-import { SemestersService } from '../services/SemestersService';
-import { AnnouncementsService } from '../services/AnnouncementService';
+import { SemesterService } from '../services/SemesterService';
+import { AnnouncementService } from '../services/AnnouncementService';
 import { Announcement } from '../models/Announcement';
 import AnnouncementContainer from '../components/pages/home/AnnouncementContainer';
 import AnnouncementDetailModal from '../components/announcements/AnnouncementDetailModal';
@@ -88,7 +88,7 @@ const Home: NextPage<Props> = ({
 export const getServerSideProps = withSessionSsr(
   async function getServerSideProps({ req }) {
     const { session, semesters, sessionActiveSemester } =
-      await getInitialServerProps(req, getSession, new SemestersService());
+      await getInitialServerProps(req, getSession, new SemesterService());
 
     if (!session) {
       return {
@@ -100,7 +100,7 @@ export const getServerSideProps = withSessionSsr(
     }
 
     const user = session.user as SessionUser;
-    const announcementService = new AnnouncementsService(user.accessToken);
+    const announcementService = new AnnouncementService(user.accessToken);
     const graphApiService = new GraphApiService(user.accessToken);
 
     const announcements = await announcementService.getBySemester(

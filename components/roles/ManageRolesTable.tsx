@@ -3,7 +3,7 @@ import toast from 'react-hot-toast';
 import { confirm } from '../../shared/libs/confirm-dialog-helper';
 import { Role } from '../../models/Role';
 import { rolesAtom } from '../../pages/manage/roles';
-import { RolesService } from '../../services/RolesService';
+import { RoleService } from '../../services/RoleService';
 import { useSession } from 'next-auth/react';
 import { SessionUser } from '../../models/SessionUser';
 
@@ -16,7 +16,7 @@ export default function ManageRolesTable({ roles, openModal }: Props) {
   const [, setRoles] = useAtom(rolesAtom);
   const session = useSession();
   const user = session?.data?.user as SessionUser;
-  const rolesService = new RolesService(user.accessToken);
+  const rolesService = new RoleService(user.accessToken);
 
   const onDelete = async (role: Role) => {
     const message = `Are you sure you want to delete <b>${role.roleName} </b> ?`;

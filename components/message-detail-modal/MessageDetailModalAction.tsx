@@ -9,11 +9,11 @@ import { CreateCaseDto } from '../../models/dto/cases/create-case.dto';
 import { Priority } from '../../models/Priority';
 import { SessionUser } from '../../models/SessionUser';
 import { User } from '../../models/User';
-import { CasesService } from '../../services/CasesService';
-import { CategoriesService } from '../../services/CategoriesService';
-import { PrioritiesService } from '../../services/PrioritiesService';
+import { CaseService } from '../../services/CaseService';
+import { CategoryService } from '../../services/CategoryService';
+import { PriorityService } from '../../services/PriorityService';
 import { StatusService } from '../../services/StatusService';
-import { UsersService } from '../../services/UsersService';
+import { UserService } from '../../services/UserService';
 import { MESSAGE_TYPE } from '../../shared/constants/message-type';
 import { STATUS } from '../../shared/constants/status';
 import { ClientPromiseWrapper } from '../../shared/libs/client-promise-wrapper';
@@ -46,9 +46,9 @@ export default function MessageDetailModalAction({
 
   useEffect(() => {
     const fetchInitialData = async () => {
-      const categoryService = new CategoriesService(user?.accessToken);
-      const priorityService = new PrioritiesService(user?.accessToken);
-      const usersService = new UsersService(user?.accessToken);
+      const categoryService = new CategoryService(user?.accessToken);
+      const priorityService = new PriorityService(user?.accessToken);
+      const usersService = new UserService(user?.accessToken);
 
       const fetchedCategories = await categoryService.getAll();
       const fetchedPriorities = await priorityService.getAll();
@@ -100,7 +100,7 @@ export default function MessageDetailModalAction({
     };
 
     console.log({ dto });
-    const casesService = new CasesService(user?.accessToken);
+    const casesService = new CaseService(user?.accessToken);
     await casesService.add(dto);
   };
 

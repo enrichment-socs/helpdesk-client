@@ -11,8 +11,8 @@ import { ROLES } from '../../../shared/constants/roles';
 import { getInitialServerProps } from '../../../shared/libs/initialize-server-props';
 import { withSessionSsr } from '../../../shared/libs/session';
 import { Category } from '../../../models/Category';
-import { CategoriesService } from '../../../services/CategoriesService';
-import { SemestersService } from '../../../services/SemestersService';
+import { CategoryService } from '../../../services/CategoryService';
+import { SemesterService } from '../../../services/SemesterService';
 import { SessionUser } from '../../../models/SessionUser';
 
 type Props = {
@@ -60,7 +60,7 @@ const ManageCategoriesPage: NextPage<Props> = ({ categories }) => {
 export const getServerSideProps = withSessionSsr(
   async function getServerSideProps({ req }) {
     const { session, semesters, sessionActiveSemester } =
-      await getInitialServerProps(req, getSession, new SemestersService());
+      await getInitialServerProps(req, getSession, new SemesterService());
 
     if (!AuthHelper.isLoggedInAndHasRole(session, [ROLES.SUPER_ADMIN])) {
       return {
@@ -72,7 +72,7 @@ export const getServerSideProps = withSessionSsr(
     }
 
     const user = session.user as SessionUser;
-    const categoriesService = new CategoriesService(user.accessToken);
+    const categoriesService = new CategoryService(user.accessToken);
     const categories = await categoriesService.getAll();
 
     return {

@@ -2,7 +2,7 @@ import { IncomingMessage } from 'http';
 import { Session } from 'next-auth';
 import { GetSessionParams } from 'next-auth/react';
 import { Semester } from '../../models/Semester';
-import { SemestersService } from '../../services/SemestersService';
+import { SemesterService } from '../../services/SemesterService';
 
 type Props = {
   session: Session;
@@ -14,7 +14,7 @@ type Props = {
 export const getInitialServerProps = async (
   req: IncomingMessage,
   getSession: (params?: GetSessionParams) => Promise<Session | null>,
-  semesterService: SemestersService
+  semesterService: SemesterService
 ): Promise<Props> => {
   const semesters = await semesterService.getSemesters();
   const session = await getSession({ req });

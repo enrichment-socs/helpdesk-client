@@ -4,7 +4,7 @@ import { CheckIcon, SelectorIcon } from '@heroicons/react/solid';
 import { useAtom } from 'jotai';
 import { activeSemesterAtom, semestersAtom } from '../atom';
 import { Semester } from '../models/Semester';
-import { SemestersService } from '../services/SemestersService';
+import { SemesterService } from '../services/SemesterService';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
@@ -23,7 +23,7 @@ export default function SemesterListBox() {
   };
 
   const onChangeSemester = async (semester: Semester) => {
-    const semestersService = new SemestersService(user.accessToken);
+    const semestersService = new SemesterService(user.accessToken);
     const s = await toast.promise(semestersService.changeSemester(semester), {
       loading: 'Changing semester...',
       success: 'Change semester success',

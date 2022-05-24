@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 import { CreateFAQCategoryDto } from '../../models/dto/faq-categories/create-faq-category.dto';
 import { FAQCategory } from '../../models/FAQCategory';
 import { faqCategoriesAtom } from '../../pages/manage/faq-categories';
-import { FAQCategoriesService } from '../../services/FAQCategoriesService';
+import { FAQCategoryService } from '../../services/FAQCategoryService';
 import { useSession } from 'next-auth/react';
 import { SessionUser } from '../../models/SessionUser';
 
@@ -43,7 +43,7 @@ export default function FAQCategoryFormModal({
 
   const onSubmit: SubmitHandler<FormData> = async (payload) => {
     setLoading(true);
-    const faqCategoriesService = new FAQCategoriesService(user.accessToken);
+    const faqCategoriesService = new FAQCategoryService(user.accessToken);
     await toast.promise(
       faqCategory
         ? faqCategoriesService.updateFAQCategory(

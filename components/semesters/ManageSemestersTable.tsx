@@ -1,6 +1,6 @@
 import { confirm } from '../../shared/libs/confirm-dialog-helper';
 import { Semester } from '../../models/Semester';
-import { SemestersService } from '../../services/SemestersService';
+import { SemesterService } from '../../services/SemesterService';
 import toast from 'react-hot-toast';
 import { useAtom } from 'jotai';
 import { semestersAtom } from '../../atom';
@@ -16,7 +16,7 @@ export default function ManageSemestersTable({ semesters, openModal }: Props) {
   const [, setSemesters] = useAtom(semestersAtom);
   const session = useSession();
   const user = session?.data?.user as SessionUser;
-  const semestersService = new SemestersService(user.accessToken);
+  const semestersService = new SemesterService(user.accessToken);
 
   const onDelete = async (semester: Semester) => {
     const message = `Are you sure you want to delete <b>${semester.type} Semester ${semester.startYear}/${semester.endYear}</b> ?`;

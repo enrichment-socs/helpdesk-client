@@ -9,7 +9,7 @@ import Layout from '../../../widgets/_Layout';
 import { getInitialServerProps } from '../../../shared/libs/initialize-server-props';
 import { withSessionSsr } from '../../../shared/libs/session';
 import { Semester } from '../../../models/Semester';
-import { SemestersService } from '../../../services/SemestersService';
+import { SemesterService } from '../../../services/SemesterService';
 import { AuthHelper } from '../../../shared/libs/auth-helper';
 import { ROLES } from '../../../shared/constants/roles';
 
@@ -50,7 +50,7 @@ const ManageSemestersPage: NextPage = () => {
 export const getServerSideProps = withSessionSsr(
   async function getServerSideProps({ req }) {
     const { session, semesters, sessionActiveSemester } =
-      await getInitialServerProps(req, getSession, new SemestersService());
+      await getInitialServerProps(req, getSession, new SemesterService());
 
     if (!AuthHelper.isLoggedInAndHasRole(session, [ROLES.SUPER_ADMIN])) {
       return {

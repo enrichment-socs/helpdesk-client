@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 import { CreateRoleDto } from '../../models/dto/roles/create-role.dto';
 import { Role } from '../../models/Role';
 import { rolesAtom } from '../../pages/manage/roles';
-import { RolesService } from '../../services/RolesService';
+import { RoleService } from '../../services/RoleService';
 import { useSession } from 'next-auth/react';
 import { SessionUser } from '../../models/SessionUser';
 
@@ -25,7 +25,7 @@ export default function RoleFormModal({ isOpen, setIsOpen, role }: Props) {
   const [loading, setLoading] = useState(false);
   const session = useSession();
   const user = session?.data?.user as SessionUser;
-  const rolesService = new RolesService(user.accessToken);
+  const rolesService = new RoleService(user.accessToken);
 
   const {
     register,

@@ -11,8 +11,8 @@ import { ROLES } from '../../../shared/constants/roles';
 import { getInitialServerProps } from '../../../shared/libs/initialize-server-props';
 import { withSessionSsr } from '../../../shared/libs/session';
 import { FAQCategory } from '../../../models/FAQCategory';
-import { FAQCategoriesService } from '../../../services/FAQCategoriesService';
-import { SemestersService } from '../../../services/SemestersService';
+import { FAQCategoryService } from '../../../services/FAQCategoryService';
+import { SemesterService } from '../../../services/SemesterService';
 import { SessionUser } from '../../../models/SessionUser';
 
 export const faqCategoriesAtom = atom([] as FAQCategory[]);
@@ -62,7 +62,7 @@ const ManageFAQCategoriesPage: NextPage<Props> = ({ currFAQCategories }) => {
 export const getServerSideProps = withSessionSsr(
   async function getServerSideProps({ req }) {
     const { session, semesters, sessionActiveSemester } =
-      await getInitialServerProps(req, getSession, new SemestersService());
+      await getInitialServerProps(req, getSession, new SemesterService());
 
     if (!AuthHelper.isLoggedInAndHasRole(session, [ROLES.SUPER_ADMIN])) {
       return {
@@ -74,7 +74,7 @@ export const getServerSideProps = withSessionSsr(
     }
 
     const user = session.user as SessionUser;
-    const faqCategoriesService = new FAQCategoriesService(user.accessToken);
+    const faqCategoriesService = new FAQCategoryService(user.accessToken);
     const currFAQCategories = await faqCategoriesService.getAll();
 
     return {

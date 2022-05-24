@@ -8,7 +8,7 @@ import { CreatePriorityDto } from '../../models/dto/priority/create-prioritiy.dt
 import { Priority } from '../../models/Priority';
 import { SessionUser } from '../../models/SessionUser';
 import { prioritiesAtom } from '../../pages/manage/priorities';
-import { PrioritiesService } from '../../services/PrioritiesService';
+import { PriorityService } from '../../services/PriorityService';
 
 type Props = {
   isOpen: boolean;
@@ -30,7 +30,7 @@ export default function PrioritiesFormModal({
   const [loading, setLoading] = useState(false);
   const session = useSession();
   const user = session?.data?.user as SessionUser;
-  const prioritiesService = new PrioritiesService(user.accessToken);
+  const prioritiesService = new PriorityService(user.accessToken);
 
   const {
     register,

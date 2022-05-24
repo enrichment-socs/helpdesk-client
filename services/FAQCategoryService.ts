@@ -3,7 +3,7 @@ import { CreateFAQCategoryDto } from '../models/dto/faq-categories/create-faq-ca
 import { FAQCategory } from '../models/FAQCategory';
 import { BaseService } from './BaseService';
 
-export class FAQCategoriesService extends BaseService {
+export class FAQCategoryService extends BaseService {
   public async get(id: string) {
     const res: AxiosResponse<FAQCategory> = await this.wrapper.handle(
       axios.get(`${this.BASE_URL}/faq-categories/${id}`)
@@ -20,7 +20,11 @@ export class FAQCategoriesService extends BaseService {
 
   public async addFAQCategory(dto: CreateFAQCategoryDto) {
     const result: AxiosResponse<FAQCategory> = await this.wrapper.handle(
-      axios.post(`${this.BASE_URL}/faq-categories`, dto, this.headersWithToken())
+      axios.post(
+        `${this.BASE_URL}/faq-categories`,
+        dto,
+        this.headersWithToken()
+      )
     );
     return result.data;
   }
@@ -30,14 +34,21 @@ export class FAQCategoriesService extends BaseService {
     categoryId: string
   ) {
     const result: AxiosResponse<FAQCategory> = await this.wrapper.handle(
-      axios.patch(`${this.BASE_URL}/faq-categories/${categoryId}`, dto, this.headersWithToken())
+      axios.patch(
+        `${this.BASE_URL}/faq-categories/${categoryId}`,
+        dto,
+        this.headersWithToken()
+      )
     );
     return result.data;
   }
 
   public async deleteFAQCategory(categoryId: string) {
     const result: AxiosResponse<FAQCategory> = await this.wrapper.handle(
-      axios.delete(`${this.BASE_URL}/faq-categories/${categoryId}`, this.headersWithToken())
+      axios.delete(
+        `${this.BASE_URL}/faq-categories/${categoryId}`,
+        this.headersWithToken()
+      )
     );
     return result.data;
   }

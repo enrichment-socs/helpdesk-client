@@ -3,7 +3,7 @@ import { Category } from '../models/Category';
 import { CreateCategoryDto } from '../models/dto/categories/create-category-dto';
 import { BaseService } from './BaseService';
 
-export class CategoriesService extends BaseService {
+export class CategoryService extends BaseService {
   public async getAll(): Promise<Category[]> {
     const result: AxiosResponse<Category[]> = await this.wrapper.handle(
       axios.get(`${this.BASE_URL}/categories`)

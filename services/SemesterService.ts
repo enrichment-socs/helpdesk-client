@@ -3,7 +3,7 @@ import { CreateSemesterDto } from '../models/dto/semesters/create-semester.dto';
 import { Semester } from '../models/Semester';
 import { BaseService } from './BaseService';
 
-export class SemestersService extends BaseService {
+export class SemesterService extends BaseService {
   public async getSemesters(): Promise<Semester[]> {
     const result: AxiosResponse<Semester[]> = await this.wrapper.handle(
       axios.get(`${this.BASE_URL}/semesters`)

@@ -8,7 +8,7 @@ import { semestersAtom } from '../../atom';
 import { CreateSemesterDto } from '../../models/dto/semesters/create-semester.dto';
 import { Semester } from '../../models/Semester';
 import { SessionUser } from '../../models/SessionUser';
-import { SemestersService } from '../../services/SemestersService';
+import { SemesterService } from '../../services/SemesterService';
 
 type Props = {
   isOpen: boolean;
@@ -32,7 +32,7 @@ export default function SemesterFormModal({
   const [loading, setLoading] = useState(false);
   const session = useSession();
   const user = session?.data?.user as SessionUser;
-  const semestersService = new SemestersService(user.accessToken);
+  const semestersService = new SemesterService(user.accessToken);
 
   const {
     register,

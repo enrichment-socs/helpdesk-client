@@ -8,7 +8,7 @@ import { Category } from '../../models/Category';
 import { CreateCategoryDto } from '../../models/dto/categories/create-category-dto';
 import { SessionUser } from '../../models/SessionUser';
 import { categoriesAtom } from '../../pages/manage/categories';
-import { CategoriesService } from '../../services/CategoriesService';
+import { CategoryService } from '../../services/CategoryService';
 
 type Props = {
   isOpen: boolean;
@@ -43,7 +43,7 @@ export default function CategoriesFormModal({
 
   const onSubmit: SubmitHandler<FormData> = async (payload) => {
     setLoading(true);
-    const categoryService = new CategoriesService(user.accessToken);
+    const categoryService = new CategoryService(user.accessToken);
     await toast.promise(
       category
         ? categoryService.update(payload as CreateCategoryDto, category.id)

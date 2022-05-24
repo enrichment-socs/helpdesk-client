@@ -16,7 +16,7 @@ import {
 } from '../../shared/constants/regex';
 import { signIn, getSession } from 'next-auth/react';
 import toast from 'react-hot-toast';
-import { SemestersService } from '../../services/SemestersService';
+import { SemesterService } from '../../services/SemesterService';
 import { withSessionSsr } from '../../shared/libs/session';
 import { getInitialServerProps } from '../../shared/libs/initialize-server-props';
 
@@ -192,7 +192,7 @@ const LoginPage: NextPage = () => {
 export const getServerSideProps = withSessionSsr(
   async function getServerSideProps({ req }) {
     const { session, semesters, sessionActiveSemester } =
-      await getInitialServerProps(req, getSession, new SemestersService());
+      await getInitialServerProps(req, getSession, new SemesterService());
 
     if (session) {
       return {

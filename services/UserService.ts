@@ -4,7 +4,7 @@ import { SessionUser } from '../models/SessionUser';
 import { User } from '../models/User';
 import { BaseService } from './BaseService';
 
-export class UsersService extends BaseService {
+export class UserService extends BaseService {
   public async getByIdentifier(identifier: string) {
     const res: AxiosResponse<SessionUser> = await this.wrapper.handle(
       axios.get(`${this.BASE_URL}/users/find?identifier=${identifier}`)

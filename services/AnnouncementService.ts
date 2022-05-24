@@ -3,7 +3,7 @@ import { Announcement } from '../models/Announcement';
 import { CreateAnnouncementDto } from '../models/dto/announcements/create-announcement.dto';
 import { BaseService } from './BaseService';
 
-export class AnnouncementsService extends BaseService {
+export class AnnouncementService extends BaseService {
   public async get(id: string) {
     const res: AxiosResponse<Announcement> = await this.wrapper.handle(
       axios.get(`${this.BASE_URL}/announcements/${id}`)

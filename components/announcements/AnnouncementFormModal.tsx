@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 import { Announcement } from '../../models/Announcement';
 import { CreateAnnouncementDto } from '../../models/dto/announcements/create-announcement.dto';
 import { announcementsAtom } from '../../pages/manage/announcements';
-import { AnnouncementsService } from '../../services/AnnouncementService';
+import { AnnouncementService } from '../../services/AnnouncementService';
 import { activeSemesterAtom } from '../../atom';
 import dynamic from 'next/dynamic';
 import { add } from 'date-fns';
@@ -99,7 +99,7 @@ export default function AnnouncementFormModal({
     };
 
     if (!announcement) dto.semesterId = activeSemester.id;
-    const announcementService = new AnnouncementsService(user.accessToken);
+    const announcementService = new AnnouncementService(user.accessToken);
 
     setLoading(true);
     await toast.promise(

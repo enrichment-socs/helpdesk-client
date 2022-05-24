@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 import { Category } from '../../models/Category';
 import { SessionUser } from '../../models/SessionUser';
 import { categoriesAtom } from '../../pages/manage/categories';
-import { CategoriesService } from '../../services/CategoriesService';
+import { CategoryService } from '../../services/CategoryService';
 import { confirm } from '../../shared/libs/confirm-dialog-helper';
 
 type Prop = {
@@ -18,7 +18,7 @@ export default function ManageCategoriesTable({ categories, openModal }: Prop) {
   const user = session?.data?.user as SessionUser;
 
   const onDelete = async (category: Category) => {
-    const categoriesService = new CategoriesService(user.accessToken);
+    const categoriesService = new CategoryService(user.accessToken);
     const message = `Are you sure you want to delete <b>${category.categoryName}</b>?`;
     if (await confirm(message)) {
       await toast.promise(categoriesService.delete(category.id), {

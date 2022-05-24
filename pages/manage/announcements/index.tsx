@@ -9,8 +9,8 @@ import Layout from '../../../widgets/_Layout';
 import { getInitialServerProps } from '../../../shared/libs/initialize-server-props';
 import { withSessionSsr } from '../../../shared/libs/session';
 import { Announcement } from '../../../models/Announcement';
-import { AnnouncementsService } from '../../../services/AnnouncementService';
-import { SemestersService } from '../../../services/SemestersService';
+import { AnnouncementService } from '../../../services/AnnouncementService';
+import { SemesterService } from '../../../services/SemesterService';
 import { SessionUser } from '../../../models/SessionUser';
 import { AuthHelper } from '../../../shared/libs/auth-helper';
 import { ROLES } from '../../../shared/constants/roles';
@@ -65,7 +65,7 @@ const ManageRolesPage: NextPage<Props> = ({ currAnnouncements }) => {
 export const getServerSideProps = withSessionSsr(
   async function getServerSideProps({ req }) {
     const { session, semesters, sessionActiveSemester } =
-      await getInitialServerProps(req, getSession, new SemestersService());
+      await getInitialServerProps(req, getSession, new SemesterService());
 
     if (!AuthHelper.isLoggedInAndHasRole(session, [ROLES.SUPER_ADMIN])) {
       return {
@@ -77,7 +77,7 @@ export const getServerSideProps = withSessionSsr(
     }
 
     const user = session.user as SessionUser;
-    const announcementService = new AnnouncementsService(user.accessToken);
+    const announcementService = new AnnouncementService(user.accessToken);
 
     const currAnnouncements = await announcementService.getBySemester(
       sessionActiveSemester.id

@@ -3,7 +3,7 @@ import { CreateRoleDto } from '../models/dto/roles/create-role.dto';
 import { Role } from '../models/Role';
 import { BaseService } from './BaseService';
 
-export class RolesService extends BaseService {
+export class RoleService extends BaseService {
   public async get(id: string) {
     const res: AxiosResponse<Role> = await this.wrapper.handle(
       axios.get(`${this.BASE_URL}/roles/${id}`)
@@ -27,7 +27,11 @@ export class RolesService extends BaseService {
 
   public async updateRole(dto: CreateRoleDto, roleId: string) {
     const result: AxiosResponse<Role> = await this.wrapper.handle(
-      axios.patch(`${this.BASE_URL}/roles/${roleId}`, dto, this.headersWithToken())
+      axios.patch(
+        `${this.BASE_URL}/roles/${roleId}`,
+        dto,
+        this.headersWithToken()
+      )
     );
     return result.data;
   }

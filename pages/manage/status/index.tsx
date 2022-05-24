@@ -11,7 +11,7 @@ import { ROLES } from '../../../shared/constants/roles';
 import { getInitialServerProps } from '../../../shared/libs/initialize-server-props';
 import { withSessionSsr } from '../../../shared/libs/session';
 import { Status } from '../../../models/Status';
-import { SemestersService } from '../../../services/SemestersService';
+import { SemesterService } from '../../../services/SemesterService';
 import { StatusService } from '../../../services/StatusService';
 import { SessionUser } from '../../../models/SessionUser';
 
@@ -58,7 +58,7 @@ const ManageStatusPage: NextPage<Props> = ({ currStatuses }) => {
 export const getServerSideProps = withSessionSsr(
   async function getServerSideProps({ req }) {
     const { session, semesters, sessionActiveSemester } =
-      await getInitialServerProps(req, getSession, new SemestersService());
+      await getInitialServerProps(req, getSession, new SemesterService());
 
     if (!AuthHelper.isLoggedInAndHasRole(session, [ROLES.SUPER_ADMIN])) {
       return {

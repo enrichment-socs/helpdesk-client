@@ -11,8 +11,8 @@ import { ROLES } from '../../../shared/constants/roles';
 import { getInitialServerProps } from '../../../shared/libs/initialize-server-props';
 import { withSessionSsr } from '../../../shared/libs/session';
 import { Priority } from '../../../models/Priority';
-import { PrioritiesService } from '../../../services/PrioritiesService';
-import { SemestersService } from '../../../services/SemestersService';
+import { PriorityService } from '../../../services/PriorityService';
+import { SemesterService } from '../../../services/SemesterService';
 import { SessionUser } from '../../../models/SessionUser';
 
 type Props = {
@@ -60,7 +60,7 @@ const ManageCategoriesPage: NextPage<Props> = ({ priorities }) => {
 export const getServerSideProps = withSessionSsr(
   async function getServerSideProps({ req }) {
     const { session, semesters, sessionActiveSemester } =
-      await getInitialServerProps(req, getSession, new SemestersService());
+      await getInitialServerProps(req, getSession, new SemesterService());
 
     if (!AuthHelper.isLoggedInAndHasRole(session, [ROLES.SUPER_ADMIN])) {
       return {
@@ -72,7 +72,7 @@ export const getServerSideProps = withSessionSsr(
     }
 
     const user = session.user as SessionUser;
-    const prioritiesService = new PrioritiesService(user.accessToken);
+    const prioritiesService = new PriorityService(user.accessToken);
     const priorities = await prioritiesService.getAll();
 
     return {

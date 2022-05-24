@@ -3,7 +3,7 @@ import toast from 'react-hot-toast';
 import { confirm } from '../../shared/libs/confirm-dialog-helper';
 import { Announcement } from '../../models/Announcement';
 import { announcementsAtom } from '../../pages/manage/announcements';
-import { AnnouncementsService } from '../../services/AnnouncementService';
+import { AnnouncementService } from '../../services/AnnouncementService';
 import { format } from 'date-fns';
 import { useSession } from 'next-auth/react';
 import { SessionUser } from '../../models/SessionUser';
@@ -25,7 +25,7 @@ export default function ManageAnnouncementsTable({
   const onDelete = async (announcement: Announcement) => {
     const message = `Are you sure you want to delete <b>${announcement.title} </b> ?`;
     if (await confirm(message)) {
-      const announcementService = new AnnouncementsService(user.accessToken);
+      const announcementService = new AnnouncementService(user.accessToken);
       await toast.promise(
         announcementService.deleteAnnouncement(
           announcement.id,

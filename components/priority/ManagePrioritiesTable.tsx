@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 import { Priority } from '../../models/Priority';
 import { SessionUser } from '../../models/SessionUser';
 import { prioritiesAtom } from '../../pages/manage/priorities';
-import { PrioritiesService } from '../../services/PrioritiesService';
+import { PriorityService } from '../../services/PriorityService';
 import { confirm } from '../../shared/libs/confirm-dialog-helper';
 
 type Prop = {
@@ -16,7 +16,7 @@ export default function ManagePrioritiesTable({ priorities, openModal }: Prop) {
   const [, setPrioritiesVal] = useAtom(prioritiesAtom);
   const session = useSession();
   const user = session?.data?.user as SessionUser;
-  const prioritiesService = new PrioritiesService(user.accessToken);
+  const prioritiesService = new PriorityService(user.accessToken);
 
   const onDelete = async (priority: Priority) => {
     const message = `Are you sure you want to delete <b>${priority.priorityName}</b>?`;

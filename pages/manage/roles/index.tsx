@@ -11,8 +11,8 @@ import { ROLES } from '../../../shared/constants/roles';
 import { getInitialServerProps } from '../../../shared/libs/initialize-server-props';
 import { withSessionSsr } from '../../../shared/libs/session';
 import { Role } from '../../../models/Role';
-import { RolesService } from '../../../services/RolesService';
-import { SemestersService } from '../../../services/SemestersService';
+import { RoleService } from '../../../services/RoleService';
+import { SemesterService } from '../../../services/SemesterService';
 import { SessionUser } from '../../../models/SessionUser';
 
 export const rolesAtom = atom([] as Role[]);
@@ -58,7 +58,7 @@ const ManageRolesPage: NextPage<Props> = ({ currRoles }) => {
 export const getServerSideProps = withSessionSsr(
   async function getServerSideProps({ req }) {
     const { session, semesters, sessionActiveSemester } =
-      await getInitialServerProps(req, getSession, new SemestersService());
+      await getInitialServerProps(req, getSession, new SemesterService());
 
     if (!AuthHelper.isLoggedInAndHasRole(session, [ROLES.SUPER_ADMIN])) {
       return {
@@ -70,7 +70,7 @@ export const getServerSideProps = withSessionSsr(
     }
 
     const user = session.user as SessionUser;
-    const rolesService = new RolesService(user.accessToken);
+    const rolesService = new RoleService(user.accessToken);
     const currRoles = await rolesService.getAll();
 
     return {
