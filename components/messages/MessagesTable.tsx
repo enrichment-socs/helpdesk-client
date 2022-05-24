@@ -9,23 +9,23 @@ import { GraphApiService } from '../../services/GraphApiService';
 
 type Props = {
   setOpenMessageModal: Dispatch<SetStateAction<boolean>>;
-  setSelectedMessageId: Dispatch<SetStateAction<string>>;
+  setSelectedMessage: Dispatch<SetStateAction<Message>>;
   setSelectedMessageConversationId: Dispatch<SetStateAction<string>>;
   startNumber: number;
 };
 
 const MessagesTable = ({
   setOpenMessageModal,
-  setSelectedMessageId,
+  setSelectedMessage,
   setSelectedMessageConversationId,
   startNumber,
 }: Props) => {
   const [messages] = useAtom(messagesAtom);
   const session = useSession();
 
-  const onMessageClick = async (messageId: string, conversationId: string) => {
-    setSelectedMessageId(messageId);
-    setSelectedMessageConversationId(conversationId);
+  const onMessageClick = async (message: Message) => {
+    setSelectedMessage(message);
+    setSelectedMessageConversationId(message.conversationId);
     setOpenMessageModal(true);
   };
 
@@ -57,6 +57,11 @@ const MessagesTable = ({
                     className="bg-gray-500 sticky top-0 px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                     Received Date
                   </th>
+                  <th
+                    scope="col"
+                    className="bg-gray-500 sticky top-0 px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                    Saved as
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -74,9 +79,7 @@ const MessagesTable = ({
                     className={`cursor-pointer ${
                       index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
                     } transition duration-300 ease-in-out hover:bg-sky-100`}
-                    onClick={() =>
-                      onMessageClick(message.messageId, message.conversationId)
-                    }>
+                    onClick={() => onMessageClick(message)}>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {startNumber++}
                     </td>
@@ -91,6 +94,9 @@ const MessagesTable = ({
                         new Date(message.receivedDateTime),
                         'dd MMM yyyy, kk:mm'
                       )}
+                    </td>
+                    <td className="px-6 py-4 truncate text-sm text-gray-900">
+                      {message.savedAs}
                     </td>
                   </tr>
                 ))}

@@ -10,6 +10,7 @@ import MessagesTable from './MessagesTable';
 import MessageDetailModal from '../message-detail-modal/MessageDetailModal';
 import MessagePaginator from './MessagePaginator';
 import { MessageService } from '../../services/MessageService';
+import { Message } from '../../models/Message';
 
 type Props = {
   take: number;
@@ -31,7 +32,7 @@ export default function MessageContainer({
   const [threeFirstPageNumber, setThreeFirstPageNumber] = useState([1, 2, 3]);
 
   const [openMessageModal, setOpenMessageModal] = useState(false);
-  const [selectedMessageId, setSelectedMessageId] = useState<string>(null);
+  const [selectedMessage, setSelectedMessage] = useState<Message>(null);
   const [selectedMessageConversationId, setSelectedMessageConversationId] =
     useState<string>(null);
 
@@ -65,9 +66,10 @@ export default function MessageContainer({
       <MessageDetailModal
         isOpen={openMessageModal}
         setIsOpen={setOpenMessageModal}
-        messageId={selectedMessageId}
+        messageId={selectedMessage?.messageId}
         conversationId={selectedMessageConversationId}
-        setMessageId={setSelectedMessageId}
+        setMessage={setSelectedMessage}
+        savedAs={selectedMessage?.savedAs}
       />
       <div className="ml-2 mt-5 p-2 border-2 rounded divide-y">
         <div className="flex justify-between">
@@ -92,7 +94,7 @@ export default function MessageContainer({
           <MessagesTable
             startNumber={skip + 1}
             setOpenMessageModal={setOpenMessageModal}
-            setSelectedMessageId={setSelectedMessageId}
+            setSelectedMessage={setSelectedMessage}
             setSelectedMessageConversationId={setSelectedMessageConversationId}
           />
 

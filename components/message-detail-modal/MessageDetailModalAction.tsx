@@ -2,7 +2,7 @@ import { useAtom } from 'jotai';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import { If, Then } from 'react-if';
+import { Else, If, Then } from 'react-if';
 import { activeSemesterAtom, semestersAtom } from '../../atom';
 import { Category } from '../../models/Category';
 import { CreateCaseDto } from '../../models/dto/cases/create-case.dto';
@@ -21,6 +21,7 @@ import { STATUS } from '../../shared/constants/status';
 import { ClientPromiseWrapper } from '../../shared/libs/client-promise-wrapper';
 
 type Props = {
+  savedAs: string;
   onClose: () => void;
   conversationId: string;
 };
@@ -28,6 +29,7 @@ type Props = {
 export default function MessageDetailModalAction({
   onClose,
   conversationId,
+  savedAs,
 }: Props) {
   const session = useSession();
   const user = session?.data?.user as SessionUser;
@@ -116,109 +118,128 @@ export default function MessageDetailModalAction({
     await infoService.add(dto);
   };
 
+  const isSaved = () => {
+    return [MESSAGE_TYPE.CASE, MESSAGE_TYPE.INFORMATION].includes(savedAs);
+  };
+
   return (
     <div className="border border-gray-300 rounded mt-8">
       <div className="bg-gray-300 text-gray-700 p-2">Action</div>
-      <div className="p-4 flex flex-col space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Message Type
-          </label>
-          <select
-            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-            defaultValue={types[0]}
-            onChange={(e) => setSelectedType(e.target.value)}>
-            {types.map((type) => (
-              <option key={type}>{type}</option>
-            ))}
-          </select>
-        </div>
+      <If condition={isSaved()}>
+        <Then>
+          <div className="px-4 pt-4">
+            This message is already saved as <b>{savedAs}</b>
+          </div>
+        </Then>
+        <Else>
+          <div className="px-4 pt-4 flex flex-col space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Message Type
+              </label>
+              <select
+                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                defaultValue={types[0]}
+                onChange={(e) => setSelectedType(e.target.value)}>
+                {types.map((type) => (
+                  <option key={type}>{type}</option>
+                ))}
+              </select>
+            </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Semester
-          </label>
-          <select
-            onChange={(e) => setSelectedSemesterId(e.target.value)}
-            defaultValue={activeSemester.id}
-            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-            {semesters.map((semester) => (
-              <option value={semester.id} key={semester.id}>
-                {semester.type} Semester {semester.startYear}/{semester.endYear}
-              </option>
-            ))}
-          </select>
-        </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Semester
+              </label>
+              <select
+                onChange={(e) => setSelectedSemesterId(e.target.value)}
+                defaultValue={activeSemester.id}
+                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                {semesters.map((semester) => (
+                  <option value={semester.id} key={semester.id}>
+                    {semester.type} Semester {semester.startYear}/
+                    {semester.endYear}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-        <If condition={selectedType === 'Case'}>
+            <If condition={selectedType === 'Case'}>
+              <Then>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Category
+                  </label>
+                  <select
+                    onChange={(e) => setSelectedCategoryId(e.target.value)}
+                    defaultValue={selectedCategoryId}
+                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                    {categories.map((category) => (
+                      <option value={category.id} key={category.id}>
+                        {category.categoryName}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Priority
+                  </label>
+                  <select
+                    onChange={(e) => setSelectedPriorityId(e.target.value)}
+                    defaultValue={selectedPriorityId}
+                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                    {priorities.map((priority) => (
+                      <option value={priority.id} key={priority.id}>
+                        {priority.priorityName}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Assign to
+                  </label>
+                  <select
+                    onChange={(e) => setSelectedAdminId(e.target.value)}
+                    defaultValue={selectedAdminId}
+                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                    {admins.map((admin) => (
+                      <option value={admin.id} key={admin.id}>
+                        {admin.code} - {admin.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </Then>
+            </If>
+          </div>
+        </Else>
+      </If>
+
+      <div className="flex justify-end space-x-2 p-4">
+        <button
+          type="button"
+          onClick={onClose}
+          className="inline-flex items-center px-12 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-gray-300 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300">
+          Close
+        </button>
+
+        <If condition={!isSaved()}>
           <Then>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Category
-              </label>
-              <select
-                onChange={(e) => setSelectedCategoryId(e.target.value)}
-                defaultValue={selectedCategoryId}
-                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                {categories.map((category) => (
-                  <option value={category.id} key={category.id}>
-                    {category.categoryName}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Priority
-              </label>
-              <select
-                onChange={(e) => setSelectedPriorityId(e.target.value)}
-                defaultValue={selectedPriorityId}
-                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                {priorities.map((priority) => (
-                  <option value={priority.id} key={priority.id}>
-                    {priority.priorityName}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Assign to
-              </label>
-              <select
-                onChange={(e) => setSelectedAdminId(e.target.value)}
-                defaultValue={selectedAdminId}
-                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                {admins.map((admin) => (
-                  <option value={admin.id} key={admin.id}>
-                    {admin.code} - {admin.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <button
+              type="button"
+              disabled={!canSave}
+              onClick={onSave}
+              className={`${
+                canSave ? 'bg-primary hover:bg-primary-dark' : 'bg-gray-300'
+              } inline-flex items-center px-12 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary`}>
+              {canSave ? `Save as ${selectedType}` : 'Loading ...'}
+            </button>
           </Then>
         </If>
-
-        <div className="flex justify-end space-x-2">
-          <button
-            type="button"
-            onClick={onClose}
-            className="inline-flex items-center px-12 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-gray-300 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300">
-            Close
-          </button>
-          <button
-            type="button"
-            disabled={!canSave}
-            onClick={onSave}
-            className={`${
-              canSave ? 'bg-primary hover:bg-primary-dark' : 'bg-gray-300'
-            } inline-flex items-center px-12 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary`}>
-            {canSave ? `Save as ${selectedType}` : 'Loading ...'}
-          </button>
-        </div>
       </div>
     </div>
   );

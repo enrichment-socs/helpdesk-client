@@ -10,6 +10,7 @@ import { Else, If, Then } from 'react-if';
 import { SessionUser } from '../../models/SessionUser';
 import { messagesAtom } from '../../pages';
 import { GraphApiService } from '../../services/GraphApiService';
+import { MessageService } from '../../services/MessageService';
 import { ClientPromiseWrapper } from '../../shared/libs/client-promise-wrapper';
 import MessagePaginatorButton from './MessagePaginatorButton';
 
@@ -37,6 +38,7 @@ export default function MessagePaginator({
   const session = useSession();
   const user = session?.data?.user as SessionUser;
   const graphService = new GraphApiService(user?.accessToken);
+  const messageService = new MessageService(user?.accessToken);
   const [, setMessages] = useAtom(messagesAtom);
 
   const totalPage = Math.ceil(totalCount / take);
@@ -66,7 +68,7 @@ export default function MessagePaginator({
   const fetchMessages = async (take: number, skip: number) => {
     const wrapper = new ClientPromiseWrapper(toast);
     const { messages } = await wrapper.handle(
-      graphService.getMessages(take, skip)
+      messageService.getMessages(take, skip)
     );
     setMessages(messages ?? []);
   };

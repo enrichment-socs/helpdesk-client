@@ -18,13 +18,15 @@ import MessageDetailModalAction from './MessageDetailModalAction';
 import MessageDetailModalHeader from './MessageDetailModalHeader';
 import MessageDetailModalBody from './MessageDetailModalBody';
 import { If, Then } from 'react-if';
+import { Message } from '../../models/Message';
 
 type Props = {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   messageId: string;
   conversationId: string;
-  setMessageId: Dispatch<SetStateAction<string>>;
+  setMessage: Dispatch<SetStateAction<Message>>;
+  savedAs: string;
 };
 
 const MessageDetailModal = ({
@@ -32,21 +34,22 @@ const MessageDetailModal = ({
   setIsOpen,
   messageId,
   conversationId,
-  setMessageId,
+  setMessage,
+  savedAs,
 }: Props) => {
   const session = useSession();
   const user = session?.data?.user as SessionUser;
   const graphApiService = new GraphApiService(user.accessToken);
 
-  const [message, setMessage] = useState<OutlookMessage>(null);
+  const [outlookMessage, setOutlookMessage] = useState<OutlookMessage>(null);
   const [attachments, setAttachments] = useState<
     OutlookMessageAttachmentValue[]
   >([]);
 
   const close = () => {
     setIsOpen(false);
+    setOutlookMessage(null);
     setMessage(null);
-    setMessageId(null);
   };
 
   useEffect(() => {
@@ -82,7 +85,7 @@ const MessageDetailModal = ({
       setAttachments(messageAttachment.value);
     }
 
-    setMessage(messageResult);
+    setOutlookMessage(messageResult);
   };
 
   const replaceBodyImageWithCorrectSource = (
@@ -154,15 +157,19 @@ const MessageDetailModal = ({
                 </div>
 
                 <div className="mt-2 p-6">
-                  <MessageDetailModalHeader message={message} />
+                  <MessageDetailModalHeader message={outlookMessage} />
                   <MessageDetailModalBody
-                    message={message}
+                    message={outlookMessage}
                     attachments={attachments}
                   />
 
-                  <If condition={message !== null && message !== undefined}>
+                  <If
+                    condition={
+                      outlookMessage !== null && outlookMessage !== undefined
+                    }>
                     <Then>
                       <MessageDetailModalAction
+                        savedAs={savedAs}
                         onClose={close}
                         conversationId={conversationId}
                       />

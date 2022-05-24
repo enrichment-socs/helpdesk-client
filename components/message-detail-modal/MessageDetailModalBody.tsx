@@ -30,11 +30,13 @@ export default function MessageDetailModalBody({
         ) : (
           <div>
             <div
+              className="max-h-[42rem] overflow-auto"
               dangerouslySetInnerHTML={{
                 __html: message.body.content,
               }}></div>
+
             {message.hasAttachments && (
-              <div>
+              <div className="border-t border-gray-300 mt-4">
                 <h3 className="font-semibold text-sm mt-4">Attachments</h3>
 
                 <ul className="flex flex-wrap space-x-2">
