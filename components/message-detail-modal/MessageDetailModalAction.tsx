@@ -6,11 +6,13 @@ import { If, Then } from 'react-if';
 import { activeSemesterAtom, semestersAtom } from '../../atom';
 import { Category } from '../../models/Category';
 import { CreateCaseDto } from '../../models/dto/cases/create-case.dto';
+import { CreateInformationDto } from '../../models/dto/informations/create-information.dto';
 import { Priority } from '../../models/Priority';
 import { SessionUser } from '../../models/SessionUser';
 import { User } from '../../models/User';
 import { CaseService } from '../../services/CaseService';
 import { CategoryService } from '../../services/CategoryService';
+import { InformationService } from '../../services/InformationService';
 import { PriorityService } from '../../services/PriorityService';
 import { StatusService } from '../../services/StatusService';
 import { UserService } from '../../services/UserService';
@@ -78,10 +80,11 @@ export default function MessageDetailModalAction({
     if (selectedType === MESSAGE_TYPE.CASE) {
       await wrapper.handle(saveCase());
     } else if (selectedType === MESSAGE_TYPE.INFORMATION) {
+      await wrapper.handle(saveInformation());
     }
 
     toast.dismiss();
-    toast.success('Message saved succesfully!');
+    toast.success(`Message saved to ${selectedType} succesfully!`);
     setCanSave(true);
   };
 
@@ -99,9 +102,18 @@ export default function MessageDetailModalAction({
       conversationId,
     };
 
-    console.log({ dto });
     const casesService = new CaseService(user?.accessToken);
     await casesService.add(dto);
+  };
+
+  const saveInformation = async () => {
+    const dto: CreateInformationDto = {
+      semesterId: selectedSemesterId,
+      conversationId,
+    };
+
+    const infoService = new InformationService(user?.accessToken);
+    await infoService.add(dto);
   };
 
   return (

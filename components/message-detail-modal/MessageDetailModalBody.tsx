@@ -35,7 +35,7 @@ export default function MessageDetailModalBody({
               }}></div>
             {message.hasAttachments && (
               <div>
-                <h3 className="font-semibold text-sm">Attachments</h3>
+                <h3 className="font-semibold text-sm mt-4">Attachments</h3>
 
                 <ul className="flex flex-wrap space-x-2">
                   {attachments
