@@ -1,7 +1,8 @@
 export class Message {
   id: string;
   messageId: string;
-  sender: string;
+  senderEmail: string;
+  senderName: string;
   subject: string;
   receivedDateTime: Date;
   bodyPreview: string;

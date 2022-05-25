@@ -5,4 +5,7 @@ export interface CreateCaseDto {
   categoryId: string;
   semesterId: string;
   priorityId: string;
+  senderName: string;
+  senderEmail: string;
+  subject: string;
 }
