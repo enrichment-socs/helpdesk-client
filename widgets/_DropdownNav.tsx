@@ -25,7 +25,7 @@ export default function DropdownNav({ link }: Props) {
 
       <ul
         className={`absolute bg-white border border-gray-200 rounded-md shadow top-12 transition-all duration-300 ${
-          openDropdown ? 'block' : 'hidden'
+          openDropdown ? 'block z-10' : 'hidden'
         }`}>
         {link.children?.map((child) => (
           <li key={child.title} className="w-44 hover:bg-gray-50">

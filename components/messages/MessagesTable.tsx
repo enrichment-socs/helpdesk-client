@@ -31,7 +31,7 @@ const MessagesTable = ({
       <div className="overflow-x-auto">
         <div className="py-2 align-middle inline-block min-w-full">
           <div className="max-h-[40rem] overflow-auto border border-gray-200">
-            <table className="min-w-full divide-y divide-gray-200 relative -z-10">
+            <table className="min-w-full divide-y divide-gray-200 relative">
               <thead className="bg-gray-500">
                 <tr>
                   <th
