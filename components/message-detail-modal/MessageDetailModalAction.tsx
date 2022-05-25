@@ -7,6 +7,7 @@ import { activeSemesterAtom, semestersAtom } from '../../atom';
 import { Category } from '../../models/Category';
 import { CreateCaseDto } from '../../models/dto/cases/create-case.dto';
 import { CreateInformationDto } from '../../models/dto/informations/create-information.dto';
+import { Message } from '../../models/Message';
 import { Priority } from '../../models/Priority';
 import { SessionUser } from '../../models/SessionUser';
 import { User } from '../../models/User';
@@ -22,18 +23,11 @@ import { STATUS } from '../../shared/constants/status';
 import { ClientPromiseWrapper } from '../../shared/libs/client-promise-wrapper';
 
 type Props = {
-  savedAs: string;
   onClose: () => void;
-  conversationId: string;
-  messageId: string;
+  message: Message;
 };
 
-export default function MessageDetailModalAction({
-  onClose,
-  conversationId,
-  savedAs,
-  messageId,
-}: Props) {
+export default function MessageDetailModalAction({ onClose, message }: Props) {
   const session = useSession();
   const user = session?.data?.user as SessionUser;
 
@@ -107,7 +101,10 @@ export default function MessageDetailModalAction({
       assignedToId: selectedAdminId,
       categoryId: selectedCategoryId,
       priorityId: selectedPriorityId,
-      conversationId,
+      conversationId: message.conversationId,
+      senderName: message.senderName,
+      senderEmail: message.senderEmail,
+      subject: message.subject,
     };
 
     const casesService = new CaseService(user?.accessToken);
@@ -117,7 +114,10 @@ export default function MessageDetailModalAction({
   const saveInformation = async () => {
     const dto: CreateInformationDto = {
       semesterId: selectedSemesterId,
-      conversationId,
+      conversationId: message.conversationId,
+      senderName: message.senderName,
+      senderEmail: message.senderEmail,
+      subject: message.subject,
     };
 
     const infoService = new InformationService(user?.accessToken);
@@ -125,17 +125,19 @@ export default function MessageDetailModalAction({
   };
 
   const updateMessageState = () => {
-    const newMessages = messages.map((message) => {
-      if (message.id === messageId) {
-        message.savedAs = selectedType;
+    const newMessages = messages.map((currMessage) => {
+      if (currMessage.id === message.id) {
+        currMessage.savedAs = selectedType;
       }
-      return message;
+      return currMessage;
     });
     setMessages(newMessages);
   };
 
   const isSaved = () => {
-    return [MESSAGE_TYPE.CASE, MESSAGE_TYPE.INFORMATION].includes(savedAs);
+    return [MESSAGE_TYPE.CASE, MESSAGE_TYPE.INFORMATION].includes(
+      message?.savedAs
+    );
   };
 
   return (
@@ -144,7 +146,7 @@ export default function MessageDetailModalAction({
       <If condition={isSaved()}>
         <Then>
           <div className="px-4 pt-4">
-            This message is already saved as <b>{savedAs}</b>
+            This message is already saved as <b>{message?.savedAs}</b>
           </div>
         </Then>
         <Else>

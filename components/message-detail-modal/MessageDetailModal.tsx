@@ -164,10 +164,8 @@ const MessageDetailModal = ({
                     }>
                     <Then>
                       <MessageDetailModalAction
-                        savedAs={message?.savedAs}
                         onClose={close}
-                        conversationId={message?.conversationId}
-                        messageId={message?.id}
+                        message={message}
                       />
                     </Then>
                   </If>

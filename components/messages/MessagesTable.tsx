@@ -81,7 +81,7 @@ const MessagesTable = ({
                       {startNumber++}
                     </td>
                     <td className="max-w-[16rem] px-6 py-4 truncate text-sm font-medium text-gray-900">
-                      {message.sender}
+                      {message.senderName}
                     </td>
                     <td className="max-w-[32rem] px-6 py-4 truncate text-sm text-gray-900">
                       {message.subject}
