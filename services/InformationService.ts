@@ -10,4 +10,11 @@ export class InformationService extends BaseService {
     );
     return result.data;
   }
+
+  public async getAll(): Promise<Information> {
+    const result = await this.wrapper.handle(
+      axios.get(`${this.BASE_URL}/informations`, this.headersWithToken())
+    );
+    return result.data;
+  }
 }

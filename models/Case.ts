@@ -10,4 +10,7 @@ export class Case {
   public semester: Semester;
   public status: Status;
   public category: Category;
+  senderName: string;
+  senderEmail: string;
+  subject: string;
 }
