@@ -8,6 +8,11 @@ type Props = {
 };
 
 export default function MessageDetailModalHeader({ message }: Props) {
+  const getSubjectInfo = () => {
+    if (!message) return <SkeletonLoading width="100%" />;
+    return message.subject || 'No Subject';
+  };
+
   const getSenderInfo = () => {
     return message ? (
       message.sender.emailAddress.address
@@ -66,9 +71,7 @@ export default function MessageDetailModalHeader({ message }: Props) {
       <ul className="bg-white border border-gray-200 text-gray-900">
         <li className="flex px-6 border-b border-gray-200 w-full">
           <div className="w-1/4 py-2 border-r border-gray-200">Subject</div>
-          <div className="w-3/4 py-2 ml-4">
-            {message ? message.subject : <SkeletonLoading width="100%" />}
-          </div>
+          <div className="w-3/4 py-2 ml-4">{getSubjectInfo()}</div>
         </li>
 
         <li className="flex px-6 border-b border-gray-200 w-full">

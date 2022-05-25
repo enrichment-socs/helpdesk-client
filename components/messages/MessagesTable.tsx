@@ -84,7 +84,7 @@ const MessagesTable = ({
                       {message.senderName}
                     </td>
                     <td className="max-w-[32rem] px-6 py-4 truncate text-sm text-gray-900">
-                      {message.subject}
+                      {message.subject || 'No Subject'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {format(
