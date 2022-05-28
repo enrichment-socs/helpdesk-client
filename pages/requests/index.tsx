@@ -7,11 +7,25 @@ import { withSessionSsr } from '../../shared/libs/session';
 import { SemesterService } from '../../services/SemesterService';
 import { AuthHelper } from '../../shared/libs/auth-helper';
 import { ROLES } from '../../shared/constants/roles';
+import { atom } from 'jotai';
+import { Case } from '../../models/Case';
+import { useHydrateAtoms } from 'jotai/utils';
+import { CaseService } from '../../services/CaseService';
+import { SessionUser } from '../../models/SessionUser';
 
-const RequestsHeaderPage: NextPage = () => {
+export const casesAtom = atom([] as Case[]);
+
+type Props = {
+  currCases: Case[];
+};
+
+const RequestsHeaderPage: NextPage<Props> = ({ currCases }) => {
+
+  useHydrateAtoms([[casesAtom, currCases]] as const);
+
   return (
     <Layout>
-      <RequestsTable />
+      <RequestsTable cases={currCases} />
     </Layout>
   );
 };
@@ -29,11 +43,16 @@ export const getServerSideProps = withSessionSsr(
         },
       };
 
+    const user = session.user as SessionUser;
+    const caseService = new CaseService(user?.accessToken);
+    const currCases = await caseService.getCases();
+
     return {
       props: {
         semesters,
         session,
         sessionActiveSemester,
+        currCases,
       },
     };
   }

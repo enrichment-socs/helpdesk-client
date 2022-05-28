@@ -1,5 +1,6 @@
 import { useAtom } from 'jotai';
 import { useSession } from 'next-auth/react';
+import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Else, If, Then } from 'react-if';
@@ -27,6 +28,8 @@ type Props = {
   message: Message;
 };
 
+const DatePicker = dynamic(import('react-datepicker'), { ssr: false });
+
 export default function MessageDetailModalAction({ onClose, message }: Props) {
   const session = useSession();
   const user = session?.data?.user as SessionUser;
@@ -46,6 +49,9 @@ export default function MessageDetailModalAction({ onClose, message }: Props) {
   const [selectedCategoryId, setSelectedCategoryId] = useState('');
   const [selectedPriorityId, setSelectedPriorityId] = useState('');
   const [selectedAdminId, setSelectedAdminId] = useState('');
+
+  const currDate = new Date();
+  const [selectedDueDate, setSelectedDueDate] = useState(new Date(currDate.setDate(currDate.getDate() + 7)));
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -105,6 +111,7 @@ export default function MessageDetailModalAction({ onClose, message }: Props) {
       senderName: message.senderName,
       senderEmail: message.senderEmail,
       subject: message.subject,
+      dueBy: selectedDueDate,
     };
 
     const casesService = new CaseService(user?.accessToken);
@@ -230,6 +237,19 @@ export default function MessageDetailModalAction({ onClose, message }: Props) {
                       </option>
                     ))}
                   </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Due By
+                  </label>
+                  <DatePicker
+                    selected={selectedDueDate}
+                    showTimeSelect
+                    dateFormat="Pp"
+                    onChange={setSelectedDueDate}
+                    className={`${'border-gray-300 focus:ring-blue-500 focus:border-blue-500'} mt-1 block w-full outline-none p-2 text-base border sm:text-sm rounded-md`}
+                  />
                 </div>
               </Then>
             </If>

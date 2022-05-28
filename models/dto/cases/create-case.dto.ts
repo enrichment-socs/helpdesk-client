@@ -8,4 +8,5 @@ export interface CreateCaseDto {
   senderName: string;
   senderEmail: string;
   subject: string;
+  dueBy: Date;
 }

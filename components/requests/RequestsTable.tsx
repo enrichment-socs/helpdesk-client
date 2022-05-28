@@ -1,4 +1,9 @@
+import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
+import { casesAtom } from '../../pages/requests';
+import { format } from 'date-fns';
+import { useHydrateAtoms } from 'jotai/utils';
+import { Case } from '../../models/Case';
 
 const DUMMY_DATA = [
   {
@@ -21,7 +26,13 @@ const DUMMY_DATA = [
   },
 ];
 
-const RequestsTable = () => {
+type Props = {
+  cases: Case[];
+}
+
+const RequestsTable = ({ cases }) => {
+  // const [cases] = useAtom(casesAtom);
+
   const router = useRouter();
 
   const rowClickHandler = (id: string) => {
@@ -74,8 +85,16 @@ const RequestsTable = () => {
                 </tr>
               </thead>
               <tbody>
-                {DUMMY_DATA &&
-                  DUMMY_DATA.map((data, index) => (
+                {cases.length == 0 && (
+                  <tr className="text-center">
+                    <td colSpan={7} className="p-4">
+                      There are currently no cases
+                    </td>
+                  </tr>
+                )}
+
+                {cases &&
+                  cases.map((data, index) => (
                     <tr
                       key={data.id}
                       className={`cursor-pointer ${
@@ -89,19 +108,22 @@ const RequestsTable = () => {
                         {data.subject}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {data.requester_name}
+                        {data.senderName}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {data.assigned_to}
+                        {data.assignedTo.code}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {data.due_by}
+                        {format(new Date(data.dueBy), 'dd MMM yyyy, kk:mm')}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {data.status}
+                        {data.status.statusName}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {data.created_at}
+                        {format(
+                          new Date(data.created_at),
+                          'dd MMM yyyy, kk:mm'
+                        )}
                       </td>
                     </tr>
                   ))}

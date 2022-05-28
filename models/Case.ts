@@ -13,4 +13,7 @@ export class Case {
   senderName: string;
   senderEmail: string;
   subject: string;
+  dueBy: string;
+  created_at: string;
+  updated_at: string;
 }
