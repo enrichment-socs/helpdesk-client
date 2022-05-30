@@ -53,7 +53,9 @@ export default function InformationDetailModalConversations({
 
             <div
               className="mt-4"
-              dangerouslySetInnerHTML={{ __html: message.body.content }}></div>
+              dangerouslySetInnerHTML={{
+                __html: message.uniqueBody.content,
+              }}></div>
           </li>
         ))}
       </ul>
