@@ -5,33 +5,11 @@ import { format } from 'date-fns';
 import { useHydrateAtoms } from 'jotai/utils';
 import { Case } from '../../models/Case';
 
-const DUMMY_DATA = [
-  {
-    id: '8df2917f-aca6-4747-82b7-0735c8ea7706',
-    subject: 'Case 1',
-    requester_name: 'John Doe',
-    assigned_to: 'John Doe',
-    due_by: '2020-01-01',
-    status: 'Open',
-    created_at: '2020-01-01',
-  },
-  {
-    id: '096639fa-b0bc-4dca-9177-6919dc1de92e',
-    subject: 'Case 2',
-    requester_name: 'Test 2',
-    assigned_to: 'Test 2',
-    due_by: '2020-01-01',
-    status: 'Open',
-    created_at: '2020-02-02',
-  },
-];
-
 type Props = {
   cases: Case[];
 }
 
-const RequestsTable = ({ cases }) => {
-  // const [cases] = useAtom(casesAtom);
+const RequestsTable : React.FC<Props> = ({ cases }) => {
 
   const router = useRouter();
 

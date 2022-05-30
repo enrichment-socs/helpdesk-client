@@ -21,4 +21,18 @@ export class MessageService extends BaseService {
 
     return result.data;
   }
+
+  public async getMessagesByConversation(
+    conversationId: string,
+  )
+  {
+    const result = await this.wrapper.handle(
+      axios.get(
+        `${this.BASE_URL}/messages/conversations/${conversationId}`,
+        this.headersWithToken()
+      )
+    );
+
+    return result.data;
+  }
 }
