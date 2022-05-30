@@ -1,8 +1,13 @@
 import { format } from 'date-fns';
 import { useAtom } from 'jotai';
+import { Information } from '../../models/Information';
 import { informationsAtom } from '../../pages/informations';
 
-export default function InformationTable() {
+type Props = {
+  openDetailModal: (info: Information) => void;
+};
+
+export default function InformationTable({ openDetailModal }: Props) {
   const [informations] = useAtom(informationsAtom);
 
   return (
@@ -10,7 +15,7 @@ export default function InformationTable() {
       <div className="overflow-x-auto">
         <div className="py-2 align-middle inline-block min-w-full">
           <div className="max-h-[40rem] overflow-auto border border-gray-200">
-            <table className="min-w-full divide-y divide-gray-200 relative -z-10">
+            <table className="min-w-full divide-y divide-gray-200 relative">
               <thead className="bg-gray-500">
                 <tr>
                   <th
@@ -49,7 +54,8 @@ export default function InformationTable() {
                     key={index}
                     className={`cursor-pointer ${
                       index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
-                    } transition duration-300 ease-in-out hover:bg-sky-100`}>
+                    } transition duration-300 ease-in-out hover:bg-sky-100`}
+                    onClick={() => openDetailModal(info)}>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {index + 1}
                     </td>
