@@ -9,6 +9,7 @@ import { Category } from '../../models/Category';
 import { CreateCaseDto } from '../../models/dto/cases/create-case.dto';
 import { CreateInformationDto } from '../../models/dto/informations/create-information.dto';
 import { Message } from '../../models/Message';
+import { OutlookMessage } from '../../models/OutlookMessage';
 import { Priority } from '../../models/Priority';
 import { SessionUser } from '../../models/SessionUser';
 import { User } from '../../models/User';
@@ -26,11 +27,16 @@ import { ClientPromiseWrapper } from '../../shared/libs/client-promise-wrapper';
 type Props = {
   onClose: () => void;
   message: Message;
+  firstOutlookMessageFromConversation: OutlookMessage;
 };
 
 const DatePicker = dynamic(import('react-datepicker'), { ssr: false });
 
-export default function MessageDetailModalAction({ onClose, message }: Props) {
+export default function MessageDetailModalAction({
+  onClose,
+  message,
+  firstOutlookMessageFromConversation,
+}: Props) {
   const session = useSession();
   const user = session?.data?.user as SessionUser;
 
@@ -51,7 +57,9 @@ export default function MessageDetailModalAction({ onClose, message }: Props) {
   const [selectedAdminId, setSelectedAdminId] = useState('');
 
   const currDate = new Date();
-  const [selectedDueDate, setSelectedDueDate] = useState(new Date(currDate.setDate(currDate.getDate() + 7)));
+  const [selectedDueDate, setSelectedDueDate] = useState(
+    new Date(currDate.setDate(currDate.getDate() + 7))
+  );
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -108,9 +116,10 @@ export default function MessageDetailModalAction({ onClose, message }: Props) {
       categoryId: selectedCategoryId,
       priorityId: selectedPriorityId,
       conversationId: message.conversationId,
-      senderName: message.senderName,
-      senderEmail: message.senderEmail,
-      subject: message.subject,
+      senderName: firstOutlookMessageFromConversation.sender.emailAddress.name,
+      senderEmail:
+        firstOutlookMessageFromConversation.sender.emailAddress.address,
+      subject: firstOutlookMessageFromConversation.subject,
       dueBy: selectedDueDate,
     };
 
@@ -122,9 +131,10 @@ export default function MessageDetailModalAction({ onClose, message }: Props) {
     const dto: CreateInformationDto = {
       semesterId: selectedSemesterId,
       conversationId: message.conversationId,
-      senderName: message.senderName,
-      senderEmail: message.senderEmail,
-      subject: message.subject,
+      senderName: firstOutlookMessageFromConversation.sender.emailAddress.name,
+      senderEmail:
+        firstOutlookMessageFromConversation.sender.emailAddress.address,
+      subject: firstOutlookMessageFromConversation.subject,
     };
 
     const infoService = new InformationService(user?.accessToken);

@@ -38,6 +38,10 @@ const MessageDetailModal = ({
   const [attachments, setAttachments] = useState<
     OutlookMessageAttachmentValue[]
   >([]);
+  const [
+    firstOutlookMessageFromThisConversation,
+    setFirstOutlookMessageFromThisConversation,
+  ] = useState<OutlookMessage>(null);
 
   const close = () => {
     setIsOpen(false);
@@ -80,6 +84,9 @@ const MessageDetailModal = ({
       setAttachments(messageAttachment.value);
     }
 
+    setFirstOutlookMessageFromThisConversation(
+      firstMessageFromThisConversation
+    );
     setOutlookMessage(messageResult);
   };
 
@@ -166,6 +173,9 @@ const MessageDetailModal = ({
                       <MessageDetailModalAction
                         onClose={close}
                         message={message}
+                        firstOutlookMessageFromConversation={
+                          firstOutlookMessageFromThisConversation
+                        }
                       />
                     </Then>
                   </If>
