@@ -14,6 +14,8 @@ import { Message } from '../../models/Message';
 import InformationDetailModalHeader from './InformationDetailModalHeader';
 import InformationDetailModalBody from './InformationDetailModalBody';
 import { Information } from '../../models/Information';
+import InformationDetailModalConversations from './InformationDetailModalConversations';
+import { If, Then } from 'react-if';
 
 type Props = {
   isOpen: boolean;
@@ -36,6 +38,10 @@ const InformationDetailModal = ({
   const [attachments, setAttachments] = useState<
     OutlookMessageAttachmentValue[]
   >([]);
+  const [
+    outlookMessagesInThisConversation,
+    setOutlookMessagesInThisConversation,
+  ] = useState<OutlookMessage[]>([]);
 
   const close = () => {
     setIsOpen(false);
@@ -51,11 +57,10 @@ const InformationDetailModal = ({
   }, [info]);
 
   const fetchInfo = async () => {
-    const messageResult = await graphApiService.getMessagesByConversation(
-      info.conversationId
-    );
+    const messagesInConversation =
+      await graphApiService.getMessagesByConversation(info.conversationId);
 
-    const firstMessage = messageResult[0];
+    const firstMessage = messagesInConversation[0];
 
     const bodyContent = firstMessage.body.content;
     const contentIds = bodyContent.match(CONTENT_ID_REGEX);
@@ -76,6 +81,7 @@ const InformationDetailModal = ({
     }
 
     setOutlookMessage(firstMessage);
+    setOutlookMessagesInThisConversation(messagesInConversation);
   };
 
   const replaceBodyImageWithCorrectSource = (
@@ -152,6 +158,26 @@ const InformationDetailModal = ({
                     message={outlookMessage}
                     attachments={attachments}
                   />
+
+                  <If
+                    condition={
+                      outlookMessagesInThisConversation.slice(1).length > 0
+                    }>
+                    <Then>
+                      <InformationDetailModalConversations
+                        messages={outlookMessagesInThisConversation.slice(1)}
+                      />
+                    </Then>
+                  </If>
+
+                  <div className="flex justify-end space-x-2 p-4">
+                    <button
+                      type="button"
+                      onClick={close}
+                      className="inline-flex items-center px-12 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-gray-300 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300">
+                      Close
+                    </button>
+                  </div>
                 </div>
               </div>
             </Transition.Child>
