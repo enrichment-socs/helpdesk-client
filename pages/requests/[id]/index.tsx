@@ -5,18 +5,26 @@ import { getSession } from 'next-auth/react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import RequestDetailDetails from '../../../components/request-details/RequestDetailDetails';
-import RequestDetailHistory from '../../../components/request-details/RequestDetailHistory';
-import RequestDetailInformation from '../../../components/request-details/RequestDetailInformation';
-import RequestDetailResolution from '../../../components/request-details/RequestDetailResolution';
+import RequestDetailDetails from '../../../components/request-details/details/RequestDetailDetails';
+import RequestDetailHistory from '../../../components/request-details/histories/RequestDetailHistory';
+import RequestDetailInformation from '../../../components/request-details/information/RequestDetailInformation';
+import RequestDetailResolution from '../../../components/request-details/resolutions/RequestDetailResolution';
 import Layout from '../../../widgets/_Layout';
 import { AuthHelper } from '../../../shared/libs/auth-helper';
 import { ROLES } from '../../../shared/constants/roles';
 import { getInitialServerProps } from '../../../shared/libs/initialize-server-props';
 import { withSessionSsr } from '../../../shared/libs/session';
 import { SemesterService } from '../../../services/SemesterService';
+import { Case } from '../../../models/Case';
+import { SessionUser } from '../../../models/SessionUser';
+import { CaseService } from '../../../services/CaseService';
+import { format } from 'date-fns';
 
-const RequestsDetailPage: NextPage = () => {
+type Props = {
+  currCase: Case;
+};
+
+const RequestsDetailPage: NextPage<Props> = ({ currCase }) => {
   const router = useRouter();
   const { id } = router.query;
   const [currentTab, setCurrentTab] = useState('Details');
@@ -26,7 +34,7 @@ const RequestsDetailPage: NextPage = () => {
 
   const tabContent =
     currentTab === 'Details' ? (
-      <RequestDetailDetails />
+      <RequestDetailDetails conversationId={currCase.conversationId} />
     ) : currentTab === 'Resolution' ? (
       <RequestDetailResolution isResolved={true} />
     ) : currentTab === 'History' ? (
@@ -47,19 +55,19 @@ const RequestsDetailPage: NextPage = () => {
           <div className="flex items-center pb-3">
             <TicketIcon className="h-10 w-10" />
             <div className="font-medium text-2xl ml-5">
-              <div>{id}</div>
-              <div>Dummy Subject</div>
+              <div className="text-sm text-gray-500">{currCase.id}</div>
+              <div>{currCase.subject}</div>
               <div className="flex divide-x text-sm mt-1">
                 <div className="font-normal text-gray">
                   by
                   <span className="cursor-pointer text-cyan-500 hover:text-blue-700 mx-2">
-                    Dummy User
+                    {currCase.senderName}
                   </span>
                   on
-                  <span className="mx-2">Dummy Date</span>
+                  <span className="mx-2">{format(new Date(currCase.created_at), 'dd MMM yyyy, kk:mm')}</span>
                 </div>
                 <div className="font-bold px-2">
-                  Due By: <span>Dummy Date</span>
+                  Due By: <span>{format(new Date(currCase.dueBy), 'dd MMM yyyy, kk:mm')}</span>
                 </div>
               </div>
             </div>
@@ -120,7 +128,7 @@ const RequestsDetailPage: NextPage = () => {
 };
 
 export const getServerSideProps = withSessionSsr(
-  async function getServerSideProps({ req }) {
+  async function getServerSideProps({ req, params }) {
     const { session, semesters, sessionActiveSemester } =
       await getInitialServerProps(req, getSession, new SemesterService());
 
@@ -132,11 +140,16 @@ export const getServerSideProps = withSessionSsr(
         },
       };
 
+    const user = session.user as SessionUser;
+    const caseService = new CaseService(user?.accessToken);
+    const currCase = await caseService.get(params.id as string);
+
     return {
       props: {
         semesters,
         session,
         sessionActiveSemester,
+        currCase,
       },
     };
   }

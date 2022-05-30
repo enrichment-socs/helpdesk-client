@@ -19,4 +19,12 @@ export class CaseService extends BaseService {
     );
     return result.data;
   }
+
+  public async get(id: string) {
+    const result: AxiosResponse<Case> = await this.wrapper.handle(
+      axios.get(`${this.BASE_URL}/cases/${id}`, this.headersWithToken())
+    );
+
+    return result.data;
+  }
 }

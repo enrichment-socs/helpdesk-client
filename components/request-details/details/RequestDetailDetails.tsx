@@ -1,9 +1,24 @@
 import { Disclosure, Transition } from '@headlessui/react';
 import { ChevronUpIcon } from '@heroicons/react/solid';
+import { useSession } from 'next-auth/react';
+import { useEffect, useState } from 'react';
+import { OutlookMessage } from '../../../models/OutlookMessage';
+import { OutlookMessageAttachmentValue } from '../../../models/OutlookMessageAttachment';
+import { SessionUser } from '../../../models/SessionUser';
+import { GraphApiService } from '../../../services/GraphApiService';
+import { CONTENT_ID_REGEX } from '../../../shared/constants/regex';
+import MultiLineSkeletonLoading from '../../../widgets/MultiLineSkeletonLoading';
+import SkeletonLoading from '../../../widgets/SkeletonLoading';
+import RequestDetailConversationBody from './RequestDetailConversationBody';
+import RequestDetailConversationHeader from './RequestDetailConversationHeader';
 import RequestDetailConversations from './RequestDetailConversations';
 import RequestDetailProperties from './RequestDetailProperties';
 
-const RequestDetailDetails = () => {
+type Props = {
+  conversationId: string;
+}
+
+const RequestDetailDetails: React.FC<Props> = ({ conversationId }) => {
   const conversationsData = [
     {
       id: 1,
@@ -24,6 +39,34 @@ const RequestDetailDetails = () => {
         'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Exercitationem ex aliquid deserunt sint itaque autem tenetur, velit odit natus. Iure aliquid ab natus provident amet voluptate est neque consequuntur harum!',
     },
   ];
+
+  const session = useSession();
+  const user = session?.data?.user as SessionUser;
+  const graphApiService = new GraphApiService(user.accessToken);
+
+  const [outlookMessages, setOutlookMessages] = useState<OutlookMessage[]>(null);
+  // const [attachments, setAttachments] = useState<OutlookMessageAttachmentValue[]>([]);
+
+  const fetchMessages = async () => {
+    // const messageResult = await graphApiService.getMessageById(id);
+
+    // const firstMessageFromThisConversation = await graphApiService.getFirstMessageByConversation(messageResult.conversationId);
+
+    // const bodyContent = messageResult.body.content;
+    // const contentIds = bodyContent.match(CONTENT_ID_REGEX);
+
+    // if(contentIds || messageResult.hasAttachments)
+    // {
+    //   const messageAttachment = await graphApiService.getmessageAttah
+    // }
+
+    const messagesByConversation = await graphApiService.getMessagesByConversation(conversationId);
+    setOutlookMessages(messagesByConversation);
+  }
+
+  useEffect(() => {
+    fetchMessages();
+  }, [])
 
   return (
     <div>
@@ -48,16 +91,15 @@ const RequestDetailDetails = () => {
                 leaveTo="transform scale-50 opacity-0">
                 <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-700">
                   <div className="divide-y">
-                    <div className="pb-2">
-                      To:<span className="ml-3">ithelpdesk@binus.edu</span>
-                    </div>
-                    <div className="pt-2">
+                    {outlookMessages ? <RequestDetailConversationHeader message={outlookMessages[0]}/> : <SkeletonLoading width="100%" />}
+                    {/* <div className="pt-2">
                       Lorem, ipsum dolor sit amet consectetur adipisicing elit.
                       Repellendus quia itaque fuga temporibus cupiditate
                       laudantium provident perspiciatis qui eius, soluta rem,
                       repellat nam adipisci mollitia nostrum similique? Quo,
                       consequatur libero?
-                    </div>
+                    </div> */}
+                    {outlookMessages ? <RequestDetailConversationBody message={outlookMessages[0]} /> : <MultiLineSkeletonLoading width="100%" />}
                   </div>
                 </Disclosure.Panel>
               </Transition>

@@ -17,7 +17,7 @@ const RequestDetailInformation = () => {
               </tr>
 
               <tr>
-                <td className="h-10 w-28">DueBy Date</td>
+                <td className="h-10 w-28">Due By Date</td>
                 <td className="h-10 w-5">:</td>
                 <td className="font-bold">Apr 25, 2022 03:00 PM</td>
               </tr>
