@@ -1,6 +1,12 @@
+import { format } from 'date-fns';
 import Image from 'next/image';
+import { Case } from '../../../models/Case';
 
-const RequestDetailInformation = () => {
+type Props = {
+  currCase: Case;
+}
+
+const RequestDetailInformation = ({ currCase } : Props) => {
   return (
     <div className="mx-2 p-2 border-2 md:w-1/4 rounded min-w-fit">
       <div className="divide-y">
@@ -13,13 +19,13 @@ const RequestDetailInformation = () => {
               <tr>
                 <td className="h-10 w-28">Status</td>
                 <td className="h-10 w-5">:</td>
-                <td className="h-10 font-bold">1 - Open</td>
+                <td className="h-10 font-bold">{currCase.status.statusName}</td>
               </tr>
 
               <tr>
                 <td className="h-10 w-28">Due By Date</td>
                 <td className="h-10 w-5">:</td>
-                <td className="font-bold">Apr 25, 2022 03:00 PM</td>
+                <td className="font-bold">{format(new Date(currCase.dueBy), 'dd MMM yyyy kk:mm')}</td>
               </tr>
 
               {/* <tr>

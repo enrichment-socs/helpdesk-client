@@ -198,7 +198,7 @@ const RequestsDetailPage: NextPage<Props> = ({ currCase }) => {
           leave="transition duration-300 ease-out"
           leaveFrom="transform scale-100 opacity-100"
           leaveTo="transform scale-50 opacity-0">
-          <RequestDetailInformation />
+          <RequestDetailInformation currCase={currCase}/>
         </Transition>
       </div>
     </Layout>

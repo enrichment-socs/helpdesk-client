@@ -11,8 +11,8 @@ import MultiLineSkeletonLoading from '../../../widgets/MultiLineSkeletonLoading'
 import SkeletonLoading from '../../../widgets/SkeletonLoading';
 import RequestDetailConversationBody from './RequestDetailConversationBody';
 import RequestDetailConversationHeader from './RequestDetailConversationHeader';
-import RequestDetailConversations from './RequestDetailConversations';
 import RequestDetailProperties from './RequestDetailProperties';
+import RequestDetailConversation from './RequestDetailConversation';
 
 type Props = {
   outlookMessages: OutlookMessage[];
@@ -55,7 +55,7 @@ const RequestDetailDetails: React.FC<Props> = ({ outlookMessages, attachmentsArr
                     {outlookMessages ? (
                       <RequestDetailConversationBody
                         message={outlookMessages[0]}
-                        attachmentsArrays={attachmentsArrays}
+                        attachments={attachmentsArrays[0]}
                       />
                     ) : (
                       <MultiLineSkeletonLoading width="100%" />
@@ -88,10 +88,11 @@ const RequestDetailDetails: React.FC<Props> = ({ outlookMessages, attachmentsArr
                   {outlookMessages ? (outlookMessages.length === 1 ? (
                     <span>There is no conversation yet.</span>
                   ) : (
-                    outlookMessages.map((message) => (
-                      <RequestDetailConversations
+                    outlookMessages.slice(1).map((message, idx) => (
+                      <RequestDetailConversation
                         key={message.id}
                         message={message}
+                        attachments={attachmentsArrays[idx]}
                       />
                     ))
                   )) : (<SkeletonLoading width="100%"/>)}
