@@ -1,6 +1,5 @@
 import { Dialog, Transition } from '@headlessui/react';
-import { DownloadIcon, XIcon } from '@heroicons/react/solid';
-import { format } from 'date-fns';
+import { XIcon } from '@heroicons/react/solid';
 import { SetStateAction } from 'jotai';
 import { useSession } from 'next-auth/react';
 import { Dispatch, Fragment, useEffect, useState } from 'react';
@@ -11,24 +10,25 @@ import { GraphApiService } from '../../services/GraphApiService';
 import toast from 'react-hot-toast';
 import { ClientPromiseWrapper } from '../../shared/libs/client-promise-wrapper';
 import { CONTENT_ID_REGEX } from '../../shared/constants/regex';
-import MessageDetailModalAction from './MessageDetailModalAction';
-import MessageDetailModalHeader from './MessageDetailModalHeader';
-import MessageDetailModalBody from './MessageDetailModalBody';
-import { If, Then } from 'react-if';
 import { Message } from '../../models/Message';
+import InformationDetailModalHeader from './InformationDetailModalHeader';
+import InformationDetailModalBody from './InformationDetailModalBody';
+import { Information } from '../../models/Information';
+import InformationDetailModalConversations from './InformationDetailModalConversations';
+import { If, Then } from 'react-if';
 
 type Props = {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
-  setMessage: Dispatch<SetStateAction<Message>>;
-  message: Message;
+  setInfo: Dispatch<SetStateAction<Information>>;
+  info: Information;
 };
 
-const MessageDetailModal = ({
+const InformationDetailModal = ({
   isOpen,
   setIsOpen,
-  setMessage,
-  message,
+  setInfo,
+  info,
 }: Props) => {
   const session = useSession();
   const user = session?.data?.user as SessionUser;
@@ -39,39 +39,35 @@ const MessageDetailModal = ({
     OutlookMessageAttachmentValue[]
   >([]);
   const [
-    firstOutlookMessageFromThisConversation,
-    setFirstOutlookMessageFromThisConversation,
-  ] = useState<OutlookMessage>(null);
+    outlookMessagesInThisConversation,
+    setOutlookMessagesInThisConversation,
+  ] = useState<OutlookMessage[]>([]);
 
   const close = () => {
     setIsOpen(false);
     setOutlookMessage(null);
-    setMessage(null);
+    setInfo(null);
   };
 
   useEffect(() => {
-    if (message?.messageId) {
+    if (info?.conversationId) {
       const wrapper = new ClientPromiseWrapper(toast);
-      wrapper.handle(fetchMessage());
+      wrapper.handle(fetchInfo());
     }
-  }, [message]);
+  }, [info]);
 
-  const fetchMessage = async () => {
-    const messageResult = await graphApiService.getMessageById(
-      message.messageId
-    );
+  const fetchInfo = async () => {
+    const messagesInConversation =
+      await graphApiService.getMessagesByConversation(info.conversationId);
 
-    const firstMessageFromThisConversation =
-      await graphApiService.getFirstMessageByConversation(
-        messageResult.conversationId
-      );
+    const firstMessage = messagesInConversation[0];
 
-    const bodyContent = messageResult.body.content;
+    const bodyContent = firstMessage.body.content;
     const contentIds = bodyContent.match(CONTENT_ID_REGEX);
 
-    if (contentIds || messageResult.hasAttachments) {
+    if (contentIds || firstMessage.hasAttachments) {
       const messageAttachment = await graphApiService.getMessageAttachments(
-        message.messageId
+        firstMessage.id
       );
 
       let processedContent = replaceBodyImageWithCorrectSource(
@@ -80,14 +76,12 @@ const MessageDetailModal = ({
         messageAttachment.value
       );
 
-      messageResult.body.content = processedContent;
+      firstMessage.body.content = processedContent;
       setAttachments(messageAttachment.value);
     }
 
-    setFirstOutlookMessageFromThisConversation(
-      firstMessageFromThisConversation
-    );
-    setOutlookMessage(messageResult);
+    setOutlookMessage(firstMessage);
+    setOutlookMessagesInThisConversation(messagesInConversation);
   };
 
   const replaceBodyImageWithCorrectSource = (
@@ -159,26 +153,31 @@ const MessageDetailModal = ({
                 </div>
 
                 <div className="mt-2 p-6">
-                  <MessageDetailModalHeader message={outlookMessage} />
-                  <MessageDetailModalBody
+                  <InformationDetailModalHeader message={outlookMessage} />
+                  <InformationDetailModalBody
                     message={outlookMessage}
                     attachments={attachments}
                   />
 
                   <If
                     condition={
-                      outlookMessage !== null && outlookMessage !== undefined
+                      outlookMessagesInThisConversation.slice(1).length > 0
                     }>
                     <Then>
-                      <MessageDetailModalAction
-                        onClose={close}
-                        message={message}
-                        firstOutlookMessageFromConversation={
-                          firstOutlookMessageFromThisConversation
-                        }
+                      <InformationDetailModalConversations
+                        messages={outlookMessagesInThisConversation.slice(1)}
                       />
                     </Then>
                   </If>
+
+                  <div className="flex justify-end space-x-2 p-4">
+                    <button
+                      type="button"
+                      onClick={close}
+                      className="inline-flex items-center px-12 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-gray-300 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300">
+                      Close
+                    </button>
+                  </div>
                 </div>
               </div>
             </Transition.Child>
@@ -189,4 +188,4 @@ const MessageDetailModal = ({
   );
 };
 
-export default MessageDetailModal;
+export default InformationDetailModal;

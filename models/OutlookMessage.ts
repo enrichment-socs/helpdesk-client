@@ -4,6 +4,10 @@ export class OutlookMessage {
   id: string;
   createdDateTime: string;
   lastModifiedDateTime: string;
+  uniqueBody: {
+    contentType: string;
+    content: string;
+  };
   changeKey: string;
   categories: [];
   receivedDateTime: string;
