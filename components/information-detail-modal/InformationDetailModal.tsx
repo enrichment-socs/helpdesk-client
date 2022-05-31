@@ -1,6 +1,6 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { XIcon } from '@heroicons/react/solid';
-import { SetStateAction } from 'jotai';
+import { atom, SetStateAction, useAtom } from 'jotai';
 import { useSession } from 'next-auth/react';
 import { Dispatch, Fragment, useEffect, useState } from 'react';
 import { OutlookMessage } from '../../models/OutlookMessage';
@@ -25,6 +25,11 @@ type Props = {
   info: Information;
 };
 
+export type MessageAttachmentsDictionary = {
+  messageId: string;
+  attachments: OutlookMessageAttachmentValue[];
+};
+
 const InformationDetailModal = ({
   isOpen,
   setIsOpen,
@@ -34,6 +39,12 @@ const InformationDetailModal = ({
   const session = useSession();
   const user = session?.data?.user as SessionUser;
   const graphApiService = new GraphApiService(user.accessToken);
+  const [processedConversationMessages, setProcessedConversationMessages] =
+    useState([]);
+  const [
+    conversationMessageAttachmentDictionary,
+    setConversationMessageAttachmentDictionary,
+  ] = useState([]);
 
   const [outlookMessage, setOutlookMessage] = useState<OutlookMessage>(null);
   const [attachments, setAttachments] = useState<
@@ -47,6 +58,9 @@ const InformationDetailModal = ({
   const close = () => {
     setIsOpen(false);
     setOutlookMessage(null);
+    setConversationMessageAttachmentDictionary([]);
+    setProcessedConversationMessages([]);
+    setOutlookMessagesInThisConversation([]);
     setInfo(null);
   };
 
@@ -140,16 +154,17 @@ const InformationDetailModal = ({
                     attachments={attachments}
                   />
 
-                  <If
-                    condition={
-                      outlookMessagesInThisConversation.slice(1).length > 0
-                    }>
-                    <Then>
-                      <InformationDetailModalConversations
-                        messages={outlookMessagesInThisConversation.slice(1)}
-                      />
-                    </Then>
-                  </If>
+                  {outlookMessagesInThisConversation.slice(1).length > 0 && (
+                    <InformationDetailModalConversations
+                      messages={outlookMessagesInThisConversation.slice(1)}
+                      attachmentsDict={conversationMessageAttachmentDictionary}
+                      setAttachmentsDict={
+                        setConversationMessageAttachmentDictionary
+                      }
+                      processedMessage={processedConversationMessages}
+                      setProcessedMessage={setProcessedConversationMessages}
+                    />
+                  )}
 
                   <div className="flex justify-end space-x-2 p-4">
                     <button
