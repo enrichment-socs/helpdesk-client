@@ -5,7 +5,7 @@ import { DownloadHelper } from '../../../shared/libs/download-helper';
 
 type Props = {
   message: OutlookMessage;
-  attachmentsArrays: OutlookMessageAttachmentValue[][];
+  attachments: OutlookMessageAttachmentValue[];
 };
 
 const RequestDetailConversationBody = ({ message, attachments }: Props) => {

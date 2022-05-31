@@ -2,7 +2,10 @@ import { Disclosure, Transition } from '@headlessui/react';
 import { ChevronUpIcon } from '@heroicons/react/solid';
 import { format } from 'date-fns';
 import { OutlookMessage } from '../../../models/OutlookMessage';
+import { OutlookMessageAttachmentValue } from '../../../models/OutlookMessageAttachment';
 import SkeletonLoading from '../../../widgets/SkeletonLoading';
+import RequestDetailConversationBody from './RequestDetailConversationBody';
+import RequestDetailConversationHeader from './RequestDetailConversationHeader';
 
 // type Prop = {
 //   conversationData: {
@@ -17,9 +20,10 @@ import SkeletonLoading from '../../../widgets/SkeletonLoading';
 
 type Props = {
   message: OutlookMessage;
+  attachments: OutlookMessageAttachmentValue[];
 };
 
-const RequestDetailConversations = ({ message }: Props) => {
+const RequestDetailConversation = ({ message, attachments }: Props) => {
   const getSenderInfo = () => {
     if (!message) return <SkeletonLoading width="100%" />;
 
@@ -80,7 +84,7 @@ const RequestDetailConversations = ({ message }: Props) => {
             leaveTo="transform scale-50 opacity-0">
             <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-500">
               <div className="divide-y">
-                <div className="pb-2">
+                {/* <div className="pb-2">
                   <div>
                     <span className="font-bold">To:</span>
                     <span className="ml-3">{getToRecipientsInfo()}</span>
@@ -89,14 +93,16 @@ const RequestDetailConversations = ({ message }: Props) => {
                     <span className="font-bold">Subject:</span>
                     <span className="ml-3">{getSubjectInfo()}</span>
                   </div>
-                </div>
-                <div className="pt-5">
+                </div> */}
+                <RequestDetailConversationHeader message={message} />
+                <RequestDetailConversationBody message={message} attachments={attachments} />
+                {/* <div className="pt-5">
                   <div
                     className="max-h-[42rem] overflow-auto"
                     dangerouslySetInnerHTML={{
                       __html: message.body.content,
                     }}></div>
-                </div>
+                </div> */}
               </div>
             </Disclosure.Panel>
           </Transition>
@@ -106,4 +112,4 @@ const RequestDetailConversations = ({ message }: Props) => {
   );
 };
 
-export default RequestDetailConversations;
+export default RequestDetailConversation;
