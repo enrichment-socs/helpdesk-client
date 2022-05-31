@@ -1,7 +1,7 @@
 import { Transition } from '@headlessui/react';
 import { TicketIcon } from '@heroicons/react/solid';
 import { NextPage } from 'next';
-import { getSession } from 'next-auth/react';
+import { getSession, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
@@ -19,6 +19,11 @@ import { Case } from '../../../models/Case';
 import { SessionUser } from '../../../models/SessionUser';
 import { CaseService } from '../../../services/CaseService';
 import { format } from 'date-fns';
+import { OutlookMessage } from '../../../models/OutlookMessage';
+import { GraphApiService } from '../../../services/GraphApiService';
+import SkeletonLoading from '../../../widgets/SkeletonLoading';
+import { OutlookMessageAttachmentValue } from '../../../models/OutlookMessageAttachment';
+import { CONTENT_ID_REGEX } from '../../../shared/constants/regex';
 
 type Props = {
   currCase: Case;
@@ -30,11 +35,72 @@ const RequestsDetailPage: NextPage<Props> = ({ currCase }) => {
   const [currentTab, setCurrentTab] = useState('Details');
   const [isShowInformation, setIsShowInformation] = useState(false);
 
+  const session = useSession();
+  const user = session?.data?.user as SessionUser;
+  const graphApiService = new GraphApiService(user.accessToken);
+  const [outlookMessages, setOutlookMessages] =
+    useState<OutlookMessage[]>(null);
+  const [attachmentArrays, setAttachmentArrays] = useState<
+    OutlookMessageAttachmentValue[][]
+  >([]);
+
+  const replaceBodyImageWithCorrectSource = (
+    bodyContent: string,
+    contentIds: string[],
+    attachments: OutlookMessageAttachmentValue[]
+  ) => {
+    let content = bodyContent;
+    attachments
+      .filter(
+        (att) => att.isInline && contentIds.includes(`cid:${att.contentId}`)
+      )
+      .forEach((attachment) => {
+        content = content.replace(
+          `cid:${attachment.contentId}`,
+          `data:image/jpeg;base64,${attachment.contentBytes}`
+        );
+      });
+    return content;
+  };
+
+  const fetchMessages = async () => {
+    const messagesByConversation =
+      await graphApiService.getMessagesByConversation(currCase.conversationId);
+
+    for (const message of messagesByConversation) {
+      const bodyContent = message.body.content;
+      const contentIds = bodyContent.match(CONTENT_ID_REGEX);
+
+      if (contentIds || message.hasAttachments) {
+        const messageAttachment = await graphApiService.getMessageAttachments(
+          message.id
+        );
+
+        let processedContent = replaceBodyImageWithCorrectSource(
+          bodyContent,
+          contentIds,
+          messageAttachment.value
+        );
+
+        message.body.content = processedContent;
+        attachmentArrays.push(messageAttachment.value);
+
+        setAttachmentArrays(prev => [...prev, messageAttachment.value]);
+      }
+    }
+
+    setOutlookMessages(messagesByConversation);
+  };
+
+  useEffect(() => {
+    fetchMessages();
+  }, []);
+
   const tabMenuList = ['Details', 'Resolution', 'History'];
 
   const tabContent =
     currentTab === 'Details' ? (
-      <RequestDetailDetails conversationId={currCase.conversationId} />
+      <RequestDetailDetails outlookMessages={outlookMessages} attachmentsArrays={attachmentArrays} />
     ) : currentTab === 'Resolution' ? (
       <RequestDetailResolution isResolved={true} />
     ) : currentTab === 'History' ? (
@@ -64,10 +130,22 @@ const RequestsDetailPage: NextPage<Props> = ({ currCase }) => {
                     {currCase.senderName}
                   </span>
                   on
-                  <span className="mx-2">{format(new Date(currCase.created_at), 'dd MMM yyyy, kk:mm')}</span>
+                  {outlookMessages ? (
+                    <span className="mx-2">
+                      {format(
+                        new Date(outlookMessages[0].receivedDateTime),
+                        'dd MMM yyyy, kk:mm'
+                      )}
+                    </span>
+                  ) : (
+                    <SkeletonLoading width="100%" />
+                  )}
                 </div>
                 <div className="font-bold px-2">
-                  Due By: <span>{format(new Date(currCase.dueBy), 'dd MMM yyyy, kk:mm')}</span>
+                  Due By:{' '}
+                  <span>
+                    {format(new Date(currCase.dueBy), 'dd MMM yyyy, kk:mm')}
+                  </span>
                 </div>
               </div>
             </div>
