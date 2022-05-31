@@ -16,6 +16,7 @@ import InformationDetailModalBody from './InformationDetailModalBody';
 import { Information } from '../../models/Information';
 import InformationDetailModalConversations from './InformationDetailModalConversations';
 import { If, Then } from 'react-if';
+import { OutlookMessageClientHelper } from '../../shared/libs/outlook-message-client-helper';
 
 type Props = {
   isOpen: boolean;
@@ -70,9 +71,8 @@ const InformationDetailModal = ({
         firstMessage.id
       );
 
-      let processedContent = replaceBodyImageWithCorrectSource(
-        bodyContent,
-        contentIds,
+      const outlookHelper = new OutlookMessageClientHelper(firstMessage);
+      let processedContent = outlookHelper.replaceBodyImageWithCorrectSource(
         messageAttachment.value
       );
 
@@ -82,25 +82,6 @@ const InformationDetailModal = ({
 
     setOutlookMessage(firstMessage);
     setOutlookMessagesInThisConversation(messagesInConversation);
-  };
-
-  const replaceBodyImageWithCorrectSource = (
-    bodyContent: string,
-    contentIds: string[],
-    attachments: OutlookMessageAttachmentValue[]
-  ) => {
-    let content = bodyContent;
-    attachments
-      .filter(
-        (att) => att.isInline && contentIds.includes(`cid:${att.contentId}`)
-      )
-      .forEach((attachment) => {
-        content = content.replace(
-          `cid:${attachment.contentId}`,
-          `data:image/jpeg;base64,${attachment.contentBytes}`
-        );
-      });
-    return content;
   };
 
   return (
