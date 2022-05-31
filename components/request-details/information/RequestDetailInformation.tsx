@@ -1,12 +1,40 @@
 import { format } from 'date-fns';
+import { useSession } from 'next-auth/react';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 import { Case } from '../../../models/Case';
+import { GraphUser } from '../../../models/GraphUser';
+import { SessionUser } from '../../../models/SessionUser';
+import { GraphApiService } from '../../../services/GraphApiService';
+import SkeletonLoading from '../../../widgets/SkeletonLoading';
 
 type Props = {
   currCase: Case;
-}
+};
 
-const RequestDetailInformation = ({ currCase } : Props) => {
+const RequestDetailInformation = ({ currCase }: Props) => {
+  const [userInfo, setUserInfo] = useState<GraphUser>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const session = useSession();
+  const user = session?.data?.user as SessionUser;
+  const graphApiService = new GraphApiService(user?.accessToken);
+
+  const getUserInfo = async () => {
+    setIsLoading(true);
+    const userInfo = await graphApiService.getUserInfoByEmail(
+      currCase.senderEmail
+    );
+
+    console.log(userInfo);
+    setUserInfo(userInfo);
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    getUserInfo();
+  }, []);
+
   return (
     <div className="mx-2 p-2 border-2 md:w-1/4 rounded min-w-fit">
       <div className="divide-y">
@@ -25,7 +53,9 @@ const RequestDetailInformation = ({ currCase } : Props) => {
               <tr>
                 <td className="h-10 w-28">Due By Date</td>
                 <td className="h-10 w-5">:</td>
-                <td className="font-bold">{format(new Date(currCase.dueBy), 'dd MMM yyyy kk:mm')}</td>
+                <td className="font-bold">
+                  {format(new Date(currCase.dueBy), 'dd MMM yyyy kk:mm')}
+                </td>
               </tr>
 
               {/* <tr>
@@ -45,49 +75,69 @@ const RequestDetailInformation = ({ currCase } : Props) => {
           Profile
         </div>
         <div className="p-2">
-          <div className="flex">
+          <div className="flex items-center">
             <Image
               src={'https://picsum.photos/200'}
-              className="rounded-full"
+              className="rounded-full w-20 h-20"
               height={50}
               width={50}
               alt="Profile Picture"
             />
             <div className="ml-3">
-              <div className="font-bold">Enrichment Socs</div>
-              <div>enrichment.socs@binus.edu</div>
+              <div className="font-bold">
+                {isLoading ? (
+                  <SkeletonLoading width="100%" />
+                ) : userInfo ? (
+                  userInfo.displayName
+                ) : (
+                  currCase.senderName
+                )}
+              </div>
+              <div className='break-word'>
+                {isLoading ? (
+                  <SkeletonLoading width="100%" />
+                ) : userInfo ? (
+                  userInfo.mail
+                ) : (
+                  currCase.senderEmail
+                )}
+              </div>
             </div>
           </div>
           <div className="mt-3">
-            <table className="border">
+            <table className="table-fixed border">
               <tbody>
-                <tr className="border-b">
+                {/* <tr className="border-b">
                   <td className="px-6 py-3 font-bold border-r">Employee ID</td>
-                  <td className="px-6 py-3 w-48 break-all">BN000012345</td>
-                </tr>
+                  <td className="px-6 py-3 w-48 break-all">{userInfo ? userInfo.id : '-'}</td>
+                </tr> */}
                 <tr className="border-b">
-                  <td className="px-6 py-3 font-bold border-r">
+                  <td className="px-6 py-3 font-bold border-r w-1/2">
                     Department Name
                   </td>
-                  <td className="px-6 py-3 break-all">
-                    asdfasdfasdfasdfasdfasdfasdfasdfsadf
+                  <td className="px-6 py-3 break-word">
+                    {userInfo && userInfo.department ? userInfo.department : "-"}
                   </td>
                 </tr>
-                <tr className="border-b">
+                {/* <tr className="border-b">
                   <td className="px-6 py-3 font-bold border-r">Phone</td>
                   <td className="px-6 py-3 break-all">-</td>
+                </tr> */}
+                <tr className="border-b">
+                  <td className="px-6 py-3 font-bold border-r">Company Name</td>
+                  <td className="px-6 py-3 break-word">{userInfo && userInfo.companyName ? userInfo.companyName : '-'}</td>
+                </tr>
+                <tr className="border-b">
+                  <td className="px-6 py-3 font-bold border-r">Department</td>
+                  <td className="px-6 py-3 break-word">{userInfo && userInfo.department ? userInfo.department : '-'}</td>
                 </tr>
                 <tr className="border-b">
                   <td className="px-6 py-3 font-bold border-r">Job Title</td>
-                  <td className="px-6 py-3 break-all">-</td>
+                  <td className="px-6 py-3 break-word">{userInfo && userInfo.jobTitle ? userInfo.jobTitle : '-'}</td>
                 </tr>
                 <tr className="border-b">
-                  <td className="px-6 py-3 font-bold border-r">Reporting To</td>
-                  <td className="px-6 py-3 break-all">-</td>
-                </tr>
-                <tr className="border-b">
-                  <td className="px-6 py-3 font-bold border-r">Mobile</td>
-                  <td className="px-6 py-3 break-all">-</td>
+                  <td className="px-6 py-3 font-bold border-r">Office Location</td>
+                  <td className="px-6 py-3 break-word">{userInfo && userInfo.officeLocation ? userInfo.officeLocation : '-'}</td>
                 </tr>
               </tbody>
             </table>

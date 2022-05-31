@@ -2,6 +2,7 @@ import { BaseService } from './BaseService';
 import axios, { AxiosResponse } from 'axios';
 import { OutlookMessage } from '../models/OutlookMessage';
 import { OutlookMessageAttachment } from '../models/OutlookMessageAttachment';
+import { GraphUser } from '../models/GraphUser';
 
 export class GraphApiService extends BaseService {
   public async syncMessages(): Promise<void> {
@@ -53,6 +54,17 @@ export class GraphApiService extends BaseService {
         this.headersWithToken()
       )
     );
+    return result.data;
+  }
+
+  public async getUserInfoByEmail(email: string): Promise<GraphUser> {
+    const result = await this.wrapper.handle(
+      axios.get(
+        `${this.BASE_URL}/graph-api/users/email/${email}`,
+        this.headersWithToken()
+      )
+    );
+
     return result.data;
   }
 }
