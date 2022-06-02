@@ -67,4 +67,36 @@ export class GraphApiService extends BaseService {
 
     return result.data;
   }
+
+  public async getUserProfilePhoto(id: string) {
+    const token = await this.getGraphApiAccessToken();
+
+    try {
+      const result = await axios.get(
+        `https://graph.microsoft.com/v1.0/users/${id}/photo/$value`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          responseType: 'blob',
+        }
+      );
+
+      return result.data;
+    } catch (err) {
+      
+      return null;
+    }
+  }
+
+  private async getGraphApiAccessToken() {
+    const result = await this.wrapper.handle(
+      axios.get(
+        `${this.BASE_URL}/graph-api/access-token`,
+        this.headersWithToken()
+      )
+    );
+
+    return result.data;
+  }
 }

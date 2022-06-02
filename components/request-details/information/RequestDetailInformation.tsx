@@ -7,6 +7,7 @@ import { GraphUser } from '../../../models/GraphUser';
 import { SessionUser } from '../../../models/SessionUser';
 import { GraphApiService } from '../../../services/GraphApiService';
 import SkeletonLoading from '../../../widgets/SkeletonLoading';
+import axios from 'axios';
 
 type Props = {
   currCase: Case;
@@ -14,6 +15,7 @@ type Props = {
 
 const RequestDetailInformation = ({ currCase }: Props) => {
   const [userInfo, setUserInfo] = useState<GraphUser>(null);
+  const [userProfilePhoto, setUserProfilePhoto] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const session = useSession();
@@ -26,14 +28,35 @@ const RequestDetailInformation = ({ currCase }: Props) => {
       currCase.senderEmail
     );
 
-    console.log(userInfo);
     setUserInfo(userInfo);
     setIsLoading(false);
+  };
+
+  const getUserProfilePhoto = async () => {
+    let userProfilePhoto = null;
+    let blobUrl = null;
+    const url = window.URL || window.webkitURL;
+
+    if (userInfo) {
+      userProfilePhoto = await graphApiService.getUserProfilePhoto(
+        userInfo.id
+      );
+
+      blobUrl = userProfilePhoto ? url.createObjectURL(
+        userProfilePhoto
+      ) : null;
+    }
+
+    setUserProfilePhoto(blobUrl);
   };
 
   useEffect(() => {
     getUserInfo();
   }, []);
+
+  useEffect(() => {
+    getUserProfilePhoto();
+  }, [userInfo]);
 
   return (
     <div className="mx-2 p-2 border-2 md:w-1/4 rounded min-w-fit">
@@ -77,7 +100,12 @@ const RequestDetailInformation = ({ currCase }: Props) => {
         <div className="p-2">
           <div className="flex items-center">
             <Image
-              src={'https://picsum.photos/200'}
+              id="profile-photo"
+              src={
+                userProfilePhoto
+                  ? userProfilePhoto
+                  : 'https://picsum.photos/200'
+              }
               className="rounded-full w-20 h-20"
               height={50}
               width={50}
@@ -93,7 +121,7 @@ const RequestDetailInformation = ({ currCase }: Props) => {
                   currCase.senderName
                 )}
               </div>
-              <div className='break-word'>
+              <div className="break-word">
                 {isLoading ? (
                   <SkeletonLoading width="100%" />
                 ) : userInfo ? (
@@ -116,7 +144,9 @@ const RequestDetailInformation = ({ currCase }: Props) => {
                     Department Name
                   </td>
                   <td className="px-6 py-3 break-word">
-                    {userInfo && userInfo.department ? userInfo.department : "-"}
+                    {userInfo && userInfo.department
+                      ? userInfo.department
+                      : '-'}
                   </td>
                 </tr>
                 {/* <tr className="border-b">
@@ -125,19 +155,35 @@ const RequestDetailInformation = ({ currCase }: Props) => {
                 </tr> */}
                 <tr className="border-b">
                   <td className="px-6 py-3 font-bold border-r">Company Name</td>
-                  <td className="px-6 py-3 break-word">{userInfo && userInfo.companyName ? userInfo.companyName : '-'}</td>
+                  <td className="px-6 py-3 break-word">
+                    {userInfo && userInfo.companyName
+                      ? userInfo.companyName
+                      : '-'}
+                  </td>
                 </tr>
                 <tr className="border-b">
                   <td className="px-6 py-3 font-bold border-r">Department</td>
-                  <td className="px-6 py-3 break-word">{userInfo && userInfo.department ? userInfo.department : '-'}</td>
+                  <td className="px-6 py-3 break-word">
+                    {userInfo && userInfo.department
+                      ? userInfo.department
+                      : '-'}
+                  </td>
                 </tr>
                 <tr className="border-b">
                   <td className="px-6 py-3 font-bold border-r">Job Title</td>
-                  <td className="px-6 py-3 break-word">{userInfo && userInfo.jobTitle ? userInfo.jobTitle : '-'}</td>
+                  <td className="px-6 py-3 break-word">
+                    {userInfo && userInfo.jobTitle ? userInfo.jobTitle : '-'}
+                  </td>
                 </tr>
                 <tr className="border-b">
-                  <td className="px-6 py-3 font-bold border-r">Office Location</td>
-                  <td className="px-6 py-3 break-word">{userInfo && userInfo.officeLocation ? userInfo.officeLocation : '-'}</td>
+                  <td className="px-6 py-3 font-bold border-r">
+                    Office Location
+                  </td>
+                  <td className="px-6 py-3 break-word">
+                    {userInfo && userInfo.officeLocation
+                      ? userInfo.officeLocation
+                      : '-'}
+                  </td>
                 </tr>
               </tbody>
             </table>
