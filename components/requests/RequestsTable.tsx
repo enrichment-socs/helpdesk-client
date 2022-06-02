@@ -7,10 +7,9 @@ import { Case } from '../../models/Case';
 
 type Props = {
   cases: Case[];
-}
+};
 
-const RequestsTable : React.FC<Props> = ({ cases }) => {
-
+const RequestsTable: React.FC<Props> = ({ cases }) => {
   const router = useRouter();
 
   const rowClickHandler = (id: string) => {
@@ -23,13 +22,8 @@ const RequestsTable : React.FC<Props> = ({ cases }) => {
         <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
           <div className="shadow overflow-hidden border-b border-gray-200">
             <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-slate-500">
+              <thead className="bg-gray-500">
                 <tr>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                    ID
-                  </th>
                   <th
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
@@ -79,9 +73,6 @@ const RequestsTable : React.FC<Props> = ({ cases }) => {
                         index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
                       } transition duration-300 ease-in-out hover:bg-sky-100`}
                       onClick={rowClickHandler.bind(this, data.id)}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {data.id}
-                      </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {data.subject}
                       </td>

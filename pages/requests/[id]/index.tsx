@@ -85,7 +85,7 @@ const RequestsDetailPage: NextPage<Props> = ({ currCase }) => {
         message.body.content = processedContent;
         attachmentArrays.push(messageAttachment.value);
 
-        setAttachmentArrays(prev => [...prev, messageAttachment.value]);
+        setAttachmentArrays((prev) => [...prev, messageAttachment.value]);
       }
     }
 
@@ -100,7 +100,10 @@ const RequestsDetailPage: NextPage<Props> = ({ currCase }) => {
 
   const tabContent =
     currentTab === 'Details' ? (
-      <RequestDetailDetails outlookMessages={outlookMessages} attachmentsArrays={attachmentArrays} />
+      <RequestDetailDetails
+        outlookMessages={outlookMessages}
+        attachmentsArrays={attachmentArrays}
+      />
     ) : currentTab === 'Resolution' ? (
       <RequestDetailResolution isResolved={true} />
     ) : currentTab === 'History' ? (
@@ -119,16 +122,15 @@ const RequestsDetailPage: NextPage<Props> = ({ currCase }) => {
             isShowInformation ? 'md:w-3/4' : 'md:w-full'
           }  rounded divide-y transition-all ease-in-out delay-300`}>
           <div className="flex items-center pb-3">
-            <TicketIcon className="h-10 w-10" />
+            <div className="rounded-full border border-gray-300 p-2">
+              <TicketIcon className="h-10 w-10 text-gray-400" />
+            </div>
             <div className="font-medium text-2xl ml-5">
-              <div className="text-sm text-gray-500">{currCase.id}</div>
               <div>{currCase.subject}</div>
               <div className="flex divide-x text-sm mt-1">
                 <div className="font-normal text-gray">
                   by
-                  <span className="cursor-pointer text-cyan-500 hover:text-blue-700 mx-2">
-                    {currCase.senderName}
-                  </span>
+                  <span className="font-bold mx-2">{currCase.senderName}</span>
                   on
                   {outlookMessages ? (
                     <span className="mx-2">
@@ -151,7 +153,7 @@ const RequestsDetailPage: NextPage<Props> = ({ currCase }) => {
             </div>
             <div className="ml-auto mr-5">
               <button
-                className="bg-blue-500 hover:bg-blue-700 text-sm text-white font-bold py-2 px-2 rounded"
+                className="bg-primary hover:bg-primary-dark text-sm text-white font-bold py-2 px-2 rounded"
                 onClick={toggleInformation}>
                 {isShowInformation ? 'Hide' : 'Show'} Information
               </button>
@@ -161,7 +163,7 @@ const RequestsDetailPage: NextPage<Props> = ({ currCase }) => {
           <div className="pt-2">
             {/* Tabs */}
 
-            <div className="text-sm font-medium text-center text-gray-500 border-b-gray-200 dark:text-gray-400 dark:border-gray-700">
+            <div className="text-sm font-medium text-center text-gray-500 border-b border-gray-200">
               <ul className="flex flex-wrap -mb-px">
                 {tabMenuList.map((menu, index) => {
                   return (
@@ -170,8 +172,8 @@ const RequestsDetailPage: NextPage<Props> = ({ currCase }) => {
                         href="#"
                         className={`inline-block p-4 rounded-t-lg ${
                           currentTab === menu
-                            ? 'border-b-2 border-blue-600 active dark:text-blue-500 dark:border-blue-500'
-                            : 'border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300'
+                            ? 'border-b-2 border-primary active'
+                            : 'border-transparent hover:text-gray-600 hover:border-gray-300'
                         }`}
                         onClick={(e) => {
                           e.preventDefault();
@@ -198,7 +200,7 @@ const RequestsDetailPage: NextPage<Props> = ({ currCase }) => {
           leave="transition duration-300 ease-out"
           leaveFrom="transform scale-100 opacity-100"
           leaveTo="transform scale-50 opacity-0">
-          <RequestDetailInformation currCase={currCase}/>
+          <RequestDetailInformation currCase={currCase} />
         </Transition>
       </div>
     </Layout>

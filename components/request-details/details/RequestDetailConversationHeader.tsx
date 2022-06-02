@@ -1,8 +1,6 @@
 import { OutlookMessage } from '../../../models/OutlookMessage';
 import SkeletonLoading from '../../../widgets/SkeletonLoading';
 
-
-
 type Props = {
   message: OutlookMessage;
 };
@@ -14,12 +12,24 @@ const RequestDetailConversationHeader = ({ message }: Props) => {
   };
 
   const getToRecipientsInfo = () => {
-    if (!message) return <SkeletonLoading width="100%" />
+    if (!message) return <SkeletonLoading width="100%" />;
 
-    const recipients = message.toRecipients.map((recipient, idx) => recipient.emailAddress.address).join(', ');
+    const recipients = message.toRecipients
+      .map((recipient, idx) => recipient.emailAddress.address)
+      .join(', ');
 
     return recipients || '-';
-  }
+  };
+
+  const getCcRecipientsInfo = () => {
+    if (!message) return <SkeletonLoading width="100%" />;
+
+    const recipients = message.ccRecipients
+      .map((recipient, idx) => recipient.emailAddress.address)
+      .join(', ');
+
+    return recipients || '-';
+  };
 
   return (
     <div className="pb-2">
@@ -30,6 +40,10 @@ const RequestDetailConversationHeader = ({ message }: Props) => {
       <div>
         <span className="font-bold">Subject:</span>
         <span className="ml-3">{getSubjectInfo()}</span>
+      </div>
+      <div>
+        <span className="font-bold">Cc:</span>
+        <span className="ml-3">{getCcRecipientsInfo()}</span>
       </div>
     </div>
   );

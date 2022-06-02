@@ -23,7 +23,7 @@ const RequestDetailConversationBody = ({ message, attachments }: Props) => {
         <div
           className="max-h-[42rem] overflow-auto"
           dangerouslySetInnerHTML={{
-            __html: message.body.content,
+            __html: message.uniqueBody.content,
           }}></div>
 
         {message.hasAttachments && (

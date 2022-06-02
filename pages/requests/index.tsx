@@ -1,6 +1,5 @@
 import { NextPage } from 'next';
 import { getSession } from 'next-auth/react';
-import RequestsTable from '../../components/requests/RequestsTable';
 import Layout from '../../widgets/_Layout';
 import { getInitialServerProps } from '../../shared/libs/initialize-server-props';
 import { withSessionSsr } from '../../shared/libs/session';
@@ -12,6 +11,7 @@ import { Case } from '../../models/Case';
 import { useHydrateAtoms } from 'jotai/utils';
 import { CaseService } from '../../services/CaseService';
 import { SessionUser } from '../../models/SessionUser';
+import RequestContainer from '../../components/request-details/RequestContainer';
 
 export const casesAtom = atom([] as Case[]);
 
@@ -20,12 +20,11 @@ type Props = {
 };
 
 const RequestsHeaderPage: NextPage<Props> = ({ currCases }) => {
-
   useHydrateAtoms([[casesAtom, currCases]] as const);
 
   return (
     <Layout>
-      <RequestsTable cases={currCases} />
+      <RequestContainer />
     </Layout>
   );
 };

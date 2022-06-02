@@ -62,7 +62,10 @@ const RequestDetailConversation = ({ message, attachments }: Props) => {
     <Disclosure as="div" className="mt-2">
       {({ open }) => (
         <>
-          <Disclosure.Button className="flex justify-between items-center w-full px-4 py-2 text-sm font-medium text-left text-slate-900 bg-slate-100 rounded-lg hover:bg-slate-200 focus:outline-none focus-visible:ring focus-visible:ring-slate-500 focus-visible:ring-opacity-75">
+          <Disclosure.Button
+            className={`${
+              open ? 'rounded-t' : 'rounded'
+            } flex justify-between items-center w-full px-4 py-2 text-sm font-medium text-left text-gray-900 bg-gray-200 hover:bg-gray-300 focus:outline-none focus-visible:ring focus-visible:ring-gray-500 focus-visible:ring-opacity-75`}>
             <span className="font-bold">{getSenderInfo()}</span>
             <div className="flex">
               <span className="text-gray-500 font-normal text-xs">
@@ -82,27 +85,13 @@ const RequestDetailConversation = ({ message, attachments }: Props) => {
             leave="transition duration-300 ease-in"
             leaveFrom="transform scale-100 opacity-100"
             leaveTo="transform scale-50 opacity-0">
-            <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-500">
-              <div className="divide-y">
-                {/* <div className="pb-2">
-                  <div>
-                    <span className="font-bold">To:</span>
-                    <span className="ml-3">{getToRecipientsInfo()}</span>
-                  </div>
-                  <div>
-                    <span className="font-bold">Subject:</span>
-                    <span className="ml-3">{getSubjectInfo()}</span>
-                  </div>
-                </div> */}
+            <Disclosure.Panel className="text-sm text-gray-500">
+              <div className="divide-y border border-gray-200 p-4">
                 <RequestDetailConversationHeader message={message} />
-                <RequestDetailConversationBody message={message} attachments={attachments} />
-                {/* <div className="pt-5">
-                  <div
-                    className="max-h-[42rem] overflow-auto"
-                    dangerouslySetInnerHTML={{
-                      __html: message.body.content,
-                    }}></div>
-                </div> */}
+                <RequestDetailConversationBody
+                  message={message}
+                  attachments={attachments}
+                />
               </div>
             </Disclosure.Panel>
           </Transition>
