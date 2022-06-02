@@ -1,6 +1,7 @@
 import { format } from 'date-fns';
+import { useAtom } from 'jotai';
 import { useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { If, Then } from 'react-if';
 import { OutlookMessage } from '../../models/OutlookMessage';
 import { OutlookMessageAttachmentValue } from '../../models/OutlookMessageAttachment';
@@ -9,27 +10,27 @@ import { GraphApiService } from '../../services/GraphApiService';
 import { CONTENT_ID_REGEX } from '../../shared/constants/regex';
 import { OutlookMessageClientHelper } from '../../shared/libs/outlook-message-client-helper';
 import MessageAttachmentList from '../../widgets/MessageAttachmentList';
+import MultiLineSkeletonLoading from '../../widgets/MultiLineSkeletonLoading';
+import { MessageAttachmentsDictionary } from './InformationDetailModal';
 
 type Props = {
   messages: OutlookMessage[];
-};
-
-type MessageAttachmentsDictionary = {
-  messageId: string;
-  attachments: OutlookMessageAttachmentValue[];
+  processedMessage: OutlookMessage[];
+  setProcessedMessage: Dispatch<SetStateAction<OutlookMessage[]>>;
+  attachmentsDict: MessageAttachmentsDictionary[];
+  setAttachmentsDict: Dispatch<SetStateAction<MessageAttachmentsDictionary[]>>;
 };
 
 export default function InformationDetailModalConversations({
   messages,
+  processedMessage,
+  setProcessedMessage,
+  attachmentsDict,
+  setAttachmentsDict,
 }: Props) {
   const session = useSession();
   const user = session?.data?.user as SessionUser;
   const graphApiService = new GraphApiService(user?.accessToken);
-  const [processedMessage, setProcessedMessage] = useState<OutlookMessage[]>(
-    []
-  );
-  const [messageAttachmentDictionary, setMessageAttachmentDictionary] =
-    useState<MessageAttachmentsDictionary[]>([]);
 
   useEffect(() => {
     const processAllMessages = async () => {
@@ -45,11 +46,11 @@ export default function InformationDetailModalConversations({
       }
 
       setProcessedMessage(processedMessageResult);
-      setMessageAttachmentDictionary(tempMessageAttachmentsDict);
+      setAttachmentsDict(tempMessageAttachmentsDict);
     };
 
     processAllMessages();
-  }, [messages]);
+  }, []);
 
   const processMessage = async (message: OutlookMessage) => {
     const bodyContent = message.uniqueBody.content;
@@ -80,15 +81,13 @@ export default function InformationDetailModalConversations({
   };
 
   const getAttachments = (message: OutlookMessage) => {
-    const dict = messageAttachmentDictionary.find(
-      (m) => m.messageId === message.id
-    );
+    const dict = attachmentsDict.find((m) => m.messageId === message.id);
     return dict.attachments;
   };
 
   const containAttachments = (message: OutlookMessage) => {
     return (
-      messageAttachmentDictionary.find(
+      attachmentsDict.find(
         (dict) => dict.messageId === message.id && dict.attachments.length > 0
       ) !== undefined
     );
@@ -97,6 +96,12 @@ export default function InformationDetailModalConversations({
   return (
     <div className="border border-gray-200 rounded mt-4">
       <div className="bg-gray-300 text-gray-700 p-2">Conversations</div>
+
+      {processedMessage.length === 0 && (
+        <div className="p-4">
+          <MultiLineSkeletonLoading />
+        </div>
+      )}
 
       <ul className="bg-white border border-gray-200 text-gray-900 max-h-[42rem] overflow-auto">
         {processedMessage.map((message) => (

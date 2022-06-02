@@ -119,14 +119,25 @@ export default function Navbar() {
                     </Then>
                     <Else>
                       <Link key={link.title} href={link.href} passHref={true}>
-                        <div
-                          className={`tracking-wide text-center cursor-pointer hover:text-primary min-w-[3rem] py-4 text-gray-600 font-semibold ${
-                            router.pathname === link.href
-                              ? 'border-b-2 border-primary font-bold'
-                              : ''
-                          }`}>
-                          {link.title}
-                        </div>
+                        {link.href === '/' ? (
+                          <div
+                            className={`tracking-wide text-center cursor-pointer hover:text-primary min-w-[3rem] py-4 text-gray-600 font-semibold ${
+                              router.pathname === '/'
+                                ? 'border-b-2 border-primary font-bold'
+                                : ''
+                            }`}>
+                            {link.title}
+                          </div>
+                        ) : (
+                          <div
+                            className={`tracking-wide text-center cursor-pointer hover:text-primary min-w-[3rem] py-4 text-gray-600 font-semibold ${
+                              router.pathname.includes(link.href)
+                                ? 'border-b-2 border-primary font-bold'
+                                : ''
+                            }`}>
+                            {link.title}
+                          </div>
+                        )}
                       </Link>
                     </Else>
                   </If>
