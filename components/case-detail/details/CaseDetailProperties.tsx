@@ -1,4 +1,4 @@
-const RequestDetailProperties = () => {
+const CaseDetailProperties = () => {
   return (
     <div className="divide-y">
       <div className="font-bold text-sm pb-2">Properties</div>
@@ -131,4 +131,4 @@ const RequestDetailProperties = () => {
   );
 };
 
-export default RequestDetailProperties;
+export default CaseDetailProperties;

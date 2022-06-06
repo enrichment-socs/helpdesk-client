@@ -2,7 +2,7 @@ type Prop = {
   isResolved: boolean;
 };
 
-const RequestDetailResolution = ({ isResolved }: Prop) => {
+const CaseDetailResolution = ({ isResolved }: Prop) => {
   return (
     <div className="text-sm">
       <div className="border-2 p-5">
@@ -19,4 +19,4 @@ const RequestDetailResolution = ({ isResolved }: Prop) => {
   );
 };
 
-export default RequestDetailResolution;
+export default CaseDetailResolution;

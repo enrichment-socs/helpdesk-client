@@ -5,10 +5,10 @@ import { getSession, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import RequestDetailDetails from '../../../components/request-details/details/RequestDetailDetails';
-import RequestDetailHistory from '../../../components/request-details/histories/RequestDetailHistory';
-import RequestDetailInformation from '../../../components/request-details/information/RequestDetailInformation';
-import RequestDetailResolution from '../../../components/request-details/resolutions/RequestDetailResolution';
+import CaseDetailDetails from '../../../components/case-detail/details/CaseDetailDetails';
+import CaseDetailHistory from '../../../components/case-detail/histories/CaseDetailHistory';
+import CaseDetailInformation from '../../../components/case-detail/information/CaseDetailInformation';
+import CaseDetailResolution from '../../../components/case-detail/resolutions/CaseDetailResolution';
 import Layout from '../../../widgets/_Layout';
 import { AuthHelper } from '../../../shared/libs/auth-helper';
 import { ROLES } from '../../../shared/constants/roles';
@@ -100,14 +100,14 @@ const RequestsDetailPage: NextPage<Props> = ({ currCase }) => {
 
   const tabContent =
     currentTab === 'Details' ? (
-      <RequestDetailDetails
+      <CaseDetailDetails
         outlookMessages={outlookMessages}
         attachmentsArrays={attachmentArrays}
       />
     ) : currentTab === 'Resolution' ? (
-      <RequestDetailResolution isResolved={true} />
+      <CaseDetailResolution isResolved={true} />
     ) : currentTab === 'History' ? (
-      <RequestDetailHistory />
+      <CaseDetailHistory />
     ) : null;
 
   const toggleInformation = () => {
@@ -143,9 +143,9 @@ const RequestsDetailPage: NextPage<Props> = ({ currCase }) => {
                     <SkeletonLoading width="100%" />
                   )}
                 </div>
-                <div className="font-bold px-2">
+                <div className="px-2 font-normal">
                   Due By:{' '}
-                  <span>
+                  <span className="font-bold">
                     {format(new Date(currCase.dueBy), 'dd MMM yyyy, kk:mm')}
                   </span>
                 </div>
@@ -200,7 +200,7 @@ const RequestsDetailPage: NextPage<Props> = ({ currCase }) => {
           leave="transition duration-300 ease-out"
           leaveFrom="transform scale-100 opacity-100"
           leaveTo="transform scale-50 opacity-0">
-          <RequestDetailInformation currCase={currCase} />
+          <CaseDetailInformation currCase={currCase} />
         </Transition>
       </div>
     </Layout>

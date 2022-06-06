@@ -13,7 +13,7 @@ type Props = {
   currCase: Case;
 };
 
-const RequestDetailInformation = ({ currCase }: Props) => {
+const CaseDetailInformation = ({ currCase }: Props) => {
   const [userInfo, setUserInfo] = useState<GraphUser>(null);
   const [userProfilePhoto, setUserProfilePhoto] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -38,13 +38,9 @@ const RequestDetailInformation = ({ currCase }: Props) => {
     const url = window.URL || window.webkitURL;
 
     if (userInfo) {
-      userProfilePhoto = await graphApiService.getUserProfilePhoto(
-        userInfo.id
-      );
+      userProfilePhoto = await graphApiService.getUserProfilePhoto(userInfo.id);
 
-      blobUrl = userProfilePhoto ? url.createObjectURL(
-        userProfilePhoto
-      ) : null;
+      blobUrl = userProfilePhoto ? url.createObjectURL(userProfilePhoto) : null;
     }
 
     setUserProfilePhoto(blobUrl);
@@ -194,4 +190,4 @@ const RequestDetailInformation = ({ currCase }: Props) => {
   );
 };
 
-export default RequestDetailInformation;
+export default CaseDetailInformation;

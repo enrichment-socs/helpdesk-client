@@ -11,7 +11,7 @@ import { Case } from '../../models/Case';
 import { useHydrateAtoms } from 'jotai/utils';
 import { CaseService } from '../../services/CaseService';
 import { SessionUser } from '../../models/SessionUser';
-import RequestContainer from '../../components/request-details/RequestContainer';
+import CaseContainer from '../../components/case-detail/CaseContainer';
 
 export const casesAtom = atom([] as Case[]);
 
@@ -24,7 +24,7 @@ const RequestsHeaderPage: NextPage<Props> = ({ currCases }) => {
 
   return (
     <Layout>
-      <RequestContainer />
+      <CaseContainer />
     </Layout>
   );
 };

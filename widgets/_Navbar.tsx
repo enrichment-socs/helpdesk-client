@@ -23,7 +23,7 @@ export default function Navbar() {
     },
     {
       title: 'Cases',
-      href: '/requests',
+      href: '/cases',
       roles: [ROLES.USER, ROLES.ADMIN],
     },
     {

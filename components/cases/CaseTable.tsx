@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
-import { casesAtom } from '../../pages/requests';
+import { casesAtom } from '../../pages/cases';
 import { format } from 'date-fns';
 import { useHydrateAtoms } from 'jotai/utils';
 import { Case } from '../../models/Case';
@@ -9,11 +9,11 @@ type Props = {
   cases: Case[];
 };
 
-const RequestsTable: React.FC<Props> = ({ cases }) => {
+const CaseTable: React.FC<Props> = ({ cases }) => {
   const router = useRouter();
 
   const rowClickHandler = (id: string) => {
-    router.push(`/requests/${id}`);
+    router.push(`/cases/${id}`);
   };
 
   return (
@@ -105,4 +105,4 @@ const RequestsTable: React.FC<Props> = ({ cases }) => {
   );
 };
 
-export default RequestsTable;
+export default CaseTable;

@@ -4,8 +4,8 @@ import { format } from 'date-fns';
 import { OutlookMessage } from '../../../models/OutlookMessage';
 import { OutlookMessageAttachmentValue } from '../../../models/OutlookMessageAttachment';
 import SkeletonLoading from '../../../widgets/SkeletonLoading';
-import RequestDetailConversationBody from './RequestDetailConversationBody';
-import RequestDetailConversationHeader from './RequestDetailConversationHeader';
+import CaseDetailConversationBody from './CaseDetailConversationBody';
+import CaseDetailConversationHeader from './CaseDetailConversationHeader';
 
 // type Prop = {
 //   conversationData: {
@@ -23,7 +23,7 @@ type Props = {
   attachments: OutlookMessageAttachmentValue[];
 };
 
-const RequestDetailConversation = ({ message, attachments }: Props) => {
+const CaseDetailConversation = ({ message, attachments }: Props) => {
   const getSenderInfo = () => {
     if (!message) return <SkeletonLoading width="100%" />;
 
@@ -87,8 +87,8 @@ const RequestDetailConversation = ({ message, attachments }: Props) => {
             leaveTo="transform scale-50 opacity-0">
             <Disclosure.Panel className="text-sm text-gray-500">
               <div className="divide-y border border-gray-200 p-4">
-                <RequestDetailConversationHeader message={message} />
-                <RequestDetailConversationBody
+                <CaseDetailConversationHeader message={message} />
+                <CaseDetailConversationBody
                   message={message}
                   attachments={attachments}
                 />
@@ -101,4 +101,4 @@ const RequestDetailConversation = ({ message, attachments }: Props) => {
   );
 };
 
-export default RequestDetailConversation;
+export default CaseDetailConversation;

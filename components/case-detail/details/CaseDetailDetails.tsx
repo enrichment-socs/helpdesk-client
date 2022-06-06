@@ -9,17 +9,17 @@ import { GraphApiService } from '../../../services/GraphApiService';
 import { CONTENT_ID_REGEX } from '../../../shared/constants/regex';
 import MultiLineSkeletonLoading from '../../../widgets/MultiLineSkeletonLoading';
 import SkeletonLoading from '../../../widgets/SkeletonLoading';
-import RequestDetailConversationBody from './RequestDetailConversationBody';
-import RequestDetailConversationHeader from './RequestDetailConversationHeader';
-import RequestDetailProperties from './RequestDetailProperties';
-import RequestDetailConversation from './RequestDetailConversation';
+import CaseDetailConversationBody from './CaseDetailConversationBody';
+import CaseDetailConversationHeader from './CaseDetailConversationHeader';
+import CaseDetailProperties from './CaseDetailProperties';
+import CaseDetailConversation from './CaseDetailConversation';
 
 type Props = {
   outlookMessages: OutlookMessage[];
   attachmentsArrays: OutlookMessageAttachmentValue[][];
 };
 
-const RequestDetailDetails: React.FC<Props> = ({
+const CaseDetailDetails: React.FC<Props> = ({
   outlookMessages,
   attachmentsArrays,
 }) => {
@@ -50,7 +50,7 @@ const RequestDetailDetails: React.FC<Props> = ({
                 <Disclosure.Panel className="text-sm text-gray-700">
                   <div className="divide-y border border-gray-300 p-4">
                     {outlookMessages ? (
-                      <RequestDetailConversationHeader
+                      <CaseDetailConversationHeader
                         message={outlookMessages[0]}
                       />
                     ) : (
@@ -58,7 +58,7 @@ const RequestDetailDetails: React.FC<Props> = ({
                     )}
 
                     {outlookMessages ? (
-                      <RequestDetailConversationBody
+                      <CaseDetailConversationBody
                         message={outlookMessages[0]}
                         attachments={attachmentsArrays[0]}
                       />
@@ -100,7 +100,7 @@ const RequestDetailDetails: React.FC<Props> = ({
                       outlookMessages
                         .slice(1)
                         .map((message, idx) => (
-                          <RequestDetailConversation
+                          <CaseDetailConversation
                             key={message.id}
                             message={message}
                             attachments={attachmentsArrays[idx]}
@@ -138,7 +138,7 @@ const RequestDetailDetails: React.FC<Props> = ({
                 leaveFrom="transform scale-100 opacity-100"
                 leaveTo="transform scale-50 opacity-0">
                 <Disclosure.Panel className="p-4 border border-gray-300 text-sm text-gray-500">
-                  <RequestDetailProperties />
+                  <CaseDetailProperties />
                 </Disclosure.Panel>
               </Transition>
             </>
@@ -149,4 +149,4 @@ const RequestDetailDetails: React.FC<Props> = ({
   );
 };
 
-export default RequestDetailDetails;
+export default CaseDetailDetails;

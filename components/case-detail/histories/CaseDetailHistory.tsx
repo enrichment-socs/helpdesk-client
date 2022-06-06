@@ -1,7 +1,7 @@
 import { Disclosure, Transition } from '@headlessui/react';
 import { ChevronUpIcon, PencilAltIcon } from '@heroicons/react/solid';
 
-const RequestDetailHistory = () => {
+const CaseDetailHistory = () => {
   return (
     <div>
       <Disclosure>
@@ -89,4 +89,4 @@ const RequestDetailHistory = () => {
   );
 };
 
-export default RequestDetailHistory;
+export default CaseDetailHistory;

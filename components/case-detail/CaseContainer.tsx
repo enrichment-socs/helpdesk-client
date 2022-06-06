@@ -1,9 +1,9 @@
 import { ArchiveIcon } from '@heroicons/react/solid';
 import { useAtom } from 'jotai';
-import { casesAtom } from '../../pages/requests';
-import RequestsTable from '../requests/RequestsTable';
+import { casesAtom } from '../../pages/cases';
+import CaseTable from '../cases/CaseTable';
 
-export default function RequestContainer() {
+export default function CaseContainer() {
   const [cases] = useAtom(casesAtom);
 
   return (
@@ -16,7 +16,7 @@ export default function RequestContainer() {
           </div>
         </div>
         <div className="p-1">
-          <RequestsTable cases={cases} />
+          <CaseTable cases={cases} />
         </div>
       </div>
     </>
