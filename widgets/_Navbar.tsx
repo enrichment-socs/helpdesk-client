@@ -80,7 +80,7 @@ export default function Navbar() {
   const user = session.data.user as SessionUser;
 
   const logOut = async () => {
-    signOut({ callbackUrl: 'helpdesk/auth/login' });
+    signOut({ callbackUrl: '/helpdesk/auth/login' });
   };
 
   return (
