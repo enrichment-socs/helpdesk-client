@@ -104,12 +104,8 @@ export default function AnnouncementFormModal({
     setLoading(true);
     await toast.promise(
       announcement
-        ? announcementService.updateAnnouncement(
-            dto,
-            announcement.id,
-            user.accessToken
-          )
-        : announcementService.addAnnouncement(dto, user.accessToken),
+        ? announcementService.updateAnnouncement(dto, announcement.id)
+        : announcementService.addAnnouncement(dto),
       {
         loading: announcement
           ? 'Updating announcement...'
