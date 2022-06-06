@@ -30,7 +30,7 @@ type Props = {
   firstOutlookMessageFromConversation: OutlookMessage;
 };
 
-const DatePicker = dynamic(import('react-datepicker'), { ssr: false });
+const DatePicker = dynamic(import('react-datepicker'), { ssr: false }) as any;
 
 export default function MessageDetailModalAction({
   onClose,

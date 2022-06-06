@@ -16,7 +16,7 @@ const QuillNoSSRWrapper = dynamic(import('react-quill'), {
   ssr: false,
   loading: () => <p>Loading ...</p>,
 });
-const DatePicker = dynamic(import('react-datepicker'), { ssr: false });
+const DatePicker = dynamic(import('react-datepicker'), { ssr: false }) as any;
 
 const modules = {
   toolbar: [
