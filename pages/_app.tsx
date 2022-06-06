@@ -25,7 +25,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
     <>
       <NextNProgress />
-      <SessionProvider session={session}>
+      <SessionProvider session={session} basePath="/helpdesk/api/auth">
         <AuthHandlerWrapper />
         <Component {...pageProps} />
       </SessionProvider>
