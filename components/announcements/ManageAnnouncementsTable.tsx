@@ -27,10 +27,7 @@ export default function ManageAnnouncementsTable({
     if (await confirm(message)) {
       const announcementService = new AnnouncementService(user.accessToken);
       await toast.promise(
-        announcementService.deleteAnnouncement(
-          announcement.id,
-          user.accessToken
-        ),
+        announcementService.deleteAnnouncement(announcement.id),
         {
           loading: 'Deleting announcement...',
           success: (r) => {

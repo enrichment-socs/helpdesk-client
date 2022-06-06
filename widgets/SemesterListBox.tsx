@@ -12,7 +12,8 @@ import { SessionUser } from '../models/SessionUser';
 
 export default function SemesterListBox() {
   const [semesters] = useAtom(semestersAtom);
-  const [selectedSemester, setSelected] = useAtom(activeSemesterAtom);
+  const [selectedSemester, setSelected]: [Semester, any] =
+    useAtom(activeSemesterAtom);
   const router = useRouter();
   const session = useSession();
   const user = session?.data?.user as SessionUser;
