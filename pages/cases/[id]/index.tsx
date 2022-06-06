@@ -103,6 +103,7 @@ const RequestsDetailPage: NextPage<Props> = ({ currCase }) => {
       <CaseDetailDetails
         outlookMessages={outlookMessages}
         attachmentsArrays={attachmentArrays}
+        currCase={currCase}
       />
     ) : currentTab === 'Resolution' ? (
       <CaseDetailResolution isResolved={true} />

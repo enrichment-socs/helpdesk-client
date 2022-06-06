@@ -1,4 +1,5 @@
 import { Category } from './Category';
+import { Priority } from './Priority';
 import { Semester } from './Semester';
 import { Status } from './Status';
 import { User } from './User';
@@ -10,6 +11,7 @@ export class Case {
   public semester: Semester;
   public status: Status;
   public category: Category;
+  public priority: Priority;
   senderName: string;
   senderEmail: string;
   subject: string;

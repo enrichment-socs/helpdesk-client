@@ -1,4 +1,108 @@
-const CaseDetailProperties = () => {
+import { format, intervalToDuration } from 'date-fns';
+import { Case } from '../../../models/Case';
+import { OutlookMessage } from '../../../models/OutlookMessage';
+import SkeletonLoading from '../../../widgets/SkeletonLoading';
+
+type Props = {
+  outlookMessage: OutlookMessage | null;
+  currCase: Case;
+};
+
+const CaseDetailProperties = ({ outlookMessage, currCase }: Props) => {
+  const isFetching = () => outlookMessage === null;
+
+  const getClientName = () => {
+    return isFetching() ? (
+      <SkeletonLoading width="100%" />
+    ) : (
+      outlookMessage.sender.emailAddress.name
+    );
+  };
+
+  const getClientEmail = () => {
+    return isFetching() ? (
+      <SkeletonLoading width="100%" />
+    ) : (
+      outlookMessage.sender.emailAddress.address
+    );
+  };
+
+  const getCategory = () => {
+    return isFetching() ? (
+      <SkeletonLoading width="100%" />
+    ) : (
+      currCase.category.categoryName
+    );
+  };
+
+  const getPriority = () => {
+    return isFetching() ? (
+      <SkeletonLoading width="100%" />
+    ) : (
+      currCase.priority.priorityName
+    );
+  };
+
+  const getStatus = () => {
+    return isFetching() ? (
+      <SkeletonLoading width="100%" />
+    ) : (
+      currCase.status.statusName
+    );
+  };
+
+  const getAssignedTo = () => {
+    return isFetching() ? (
+      <SkeletonLoading width="100%" />
+    ) : (
+      currCase.assignedTo.name
+    );
+  };
+
+  const getSource = () => {
+    return isFetching() ? <SkeletonLoading width="100%" /> : 'Email';
+  };
+
+  const getReceivedDate = () => {
+    return isFetching() ? (
+      <SkeletonLoading width="100%" />
+    ) : (
+      format(new Date(outlookMessage.receivedDateTime), 'dd MMM yyyy, kk:mm')
+    );
+  };
+
+  const getRespondedDate = () => {
+    return isFetching() ? (
+      <SkeletonLoading width="100%" />
+    ) : (
+      format(new Date(currCase.created_at), 'dd MMM yyyy, kk:mm')
+    );
+  };
+
+  const getDueBy = () => {
+    return isFetching() ? (
+      <SkeletonLoading width="100%" />
+    ) : (
+      format(new Date(currCase.dueBy), 'dd MMM yyyy, kk:mm')
+    );
+  };
+
+  const getResolvedDate = () => {
+    return isFetching() ? (
+      <SkeletonLoading width="100%" />
+    ) : (
+      format(new Date(), 'dd MMM yyyy, kk:mm') //TODO: change this to resolution created at
+    );
+  };
+
+  const getTimeElapsed = () => {
+    if (isFetching()) return <SkeletonLoading width="100%" />;
+    const receivedDate = new Date(outlookMessage.receivedDateTime);
+    const currDate = new Date();
+    const interval = intervalToDuration({ start: receivedDate, end: currDate });
+    return `${interval.days} days ${interval.hours} hours ${interval.minutes} minutes ${interval.seconds} seconds`;
+  };
+
   return (
     <div className="divide-y">
       <div className="font-bold text-sm pb-2">Properties</div>
@@ -6,123 +110,63 @@ const CaseDetailProperties = () => {
         <table className="border w-full text-sm">
           <tbody>
             <tr className="border-b">
-              <td className="px-6 py-3 font-bold border-r">Site</td>
-              <td className="px-6 py-3 break-all">Software Solution Group 7</td>
+              <td className="px-6 py-3 font-bold border-r">Client Name</td>
+              <td className="px-6 py-3 break-all">{getClientName()}</td>
             </tr>
 
             <tr className="border-b">
-              <td className="px-6 py-3 font-bold border-r">Request Type</td>
-              <td className="px-6 py-3 break-all">Incident</td>
-            </tr>
-
-            <tr className="border-b">
-              <td className="px-6 py-3 font-bold border-r">Status</td>
-              <td className="px-6 py-3 break-all">1-Open</td>
-            </tr>
-
-            <tr className="border-b">
-              <td className="px-6 py-3 font-bold border-r">Source</td>
-              <td className="px-6 py-3 break-all">E-Mail</td>
-            </tr>
-
-            <tr className="border-b">
-              <td className="px-6 py-3 font-bold border-r">Group</td>
-              <td className="px-6 py-3 break-all">SSG 7 Cluster 1</td>
-            </tr>
-
-            <tr className="border-b">
-              <td className="px-6 py-3 font-bold border-r">Technician</td>
-              <td className="px-6 py-3 break-all">SDP - SSG 7 Cluster 1</td>
-            </tr>
-
-            <tr className="border-b">
-              <td className="px-6 py-3 font-bold border-r">Impact</td>
-              <td className="px-6 py-3 break-all">Low</td>
+              <td className="px-6 py-3 font-bold border-r">Client Email</td>
+              <td className="px-6 py-3 break-all">{getClientEmail()}</td>
             </tr>
 
             <tr className="border-b">
               <td className="px-6 py-3 font-bold border-r">Category</td>
-              <td className="px-6 py-3 break-all">Troubleshoot Binus Apps</td>
+              <td className="px-6 py-3 break-all">{getCategory()}</td>
             </tr>
 
             <tr className="border-b">
-              <td className="px-6 py-3 font-bold border-r">Subcategory</td>
-              <td className="px-6 py-3 break-all">Enrichment.apps</td>
+              <td className="px-6 py-3 font-bold border-r">Priority</td>
+              <td className="px-6 py-3 break-all">{getPriority()}</td>
             </tr>
 
             <tr className="border-b">
-              <td className="px-6 py-3 font-bold border-r">Item</td>
-              <td className="px-6 py-3 break-all">Not Assigned</td>
+              <td className="px-6 py-3 font-bold border-r">Status</td>
+              <td className="px-6 py-3 break-all">{getStatus()}</td>
             </tr>
 
             <tr className="border-b">
-              <td className="px-6 py-3 font-bold border-r">HID</td>
-              <td className="px-6 py-3 break-all">0</td>
+              <td className="px-6 py-3 font-bold border-r">Assigned To</td>
+              <td className="px-6 py-3 break-all">{getAssignedTo()}</td>
             </tr>
 
             <tr className="border-b">
-              <td className="px-6 py-3 font-bold border-r">Error Type</td>
-              <td className="px-6 py-3 break-all">Human Error</td>
+              <td className="px-6 py-3 font-bold border-r">Source</td>
+              <td className="px-6 py-3 break-all">{getSource()}</td>
             </tr>
 
             <tr className="border-b">
-              <td className="px-6 py-3 font-bold border-r">Apps Name</td>
-              <td className="px-6 py-3 break-all">-</td>
+              <td className="px-6 py-3 font-bold border-r">Received at</td>
+              <td className="px-6 py-3 break-all">{getReceivedDate()}</td>
             </tr>
 
             <tr className="border-b">
-              <td className="px-6 py-3 font-bold border-r">Asset(s)</td>
-              <td className="px-6 py-3 break-all">-</td>
+              <td className="px-6 py-3 font-bold border-r">Responded at</td>
+              <td className="px-6 py-3 break-all">{getRespondedDate()}</td>
             </tr>
 
             <tr className="border-b">
-              <td className="px-6 py-3 font-bold border-r">Created By</td>
-              <td className="px-6 py-3 break-all">System</td>
-            </tr>
-
-            <tr className="border-b">
-              <td className="px-6 py-3 font-bold border-r">Department</td>
-              <td className="px-6 py-3 break-all">Not Assigned</td>
-            </tr>
-
-            <tr className="border-b">
-              <td className="px-6 py-3 font-bold border-r">Template</td>
-              <td className="px-6 py-3 break-all">Binus Apps Issue</td>
-            </tr>
-
-            <tr className="border-b">
-              <td className="px-6 py-3 font-bold border-r">Created Date</td>
-              <td className="px-6 py-3 break-all">Apr 8, 2022 12:45 PM</td>
-            </tr>
-
-            <tr className="border-b">
-              <td className="px-6 py-3 font-bold border-r">Responded Date</td>
-              <td className="px-6 py-3 break-all">Apr 8, 2022 12:47 PM</td>
-            </tr>
-
-            <tr className="border-b">
-              <td className="px-6 py-3 font-bold border-r">DueBy Date</td>
-              <td className="px-6 py-3 break-all">Apr 19, 2022 03:00 PM</td>
+              <td className="px-6 py-3 font-bold border-r">Due By</td>
+              <td className="px-6 py-3 break-all">{getDueBy()}</td>
             </tr>
 
             <tr className="border-b">
               <td className="px-6 py-3 font-bold border-r">Resolved Date</td>
-              <td className="px-6 py-3 break-all">Apr 8, 2022 02:08 PM</td>
-            </tr>
-
-            <tr className="border-b">
-              <td className="px-6 py-3 font-bold border-r">Completed Date</td>
-              <td className="px-6 py-3 break-all">Apr 9, 2022 02:52 AM</td>
+              <td className="px-6 py-3 break-all">{getResolvedDate()}</td>
             </tr>
 
             <tr className="border-b">
               <td className="px-6 py-3 font-bold border-r">Time Elapsed</td>
-              <td className="px-6 py-3 break-all">1hrs 8min</td>
-            </tr>
-
-            <tr className="border-b">
-              <td className="px-6 py-3 font-bold border-r">Last Update Time</td>
-              <td className="px-6 py-3 break-all">Apr 9, 2022 02:52 AM</td>
+              <td className="px-6 py-3 break-all">{getTimeElapsed()}</td>
             </tr>
           </tbody>
         </table>

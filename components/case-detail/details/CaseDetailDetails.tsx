@@ -1,27 +1,26 @@
 import { Disclosure, Transition } from '@headlessui/react';
 import { ChevronUpIcon } from '@heroicons/react/solid';
-import { useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
 import { OutlookMessage } from '../../../models/OutlookMessage';
 import { OutlookMessageAttachmentValue } from '../../../models/OutlookMessageAttachment';
-import { SessionUser } from '../../../models/SessionUser';
-import { GraphApiService } from '../../../services/GraphApiService';
-import { CONTENT_ID_REGEX } from '../../../shared/constants/regex';
 import MultiLineSkeletonLoading from '../../../widgets/MultiLineSkeletonLoading';
 import SkeletonLoading from '../../../widgets/SkeletonLoading';
 import CaseDetailConversationBody from './CaseDetailConversationBody';
 import CaseDetailConversationHeader from './CaseDetailConversationHeader';
 import CaseDetailProperties from './CaseDetailProperties';
 import CaseDetailConversation from './CaseDetailConversation';
+import { Message } from '../../../models/Message';
+import { Case } from '../../../models/Case';
 
 type Props = {
   outlookMessages: OutlookMessage[];
   attachmentsArrays: OutlookMessageAttachmentValue[][];
+  currCase: Case;
 };
 
 const CaseDetailDetails: React.FC<Props> = ({
   outlookMessages,
   attachmentsArrays,
+  currCase,
 }) => {
   return (
     <div>
@@ -138,7 +137,10 @@ const CaseDetailDetails: React.FC<Props> = ({
                 leaveFrom="transform scale-100 opacity-100"
                 leaveTo="transform scale-50 opacity-0">
                 <Disclosure.Panel className="p-4 border border-gray-300 text-sm text-gray-500">
-                  <CaseDetailProperties />
+                  <CaseDetailProperties
+                    currCase={currCase}
+                    outlookMessage={outlookMessages ? outlookMessages[0] : null}
+                  />
                 </Disclosure.Panel>
               </Transition>
             </>
