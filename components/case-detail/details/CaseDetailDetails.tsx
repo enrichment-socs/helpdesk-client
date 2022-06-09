@@ -58,6 +58,7 @@ const CaseDetailDetails: React.FC<Props> = ({
 
                     {outlookMessages ? (
                       <CaseDetailConversationBody
+                        useUniqueBody={false}
                         message={outlookMessages[0]}
                         attachments={attachmentsArrays[0]}
                       />

@@ -6,9 +6,14 @@ import { DownloadHelper } from '../../../shared/libs/download-helper';
 type Props = {
   message: OutlookMessage;
   attachments: OutlookMessageAttachmentValue[];
+  useUniqueBody?: boolean;
 };
 
-const CaseDetailConversationBody = ({ message, attachments }: Props) => {
+const CaseDetailConversationBody = ({
+  message,
+  attachments,
+  useUniqueBody = true,
+}: Props) => {
   const downloadAttachment = (attachment: OutlookMessageAttachmentValue) => {
     DownloadHelper.download(
       attachment.name,
@@ -23,7 +28,9 @@ const CaseDetailConversationBody = ({ message, attachments }: Props) => {
         <div
           className="max-h-[42rem] overflow-auto"
           dangerouslySetInnerHTML={{
-            __html: message.uniqueBody.content,
+            __html: useUniqueBody
+              ? message.uniqueBody.content
+              : message.body.content,
           }}></div>
 
         {message.hasAttachments && (
