@@ -106,7 +106,10 @@ const RequestsDetailPage: NextPage<Props> = ({ currCase }) => {
         currCase={currCase}
       />
     ) : currentTab === 'Resolution' ? (
-      <CaseDetailResolution isResolved={true} />
+      <CaseDetailResolution
+        currCase={currCase}
+        firstOutlookMessage={outlookMessages[0]}
+      />
     ) : currentTab === 'History' ? (
       <CaseDetailHistory />
     ) : null;
