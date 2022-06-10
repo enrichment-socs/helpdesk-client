@@ -26,23 +26,31 @@ const CaseDetailResolution = ({ currCase, firstOutlookMessage }: Prop) => {
 
   useEffect(() => {
     setValue('subject', `Re: ${currCase.subject}`);
-  });
+    setValue('ccRecipients', '');
+    setValue('toRecipients', '');
+  }, []);
 
   const [alsoSentAsEmail, setAlsoSentAsEmail] = useState(false);
 
-  const emailFormValidation = {
-    required: (v) => {
-      if (!alsoSentAsEmail) return true;
-      return v !== '' || 'Recipients field is required';
-    },
-    seperatedBySemiColon: (v) => {
-      if (!alsoSentAsEmail) return true;
-      const emails = v.trim().split(';');
-      return (
-        emails.every((email) => email.match(EMAIL_REGEX)) ||
-        'Email must be in valid format'
-      );
-    },
+  const emailFormValidation = (forToRecipients: boolean) => {
+    const validations = {
+      required: (v) => {
+        if (!alsoSentAsEmail) return true;
+        return v !== '' || 'Recipients field is required';
+      },
+      seperatedBySemiColon: (v) => {
+        if (!alsoSentAsEmail) return true;
+        if (!forToRecipients && !v) return true;
+        const emails: string[] = v.trim().split(';');
+        return (
+          emails.every((email) => email.match(EMAIL_REGEX)) ||
+          'Email must be in valid format'
+        );
+      },
+    };
+
+    if (forToRecipients) return validations;
+    return { seperatedBySemiColon: validations.seperatedBySemiColon };
   };
 
   const onSubmit: SubmitHandler<FormData> = (p) => {
@@ -151,7 +159,7 @@ const CaseDetailResolution = ({ currCase, firstOutlookMessage }: Prop) => {
                             : 'border-gray-300'
                         } shadow-sm px-2 py-1 block w-full sm:text-sm border rounded outline-none`}
                         {...register('toRecipients', {
-                          validate: emailFormValidation,
+                          validate: emailFormValidation(true),
                         })}
                       />
                     </div>
@@ -175,7 +183,7 @@ const CaseDetailResolution = ({ currCase, firstOutlookMessage }: Prop) => {
                             : 'border-gray-300'
                         } shadow-sm px-2 py-1 block w-full sm:text-sm border rounded outline-none`}
                         {...register('ccRecipients', {
-                          validate: emailFormValidation,
+                          validate: emailFormValidation(false),
                         })}
                       />
                     </div>
