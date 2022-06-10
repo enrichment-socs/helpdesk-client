@@ -10,4 +10,14 @@ export class ResolutionService extends BaseService {
     );
     return result.data;
   }
+
+  public async getByCaseId(caseId: string): Promise<Resolution> {
+    const result: AxiosResponse<Resolution> = await this.wrapper.handle(
+      axios.get(
+        `${this.BASE_URL}/resolutions/byCase?caseId=${caseId}`,
+        this.headersWithToken()
+      )
+    );
+    return result.data;
+  }
 }

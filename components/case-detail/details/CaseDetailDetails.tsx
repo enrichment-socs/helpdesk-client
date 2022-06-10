@@ -10,17 +10,20 @@ import CaseDetailProperties from './CaseDetailProperties';
 import CaseDetailConversation from './CaseDetailConversation';
 import { Message } from '../../../models/Message';
 import { Case } from '../../../models/Case';
+import { Resolution } from '../../../models/Resolution';
 
 type Props = {
   outlookMessages: OutlookMessage[];
   attachmentsArrays: OutlookMessageAttachmentValue[][];
   currCase: Case;
+  resolution: Resolution;
 };
 
 const CaseDetailDetails: React.FC<Props> = ({
   outlookMessages,
   attachmentsArrays,
   currCase,
+  resolution,
 }) => {
   return (
     <div>
@@ -141,6 +144,7 @@ const CaseDetailDetails: React.FC<Props> = ({
                   <CaseDetailProperties
                     currCase={currCase}
                     outlookMessage={outlookMessages ? outlookMessages[0] : null}
+                    resolution={resolution}
                   />
                 </Disclosure.Panel>
               </Transition>

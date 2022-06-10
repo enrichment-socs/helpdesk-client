@@ -1,14 +1,20 @@
 import { format, intervalToDuration } from 'date-fns';
 import { Case } from '../../../models/Case';
 import { OutlookMessage } from '../../../models/OutlookMessage';
+import { Resolution } from '../../../models/Resolution';
 import SkeletonLoading from '../../../widgets/SkeletonLoading';
 
 type Props = {
   outlookMessage: OutlookMessage | null;
   currCase: Case;
+  resolution: Resolution;
 };
 
-const CaseDetailProperties = ({ outlookMessage, currCase }: Props) => {
+const CaseDetailProperties = ({
+  outlookMessage,
+  currCase,
+  resolution,
+}: Props) => {
   const isFetching = () => outlookMessage === null;
 
   const getClientName = () => {
@@ -88,11 +94,9 @@ const CaseDetailProperties = ({ outlookMessage, currCase }: Props) => {
   };
 
   const getResolvedDate = () => {
-    return isFetching() ? (
-      <SkeletonLoading width="100%" />
-    ) : (
-      format(new Date(), 'dd MMM yyyy, kk:mm') //TODO: change this to resolution created at
-    );
+    if (isFetching()) return <SkeletonLoading width="100%" />;
+    if (!resolution) return '-';
+    return format(new Date(resolution.created_at), 'dd MMM yyyy, kk:mm');
   };
 
   const getTimeElapsed = () => {

@@ -24,12 +24,18 @@ import { GraphApiService } from '../../../services/GraphApiService';
 import SkeletonLoading from '../../../widgets/SkeletonLoading';
 import { OutlookMessageAttachmentValue } from '../../../models/OutlookMessageAttachment';
 import { CONTENT_ID_REGEX } from '../../../shared/constants/regex';
+import { ResolutionService } from '../../../services/ResolutionService';
+import { Resolution } from '../../../models/Resolution';
 
 type Props = {
   currCase: Case;
+  resolution: Resolution;
 };
 
-const RequestsDetailPage: NextPage<Props> = ({ currCase }) => {
+const RequestsDetailPage: NextPage<Props> = ({
+  currCase,
+  resolution: serverResolution,
+}) => {
   const router = useRouter();
   const { id } = router.query;
   const [currentTab, setCurrentTab] = useState('Details');
@@ -43,6 +49,7 @@ const RequestsDetailPage: NextPage<Props> = ({ currCase }) => {
   const [attachmentArrays, setAttachmentArrays] = useState<
     OutlookMessageAttachmentValue[][]
   >([]);
+  const [resolution, setResolution] = useState<Resolution>(serverResolution);
 
   const replaceBodyImageWithCorrectSource = (
     bodyContent: string,
@@ -104,11 +111,14 @@ const RequestsDetailPage: NextPage<Props> = ({ currCase }) => {
         outlookMessages={outlookMessages}
         attachmentsArrays={attachmentArrays}
         currCase={currCase}
+        resolution={resolution}
       />
     ) : currentTab === 'Resolution' ? (
       <CaseDetailResolution
         currCase={currCase}
         firstOutlookMessage={outlookMessages[0]}
+        resolution={resolution}
+        setResolution={setResolution}
       />
     ) : currentTab === 'History' ? (
       <CaseDetailHistory />
@@ -226,7 +236,21 @@ export const getServerSideProps = withSessionSsr(
 
     const user = session.user as SessionUser;
     const caseService = new CaseService(user?.accessToken);
+    const resolutionService = new ResolutionService(user?.accessToken);
+
     const currCase = await caseService.get(params.id as string);
+
+    if (!currCase) {
+      return {
+        redirect: {
+          destination: '/',
+          permanent: false,
+        },
+      };
+    }
+
+    const resolution =
+      (await resolutionService.getByCaseId(currCase.id)) || null;
 
     return {
       props: {
@@ -234,6 +258,7 @@ export const getServerSideProps = withSessionSsr(
         session,
         sessionActiveSemester,
         currCase,
+        resolution,
       },
     };
   }
