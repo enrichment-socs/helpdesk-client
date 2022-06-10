@@ -12,6 +12,7 @@ import { SessionUser } from '../../../models/SessionUser';
 import { ResolutionService } from '../../../services/ResolutionService';
 import { EMAIL_REGEX } from '../../../shared/constants/regex';
 import { confirm } from '../../../shared/libs/confirm-dialog-helper';
+import CaseDetailResolutionProperties from './CaseDetailResolutionProperties';
 const QuillNoSSRWrapper = dynamic(import('react-quill'), {
   ssr: false,
   loading: () => <p>Loading ...</p>,
@@ -273,6 +274,8 @@ const CaseDetailResolution = ({
           </form>
         </Else>
       </If>
+
+      {resolution && <CaseDetailResolutionProperties resolution={resolution} />}
     </>
   );
 };

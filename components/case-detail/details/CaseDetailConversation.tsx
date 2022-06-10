@@ -27,7 +27,7 @@ const CaseDetailConversation = ({ message, attachments }: Props) => {
   const getSenderInfo = () => {
     if (!message) return <SkeletonLoading width="100%" />;
 
-    const sender = message.sender.emailAddress.address;
+    const sender = message.sender?.emailAddress?.address;
 
     return sender || '-';
   };
