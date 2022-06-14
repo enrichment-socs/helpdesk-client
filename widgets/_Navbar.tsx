@@ -57,6 +57,11 @@ export default function Navbar() {
           roles: [ROLES.SUPER_ADMIN],
         },
         {
+          title: 'FAQs',
+          href: '/faqs',
+          roles: [ROLES.SUPER_ADMIN],
+        },
+        {
           title: 'Categories',
           href: '/categories',
           roles: [ROLES.SUPER_ADMIN],
