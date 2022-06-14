@@ -19,11 +19,17 @@ export const getInitialServerProps = async (
   const semesters = await semesterService.getSemesters();
   const session = await getSession({ req });
   const dbActiveSemester = semesters.find((s) => s.isActive);
-  const activeSemester = req.session.activeSemester ?? dbActiveSemester;
+  let activeSemester = req.session.activeSemester ?? dbActiveSemester;
 
   if (!req.session.activeSemester) {
     req.session.activeSemester = dbActiveSemester;
     await req.session.save();
+  } else {
+    if (!semesters.find((s) => s.id === req.session.activeSemester.id)) {
+      activeSemester = dbActiveSemester;
+      req.session.activeSemester = dbActiveSemester;
+      await req.session.save();
+    }
   }
 
   return {
