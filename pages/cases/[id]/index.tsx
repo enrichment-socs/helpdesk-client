@@ -26,15 +26,19 @@ import { OutlookMessageAttachmentValue } from '../../../models/OutlookMessageAtt
 import { CONTENT_ID_REGEX } from '../../../shared/constants/regex';
 import { ResolutionService } from '../../../services/ResolutionService';
 import { Resolution } from '../../../models/Resolution';
+import { CaseStatusService } from '../../../services/CaseStatusService';
+import { CaseStatus } from '../../../models/CaseStatus';
 
 type Props = {
   currCase: Case;
   resolution: Resolution;
+  caseStatuses: CaseStatus[];
 };
 
 const RequestsDetailPage: NextPage<Props> = ({
   currCase,
   resolution: serverResolution,
+  caseStatuses,
 }) => {
   const router = useRouter();
   const { id } = router.query;
@@ -119,6 +123,7 @@ const RequestsDetailPage: NextPage<Props> = ({
         firstOutlookMessage={outlookMessages[0]}
         resolution={resolution}
         setResolution={setResolution}
+        caseStatuses={caseStatuses}
       />
     ) : currentTab === 'History' ? (
       <CaseDetailHistory />
@@ -237,6 +242,7 @@ export const getServerSideProps = withSessionSsr(
     const user = session.user as SessionUser;
     const caseService = new CaseService(user?.accessToken);
     const resolutionService = new ResolutionService(user?.accessToken);
+    const caseStatusService = new CaseStatusService(user?.accessToken);
 
     const currCase = await caseService.get(params.id as string);
 
@@ -252,6 +258,8 @@ export const getServerSideProps = withSessionSsr(
     const resolution =
       (await resolutionService.getByCaseId(currCase.id)) || null;
 
+    const caseStatuses = await caseStatusService.getAllByCaseId(currCase.id);
+
     return {
       props: {
         semesters,
@@ -259,6 +267,7 @@ export const getServerSideProps = withSessionSsr(
         sessionActiveSemester,
         currCase,
         resolution,
+        caseStatuses,
       },
     };
   }
