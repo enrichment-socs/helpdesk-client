@@ -55,6 +55,11 @@ const RequestsDetailPage: NextPage<Props> = ({
   >([]);
   const [resolution, setResolution] = useState<Resolution>(serverResolution);
 
+  const getCurrentStatus = () => {
+    if (caseStatuses.length == 0) return 'Not Defined';
+    return caseStatuses[caseStatuses.length - 1].status.statusName;
+  };
+
   const replaceBodyImageWithCorrectSource = (
     bodyContent: string,
     contentIds: string[],
@@ -168,6 +173,12 @@ const RequestsDetailPage: NextPage<Props> = ({
                     {format(new Date(currCase.dueBy), 'dd MMM yyyy, kk:mm')}
                   </span>
                 </div>
+              </div>
+              <div className="text-sm mt-1">
+                <span className="font-normal">Current Status </span>:{' '}
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary text-gray-100">
+                  {getCurrentStatus()}
+                </span>
               </div>
             </div>
             <div className="ml-auto mr-5">
