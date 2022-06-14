@@ -1,4 +1,4 @@
-import { User } from 'next-auth';
+import { User } from './User';
 import { Case } from './Case';
 import { Status } from './Status';
 

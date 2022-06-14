@@ -28,6 +28,7 @@ import { ResolutionService } from '../../../services/ResolutionService';
 import { Resolution } from '../../../models/Resolution';
 import { CaseStatusService } from '../../../services/CaseStatusService';
 import { CaseStatus } from '../../../models/CaseStatus';
+import CaseDetailManage from '../../../components/case-detail/manage-case/CaseDetailManage';
 
 type Props = {
   currCase: Case;
@@ -112,27 +113,42 @@ const RequestsDetailPage: NextPage<Props> = ({
     fetchMessages();
   }, []);
 
-  const tabMenuList = ['Details', 'Resolution', 'History'];
+  const tabMenuList = ['Details', 'Manage Case', 'Resolution', 'History'];
 
-  const tabContent =
-    currentTab === 'Details' ? (
-      <CaseDetailDetails
-        outlookMessages={outlookMessages}
-        attachmentsArrays={attachmentArrays}
-        currCase={currCase}
-        resolution={resolution}
-      />
-    ) : currentTab === 'Resolution' ? (
-      <CaseDetailResolution
-        currCase={currCase}
-        firstOutlookMessage={outlookMessages[0]}
-        resolution={resolution}
-        setResolution={setResolution}
-        caseStatuses={caseStatuses}
-      />
-    ) : currentTab === 'History' ? (
-      <CaseDetailHistory />
-    ) : null;
+  const getTabContent = () => {
+    if (currentTab === 'Details') {
+      return (
+        <CaseDetailDetails
+          outlookMessages={outlookMessages}
+          attachmentsArrays={attachmentArrays}
+          currCase={currCase}
+          resolution={resolution}
+        />
+      );
+    }
+
+    if (currentTab === 'Resolution') {
+      return (
+        <CaseDetailResolution
+          currCase={currCase}
+          firstOutlookMessage={outlookMessages[0]}
+          resolution={resolution}
+          setResolution={setResolution}
+          caseStatuses={caseStatuses}
+        />
+      );
+    }
+
+    if (currentTab === 'History') {
+      return <CaseDetailHistory />;
+    }
+
+    if (currentTab === 'Manage Case') {
+      return (
+        <CaseDetailManage caseStatuses={caseStatuses} resolution={resolution} />
+      );
+    }
+  };
 
   const toggleInformation = () => {
     setIsShowInformation((prevState) => !prevState);
@@ -216,7 +232,7 @@ const RequestsDetailPage: NextPage<Props> = ({
             </div>
 
             {/* Tab Content */}
-            <div className="p-4">{tabContent}</div>
+            <div className="p-4">{getTabContent()}</div>
           </div>
         </div>
 
