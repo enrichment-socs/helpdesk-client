@@ -156,16 +156,14 @@ const RequestsDetailPage: NextPage<Props> = ({
                   by
                   <span className="font-bold mx-2">{currCase.senderName}</span>
                   on
-                  {outlookMessages ? (
-                    <span className="mx-2">
-                      {format(
-                        new Date(outlookMessages[0].receivedDateTime),
-                        'dd MMM yyyy, kk:mm'
-                      )}
-                    </span>
-                  ) : (
-                    <SkeletonLoading width="100%" />
-                  )}
+                  <span className="mx-2">
+                    {outlookMessages
+                      ? format(
+                          new Date(outlookMessages[0].receivedDateTime),
+                          'dd MMM yyyy, kk:mm'
+                        )
+                      : '-- --- ----'}
+                  </span>
                 </div>
                 <div className="px-2 font-normal">
                   Due By:{' '}
