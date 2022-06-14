@@ -26,15 +26,19 @@ import { OutlookMessageAttachmentValue } from '../../../models/OutlookMessageAtt
 import { CONTENT_ID_REGEX } from '../../../shared/constants/regex';
 import { ResolutionService } from '../../../services/ResolutionService';
 import { Resolution } from '../../../models/Resolution';
+import { CaseStatusService } from '../../../services/CaseStatusService';
+import { CaseStatus } from '../../../models/CaseStatus';
 
 type Props = {
   currCase: Case;
   resolution: Resolution;
+  caseStatuses: CaseStatus[];
 };
 
 const RequestsDetailPage: NextPage<Props> = ({
   currCase,
   resolution: serverResolution,
+  caseStatuses,
 }) => {
   const router = useRouter();
   const { id } = router.query;
@@ -50,6 +54,11 @@ const RequestsDetailPage: NextPage<Props> = ({
     OutlookMessageAttachmentValue[][]
   >([]);
   const [resolution, setResolution] = useState<Resolution>(serverResolution);
+
+  const getCurrentStatus = () => {
+    if (caseStatuses.length == 0) return 'Not Defined';
+    return caseStatuses[caseStatuses.length - 1].status.statusName;
+  };
 
   const replaceBodyImageWithCorrectSource = (
     bodyContent: string,
@@ -119,6 +128,7 @@ const RequestsDetailPage: NextPage<Props> = ({
         firstOutlookMessage={outlookMessages[0]}
         resolution={resolution}
         setResolution={setResolution}
+        caseStatuses={caseStatuses}
       />
     ) : currentTab === 'History' ? (
       <CaseDetailHistory />
@@ -146,16 +156,14 @@ const RequestsDetailPage: NextPage<Props> = ({
                   by
                   <span className="font-bold mx-2">{currCase.senderName}</span>
                   on
-                  {outlookMessages ? (
-                    <span className="mx-2">
-                      {format(
-                        new Date(outlookMessages[0].receivedDateTime),
-                        'dd MMM yyyy, kk:mm'
-                      )}
-                    </span>
-                  ) : (
-                    <SkeletonLoading width="100%" />
-                  )}
+                  <span className="mx-2">
+                    {outlookMessages
+                      ? format(
+                          new Date(outlookMessages[0].receivedDateTime),
+                          'dd MMM yyyy, kk:mm'
+                        )
+                      : '-- --- ----'}
+                  </span>
                 </div>
                 <div className="px-2 font-normal">
                   Due By:{' '}
@@ -163,6 +171,12 @@ const RequestsDetailPage: NextPage<Props> = ({
                     {format(new Date(currCase.dueBy), 'dd MMM yyyy, kk:mm')}
                   </span>
                 </div>
+              </div>
+              <div className="text-sm mt-1">
+                <span className="font-normal">Current Status </span>:{' '}
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary text-gray-100">
+                  {getCurrentStatus()}
+                </span>
               </div>
             </div>
             <div className="ml-auto mr-5">
@@ -237,6 +251,7 @@ export const getServerSideProps = withSessionSsr(
     const user = session.user as SessionUser;
     const caseService = new CaseService(user?.accessToken);
     const resolutionService = new ResolutionService(user?.accessToken);
+    const caseStatusService = new CaseStatusService(user?.accessToken);
 
     const currCase = await caseService.get(params.id as string);
 
@@ -252,6 +267,8 @@ export const getServerSideProps = withSessionSsr(
     const resolution =
       (await resolutionService.getByCaseId(currCase.id)) || null;
 
+    const caseStatuses = await caseStatusService.getAllByCaseId(currCase.id);
+
     return {
       props: {
         semesters,
@@ -259,6 +276,7 @@ export const getServerSideProps = withSessionSsr(
         sessionActiveSemester,
         currCase,
         resolution,
+        caseStatuses,
       },
     };
   }

@@ -51,12 +51,10 @@ const CaseDetailDetails: React.FC<Props> = ({
                 leaveTo="transform scale-50 opacity-0">
                 <Disclosure.Panel className="text-sm text-gray-700">
                   <div className="divide-y border border-gray-300 p-4">
-                    {outlookMessages ? (
+                    {outlookMessages && (
                       <CaseDetailConversationHeader
                         message={outlookMessages[0]}
                       />
-                    ) : (
-                      <SkeletonLoading width="100%" />
                     )}
 
                     {outlookMessages ? (
