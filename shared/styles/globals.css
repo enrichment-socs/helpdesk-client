@@ -16,3 +16,13 @@
   min-height: 200px;
   max-height: 400px;
 }
+
+.display-list ul{
+  list-style-type: disc;
+  list-style-position: inside;
+}
+
+.display-list ol{
+  list-style-type: decimal;
+  list-style-position: inside;
+}

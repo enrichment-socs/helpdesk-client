@@ -13,6 +13,7 @@ import { SessionUser } from '../models/SessionUser';
 import { NavLink } from '../models/views/NavLink';
 import { signOut } from 'next-auth/react';
 import { useSession } from 'next-auth/react';
+import { useEffect } from 'react';
 
 export default function Navbar() {
   const links: (NavLink | DropdownNavLink)[] = [
@@ -77,6 +78,11 @@ export default function Navbar() {
           roles: [ROLES.SUPER_ADMIN],
         },
       ],
+    },
+    {
+      title: 'FAQ',
+      href: '/faqs',
+      roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN],
     },
   ];
 

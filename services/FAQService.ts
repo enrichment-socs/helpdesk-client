@@ -18,6 +18,14 @@ export class FAQService extends BaseService {
     return res.data;
   }
 
+  public async getByFAQCategory(categoryId: string) {
+    const res: AxiosResponse<FAQ[]> = await this.wrapper.handle(
+      axios.get(`${this.BASE_URL}/faqs/category/${categoryId}`, this.headersWithToken())
+    );
+
+    return res.data;
+  }
+
   public async addFAQ(dto: CreateFAQDto) {
     const result: AxiosResponse<FAQ> = await this.wrapper.handle(
       axios.post(`${this.BASE_URL}/faqs`, dto, this.headersWithToken())
