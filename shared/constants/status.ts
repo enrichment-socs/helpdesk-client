@@ -1,6 +1,6 @@
 export const STATUS = {
   NO_STATUS: 'No Status',
-  NEW: 'New',
+  ASSIGNED: 'Assigned',
   PENDING: 'Pending',
   IN_PROGRESS: 'In Progress',
   RESOLVED: 'Resolved',

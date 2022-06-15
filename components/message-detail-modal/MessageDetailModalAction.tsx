@@ -107,7 +107,7 @@ export default function MessageDetailModalAction({
   const saveCase = async () => {
     const statusService = new StatusService(user?.accessToken);
     const statuses = await statusService.getAll();
-    const newStatus = statuses.find((s) => s.statusName === STATUS.NEW);
+    const newStatus = statuses.find((s) => s.statusName === STATUS.ASSIGNED);
 
     const dto: CreateCaseDto = {
       statusId: newStatus.id,

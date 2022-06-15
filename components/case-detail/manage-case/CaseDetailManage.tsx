@@ -122,7 +122,7 @@ export default function CaseDetailManage({
             </div>
 
             <Switch>
-              <SwitchCase condition={getCurrentStatus() === STATUS.NEW}>
+              <SwitchCase condition={getCurrentStatus() === STATUS.ASSIGNED}>
                 <div className="flex space-x-4 justify-end mt-3">
                   <button
                     onClick={() => updateStatus(STATUS.IN_PROGRESS, false)}
