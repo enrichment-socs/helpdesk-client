@@ -6,6 +6,7 @@ import { CaseStatus } from '../../../models/CaseStatus';
 import { OutlookMessage } from '../../../models/OutlookMessage';
 import { Resolution } from '../../../models/Resolution';
 import { SessionUser } from '../../../models/SessionUser';
+import { ROLES } from '../../../shared/constants/roles';
 import { STATUS } from '../../../shared/constants/status';
 import InfoAlert from '../../../widgets/InfoAlert';
 import CaseDetailResolutionForm from './CaseDetailResolutionForm';
@@ -40,16 +41,23 @@ const CaseDetailResolution = ({
     return caseStatuses[lastIdx].status.statusName;
   };
 
+  if (!resolution && user?.roleName === ROLES.USER) {
+    return (
+      <InfoAlert message="There is currently no resolution for this case. Please wait, the admin is currently processing this case." />
+    );
+  }
+
   return (
     <>
       <If condition={resolution !== null}>
         <Then>
-          {getCurrentStatus() === STATUS.RESOLVED && (
-            <InfoAlert
-              className="mb-4"
-              message={`Please close this case by marking it as <b>Closed</b> in <b>Manage Case</b> tab`}
-            />
-          )}
+          {getCurrentStatus() === STATUS.RESOLVED &&
+            user?.roleName !== ROLES.USER && (
+              <InfoAlert
+                className="mb-4"
+                message={`Please close this case by marking it as <b>Closed</b> in <b>Manage Case</b> tab`}
+              />
+            )}
 
           <div className="text-sm">
             <div className="divide-y border-b-2">
@@ -79,7 +87,7 @@ const CaseDetailResolution = ({
             />
           ) : (
             <div>
-              Current status must be <b>{STATUS.IN_PROGRESS} </b> to create a
+              Current status must be <b>{STATUS.RESOLVED} </b> to create a
               resolution
             </div>
           )}

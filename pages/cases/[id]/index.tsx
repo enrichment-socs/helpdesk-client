@@ -120,7 +120,8 @@ const RequestsDetailPage: NextPage<Props> = ({
   }, []);
 
   const getTabMenuList = () => {
-    const tabMenuList = ['Details', 'Manage Case', 'Resolution', 'History'];
+    // const tabMenuList = ['Details', 'Manage Case', 'Resolution', 'History']; // TODO: use this line when start developing History system
+    const tabMenuList = ['Details', 'Manage Case', 'Resolution'];
     if (user?.roleName !== ROLES.ADMIN) tabMenuList.splice(1, 1);
     return tabMenuList;
   };

@@ -44,7 +44,10 @@ export const getServerSideProps = withSessionSsr(
 
     const user = session.user as SessionUser;
     const caseService = new CaseService(user?.accessToken);
-    const currCases = await caseService.getCases();
+    const currCases =
+      user?.roleName === ROLES.USER
+        ? await caseService.getCases(user?.email)
+        : await caseService.getCases();
 
     return {
       props: {
