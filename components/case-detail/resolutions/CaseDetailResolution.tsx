@@ -7,6 +7,7 @@ import { OutlookMessage } from '../../../models/OutlookMessage';
 import { Resolution } from '../../../models/Resolution';
 import { SessionUser } from '../../../models/SessionUser';
 import { STATUS } from '../../../shared/constants/status';
+import InfoAlert from '../../../widgets/InfoAlert';
 import CaseDetailResolutionForm from './CaseDetailResolutionForm';
 import CaseDetailResolutionProperties from './CaseDetailResolutionProperties';
 
@@ -31,14 +32,25 @@ const CaseDetailResolution = ({
   const canCreateResolution = () => {
     if (caseStatuses.length == 0) return false;
 
+    return getCurrentStatus() === STATUS.RESOLVED;
+  };
+
+  const getCurrentStatus = () => {
     const lastIdx = caseStatuses.length - 1;
-    return caseStatuses[lastIdx].status.statusName === STATUS.RESOLVED;
+    return caseStatuses[lastIdx].status.statusName;
   };
 
   return (
     <>
       <If condition={resolution !== null}>
         <Then>
+          {getCurrentStatus() === STATUS.RESOLVED && (
+            <InfoAlert
+              className="mb-4"
+              message={`Please close this case by marking it as <b>Closed</b> in <b>Manage Case</b> tab`}
+            />
+          )}
+
           <div className="text-sm">
             <div className="divide-y border-b-2">
               <div className="font-bold p-2 px-4 rounded-t bg-gray-200">
