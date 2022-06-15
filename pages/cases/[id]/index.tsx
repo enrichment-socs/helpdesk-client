@@ -29,17 +29,21 @@ import { Resolution } from '../../../models/Resolution';
 import { CaseStatusService } from '../../../services/CaseStatusService';
 import { CaseStatus } from '../../../models/CaseStatus';
 import CaseDetailManage from '../../../components/case-detail/manage-case/CaseDetailManage';
+import { StatusService } from '../../../services/StatusService';
+import { Status } from '../../../models/Status';
 
 type Props = {
   currCase: Case;
   resolution: Resolution;
   caseStatuses: CaseStatus[];
+  statuses: Status[];
 };
 
 const RequestsDetailPage: NextPage<Props> = ({
   currCase,
   resolution: serverResolution,
-  caseStatuses,
+  caseStatuses: serverCaseStatuses,
+  statuses,
 }) => {
   const router = useRouter();
   const { id } = router.query;
@@ -55,6 +59,8 @@ const RequestsDetailPage: NextPage<Props> = ({
     OutlookMessageAttachmentValue[][]
   >([]);
   const [resolution, setResolution] = useState<Resolution>(serverResolution);
+  const [caseStatuses, setCaseStatuses] =
+    useState<CaseStatus[]>(serverCaseStatuses);
 
   const getCurrentStatus = () => {
     if (caseStatuses.length == 0) return 'No Status';
@@ -145,7 +151,13 @@ const RequestsDetailPage: NextPage<Props> = ({
 
     if (currentTab === 'Manage Case') {
       return (
-        <CaseDetailManage caseStatuses={caseStatuses} resolution={resolution} />
+        <CaseDetailManage
+          currCase={currCase}
+          statuses={statuses}
+          caseStatuses={caseStatuses}
+          setCaseStatuses={setCaseStatuses}
+          resolution={resolution}
+        />
       );
     }
   };
@@ -267,6 +279,7 @@ export const getServerSideProps = withSessionSsr(
     const caseService = new CaseService(user?.accessToken);
     const resolutionService = new ResolutionService(user?.accessToken);
     const caseStatusService = new CaseStatusService(user?.accessToken);
+    const statusService = new StatusService(user?.accessToken);
 
     const currCase = await caseService.get(params.id as string);
 
@@ -283,6 +296,7 @@ export const getServerSideProps = withSessionSsr(
       (await resolutionService.getByCaseId(currCase.id)) || null;
 
     const caseStatuses = await caseStatusService.getAllByCaseId(currCase.id);
+    const statuses = await statusService.getAll();
 
     return {
       props: {
@@ -292,6 +306,7 @@ export const getServerSideProps = withSessionSsr(
         currCase,
         resolution,
         caseStatuses,
+        statuses,
       },
     };
   }

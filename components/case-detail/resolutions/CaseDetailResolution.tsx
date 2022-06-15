@@ -32,9 +32,7 @@ const CaseDetailResolution = ({
     if (caseStatuses.length == 0) return false;
 
     const lastIdx = caseStatuses.length - 1;
-    if (caseStatuses[lastIdx].status.statusName !== STATUS.IN_PROGRESS)
-      return false;
-    return true;
+    return caseStatuses[lastIdx].status.statusName === STATUS.RESOLVED;
   };
 
   return (

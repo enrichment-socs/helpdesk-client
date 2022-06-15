@@ -47,7 +47,7 @@ const CaseDetailResolutionProperties = ({ resolution }: Props) => {
                       To Recipients
                     </td>
                     <td className="px-6 py-3 break-all">
-                      {resolution?.toRecipients.split(';').join(',')}
+                      {resolution?.toRecipients?.split(';').join(',')}
                     </td>
                   </tr>
 
@@ -56,7 +56,7 @@ const CaseDetailResolutionProperties = ({ resolution }: Props) => {
                       Cc Recipients
                     </td>
                     <td className="px-6 py-3 break-all">
-                      {resolution?.ccRecipients.split(';').join(', ')}
+                      {resolution?.ccRecipients?.split(';').join(', ')}
                     </td>
                   </tr>
                 </Then>
