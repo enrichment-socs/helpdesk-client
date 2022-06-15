@@ -57,7 +57,7 @@ const RequestsDetailPage: NextPage<Props> = ({
   const [resolution, setResolution] = useState<Resolution>(serverResolution);
 
   const getCurrentStatus = () => {
-    if (caseStatuses.length == 0) return 'Not Defined';
+    if (caseStatuses.length == 0) return 'No Status';
     return caseStatuses[caseStatuses.length - 1].status.statusName;
   };
 
@@ -212,9 +212,8 @@ const RequestsDetailPage: NextPage<Props> = ({
                 {tabMenuList.map((menu, index) => {
                   return (
                     <li className="mr-2" key={index}>
-                      <a
-                        href="#"
-                        className={`inline-block p-4 rounded-t-lg ${
+                      <button
+                        className={`font-medium inline-block p-4 rounded-t-lg ${
                           currentTab === menu
                             ? 'border-b-2 border-primary active'
                             : 'border-transparent hover:text-gray-600 hover:border-gray-300'
@@ -224,7 +223,7 @@ const RequestsDetailPage: NextPage<Props> = ({
                           setCurrentTab(menu);
                         }}>
                         {menu}
-                      </a>
+                      </button>
                     </li>
                   );
                 })}

@@ -45,8 +45,7 @@ export default function CaseStatusChangeLogTable({ caseStatuses }: Props) {
                 {caseStatuses.length == 0 && (
                   <tr className="text-center">
                     <td colSpan={7} className="p-4">
-                      There are currently no case status change log for this
-                      case
+                      There are currently no status change log for this case
                     </td>
                   </tr>
                 )}
