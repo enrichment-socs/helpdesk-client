@@ -119,7 +119,11 @@ const RequestsDetailPage: NextPage<Props> = ({
     fetchMessages();
   }, []);
 
-  const tabMenuList = ['Details', 'Manage Case', 'Resolution', 'History'];
+  const getTabMenuList = () => {
+    const tabMenuList = ['Details', 'Manage Case', 'Resolution', 'History'];
+    if (user?.roleName !== ROLES.ADMIN) tabMenuList.splice(1, 1);
+    return tabMenuList;
+  };
 
   const getTabContent = () => {
     if (currentTab === 'Details') {
@@ -221,7 +225,7 @@ const RequestsDetailPage: NextPage<Props> = ({
 
             <div className="text-sm font-medium text-center text-gray-500 border-b border-gray-200">
               <ul className="flex flex-wrap -mb-px">
-                {tabMenuList.map((menu, index) => {
+                {getTabMenuList().map((menu, index) => {
                   return (
                     <li className="mr-2" key={index}>
                       <button
