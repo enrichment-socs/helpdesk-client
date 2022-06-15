@@ -4,10 +4,12 @@ import { CreateCaseDto } from '../models/dto/cases/create-case.dto';
 import { BaseService } from './BaseService';
 
 export class CaseService extends BaseService {
-
-  public async getCases() : Promise<Case[]> {
+  public async getCases(requesterEmail?: string): Promise<Case[]> {
     const result: AxiosResponse<Case[]> = await this.wrapper.handle(
-      axios.get(`${this.BASE_URL}/cases`, this.headersWithToken())
+      axios.get(
+        `${this.BASE_URL}/cases?requesterEmail=${requesterEmail ?? ''}`,
+        this.headersWithToken()
+      )
     );
 
     return result.data;

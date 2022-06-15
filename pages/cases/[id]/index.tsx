@@ -29,17 +29,21 @@ import { Resolution } from '../../../models/Resolution';
 import { CaseStatusService } from '../../../services/CaseStatusService';
 import { CaseStatus } from '../../../models/CaseStatus';
 import CaseDetailManage from '../../../components/case-detail/manage-case/CaseDetailManage';
+import { StatusService } from '../../../services/StatusService';
+import { Status } from '../../../models/Status';
 
 type Props = {
   currCase: Case;
   resolution: Resolution;
   caseStatuses: CaseStatus[];
+  statuses: Status[];
 };
 
 const RequestsDetailPage: NextPage<Props> = ({
   currCase,
   resolution: serverResolution,
-  caseStatuses,
+  caseStatuses: serverCaseStatuses,
+  statuses,
 }) => {
   const router = useRouter();
   const { id } = router.query;
@@ -55,9 +59,11 @@ const RequestsDetailPage: NextPage<Props> = ({
     OutlookMessageAttachmentValue[][]
   >([]);
   const [resolution, setResolution] = useState<Resolution>(serverResolution);
+  const [caseStatuses, setCaseStatuses] =
+    useState<CaseStatus[]>(serverCaseStatuses);
 
   const getCurrentStatus = () => {
-    if (caseStatuses.length == 0) return 'Not Defined';
+    if (caseStatuses.length == 0) return 'No Status';
     return caseStatuses[caseStatuses.length - 1].status.statusName;
   };
 
@@ -113,7 +119,12 @@ const RequestsDetailPage: NextPage<Props> = ({
     fetchMessages();
   }, []);
 
-  const tabMenuList = ['Details', 'Manage Case', 'Resolution', 'History'];
+  const getTabMenuList = () => {
+    // const tabMenuList = ['Details', 'Manage Case', 'Resolution', 'History']; // TODO: use this line when start developing History system
+    const tabMenuList = ['Details', 'Manage Case', 'Resolution'];
+    if (user?.roleName !== ROLES.ADMIN) tabMenuList.splice(1, 1);
+    return tabMenuList;
+  };
 
   const getTabContent = () => {
     if (currentTab === 'Details') {
@@ -145,7 +156,13 @@ const RequestsDetailPage: NextPage<Props> = ({
 
     if (currentTab === 'Manage Case') {
       return (
-        <CaseDetailManage caseStatuses={caseStatuses} resolution={resolution} />
+        <CaseDetailManage
+          currCase={currCase}
+          statuses={statuses}
+          caseStatuses={caseStatuses}
+          setCaseStatuses={setCaseStatuses}
+          resolution={resolution}
+        />
       );
     }
   };
@@ -209,12 +226,11 @@ const RequestsDetailPage: NextPage<Props> = ({
 
             <div className="text-sm font-medium text-center text-gray-500 border-b border-gray-200">
               <ul className="flex flex-wrap -mb-px">
-                {tabMenuList.map((menu, index) => {
+                {getTabMenuList().map((menu, index) => {
                   return (
                     <li className="mr-2" key={index}>
-                      <a
-                        href="#"
-                        className={`inline-block p-4 rounded-t-lg ${
+                      <button
+                        className={`font-medium inline-block p-4 rounded-t-lg ${
                           currentTab === menu
                             ? 'border-b-2 border-primary active'
                             : 'border-transparent hover:text-gray-600 hover:border-gray-300'
@@ -224,7 +240,7 @@ const RequestsDetailPage: NextPage<Props> = ({
                           setCurrentTab(menu);
                         }}>
                         {menu}
-                      </a>
+                      </button>
                     </li>
                   );
                 })}
@@ -268,6 +284,7 @@ export const getServerSideProps = withSessionSsr(
     const caseService = new CaseService(user?.accessToken);
     const resolutionService = new ResolutionService(user?.accessToken);
     const caseStatusService = new CaseStatusService(user?.accessToken);
+    const statusService = new StatusService(user?.accessToken);
 
     const currCase = await caseService.get(params.id as string);
 
@@ -284,6 +301,7 @@ export const getServerSideProps = withSessionSsr(
       (await resolutionService.getByCaseId(currCase.id)) || null;
 
     const caseStatuses = await caseStatusService.getAllByCaseId(currCase.id);
+    const statuses = await statusService.getAll();
 
     return {
       props: {
@@ -293,6 +311,7 @@ export const getServerSideProps = withSessionSsr(
         currCase,
         resolution,
         caseStatuses,
+        statuses,
       },
     };
   }
