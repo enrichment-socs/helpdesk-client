@@ -26,3 +26,7 @@
   list-style-type: decimal;
   list-style-position: inside;
 }
+
+.display-link a{
+  color: rgb(2 132 199);
+}

@@ -20,9 +20,13 @@ import MessageContainer from '../components/messages/MessageContainer';
 import AdminRequestSummaryContainer from '../components/request-summaries/admin/AdminRequestSummaryContainer';
 import UserRequestSummaryContainer from '../components/request-summaries/user/UserRequestSummaryContainer';
 import { MessageService } from '../services/MessageService';
+import FAQContainer from '../components/faqs/FAQContainer';
+import { FAQCategoryService } from '../services/FAQCategoryService';
+import { FAQCategory } from '../models/FAQCategory';
 
 type Props = {
   announcements: Announcement[];
+  faqCategories: FAQCategory[];
   messages: Message[] | [];
   initialTake: number;
   initialSkip: number;
@@ -33,6 +37,7 @@ export const messagesAtom = atom([] as Message[]);
 
 const Home: NextPage<Props> = ({
   announcements,
+  faqCategories,
   messages: serverMessages,
   initialTake,
   initialSkip,
@@ -81,6 +86,10 @@ const Home: NextPage<Props> = ({
             totalCount={messageCount}
           />
         )}
+
+        {user.roleName === ROLES.USER && (
+          <FAQContainer faqCategories={faqCategories} />
+        )}
       </div>
     </Layout>
   );
@@ -116,12 +125,19 @@ export const getServerSideProps = withSessionSsr(
         ? { messages: [], count: 0 }
         : await messageService.getMessages(initialTake, initialSkip);
 
+    let faqCategories = null;
+    if (user.roleName === ROLES.USER) {
+      const faqCategoryService = new FAQCategoryService(user?.accessToken);
+      faqCategories = await faqCategoryService.getAll();
+    }
+
     return {
       props: {
         semesters,
         session,
         sessionActiveSemester,
         announcements,
+        faqCategories,
         messages,
         messageCount: count,
         initialTake,

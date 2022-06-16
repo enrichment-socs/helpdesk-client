@@ -36,7 +36,7 @@ const FAQAccordion: React.FC<Props> = ({ faqCategory }) => {
     <Disclosure>
       {({ open }) => (
         <>
-          <Disclosure.Button className="flex justify-between w-full px-4 py-2 text-2xl font-medium text-left text-sky-900 bg-sky-100 rounded-lg hover:bg-sky-200 focus:outline-none focus-visible:ring focus-visible:ring-sky-500 focus-visible:ring-opacity-75 mt-3">
+          <Disclosure.Button className="flex justify-between items-center w-full px-4 py-2 text-lg font-medium text-left text-sky-900 bg-sky-100 rounded-lg hover:bg-sky-200 focus:outline-none focus-visible:ring focus-visible:ring-sky-500 focus-visible:ring-opacity-75 mt-3 md:text-xl lg:text-2xl">
             <span>{faqCategory.categoryName}</span>
             <ChevronUpIcon
               className={`${
@@ -61,7 +61,7 @@ const FAQAccordion: React.FC<Props> = ({ faqCategory }) => {
                   <Disclosure key={idx}>
                     {({ open }) => (
                       <>
-                        <Disclosure.Button className="flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-gray-700 border bg-gray-100 hover:bg-gray-200 focus:outline-none focus-visible:ring focus-visible:ring-gray-500 focus-visible:ring-opacity-75">
+                        <Disclosure.Button className="flex justify-between items-center w-full px-4 py-2 text-sm font-bold text-left text-gray-700 border bg-gray-100 hover:bg-gray-200 focus:outline-none focus-visible:ring focus-visible:ring-gray-500 focus-visible:ring-opacity-75">
                           <span>{faq.question}</span>
                           <ChevronUpIcon
                             className={`${
@@ -81,7 +81,7 @@ const FAQAccordion: React.FC<Props> = ({ faqCategory }) => {
                             static
                             className="p-2 border text-sm text-gray-700">
                             <div
-                              className="display-list"
+                              className="display-list display-link font-medium"
                               dangerouslySetInnerHTML={{
                                 __html: faq.answer,
                               }}></div>
