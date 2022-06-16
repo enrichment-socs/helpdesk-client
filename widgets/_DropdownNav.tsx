@@ -32,6 +32,7 @@ export default function DropdownNav({ link }: Props) {
             <Link href={`${link.href}${child.href}`} passHref={true}>
               <div
                 className={`tracking-wide text-left cursor-pointer hover:text-primary p-4 text-gray-600 font-semibold ${
+                  router.pathname.includes(link.href) &&
                   router.pathname.includes(child.href)
                     ? 'font-bold text-primary'
                     : ''
