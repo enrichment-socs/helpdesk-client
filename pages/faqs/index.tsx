@@ -46,9 +46,6 @@ export const getServerSideProps = withSessionSsr(
     const user = session?.user as SessionUser;
     const faqCategoryService = new FAQCategoryService(user?.accessToken);
 
-    // TO BE DELETED
-    // const faqService = new FAQService(user?.accessToken);
-    // const faqs = await faqService.getAll();
     const faqCategories = await faqCategoryService.getAll();
 
     return {
