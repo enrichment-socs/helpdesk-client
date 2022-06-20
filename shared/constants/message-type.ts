@@ -1,4 +1,4 @@
 export const MESSAGE_TYPE = {
-  CASE: 'Case',
+  TICKET: 'Ticket',
   INFORMATION: 'Information',
 };

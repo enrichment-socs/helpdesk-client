@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 import { Else, If, Then } from 'react-if';
 import { activeSemesterAtom, semestersAtom } from '../../atom';
 import { Category } from '../../models/Category';
-import { CreateCaseDto } from '../../models/dto/cases/create-case.dto';
+import { CreateTicketDto } from '../../models/dto/tickets/create-ticket.dto';
 import { CreateInformationDto } from '../../models/dto/informations/create-information.dto';
 import { Message } from '../../models/Message';
 import { OutlookMessage } from '../../models/OutlookMessage';
@@ -14,7 +14,7 @@ import { Priority } from '../../models/Priority';
 import { SessionUser } from '../../models/SessionUser';
 import { User } from '../../models/User';
 import { messagesAtom } from '../../pages';
-import { CaseService } from '../../services/CaseService';
+import { TicketService } from '../../services/TicketService';
 import { CategoryService } from '../../services/CategoryService';
 import { InformationService } from '../../services/InformationService';
 import { PriorityService } from '../../services/PriorityService';
@@ -92,8 +92,8 @@ export default function MessageDetailModalAction({
 
     setCanSave(false);
     toast('Saving...');
-    if (selectedType === MESSAGE_TYPE.CASE) {
-      await wrapper.handle(saveCase());
+    if (selectedType === MESSAGE_TYPE.TICKET) {
+      await wrapper.handle(saveTicket());
     } else if (selectedType === MESSAGE_TYPE.INFORMATION) {
       await wrapper.handle(saveInformation());
     }
@@ -104,12 +104,12 @@ export default function MessageDetailModalAction({
     updateMessageState();
   };
 
-  const saveCase = async () => {
+  const saveTicket = async () => {
     const statusService = new StatusService(user?.accessToken);
     const statuses = await statusService.getAll();
     const newStatus = statuses.find((s) => s.statusName === STATUS.ASSIGNED);
 
-    const dto: CreateCaseDto = {
+    const dto: CreateTicketDto = {
       statusId: newStatus.id,
       semesterId: selectedSemesterId,
       assignedToId: selectedAdminId,
@@ -123,8 +123,8 @@ export default function MessageDetailModalAction({
       dueBy: selectedDueDate,
     };
 
-    const casesService = new CaseService(user?.accessToken);
-    await casesService.add(dto);
+    const ticketService = new TicketService(user?.accessToken);
+    await ticketService.add(dto);
   };
 
   const saveInformation = async () => {
@@ -152,7 +152,7 @@ export default function MessageDetailModalAction({
   };
 
   const isSaved = () => {
-    return [MESSAGE_TYPE.CASE, MESSAGE_TYPE.INFORMATION].includes(
+    return [MESSAGE_TYPE.TICKET, MESSAGE_TYPE.INFORMATION].includes(
       message?.savedAs
     );
   };
@@ -199,7 +199,7 @@ export default function MessageDetailModalAction({
               </select>
             </div>
 
-            <If condition={selectedType === 'Case'}>
+            <If condition={selectedType === MESSAGE_TYPE.TICKET}>
               <Then>
                 <div>
                   <label className="block text-sm font-medium text-gray-700">

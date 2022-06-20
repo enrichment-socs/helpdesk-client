@@ -23,8 +23,8 @@ export default function Navbar() {
       roles: [ROLES.USER, ROLES.ADMIN, ROLES.SUPER_ADMIN],
     },
     {
-      title: 'Cases',
-      href: '/cases',
+      title: 'Tickets',
+      href: '/tickets',
       roles: [ROLES.USER, ROLES.ADMIN],
     },
     {
@@ -143,7 +143,8 @@ export default function Navbar() {
                         ) : (
                           <div
                             className={`tracking-wide text-center cursor-pointer hover:text-primary min-w-[3rem] py-4 text-gray-600 font-semibold ${
-                              router.pathname.includes(link.href) && router.pathname.split('/').length === 2
+                              router.pathname.includes(link.href) &&
+                              router.pathname.split('/').length === 2
                                 ? 'border-b-2 border-primary font-bold'
                                 : ''
                             }`}>

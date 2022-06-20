@@ -3,7 +3,7 @@ import { ChartBarIcon } from '@heroicons/react/solid';
 const AdminRequestSummaryContainer = () => {
   const requestCategories = [
     {
-      name: 'New Case',
+      name: 'New Ticket',
       count: 0,
     },
     {
