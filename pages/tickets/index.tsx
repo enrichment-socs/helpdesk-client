@@ -19,7 +19,7 @@ type Props = {
   tickets: Ticket[];
 };
 
-const RequestsHeaderPage: NextPage<Props> = ({ tickets }) => {
+const TicketPage: NextPage<Props> = ({ tickets }) => {
   useHydrateAtoms([[ticketsAtom, tickets]] as const);
 
   return (
@@ -60,4 +60,4 @@ export const getServerSideProps = withSessionSsr(
   }
 );
 
-export default RequestsHeaderPage;
+export default TicketPage;

@@ -38,7 +38,7 @@ type Props = {
   statuses: Status[];
 };
 
-const RequestsDetailPage: NextPage<Props> = ({
+const TicketDetailPage: NextPage<Props> = ({
   ticket,
   resolution: serverResolution,
   ticketStatuses: serverTicketStatuses,
@@ -319,4 +319,4 @@ export const getServerSideProps = withSessionSsr(
   }
 );
 
-export default RequestsDetailPage;
+export default TicketDetailPage;

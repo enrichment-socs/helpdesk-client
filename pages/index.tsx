@@ -17,8 +17,8 @@ import { ROLES } from '../shared/constants/roles';
 import { useHydrateAtoms } from 'jotai/utils';
 import { atom } from 'jotai';
 import MessageContainer from '../components/messages/MessageContainer';
-import AdminRequestSummaryContainer from '../components/request-summaries/admin/AdminRequestSummaryContainer';
-import UserRequestSummaryContainer from '../components/request-summaries/user/UserRequestSummaryContainer';
+import AdminTicketSummaryContainer from '../components/ticket-summaries/admin/AdminTicketSummaryContainer';
+import UserTicketSummaryContainer from '../components/ticket-summaries/user/UserTicketSummaryContainer';
 import { MessageService } from '../services/MessageService';
 import FAQContainer from '../components/faqs/FAQContainer';
 import { FAQCategoryService } from '../services/FAQCategoryService';
@@ -71,9 +71,9 @@ const Home: NextPage<Props> = ({
             />
 
             {user.roleName === ROLES.ADMIN ? (
-              <AdminRequestSummaryContainer />
+              <AdminTicketSummaryContainer />
             ) : user.roleName === ROLES.USER ? (
-              <UserRequestSummaryContainer />
+              <UserTicketSummaryContainer />
             ) : null}
           </div>
         </div>
