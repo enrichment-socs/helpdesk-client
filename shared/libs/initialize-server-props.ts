@@ -45,6 +45,6 @@ export const getInitialServerProps = async (
   return {
     session,
     semesters,
-    sessionActiveSemester: activeSemester,
+    sessionActiveSemester: activeSemester ?? null, // handle undefined
   };
 };

@@ -23,8 +23,8 @@ export default function Navbar() {
       roles: [ROLES.USER, ROLES.ADMIN, ROLES.SUPER_ADMIN],
     },
     {
-      title: 'Cases',
-      href: '/cases',
+      title: 'Tickets',
+      href: '/tickets',
       roles: [ROLES.USER, ROLES.ADMIN],
     },
     {
