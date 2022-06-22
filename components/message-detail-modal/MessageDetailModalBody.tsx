@@ -17,7 +17,10 @@ export default function MessageDetailModalBody({
   currentOutlookMessage,
 }: Props) {
   return (
-    <Disclosure defaultOpen as="div" className="mt-2">
+    <Disclosure
+      defaultOpen
+      as="div"
+      className="mt-4 border border-gray-300 rounded">
       {({ open }) => (
         <>
           <Disclosure.Button
@@ -38,7 +41,7 @@ export default function MessageDetailModalBody({
             leave="transition duration-300 ease-in"
             leaveFrom="transform scale-100 opacity-100"
             leaveTo="transform scale-50 opacity-0">
-            <Disclosure.Panel className="p-4 border border-gray-300 text-sm text-gray-500">
+            <Disclosure.Panel className="p-4 text-sm text-gray-500">
               {outlookMessages && currentOutlookMessage ? (
                 outlookMessages.length === 0 ? (
                   <span>There is no conversation yet.</span>

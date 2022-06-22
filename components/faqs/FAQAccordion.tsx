@@ -33,15 +33,16 @@ const FAQAccordion: React.FC<Props> = ({ faqCategory }) => {
   }, []);
 
   return (
-    <Disclosure>
+    <Disclosure as="div">
       {({ open }) => (
         <>
-          <Disclosure.Button className="flex justify-between items-center w-full px-4 py-2 text-lg font-medium text-left text-sky-900 bg-sky-100 rounded-lg hover:bg-sky-200 focus:outline-none focus-visible:ring focus-visible:ring-sky-500 focus-visible:ring-opacity-75 mt-3 md:text-xl lg:text-2xl">
+          <Disclosure.Button
+            className={`${
+              open ? 'rounded-t' : 'rounded-lg'
+            } flex justify-between items-center w-full px-4 py-2 font-medium text-left text-sky-900 bg-sky-100 hover:bg-sky-200 focus:outline-none focus-visible:ring focus-visible:ring-sky-500 focus-visible:ring-opacity-75 mt-3`}>
             <span>{faqCategory.categoryName}</span>
             <ChevronUpIcon
-              className={`${
-                open ? 'rotate-180 transform' : ''
-              } h-5 w-5 text-purple-500`}
+              className={`${open ? 'rotate-180 transform' : ''} h-5 w-5`}
             />
           </Disclosure.Button>
           <Transition
@@ -53,7 +54,7 @@ const FAQAccordion: React.FC<Props> = ({ faqCategory }) => {
             leaveTo="transform scale-50 opacity-0">
             <Disclosure.Panel
               static
-              className="px-4 pt-4 pb-2 text-sm text-gray-500">
+              className="px-4 pt-4 pb-2 text-sm text-gray-500 border-b border-l border-r border-gray-200 rounded-b">
               {isLoading ? (
                 <SkeletonLoading width="100%" />
               ) : currFAQs && currFAQs.length > 0 ? (
@@ -79,7 +80,7 @@ const FAQAccordion: React.FC<Props> = ({ faqCategory }) => {
                           leaveTo="-translate-y-2.5 opacity-0">
                           <Disclosure.Panel
                             static
-                            className="p-2 border text-sm text-gray-700">
+                            className="p-4 border text-sm text-gray-700">
                             <div
                               className="display-list display-link font-medium"
                               dangerouslySetInnerHTML={{

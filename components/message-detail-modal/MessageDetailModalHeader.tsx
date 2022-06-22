@@ -1,4 +1,5 @@
-import { LinkIcon } from '@heroicons/react/solid';
+import { Disclosure, Transition } from '@headlessui/react';
+import { ChevronUpIcon, LinkIcon } from '@heroicons/react/solid';
 import { format } from 'date-fns';
 import { OutlookMessage } from '../../models/OutlookMessage';
 import SkeletonLoading from '../../widgets/SkeletonLoading';
@@ -65,40 +66,76 @@ export default function MessageDetailModalHeader({ message }: Props) {
   };
 
   return (
-    <div className="border border-gray-300 rounded">
-      <div className="bg-gray-300 text-gray-700 p-2">Information</div>
+    <Disclosure
+      defaultOpen
+      as="div"
+      className="mt-4 border border-gray-300 rounded">
+      {({ open }) => (
+        <>
+          <Disclosure.Button
+            className={`${
+              open ? 'rounded-t' : 'rounded'
+            } flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-gray-700 bg-gray-200 hover:bg-gray-300 focus:outline-none focus-visible:ring focus-visible:ring-gray-500 focus-visible:ring-opacity-75`}>
+            <span className="font-bold">Information</span>
+            <ChevronUpIcon
+              className={`${
+                open ? 'transform rotate-180' : ''
+              } w-5 h-5 text-gray-500`}
+            />
+          </Disclosure.Button>
+          <Transition
+            enter="transition duration-300 ease-in-out"
+            enterFrom="transform scale-50 opacity-0"
+            enterTo="transform scale-100 opacity-100"
+            leave="transition duration-300 ease-in"
+            leaveFrom="transform scale-100 opacity-100"
+            leaveTo="transform scale-50 opacity-0">
+            <Disclosure.Panel className="p-4 text-sm text-gray-500">
+              <ul className="bg-white border border-gray-200 text-gray-900">
+                <li className="flex px-6 border-b border-gray-200 w-full">
+                  <div className="w-1/4 py-2 border-r border-gray-200">
+                    Subject
+                  </div>
+                  <div className="w-3/4 py-2 ml-4">{getSubjectInfo()}</div>
+                </li>
 
-      <ul className="bg-white border border-gray-200 text-gray-900">
-        <li className="flex px-6 border-b border-gray-200 w-full">
-          <div className="w-1/4 py-2 border-r border-gray-200">Subject</div>
-          <div className="w-3/4 py-2 ml-4">{getSubjectInfo()}</div>
-        </li>
+                <li className="flex px-6 border-b border-gray-200 w-full">
+                  <div className="w-1/4 py-2 border-r border-gray-200">
+                    From
+                  </div>
+                  <div className="w-3/4 py-2 ml-4">{getSenderInfo()}</div>
+                </li>
 
-        <li className="flex px-6 border-b border-gray-200 w-full">
-          <div className="w-1/4 py-2 border-r border-gray-200">From</div>
-          <div className="w-3/4 py-2 ml-4">{getSenderInfo()}</div>
-        </li>
+                <li className="flex px-6 border-b border-gray-200 w-full">
+                  <div className="w-1/4 py-2 border-r border-gray-200">To</div>
+                  <div className="w-3/4 py-2 ml-4">{getToRecipientsInfo()}</div>
+                </li>
 
-        <li className="flex px-6 border-b border-gray-200 w-full">
-          <div className="w-1/4 py-2 border-r border-gray-200">To</div>
-          <div className="w-3/4 py-2 ml-4">{getToRecipientsInfo()}</div>
-        </li>
+                <li className="flex px-6 border-b border-gray-200 w-full">
+                  <div className="w-1/4 py-2 border-r border-gray-200">Cc</div>
+                  <div className="w-3/4 py-2 ml-4">{getCcRecipientsInfo()}</div>
+                </li>
 
-        <li className="flex px-6 border-b border-gray-200 w-full">
-          <div className="w-1/4 py-2 border-r border-gray-200">Cc</div>
-          <div className="w-3/4 py-2 ml-4">{getCcRecipientsInfo()}</div>
-        </li>
+                <li className="flex px-6 border-b border-gray-200 w-full">
+                  <div className="w-1/4 py-2 border-r border-gray-200">
+                    Received at
+                  </div>
+                  <div className="w-3/4 py-2 ml-4">
+                    {getReceivedDateTimeInfo()}
+                  </div>
+                </li>
 
-        <li className="flex px-6 border-b border-gray-200 w-full">
-          <div className="w-1/4 py-2 border-r border-gray-200">Received at</div>
-          <div className="w-3/4 py-2 ml-4">{getReceivedDateTimeInfo()}</div>
-        </li>
-
-        <li className="flex px-6 w-full">
-          <div className="w-1/4 py-2 border-r border-gray-200">Web Link</div>
-          <div className="w-3/4 py-2 ml-4">{getWebLink()}</div>
-        </li>
-      </ul>
-    </div>
+                <li className="flex px-6 w-full">
+                  <div className="w-1/4 py-2 border-r border-gray-200">
+                    Web Link
+                  </div>
+                  <div className="w-3/4 py-2 ml-4">{getWebLink()}</div>
+                </li>
+              </ul>
+            </Disclosure.Panel>
+          </Transition>
+        </>
+      )}
+    </Disclosure>
   );
 }

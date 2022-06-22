@@ -23,6 +23,8 @@ import { UserService } from '../../services/UserService';
 import { MESSAGE_TYPE } from '../../shared/constants/message-type';
 import { STATUS } from '../../shared/constants/status';
 import { ClientPromiseWrapper } from '../../shared/libs/client-promise-wrapper';
+import { Disclosure, Transition } from '@headlessui/react';
+import { ChevronUpIcon } from '@heroicons/react/solid';
 
 type Props = {
   onClose: () => void;
@@ -158,137 +160,170 @@ export default function MessageDetailModalAction({
   };
 
   return (
-    <div className="border border-gray-300 rounded mt-8">
-      <div className="bg-gray-300 text-gray-700 p-2">Action</div>
-      <If condition={isSaved()}>
-        <Then>
-          <div className="px-4 pt-4">
-            This message is already saved as <b>{message?.savedAs}</b>
-          </div>
-        </Then>
-        <Else>
-          <div className="px-4 pt-4 flex flex-col space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Message Type
-              </label>
-              <select
-                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-                defaultValue={types[0]}
-                onChange={(e) => setSelectedType(e.target.value)}>
-                {types.map((type) => (
-                  <option key={type}>{type}</option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Semester
-              </label>
-              <select
-                onChange={(e) => setSelectedSemesterId(e.target.value)}
-                defaultValue={activeSemester.id}
-                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                {semesters.map((semester) => (
-                  <option value={semester.id} key={semester.id}>
-                    {semester.type} Semester {semester.startYear}/
-                    {semester.endYear}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <If condition={selectedType === MESSAGE_TYPE.TICKET}>
-              <Then>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Category
-                  </label>
-                  <select
-                    onChange={(e) => setSelectedCategoryId(e.target.value)}
-                    defaultValue={selectedCategoryId}
-                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                    {categories.map((category) => (
-                      <option value={category.id} key={category.id}>
-                        {category.categoryName}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Priority
-                  </label>
-                  <select
-                    onChange={(e) => setSelectedPriorityId(e.target.value)}
-                    defaultValue={selectedPriorityId}
-                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                    {priorities.map((priority) => (
-                      <option value={priority.id} key={priority.id}>
-                        {priority.priorityName}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Assign to
-                  </label>
-                  <select
-                    onChange={(e) => setSelectedAdminId(e.target.value)}
-                    defaultValue={selectedAdminId}
-                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                    {admins.map((admin) => (
-                      <option value={admin.id} key={admin.id}>
-                        {admin.code} - {admin.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Due By
-                  </label>
-                  <DatePicker
-                    selected={selectedDueDate}
-                    showTimeSelect
-                    dateFormat="Pp"
-                    onChange={setSelectedDueDate}
-                    className={`${'border-gray-300 focus:ring-blue-500 focus:border-blue-500'} mt-1 block w-full outline-none p-2 text-base border sm:text-sm rounded-md`}
-                  />
-                </div>
-              </Then>
-            </If>
-          </div>
-        </Else>
-      </If>
-
-      <div className="flex justify-end space-x-2 p-4">
-        <button
-          type="button"
-          onClick={onClose}
-          className="inline-flex items-center px-12 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-gray-300 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300">
-          Close
-        </button>
-
-        <If condition={!isSaved()}>
-          <Then>
-            <button
-              type="button"
-              disabled={!canSave}
-              onClick={onSave}
+    <Disclosure
+      defaultOpen
+      as="div"
+      className="mt-4 border border-gray-300 rounded">
+      {({ open }) => (
+        <>
+          <Disclosure.Button
+            className={`${
+              open ? 'rounded-t' : 'rounded'
+            } flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-gray-700 bg-gray-200 hover:bg-gray-300 focus:outline-none focus-visible:ring focus-visible:ring-gray-500 focus-visible:ring-opacity-75`}>
+            <span className="font-bold">Action</span>
+            <ChevronUpIcon
               className={`${
-                canSave ? 'bg-primary hover:bg-primary-dark' : 'bg-gray-300'
-              } inline-flex items-center px-12 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary`}>
-              {canSave ? `Save as ${selectedType}` : 'Loading ...'}
-            </button>
-          </Then>
-        </If>
-      </div>
-    </div>
+                open ? 'transform rotate-180' : ''
+              } w-5 h-5 text-gray-500`}
+            />
+          </Disclosure.Button>
+          <Transition
+            enter="transition duration-300 ease-in-out"
+            enterFrom="transform scale-50 opacity-0"
+            enterTo="transform scale-100 opacity-100"
+            leave="transition duration-300 ease-in"
+            leaveFrom="transform scale-100 opacity-100"
+            leaveTo="transform scale-50 opacity-0">
+            <Disclosure.Panel className="p-4 text-sm text-gray-500">
+              <If condition={isSaved()}>
+                <Then>
+                  <div>
+                    This message is already saved as <b>{message?.savedAs}</b>
+                  </div>
+                </Then>
+                <Else>
+                  <div className="flex flex-col space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Message Type
+                      </label>
+                      <select
+                        className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                        defaultValue={types[0]}
+                        onChange={(e) => setSelectedType(e.target.value)}>
+                        {types.map((type) => (
+                          <option key={type}>{type}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Semester
+                      </label>
+                      <select
+                        onChange={(e) => setSelectedSemesterId(e.target.value)}
+                        defaultValue={activeSemester.id}
+                        className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                        {semesters.map((semester) => (
+                          <option value={semester.id} key={semester.id}>
+                            {semester.type} Semester {semester.startYear}/
+                            {semester.endYear}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <If condition={selectedType === MESSAGE_TYPE.TICKET}>
+                      <Then>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700">
+                            Category
+                          </label>
+                          <select
+                            onChange={(e) =>
+                              setSelectedCategoryId(e.target.value)
+                            }
+                            defaultValue={selectedCategoryId}
+                            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                            {categories.map((category) => (
+                              <option value={category.id} key={category.id}>
+                                {category.categoryName}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700">
+                            Priority
+                          </label>
+                          <select
+                            onChange={(e) =>
+                              setSelectedPriorityId(e.target.value)
+                            }
+                            defaultValue={selectedPriorityId}
+                            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                            {priorities.map((priority) => (
+                              <option value={priority.id} key={priority.id}>
+                                {priority.priorityName}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700">
+                            Assign to
+                          </label>
+                          <select
+                            onChange={(e) => setSelectedAdminId(e.target.value)}
+                            defaultValue={selectedAdminId}
+                            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                            {admins.map((admin) => (
+                              <option value={admin.id} key={admin.id}>
+                                {admin.code} - {admin.name}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700">
+                            Due By
+                          </label>
+                          <DatePicker
+                            selected={selectedDueDate}
+                            showTimeSelect
+                            dateFormat="Pp"
+                            onChange={setSelectedDueDate}
+                            className={`${'border-gray-300 focus:ring-blue-500 focus:border-blue-500'} mt-1 block w-full outline-none p-2 text-base border sm:text-sm rounded-md`}
+                          />
+                        </div>
+                      </Then>
+                    </If>
+                  </div>
+                </Else>
+              </If>
+
+              <div className="flex justify-end space-x-2 pt-4">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="inline-flex items-center px-12 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-gray-300 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300">
+                  Close
+                </button>
+
+                <If condition={!isSaved()}>
+                  <Then>
+                    <button
+                      type="button"
+                      disabled={!canSave}
+                      onClick={onSave}
+                      className={`${
+                        canSave
+                          ? 'bg-primary hover:bg-primary-dark'
+                          : 'bg-gray-300'
+                      } inline-flex items-center px-12 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary`}>
+                      {canSave ? `Save as ${selectedType}` : 'Loading ...'}
+                    </button>
+                  </Then>
+                </If>
+              </div>
+            </Disclosure.Panel>
+          </Transition>
+        </>
+      )}
+    </Disclosure>
   );
 }

@@ -149,7 +149,7 @@ const MessageDetailModal = ({
                   </button>
                 </div>
 
-                <div className="mt-2 p-6">
+                <div className="mt-2 px-6 pb-6">
                   <MessageDetailModalHeader message={outlookMessage} />
                   <MessageDetailModalBody
                     outlookMessages={outlookMessagesFromThisConversation}
