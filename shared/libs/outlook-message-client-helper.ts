@@ -23,7 +23,7 @@ export class OutlookMessageClientHelper {
         (att) => att.isInline && contentIds.includes(`cid:${att.contentId}`)
       )
       .forEach((attachment) => {
-        content = content.replace(
+        content = content.replaceAll(
           `cid:${attachment.contentId}`,
           `data:image/jpeg;base64,${attachment.contentBytes}`
         );

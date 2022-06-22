@@ -30,7 +30,7 @@ export class GraphApiService extends BaseService {
         this.headersWithToken()
       )
     );
-    return result.data.value;
+    return result.data;
   }
 
   public async getFirstMessageByConversation(
@@ -84,7 +84,6 @@ export class GraphApiService extends BaseService {
 
       return result.data;
     } catch (err) {
-      
       return null;
     }
   }

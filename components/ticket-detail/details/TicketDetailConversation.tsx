@@ -7,23 +7,19 @@ import SkeletonLoading from '../../../widgets/SkeletonLoading';
 import TicketDetailConversationBody from './TicketDetailConversationBody';
 import TicketDetailConversationHeader from './TicketDetailConversationHeader';
 
-// type Prop = {
-//   conversationData: {
-//     id: number;
-//     sender: string;
-//     sent_date: string;
-//     recipient_email: string;
-//     subject: string;
-//     content: string;
-//   };
-// };
-
 type Props = {
   message: OutlookMessage;
   attachments: OutlookMessageAttachmentValue[];
+  defaultOpen?: boolean;
+  useUniqueBody?: boolean;
 };
 
-const TicketDetailConversation = ({ message, attachments }: Props) => {
+const TicketDetailConversation = ({
+  message,
+  attachments,
+  defaultOpen = false,
+  useUniqueBody = true,
+}: Props) => {
   const getSenderInfo = () => {
     if (!message) return <SkeletonLoading width="100%" />;
 
@@ -40,41 +36,23 @@ const TicketDetailConversation = ({ message, attachments }: Props) => {
     );
   };
 
-  const getToRecipientsInfo = () => {
-    if (!message) return <SkeletonLoading width="100%" />;
-
-    const recipients = message.toRecipients
-      .map((recipient, idx) => recipient.emailAddress.address)
-      .join(', ');
-
-    return recipients || '-';
-  };
-
-  const getSubjectInfo = () => {
-    if (!message) return <SkeletonLoading width="100%" />;
-
-    const subject = message.subject || 'No Subject';
-
-    return subject || '-';
-  };
-
   return (
-    <Disclosure as="div" className="mt-2">
+    <Disclosure defaultOpen={defaultOpen} as="div" className="mt-2">
       {({ open }) => (
         <>
           <Disclosure.Button
-            className={`${
-              open ? 'rounded-t' : 'rounded'
-            } flex justify-between items-center w-full px-4 py-2 text-sm font-medium text-left text-gray-900 bg-gray-200 hover:bg-gray-300 focus:outline-none focus-visible:ring focus-visible:ring-gray-500 focus-visible:ring-opacity-75`}>
+            className={`${open ? 'rounded-t' : 'rounded'} ${
+              defaultOpen
+                ? 'bg-primary hover:bg-primary-dark text-white'
+                : 'text-gray-900 bg-gray-200 hover:bg-gray-300'
+            } flex justify-between items-center w-full px-4 py-2 text-sm font-medium text-left focus:outline-none focus-visible:ring focus-visible:ring-gray-500 focus-visible:ring-opacity-75`}>
             <span className="font-bold">{getSenderInfo()}</span>
             <div className="flex">
-              <span className="text-gray-500 font-normal text-xs">
+              <span className="font-normal text-xs">
                 {getReceivedDateTimeInfo()}
               </span>
               <ChevronUpIcon
-                className={`${
-                  open ? 'transform rotate-180' : ''
-                } w-5 h-5 ml-7 text-slate-500`}
+                className={`${open ? 'transform rotate-180' : ''} w-5 h-5 ml-7`}
               />
             </div>
           </Disclosure.Button>
@@ -91,6 +69,7 @@ const TicketDetailConversation = ({ message, attachments }: Props) => {
                 <TicketDetailConversationBody
                   message={message}
                   attachments={attachments}
+                  useUniqueBody={useUniqueBody}
                 />
               </div>
             </Disclosure.Panel>

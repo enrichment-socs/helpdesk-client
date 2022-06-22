@@ -98,15 +98,16 @@ const TicketDetailDetails: React.FC<Props> = ({
                     outlookMessages.length === 1 ? (
                       <span>There is no conversation yet.</span>
                     ) : (
-                      outlookMessages
-                        .slice(1)
-                        .map((message, idx) => (
+                      outlookMessages.slice(1).map((message, idx) => {
+                        const realIdx = idx + 1;
+                        return (
                           <TicketDetailConversation
                             key={message.id}
                             message={message}
-                            attachments={attachmentsArrays[idx]}
+                            attachments={attachmentsArrays[realIdx]}
                           />
-                        ))
+                        );
+                      })
                     )
                   ) : (
                     <MultiLineSkeletonLoading width="100%" />

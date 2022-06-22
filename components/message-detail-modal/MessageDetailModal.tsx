@@ -16,6 +16,7 @@ import MessageDetailModalHeader from './MessageDetailModalHeader';
 import MessageDetailModalBody from './MessageDetailModalBody';
 import { If, Then } from 'react-if';
 import { Message } from '../../models/Message';
+import { OutlookMessageClientHelper } from '../../shared/libs/outlook-message-client-helper';
 
 type Props = {
   isOpen: boolean;
@@ -35,18 +36,22 @@ const MessageDetailModal = ({
   const graphApiService = new GraphApiService(user.accessToken);
 
   const [outlookMessage, setOutlookMessage] = useState<OutlookMessage>(null);
-  const [attachments, setAttachments] = useState<
-    OutlookMessageAttachmentValue[]
-  >([]);
+
   const [
-    firstOutlookMessageFromThisConversation,
-    setFirstOutlookMessageFromThisConversation,
-  ] = useState<OutlookMessage>(null);
+    outlookMessagesFromThisConversation,
+    setOutlookMessagesFromThisConversation,
+  ] = useState<OutlookMessage[]>([]);
+
+  const [attachmentArrays, setAttachmentArrays] = useState<
+    OutlookMessageAttachmentValue[][]
+  >([]);
 
   const close = () => {
     setIsOpen(false);
     setOutlookMessage(null);
     setMessage(null);
+    setOutlookMessagesFromThisConversation([]);
+    setAttachmentArrays([]);
   };
 
   useEffect(() => {
@@ -57,56 +62,42 @@ const MessageDetailModal = ({
   }, [message]);
 
   const fetchMessage = async () => {
-    const messageResult = await graphApiService.getMessageById(
-      message.messageId
-    );
+    const messagesByConversation =
+      await graphApiService.getMessagesByConversation(message?.conversationId);
 
-    const firstMessageFromThisConversation =
-      await graphApiService.getFirstMessageByConversation(
-        messageResult.conversationId
-      );
+    for (let i = 0; i < messagesByConversation.length; i++) {
+      const useUniqueBody = i !== 0;
+      const message = messagesByConversation[i];
+      const bodyContent = useUniqueBody
+        ? message.uniqueBody.content
+        : message.body.content;
+      const contentIds = bodyContent.match(CONTENT_ID_REGEX);
 
-    const bodyContent = messageResult.body.content;
-    const contentIds = bodyContent.match(CONTENT_ID_REGEX);
+      let attachments = [];
+      if (message.hasAttachments || contentIds) {
+        const messageAttachment = await graphApiService.getMessageAttachments(
+          message.id
+        );
 
-    if (contentIds || messageResult.hasAttachments) {
-      const messageAttachment = await graphApiService.getMessageAttachments(
-        message.messageId
-      );
+        const helper = new OutlookMessageClientHelper(message);
+        let processedContent = helper.replaceBodyImageWithCorrectSource(
+          messageAttachment.value,
+          useUniqueBody
+        );
 
-      let processedContent = replaceBodyImageWithCorrectSource(
-        bodyContent,
-        contentIds,
-        messageAttachment.value
-      );
+        if (useUniqueBody) message.uniqueBody.content = processedContent;
+        else message.body.content = processedContent;
 
-      messageResult.body.content = processedContent;
-      setAttachments(messageAttachment.value);
+        attachments = messageAttachment.value;
+      }
+
+      setAttachmentArrays((prev) => [...prev, attachments]);
     }
 
-    setFirstOutlookMessageFromThisConversation(
-      firstMessageFromThisConversation
+    setOutlookMessagesFromThisConversation(messagesByConversation);
+    setOutlookMessage(
+      messagesByConversation.find((m) => m.id === message.messageId)
     );
-    setOutlookMessage(messageResult);
-  };
-
-  const replaceBodyImageWithCorrectSource = (
-    bodyContent: string,
-    contentIds: string[],
-    attachments: OutlookMessageAttachmentValue[]
-  ) => {
-    let content = bodyContent;
-    attachments
-      .filter(
-        (att) => att.isInline && contentIds.includes(`cid:${att.contentId}`)
-      )
-      .forEach((attachment) => {
-        content = content.replace(
-          `cid:${attachment.contentId}`,
-          `data:image/jpeg;base64,${attachment.contentBytes}`
-        );
-      });
-    return content;
   };
 
   return (
@@ -161,8 +152,9 @@ const MessageDetailModal = ({
                 <div className="mt-2 p-6">
                   <MessageDetailModalHeader message={outlookMessage} />
                   <MessageDetailModalBody
-                    message={outlookMessage}
-                    attachments={attachments}
+                    outlookMessages={outlookMessagesFromThisConversation}
+                    attachmentArrays={attachmentArrays}
+                    currentOutlookMessage={outlookMessage}
                   />
 
                   <If
@@ -174,7 +166,7 @@ const MessageDetailModal = ({
                         onClose={close}
                         message={message}
                         firstOutlookMessageFromConversation={
-                          firstOutlookMessageFromThisConversation
+                          outlookMessagesFromThisConversation[0]
                         }
                       />
                     </Then>

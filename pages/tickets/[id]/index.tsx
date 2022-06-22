@@ -30,6 +30,9 @@ import { TicketStatus } from '../../../models/TicketStatus';
 import TicketDetailManage from '../../../components/ticket-detail/manage-ticket/TicketDetailManage';
 import { StatusService } from '../../../services/StatusService';
 import { Status } from '../../../models/Status';
+import { OutlookMessageClientHelper } from '../../../shared/libs/outlook-message-client-helper';
+import { ClientPromiseWrapper } from '../../../shared/libs/client-promise-wrapper';
+import toast from 'react-hot-toast';
 
 type Props = {
   ticket: Ticket;
@@ -67,57 +70,47 @@ const TicketDetailPage: NextPage<Props> = ({
     return ticketStatuses[ticketStatuses.length - 1].status.statusName;
   };
 
-  const replaceBodyImageWithCorrectSource = (
-    bodyContent: string,
-    contentIds: string[],
-    attachments: OutlookMessageAttachmentValue[]
-  ) => {
-    let content = bodyContent;
-    attachments
-      .filter(
-        (att) => att.isInline && contentIds.includes(`cid:${att.contentId}`)
-      )
-      .forEach((attachment) => {
-        content = content.replace(
-          `cid:${attachment.contentId}`,
-          `data:image/jpeg;base64,${attachment.contentBytes}`
-        );
-      });
-    return content;
-  };
+  useEffect(() => {
+    const wrapper = new ClientPromiseWrapper(toast);
+    wrapper.handle(fetchMessages());
+  }, []);
 
   const fetchMessages = async () => {
     const messagesByConversation =
       await graphApiService.getMessagesByConversation(ticket.conversationId);
 
-    for (const message of messagesByConversation) {
-      const bodyContent = message.body.content;
+    for (let i = 0; i < messagesByConversation.length; i++) {
+      const useUniqueBody = i !== 0;
+      const message = messagesByConversation[i];
+      const bodyContent = useUniqueBody
+        ? message.uniqueBody.content
+        : message.body.content;
       const contentIds = bodyContent.match(CONTENT_ID_REGEX);
 
+      let attachments = [];
       if (contentIds || message.hasAttachments) {
         const messageAttachment = await graphApiService.getMessageAttachments(
           message.id
         );
 
-        let processedContent = replaceBodyImageWithCorrectSource(
-          bodyContent,
-          contentIds,
-          messageAttachment.value
+        const helper = new OutlookMessageClientHelper(message);
+        let processedContent = helper.replaceBodyImageWithCorrectSource(
+          messageAttachment.value,
+          useUniqueBody
         );
 
-        message.body.content = processedContent;
-        attachmentArrays.push(messageAttachment.value);
+        if (useUniqueBody) message.uniqueBody.content = processedContent;
+        else message.body.content = processedContent;
 
-        setAttachmentArrays((prev) => [...prev, messageAttachment.value]);
+        attachments = messageAttachment.value;
       }
+
+      console.log([...attachmentArrays, attachments]);
+      setAttachmentArrays((prev) => [...prev, attachments]);
     }
 
     setOutlookMessages(messagesByConversation);
   };
-
-  useEffect(() => {
-    fetchMessages();
-  }, []);
 
   const getTabMenuList = () => {
     // const tabMenuList = ['Details', 'Manage Ticket', 'Resolution', 'History']; // TODO: use this line when start developing History system
