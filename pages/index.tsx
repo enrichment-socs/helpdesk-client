@@ -78,7 +78,7 @@ const Home: NextPage<Props> = ({
           </div>
         </div>
 
-        {user.roleName !== ROLES.USER && (
+        {user.roleName === ROLES.ADMIN && (
           <MessageContainer
             take={initialTake}
             skip={skipMessageCount}

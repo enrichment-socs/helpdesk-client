@@ -168,10 +168,10 @@ const TicketDetailProperties = ({
               <td className="px-6 py-3 break-all">{getResolvedDate()}</td>
             </tr>
 
-            <tr className="border-b">
+            {/* <tr className="border-b">
               <td className="px-6 py-3 font-bold border-r">Time Elapsed</td>
               <td className="px-6 py-3 break-all">{getTimeElapsed()}</td>
-            </tr>
+            </tr> */}
           </tbody>
         </table>
       </div>

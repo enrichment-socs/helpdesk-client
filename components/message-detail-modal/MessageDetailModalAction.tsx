@@ -25,6 +25,7 @@ import { STATUS } from '../../shared/constants/status';
 import { ClientPromiseWrapper } from '../../shared/libs/client-promise-wrapper';
 import { Disclosure, Transition } from '@headlessui/react';
 import { ChevronUpIcon } from '@heroicons/react/solid';
+import { addHours } from 'date-fns';
 
 type Props = {
   onClose: () => void;
@@ -58,10 +59,16 @@ export default function MessageDetailModalAction({
   const [selectedPriorityId, setSelectedPriorityId] = useState('');
   const [selectedAdminId, setSelectedAdminId] = useState('');
 
-  const currDate = new Date();
-  const [selectedDueDate, setSelectedDueDate] = useState(
-    new Date(currDate.setDate(currDate.getDate() + 7))
-  );
+  const getInitialDueBy = (): Date => {
+    const currDate = new Date();
+    currDate.setDate(currDate.getDate() + 5);
+    currDate.setHours(currDate.getHours() + 1);
+    currDate.setMinutes(0);
+    currDate.setSeconds(0);
+    return currDate;
+  };
+
+  const [selectedDueDate, setSelectedDueDate] = useState(getInitialDueBy());
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -151,6 +158,16 @@ export default function MessageDetailModalAction({
       return currMessage;
     });
     setMessages(newMessages);
+  };
+
+  const handleOnPriorityChange = (newPriorityId) => {
+    const selectedPriority = priorities.find((p) => p.id === newPriorityId);
+    let dueDate = new Date();
+    dueDate = addHours(dueDate, selectedPriority.deadlineHours + 1);
+    dueDate.setSeconds(0);
+    dueDate.setMinutes(0);
+    setSelectedPriorityId(newPriorityId);
+    setSelectedDueDate(dueDate);
   };
 
   const isSaved = () => {
@@ -250,7 +267,7 @@ export default function MessageDetailModalAction({
                           </label>
                           <select
                             onChange={(e) =>
-                              setSelectedPriorityId(e.target.value)
+                              handleOnPriorityChange(e.target.value)
                             }
                             defaultValue={selectedPriorityId}
                             className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
