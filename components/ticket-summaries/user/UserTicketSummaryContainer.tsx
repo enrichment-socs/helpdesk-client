@@ -3,15 +3,23 @@ import { ChartBarIcon } from '@heroicons/react/solid';
 const UserTicketSummaryContainer = () => {
   const ticketCategories = [
     {
+      name: 'Assigned',
+      count: 0,
+    },
+    {
       name: 'Pending',
       count: 0,
     },
     {
-      name: 'Awaiting Approval',
+      name: 'In Progress',
       count: 0,
     },
     {
-      name: 'Awaiting Updates',
+      name: 'Resolved',
+      count: 0,
+    },
+    {
+      name: 'Closed',
       count: 0,
     },
   ];

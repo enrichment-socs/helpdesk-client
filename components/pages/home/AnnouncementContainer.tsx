@@ -38,7 +38,7 @@ export default function AnnouncementContainer({
 
       {/* Announcement Content */}
       {announcements.length == 0 && (
-        <div className="border-box py-4 flex h-5/6 items-center justify-center text-center">
+        <div className="border-box py-4 min-h-[12rem] flex h-5/6 items-center justify-center text-center">
           There is currently no announcement
         </div>
       )}

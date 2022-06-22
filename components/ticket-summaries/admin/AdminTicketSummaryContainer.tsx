@@ -3,7 +3,7 @@ import { ChartBarIcon } from '@heroicons/react/solid';
 const AdminTicketSummaryContainer = () => {
   const ticketCategories = [
     {
-      name: 'New Ticket',
+      name: 'Assigned',
       count: 0,
     },
     {
@@ -11,11 +11,15 @@ const AdminTicketSummaryContainer = () => {
       count: 0,
     },
     {
-      name: 'On Process',
+      name: 'In Progress',
       count: 0,
     },
     {
-      name: 'Completed',
+      name: 'Resolved',
+      count: 0,
+    },
+    {
+      name: 'Closed',
       count: 0,
     },
   ];
