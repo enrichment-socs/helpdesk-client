@@ -19,6 +19,7 @@ type Props = {
 type FormData = {
   priorityName: string;
   priorityIndex: number;
+  deadlineHours: number;
 };
 
 export default function PrioritiesFormModal({
@@ -42,6 +43,7 @@ export default function PrioritiesFormModal({
   useEffect(() => {
     setValue('priorityName', priority?.priorityName);
     setValue('priorityIndex', priority?.priorityIndex);
+    setValue('deadlineHours', priority?.deadlineHours);
   }, [priority]);
 
   const onSubmit: SubmitHandler<FormData> = async (payload) => {
@@ -60,10 +62,11 @@ export default function PrioritiesFormModal({
                   else return p;
                 })
               )
-            : setprioritiesVal([result, ...prioritiesVal]);
+            : setprioritiesVal([...prioritiesVal, result]);
           setIsOpen(false);
           setValue('priorityName', '');
           setValue('priorityIndex', 0);
+          setValue('deadlineHours', 0);
           return priority
             ? `Successfully updated the priority`
             : `Succesfully added new priority`;
@@ -164,6 +167,31 @@ export default function PrioritiesFormModal({
                     {errors.priorityIndex?.type === 'required' && (
                       <small className="text-red-500">
                         Priority Index name must be filled
+                      </small>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Deadline Hours
+                    </label>
+                    <div className="mt-1">
+                      <input
+                        {...register('deadlineHours', {
+                          required: true,
+                        })}
+                        type="text"
+                        className={`${
+                          errors.deadlineHours
+                            ? 'border-red-300'
+                            : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+                        } mt-1 block w-full outline-none p-2 text-base border sm:text-sm rounded-md`}
+                        placeholder="Deadline Hours"
+                      />
+                    </div>
+                    {errors.deadlineHours?.type === 'required' && (
+                      <small className="text-red-500">
+                        Deadline hours must be filled
                       </small>
                     )}
                   </div>

@@ -50,6 +50,11 @@ export default function ManagePrioritiesTable({ priorities, openModal }: Prop) {
                     className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                     Priority Index
                   </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                    Deadline Hours
+                  </th>
                   <th scope="col" className="relative px-6 py-3">
                     <span className="sr-only">Edit</span>
                   </th>
@@ -66,6 +71,9 @@ export default function ManagePrioritiesTable({ priorities, openModal }: Prop) {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {priority.priorityIndex}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {priority.deadlineHours} hours
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-1">
                         <button
