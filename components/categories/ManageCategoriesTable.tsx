@@ -45,6 +45,11 @@ export default function ManageCategoriesTable({ categories, openModal }: Prop) {
                     className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                     Category Name
                   </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                    Description/Criteria
+                  </th>
                   <th scope="col" className="relative px-6 py-3">
                     <span className="sr-only">Edit</span>
                   </th>
@@ -58,6 +63,13 @@ export default function ManageCategoriesTable({ categories, openModal }: Prop) {
                       className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {category.categoryName}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <ul>
+                          {category.description.split(';').map((criteria) => (
+                            <li key={criteria}>&#8226; {criteria}</li>
+                          ))}
+                        </ul>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-1">
                         <button

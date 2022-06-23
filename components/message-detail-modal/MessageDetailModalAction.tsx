@@ -26,6 +26,7 @@ import { ClientPromiseWrapper } from '../../shared/libs/client-promise-wrapper';
 import { Disclosure, Transition } from '@headlessui/react';
 import { ChevronUpIcon } from '@heroicons/react/solid';
 import { addHours } from 'date-fns';
+import ReactTooltip from 'react-tooltip';
 
 type Props = {
   onClose: () => void;
@@ -170,6 +171,9 @@ export default function MessageDetailModalAction({
     setSelectedDueDate(dueDate);
   };
 
+  const getSelectedCategory = () =>
+    categories?.find((c) => c.id === selectedCategoryId);
+
   const isSaved = () => {
     return [MESSAGE_TYPE.TICKET, MESSAGE_TYPE.INFORMATION].includes(
       message?.savedAs
@@ -259,6 +263,32 @@ export default function MessageDetailModalAction({
                               </option>
                             ))}
                           </select>
+
+                          {getSelectedCategory() && (
+                            <>
+                              <small
+                                className="cursor-alias"
+                                data-tip
+                                data-for="category-description">
+                                Hover me to show{' '}
+                                <b>{getSelectedCategory().categoryName}</b>{' '}
+                                category criteria example.
+                              </small>
+
+                              <ReactTooltip
+                                id="category-description"
+                                place="right"
+                                effect="solid">
+                                <ul>
+                                  {getSelectedCategory()
+                                    .description.split(';')
+                                    .map((criteria) => (
+                                      <li key={criteria}>&#8226; {criteria}</li>
+                                    ))}
+                                </ul>
+                              </ReactTooltip>
+                            </>
+                          )}
                         </div>
 
                         <div>
