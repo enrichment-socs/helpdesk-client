@@ -19,7 +19,7 @@ export default function SemesterListBox() {
   const user = session?.data?.user as SessionUser;
 
   const getDescription = (semester: Semester | null) => {
-    if (!semester) return 'No Semester';
+    // if (!semester) return 'No Semester';
     return `${semester.type} Semester ${semester.startYear}/${semester.endYear}`;
   };
 

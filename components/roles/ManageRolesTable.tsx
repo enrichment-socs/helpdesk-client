@@ -45,9 +45,9 @@ export default function ManageRolesTable({ roles, openModal }: Props) {
                     className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                     Role Name
                   </th>
-                  <th scope="col" className="relative px-6 py-3">
+                  {/* <th scope="col" className="relative px-6 py-3">
                     <span className="sr-only">Edit</span>
-                  </th>
+                  </th> */}
                 </tr>
               </thead>
               <tbody>
@@ -59,7 +59,8 @@ export default function ManageRolesTable({ roles, openModal }: Props) {
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {role.roleName}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-1">
+                      {/* Dicomment sementara karena berbahaya -LL */}
+                      {/* <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-1">
                         <button
                           type="button"
                           onClick={() => openModal(role)}
@@ -72,7 +73,7 @@ export default function ManageRolesTable({ roles, openModal }: Props) {
                           className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
                           Delete
                         </button>
-                      </td>
+                      </td> */}
                     </tr>
                   ))}
               </tbody>

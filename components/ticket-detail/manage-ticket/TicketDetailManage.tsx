@@ -110,7 +110,7 @@ export default function TicketDetailManage({
       <If condition={user?.id === ticket.assignedTo.id}>
         <Then>
           <div className="mt-8">
-            <h2 className="font-semibold text-lg mb-2">Manage Status</h2>
+            <h2 className="font-semibold text-lg mb-2">Manage Ticket Status</h2>
             <div>
               Current Status:{' '}
               <input

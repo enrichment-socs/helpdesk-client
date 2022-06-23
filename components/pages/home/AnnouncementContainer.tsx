@@ -28,7 +28,7 @@ export default function AnnouncementContainer({
 
   return (
     <div
-      className={`mx-2 p-2 border-2 ${
+      className={`mx-2 p-2 border-2 min-h-[24rem] ${
         user.roleName !== ROLES.SUPER_ADMIN ? 'md:w-3/4' : 'md:w-full'
       } rounded divide-y`}>
       <div className="text-lg font-bold mb-3 flex items-center">
@@ -38,7 +38,7 @@ export default function AnnouncementContainer({
 
       {/* Announcement Content */}
       {announcements.length == 0 && (
-        <div className="border-box py-4 min-h-[12rem] flex h-5/6 items-center justify-center text-center">
+        <div className="border-box py-4 flex h-5/6 items-center justify-center text-center">
           There is currently no announcement
         </div>
       )}

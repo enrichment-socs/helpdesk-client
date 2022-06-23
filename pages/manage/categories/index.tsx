@@ -43,7 +43,7 @@ const ManageCategoriesPage: NextPage<Props> = ({ categories }) => {
         category={selectedCategory}
       />
       <div className="font-bold text-2xl mb-4 flex items-center justify-between  ">
-        <h1>Manage Category</h1>
+        <h1>Manage Ticket Category</h1>
         <button
           type="button"
           onClick={() => openModal(null)}

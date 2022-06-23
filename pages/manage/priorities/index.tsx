@@ -43,7 +43,7 @@ const ManageCategoriesPage: NextPage<Props> = ({ priorities }) => {
         priority={selectedPriority}
       />
       <div className="font-bold text-2xl mb-4 flex items-center justify-between  ">
-        <h1>Manage Priority</h1>
+        <h1>Manage Ticket Priority</h1>
         <button
           type="button"
           onClick={() => openModal(null)}

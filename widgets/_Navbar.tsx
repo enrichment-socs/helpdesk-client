@@ -38,6 +38,11 @@ export default function Navbar() {
       roles: [ROLES.SUPER_ADMIN],
       children: [
         {
+          title: 'Announcements',
+          href: '/announcements',
+          roles: [ROLES.SUPER_ADMIN],
+        },
+        {
           title: 'Semesters',
           href: '/semesters',
           roles: [ROLES.SUPER_ADMIN],
@@ -48,7 +53,7 @@ export default function Navbar() {
           roles: [ROLES.SUPER_ADMIN],
         },
         {
-          title: 'Status',
+          title: 'Ticket Status',
           href: '/status',
           roles: [ROLES.SUPER_ADMIN],
         },
@@ -63,18 +68,13 @@ export default function Navbar() {
           roles: [ROLES.SUPER_ADMIN],
         },
         {
-          title: 'Categories',
+          title: 'Ticket Categories',
           href: '/categories',
           roles: [ROLES.SUPER_ADMIN],
         },
         {
-          title: 'Priorities',
+          title: 'Ticket Priorities',
           href: '/priorities',
-          roles: [ROLES.SUPER_ADMIN],
-        },
-        {
-          title: 'Announcements',
-          href: '/announcements',
           roles: [ROLES.SUPER_ADMIN],
         },
       ],
@@ -143,7 +143,9 @@ export default function Navbar() {
                         ) : (
                           <div
                             className={`tracking-wide text-center cursor-pointer hover:text-primary min-w-[3rem] py-4 text-gray-600 font-semibold ${
-                              router.pathname.includes(link.href) && router.pathname.split('/')[1].toLowerCase() === link.title.toLowerCase()
+                              router.pathname.includes(link.href) &&
+                              router.pathname.split('/')[1].toLowerCase() ===
+                                link.title.toLowerCase()
                                 ? 'border-b-2 border-primary font-bold'
                                 : ''
                             }`}>

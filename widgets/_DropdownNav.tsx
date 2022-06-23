@@ -27,21 +27,23 @@ export default function DropdownNav({ link }: Props) {
         className={`absolute bg-white border border-gray-200 rounded-md shadow top-12 transition-all duration-300 ${
           openDropdown ? 'block z-10' : 'hidden'
         }`}>
-        {link.children?.map((child) => (
-          <li key={child.title} className="w-44 hover:bg-gray-50">
-            <Link href={`${link.href}${child.href}`} passHref={true}>
-              <div
-                className={`tracking-wide text-left cursor-pointer hover:text-primary p-4 text-gray-600 font-semibold ${
-                  router.pathname.includes(link.href) &&
-                  router.pathname.includes(child.href)
-                    ? 'font-bold text-primary'
-                    : ''
-                }`}>
-                {child.title}
-              </div>
-            </Link>
-          </li>
-        ))}
+        {link.children
+          ?.sort((first, second) => first.title.localeCompare(second.title))
+          .map((child) => (
+            <li key={child.title} className="w-44 hover:bg-gray-50">
+              <Link href={`${link.href}${child.href}`} passHref={true}>
+                <div
+                  className={`tracking-wide text-left cursor-pointer hover:text-primary p-4 text-gray-600 font-semibold ${
+                    router.pathname.includes(link.href) &&
+                    router.pathname.includes(child.href)
+                      ? 'font-bold text-primary'
+                      : ''
+                  }`}>
+                  {child.title}
+                </div>
+              </Link>
+            </li>
+          ))}
       </ul>
     </div>
   );
