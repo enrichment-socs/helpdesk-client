@@ -27,6 +27,7 @@ import { Disclosure, Transition } from '@headlessui/react';
 import { ChevronUpIcon } from '@heroicons/react/solid';
 import { addHours } from 'date-fns';
 import ReactTooltip from 'react-tooltip';
+import { DateHelper } from '../../shared/libs/date-helper';
 
 type Props = {
   onClose: () => void;
@@ -63,12 +64,9 @@ export default function MessageDetailModalAction({
   const [selectedAdminId, setSelectedAdminId] = useState('');
 
   const getInitialDueBy = (): Date => {
-    const currDate = new Date();
-    currDate.setDate(currDate.getDate() + 5);
-    currDate.setHours(currDate.getHours() + 1);
-    currDate.setMinutes(0);
-    currDate.setSeconds(0);
-    return currDate;
+    const dueDate = new Date();
+    dueDate.setDate(dueDate.getDate() + 5);
+    return DateHelper.roundUpHours(dueDate);
   };
 
   const [selectedDueDate, setSelectedDueDate] = useState(getInitialDueBy());
