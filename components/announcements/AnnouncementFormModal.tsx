@@ -12,6 +12,7 @@ import dynamic from 'next/dynamic';
 import { add } from 'date-fns';
 import { useSession } from 'next-auth/react';
 import { SessionUser } from '../../models/SessionUser';
+import { DateHelper } from '../../shared/libs/date-helper';
 const QuillNoSSRWrapper = dynamic(import('react-quill'), {
   ssr: false,
   loading: () => <p>Loading ...</p>,
@@ -65,20 +66,23 @@ export default function AnnouncementFormModal({
   } = useForm<FormData>();
 
   useEffect(() => {
+    const currDateRounded = DateHelper.roundUpHours(new Date());
+    const nextWeekRounded = DateHelper.roundUpHours(
+      add(new Date(), { weeks: 1 })
+    );
+
     setValue('title', announcement?.title);
 
     register('startDate', { required: true });
     setValue(
       'startDate',
-      announcement ? new Date(announcement.startDate) : new Date()
+      announcement ? new Date(announcement.startDate) : currDateRounded
     );
 
     register('endDate', { required: true });
     setValue(
       'endDate',
-      announcement
-        ? new Date(announcement.endDate)
-        : add(new Date(), { weeks: 1 })
+      announcement ? new Date(announcement.endDate) : nextWeekRounded
     );
 
     register('body', { required: true });

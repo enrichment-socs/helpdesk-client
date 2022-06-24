@@ -9,7 +9,7 @@ import { AnnouncementService } from '../services/AnnouncementService';
 import { Announcement } from '../models/Announcement';
 import AnnouncementContainer from '../components/pages/home/AnnouncementContainer';
 import AnnouncementDetailModal from '../components/announcements/AnnouncementDetailModal';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SessionUser } from '../models/SessionUser';
 import { GraphApiService } from '../services/GraphApiService';
 import { Message } from '../models/Message';
@@ -23,6 +23,8 @@ import { MessageService } from '../services/MessageService';
 import FAQContainer from '../components/faqs/FAQContainer';
 import { FAQCategoryService } from '../services/FAQCategoryService';
 import { FAQCategory } from '../models/FAQCategory';
+import { TicketService } from '../services/TicketService';
+import { TicketSummary } from '../models/TicketSummary';
 
 type Props = {
   announcements: Announcement[];
@@ -31,6 +33,7 @@ type Props = {
   initialTake: number;
   initialSkip: number;
   messageCount: number;
+  ticketSummary: TicketSummary;
 };
 
 export const messagesAtom = atom([] as Message[]);
@@ -42,6 +45,7 @@ const Home: NextPage<Props> = ({
   initialTake,
   initialSkip,
   messageCount,
+  ticketSummary,
 }) => {
   useHydrateAtoms([[messagesAtom, serverMessages]] as const);
 
@@ -70,11 +74,11 @@ const Home: NextPage<Props> = ({
               announcements={announcements}
             />
 
-            {user.roleName === ROLES.ADMIN ? (
-              <AdminTicketSummaryContainer />
-            ) : user.roleName === ROLES.USER ? (
-              <UserTicketSummaryContainer />
-            ) : null}
+            {user.roleName === ROLES.USER ? (
+              <UserTicketSummaryContainer ticketSummary={ticketSummary} />
+            ) : (
+              <AdminTicketSummaryContainer ticketSummary={ticketSummary} />
+            )}
           </div>
         </div>
 
@@ -111,8 +115,8 @@ export const getServerSideProps = withSessionSsr(
 
     const user = session.user as SessionUser;
     const announcementService = new AnnouncementService(user.accessToken);
-    const graphApiService = new GraphApiService(user.accessToken);
     const messageService = new MessageService(user.accessToken);
+    const ticketService = new TicketService(user.accessToken);
 
     const announcements = await announcementService.getBySemester(
       sessionActiveSemester.id
@@ -131,6 +135,10 @@ export const getServerSideProps = withSessionSsr(
       faqCategories = await faqCategoryService.getAll();
     }
 
+    const ticketSummary = await ticketService.getTicketSummary(
+      sessionActiveSemester.id
+    );
+
     return {
       props: {
         semesters,
@@ -142,6 +150,7 @@ export const getServerSideProps = withSessionSsr(
         messageCount: count,
         initialTake,
         initialSkip,
+        ticketSummary,
       },
     };
   }

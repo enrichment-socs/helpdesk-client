@@ -75,10 +75,10 @@ const TicketTable: React.FC<Props> = ({ tickets }) => {
                         index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
                       } transition duration-300 ease-in-out hover:bg-sky-100`}
                       onClick={rowClickHandler.bind(this, data.id)}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {data.subject}
+                      <td className="max-w-[32rem] truncate px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {data.subject || 'No Subject'}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      <td className="max-w-[16rem] truncate px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {data.senderName}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">

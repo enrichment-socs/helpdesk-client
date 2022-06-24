@@ -1,26 +1,31 @@
 import { ChartBarIcon } from '@heroicons/react/solid';
+import { TicketSummary } from '../../../models/TicketSummary';
 
-const UserTicketSummaryContainer = () => {
+type Props = {
+  ticketSummary: TicketSummary;
+};
+
+const UserTicketSummaryContainer = ({ ticketSummary }: Props) => {
   const ticketCategories = [
     {
-      name: 'Assigned',
-      count: 0,
+      name: 'Assigned to Admin',
+      count: ticketSummary.assignedCount,
     },
     {
       name: 'Pending',
-      count: 0,
+      count: ticketSummary.pendingCount,
     },
     {
       name: 'In Progress',
-      count: 0,
+      count: ticketSummary.inProgressCount,
     },
     {
       name: 'Resolved',
-      count: 0,
+      count: ticketSummary.resolvedCount,
     },
     {
       name: 'Closed',
-      count: 0,
+      count: ticketSummary.closedCount,
     },
   ];
 
@@ -28,7 +33,7 @@ const UserTicketSummaryContainer = () => {
     <div className="mx-2 p-2 border-2 md:w-1/4 rounded divide-y">
       <div className="text-lg font-bold mb-3 flex items-center">
         <ChartBarIcon className="h-5 w-5" />
-        <span className="ml-3">My Request Summary</span>
+        <span className="ml-3">My Ticket Summary</span>
       </div>
 
       {ticketCategories.map((category, idx) => {

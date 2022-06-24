@@ -28,9 +28,7 @@ export default function AnnouncementContainer({
 
   return (
     <div
-      className={`mx-2 p-2 border-2 min-h-[24rem] ${
-        user.roleName !== ROLES.SUPER_ADMIN ? 'md:w-3/4' : 'md:w-full'
-      } rounded divide-y`}>
+      className={`mx-2 p-2 border-2 md:w-3/4 min-h-[24rem] rounded divide-y`}>
       <div className="text-lg font-bold mb-3 flex items-center">
         <SpeakerphoneIcon className="h-5 w-5" />
         <span className="ml-3">Announcement</span>

@@ -6,6 +6,11 @@ type Props = {
 };
 
 const TicketDetailConversationHeader = ({ message }: Props) => {
+  const getSenderInfo = () => {
+    if (!message) return <SkeletonLoading width="100%" />;
+    return message.sender.emailAddress.address;
+  };
+
   const getSubjectInfo = () => {
     if (!message) return <SkeletonLoading width="100%" />;
     return message.subject || 'No Subject';
@@ -33,6 +38,10 @@ const TicketDetailConversationHeader = ({ message }: Props) => {
 
   return (
     <div className="pb-2">
+      <div>
+        <span className="font-bold">From:</span>
+        <span className="ml-3">{getSenderInfo()}</span>
+      </div>
       <div>
         <span className="font-bold">To:</span>
         <span className="ml-3">{getToRecipientsInfo()}</span>

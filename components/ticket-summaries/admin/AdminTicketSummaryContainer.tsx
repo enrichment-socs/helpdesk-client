@@ -1,26 +1,31 @@
 import { ChartBarIcon } from '@heroicons/react/solid';
+import { TicketSummary } from '../../../models/TicketSummary';
 
-const AdminTicketSummaryContainer = () => {
+type Props = {
+  ticketSummary: TicketSummary;
+};
+
+const AdminTicketSummaryContainer = ({ ticketSummary }: Props) => {
   const ticketCategories = [
     {
       name: 'Assigned',
-      count: 0,
+      count: ticketSummary.assignedCount,
     },
     {
       name: 'Pending',
-      count: 0,
+      count: ticketSummary.pendingCount,
     },
     {
       name: 'In Progress',
-      count: 0,
+      count: ticketSummary.inProgressCount,
     },
     {
       name: 'Resolved',
-      count: 0,
+      count: ticketSummary.resolvedCount,
     },
     {
       name: 'Closed',
-      count: 0,
+      count: ticketSummary.closedCount,
     },
   ];
 

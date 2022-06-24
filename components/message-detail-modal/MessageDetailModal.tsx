@@ -168,6 +168,7 @@ const MessageDetailModal = ({
                         firstOutlookMessageFromConversation={
                           outlookMessagesFromThisConversation[0]
                         }
+                        currentOutlookMessage={outlookMessage}
                       />
                     </Then>
                   </If>

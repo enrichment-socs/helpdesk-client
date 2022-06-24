@@ -27,10 +27,12 @@ import { Disclosure, Transition } from '@headlessui/react';
 import { ChevronUpIcon } from '@heroicons/react/solid';
 import { addHours } from 'date-fns';
 import ReactTooltip from 'react-tooltip';
+import { DateHelper } from '../../shared/libs/date-helper';
 
 type Props = {
   onClose: () => void;
   message: Message;
+  currentOutlookMessage: OutlookMessage;
   firstOutlookMessageFromConversation: OutlookMessage;
 };
 
@@ -40,6 +42,7 @@ export default function MessageDetailModalAction({
   onClose,
   message,
   firstOutlookMessageFromConversation,
+  currentOutlookMessage,
 }: Props) {
   const session = useSession();
   const user = session?.data?.user as SessionUser;
@@ -61,12 +64,9 @@ export default function MessageDetailModalAction({
   const [selectedAdminId, setSelectedAdminId] = useState('');
 
   const getInitialDueBy = (): Date => {
-    const currDate = new Date();
-    currDate.setDate(currDate.getDate() + 5);
-    currDate.setHours(currDate.getHours() + 1);
-    currDate.setMinutes(0);
-    currDate.setSeconds(0);
-    return currDate;
+    const dueDate = new Date();
+    dueDate.setDate(dueDate.getDate() + 1);
+    return DateHelper.roundUpHours(dueDate);
   };
 
   const [selectedDueDate, setSelectedDueDate] = useState(getInitialDueBy());
@@ -126,9 +126,8 @@ export default function MessageDetailModalAction({
       categoryId: selectedCategoryId,
       priorityId: selectedPriorityId,
       conversationId: message.conversationId,
-      senderName: firstOutlookMessageFromConversation.sender.emailAddress.name,
-      senderEmail:
-        firstOutlookMessageFromConversation.sender.emailAddress.address,
+      senderName: currentOutlookMessage.sender.emailAddress.name,
+      senderEmail: currentOutlookMessage.sender.emailAddress.address,
       subject: firstOutlookMessageFromConversation.subject,
       dueBy: selectedDueDate,
     };
@@ -141,9 +140,8 @@ export default function MessageDetailModalAction({
     const dto: CreateInformationDto = {
       semesterId: selectedSemesterId,
       conversationId: message.conversationId,
-      senderName: firstOutlookMessageFromConversation.sender.emailAddress.name,
-      senderEmail:
-        firstOutlookMessageFromConversation.sender.emailAddress.address,
+      senderName: currentOutlookMessage.sender.emailAddress.name,
+      senderEmail: currentOutlookMessage.sender.emailAddress.address,
       subject: firstOutlookMessageFromConversation.subject,
     };
 
