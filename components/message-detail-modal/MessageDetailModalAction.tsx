@@ -31,6 +31,7 @@ import ReactTooltip from 'react-tooltip';
 type Props = {
   onClose: () => void;
   message: Message;
+  currentOutlookMessage: OutlookMessage;
   firstOutlookMessageFromConversation: OutlookMessage;
 };
 
@@ -40,6 +41,7 @@ export default function MessageDetailModalAction({
   onClose,
   message,
   firstOutlookMessageFromConversation,
+  currentOutlookMessage,
 }: Props) {
   const session = useSession();
   const user = session?.data?.user as SessionUser;
@@ -126,9 +128,8 @@ export default function MessageDetailModalAction({
       categoryId: selectedCategoryId,
       priorityId: selectedPriorityId,
       conversationId: message.conversationId,
-      senderName: firstOutlookMessageFromConversation.sender.emailAddress.name,
-      senderEmail:
-        firstOutlookMessageFromConversation.sender.emailAddress.address,
+      senderName: currentOutlookMessage.sender.emailAddress.name,
+      senderEmail: currentOutlookMessage.sender.emailAddress.address,
       subject: firstOutlookMessageFromConversation.subject,
       dueBy: selectedDueDate,
     };
@@ -141,9 +142,8 @@ export default function MessageDetailModalAction({
     const dto: CreateInformationDto = {
       semesterId: selectedSemesterId,
       conversationId: message.conversationId,
-      senderName: firstOutlookMessageFromConversation.sender.emailAddress.name,
-      senderEmail:
-        firstOutlookMessageFromConversation.sender.emailAddress.address,
+      senderName: currentOutlookMessage.sender.emailAddress.name,
+      senderEmail: currentOutlookMessage.sender.emailAddress.address,
       subject: firstOutlookMessageFromConversation.subject,
     };
 
