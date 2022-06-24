@@ -77,6 +77,11 @@ export default function Navbar() {
           href: '/priorities',
           roles: [ROLES.SUPER_ADMIN],
         },
+        {
+          title: 'Users',
+          href: '/users',
+          roles: [ROLES.SUPER_ADMIN],
+        }
       ],
     },
     {
@@ -144,8 +149,7 @@ export default function Navbar() {
                           <div
                             className={`tracking-wide text-center cursor-pointer hover:text-primary min-w-[3rem] py-4 text-gray-600 font-semibold ${
                               router.pathname.includes(link.href) &&
-                              router.pathname.split('/')[1].toLowerCase() ===
-                                link.title.toLowerCase()
+                              router.pathname.split('/')[1].toLowerCase().includes(link.title.toLowerCase())
                                 ? 'border-b-2 border-primary font-bold'
                                 : ''
                             }`}>

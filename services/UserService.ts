@@ -25,4 +25,12 @@ export class UserService extends BaseService {
     );
     return res.data;
   }
+
+  public async getAll(): Promise<User[]> {
+    const res: AxiosResponse<User[]> = await this.wrapper.handle(
+      axios.get(`${this.BASE_URL}/users`, this.headersWithToken())
+    );
+
+    return res.data;
+  }
 }
