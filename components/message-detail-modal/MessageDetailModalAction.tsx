@@ -65,7 +65,7 @@ export default function MessageDetailModalAction({
 
   const getInitialDueBy = (): Date => {
     const dueDate = new Date();
-    dueDate.setDate(dueDate.getDate() + 5);
+    dueDate.setDate(dueDate.getDate() + 1);
     return DateHelper.roundUpHours(dueDate);
   };
 
