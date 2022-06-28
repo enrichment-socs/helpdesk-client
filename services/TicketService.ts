@@ -31,6 +31,14 @@ export class TicketService extends BaseService {
     return result.data;
   }
 
+  public async deleteById(id: string) {
+    const result: AxiosResponse<any> = await this.wrapper.handle(
+      axios.delete(`${this.BASE_URL}/tickets/${id}`, this.headersWithToken())
+    );
+
+    return result.data;
+  }
+
   public async getTicketSummary(semesterId: string) {
     const result: AxiosResponse<TicketSummary> = await this.wrapper.handle(
       axios.get(

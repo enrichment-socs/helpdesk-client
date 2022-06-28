@@ -61,7 +61,7 @@ const TicketTable: React.FC<Props> = ({ tickets }) => {
               <tbody>
                 {tickets.length == 0 && (
                   <tr className="text-center">
-                    <td colSpan={7} className="p-4">
+                    <td colSpan={7} className="p-4 text-center">
                       There are currently no tickets
                     </td>
                   </tr>

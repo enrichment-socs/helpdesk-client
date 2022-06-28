@@ -105,7 +105,6 @@ const TicketDetailPage: NextPage<Props> = ({
         attachments = messageAttachment.value;
       }
 
-      console.log([...attachmentArrays, attachments]);
       setAttachmentArrays((prev) => [...prev, attachments]);
     }
 
@@ -114,7 +113,7 @@ const TicketDetailPage: NextPage<Props> = ({
 
   const getTabMenuList = () => {
     // const tabMenuList = ['Details', 'Manage Ticket', 'Resolution', 'History']; // TODO: use this line when start developing History system
-    const tabMenuList = ['Details', 'Manage Ticket', 'Resolution'];
+    const tabMenuList = ['Details', 'Resolution', 'Manage Ticket'];
     if (user?.roleName !== ROLES.ADMIN) tabMenuList.splice(1, 1);
     return tabMenuList;
   };

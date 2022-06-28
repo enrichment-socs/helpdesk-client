@@ -5,7 +5,7 @@ import {
   InformationCircleIcon,
 } from '@heroicons/react/solid';
 import { useSession } from 'next-auth/react';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Case as SwitchCase, Else, If, Switch, Then } from 'react-if';
 import { Ticket } from '../../../models/Ticket';
@@ -21,6 +21,8 @@ import { confirm } from '../../../shared/libs/confirm-dialog-helper';
 import InfoAlert from '../../../widgets/InfoAlert';
 import SuccessAlert from '../../../widgets/SuccessAlert';
 import TicketStatusChangeLogTable from './TicketStatusChangeLogTable';
+import { TicketService } from '../../../services/TicketService';
+import { useRouter } from 'next/router';
 
 type Props = {
   ticketStatuses: TicketStatus[];
@@ -39,9 +41,18 @@ export default function TicketDetailManage({
 }: Props) {
   const session = useSession();
   const user = session?.data?.user as SessionUser;
+  const router = useRouter();
+  const ticketService = new TicketService(user?.accessToken);
   const ticketStatusService = new TicketStatusService(user?.accessToken);
+  const [enableDeleteButton, setEnableDeleteButton] = useState(true);
 
   const [reason, setReason] = useState('');
+
+  useEffect(() => {
+    if (getCurrentStatus() === STATUS.CLOSED) {
+      setEnableDeleteButton(false);
+    }
+  }, []);
 
   const getCurrentStatus = () => {
     if (ticketStatuses.length == 0) return 'No Status';
@@ -100,9 +111,51 @@ export default function TicketDetailManage({
     }
   };
 
+  const handleDeleteTicket = async () => {
+    const message =
+      'Are you sure you want to delete this ticket? there is no going back after you do this.';
+    if (await confirm(message)) {
+      toast.promise(ticketService.deleteById(ticket.id), {
+        loading: 'Deleting ticket...',
+        success: (_) => {
+          router.push('/tickets');
+          return 'Ticket deleted succesfully!';
+        },
+        error: (e) => e.toString(),
+      });
+    }
+  };
+
   return (
     <section className="text-gray-800">
       <div>
+        <h2 className="font-semibold text-lg mb-2">Action</h2>
+        <div className=" p-4 border border-red-300 rounded bg-red-50 flex justify-between">
+          <div className="text-sm">
+            <h3 className="font-medium">Delete this ticket.</h3>
+            <p>
+              Once you delete this ticket, there is no going back. Please be
+              certain. Ticket cant be deleted if it&rsquo;s already closed
+            </p>
+          </div>
+
+          <div>
+            <button
+              disabled={!enableDeleteButton}
+              onClick={handleDeleteTicket}
+              type="button"
+              className={`${
+                enableDeleteButton
+                  ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500 text-white'
+                  : 'bg-gray-400 text-gray-100'
+              } inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2`}>
+              Delete Ticket
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-8">
         <h2 className="font-semibold text-lg mb-2">Ticket Status Change Log</h2>
         <TicketStatusChangeLogTable ticketStatuses={ticketStatuses} />
       </div>
