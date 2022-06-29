@@ -4,7 +4,7 @@ type Props = {
   currentPageNumber: number;
 };
 
-export default function MessagePaginatorButton({
+export default function CustomPaginatorButton({
   number,
   changePage,
   currentPageNumber,

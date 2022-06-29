@@ -8,9 +8,10 @@ import { messagesAtom } from '../../pages';
 import { GraphApiService } from '../../services/GraphApiService';
 import MessagesTable from './MessagesTable';
 import MessageDetailModal from '../message-detail-modal/MessageDetailModal';
-import MessagePaginator from './MessagePaginator';
+import CustomPaginator from '../../widgets/CustomPaginator';
 import { MessageService } from '../../services/MessageService';
 import { Message } from '../../models/Message';
+import { ClientPromiseWrapper } from '../../shared/libs/client-promise-wrapper';
 
 type Props = {
   take: number;
@@ -60,6 +61,14 @@ export default function MessageContainer({
     setIsSync(false);
   };
 
+  const fetchMessages = async (take: number, skip: number) => {
+    const wrapper = new ClientPromiseWrapper(toast);
+    const { messages } = await wrapper.handle(
+      messageService.getMessages(take, skip)
+    );
+    return messages;
+  };
+
   return (
     <>
       <MessageDetailModal
@@ -94,7 +103,7 @@ export default function MessageContainer({
             setSelectedMessage={setSelectedMessage}
           />
 
-          <MessagePaginator
+          <CustomPaginator
             take={take}
             skip={skip}
             totalCount={totalCount}
@@ -103,6 +112,8 @@ export default function MessageContainer({
             setPageNumber={setPageNumber}
             threeFirstPageNumbers={threeFirstPageNumber}
             setThreeFirstPageNumbers={setThreeFirstPageNumber}
+            fetchItem={fetchMessages}
+            setItem={setMessages}
           />
         </div>
       </div>

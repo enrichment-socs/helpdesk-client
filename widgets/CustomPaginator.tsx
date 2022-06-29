@@ -7,12 +7,7 @@ import { useSession } from 'next-auth/react';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Else, If, Then } from 'react-if';
-import { SessionUser } from '../../models/SessionUser';
-import { messagesAtom } from '../../pages';
-import { GraphApiService } from '../../services/GraphApiService';
-import { MessageService } from '../../services/MessageService';
-import { ClientPromiseWrapper } from '../../shared/libs/client-promise-wrapper';
-import MessagePaginatorButton from './MessagePaginatorButton';
+import CustomPaginatorButton from './CustomPaginatorButton';
 
 type Props = {
   take: number;
@@ -23,9 +18,11 @@ type Props = {
   setPageNumber: Dispatch<SetStateAction<number>>;
   threeFirstPageNumbers: number[];
   setThreeFirstPageNumbers: Dispatch<SetStateAction<number[]>>;
+  setItem: Dispatch<SetStateAction<any[]>>;
+  fetchItem: (take: number, skip: number) => Promise<any[]>;
 };
 
-export default function MessagePaginator({
+export default function CustomPaginator({
   take,
   skip,
   totalCount,
@@ -34,12 +31,10 @@ export default function MessagePaginator({
   setPageNumber,
   threeFirstPageNumbers,
   setThreeFirstPageNumbers,
+  setItem,
+  fetchItem,
 }: Props) {
   const session = useSession();
-  const user = session?.data?.user as SessionUser;
-  const graphService = new GraphApiService(user?.accessToken);
-  const messageService = new MessageService(user?.accessToken);
-  const [, setMessages] = useAtom(messagesAtom);
 
   const totalPage = Math.ceil(totalCount / take);
   const lastThreePageNumbers = [totalPage - 2, totalPage - 1, totalPage];
@@ -62,22 +57,15 @@ export default function MessagePaginator({
     const newSkip = (newPageNumber - 1) * take;
     setSkip(newSkip);
 
-    await fetchMessages(take, newSkip);
-  };
-
-  const fetchMessages = async (take: number, skip: number) => {
-    const wrapper = new ClientPromiseWrapper(toast);
-    const { messages } = await wrapper.handle(
-      messageService.getMessages(take, skip)
-    );
-    setMessages(messages ?? []);
+    const item = await fetchItem(take, newSkip);
+    setItem(item);
   };
 
   const renderStaticPagination = () => {
     return (
       <>
         {Array.from({ length: totalPage }, (_, i) => i + 1).map((number) => (
-          <MessagePaginatorButton
+          <CustomPaginatorButton
             key={number}
             number={number}
             currentPageNumber={pageNumber}
@@ -92,7 +80,7 @@ export default function MessagePaginator({
     return (
       <>
         {threeFirstPageNumbers.map((number) => (
-          <MessagePaginatorButton
+          <CustomPaginatorButton
             key={number}
             number={number}
             currentPageNumber={pageNumber}
@@ -108,7 +96,7 @@ export default function MessagePaginator({
 
         {totalPage > 6 &&
           lastThreePageNumbers.map((number) => (
-            <MessagePaginatorButton
+            <CustomPaginatorButton
               key={number}
               number={number}
               currentPageNumber={pageNumber}
