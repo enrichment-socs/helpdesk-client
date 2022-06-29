@@ -6,23 +6,41 @@ import { withSessionSsr } from '../../shared/libs/session';
 import { SemesterService } from '../../services/SemesterService';
 import { AuthHelper } from '../../shared/libs/auth-helper';
 import { ROLES } from '../../shared/constants/roles';
-import { atom } from 'jotai';
 import { Ticket } from '../../models/Ticket';
-import { useHydrateAtoms } from 'jotai/utils';
 import { TicketService } from '../../services/TicketService';
 import { SessionUser } from '../../models/SessionUser';
 import TicketContainer from '../../components/ticket-detail/TicketContainer';
+import { useState } from 'react';
 
 type Props = {
   tickets: Ticket[];
+  count: number;
+  initialTake: number;
+  initialSkip: number;
 };
 
-const TicketPage: NextPage<Props> = ({ tickets }) => {
+const TicketPage: NextPage<Props> = ({
+  tickets: serverTickets,
+  count,
+  initialSkip,
+  initialTake,
+}) => {
+  const [skip, setSkip] = useState(initialSkip);
+  const [tickets, setTickets] = useState(serverTickets);
+
+  console.log({ count, tickets });
   return (
     <Layout
       controlWidth={false}
       className="max-w-[96rem] px-2 sm:px-6 lg:px-8 mx-auto mb-8">
-      <TicketContainer tickets={tickets} />
+      <TicketContainer
+        take={initialTake}
+        skip={skip}
+        setSkip={setSkip}
+        totalCount={count}
+        tickets={tickets}
+        setTickets={setTickets}
+      />
     </Layout>
   );
 };
@@ -40,15 +58,17 @@ export const getServerSideProps = withSessionSsr(
         },
       };
 
+    const initialTake = 10;
+    const initialSkip = 0;
     const user = session.user as SessionUser;
     const ticketService = new TicketService(user?.accessToken);
-    const tickets =
-      user?.roleName === ROLES.USER
-        ? await ticketService.getTicketsBySemester(
-            sessionActiveSemester.id,
-            user?.email
-          )
-        : await ticketService.getTicketsBySemester(sessionActiveSemester.id);
+    const requesterName = user?.roleName === ROLES.USER ? user.email : null;
+    const { count, tickets } = await ticketService.getTicketsBySemester(
+      sessionActiveSemester.id,
+      requesterName,
+      initialTake,
+      initialSkip
+    );
 
     return {
       props: {
@@ -56,6 +76,9 @@ export const getServerSideProps = withSessionSsr(
         session,
         sessionActiveSemester,
         tickets,
+        count,
+        initialTake,
+        initialSkip,
       },
     };
   }

@@ -7,11 +7,18 @@ import { TicketSummary } from '../models/TicketSummary';
 export class TicketService extends BaseService {
   public async getTicketsBySemester(
     semesterId: string,
-    requesterEmail?: string
-  ): Promise<Ticket[]> {
-    const result: AxiosResponse<Ticket[]> = await this.wrapper.handle(
+    requesterEmail?: string,
+    take?: number,
+    skip?: number
+  ): Promise<{ count: number; tickets: Ticket[] }> {
+    const result: AxiosResponse<{
+      count: number;
+      tickets: Ticket[];
+    }> = await this.wrapper.handle(
       axios.get(
-        `${this.BASE_URL}/tickets?semesterId=${semesterId}&requesterEmail=${
+        `${
+          this.BASE_URL
+        }/tickets?semesterId=${semesterId}&take=${take}&skip=${skip}&requesterEmail=${
           requesterEmail ?? ''
         }`,
         this.headersWithToken()
