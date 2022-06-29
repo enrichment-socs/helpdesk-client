@@ -114,7 +114,8 @@ const TicketDetailPage: NextPage<Props> = ({
   const getTabMenuList = () => {
     // const tabMenuList = ['Details', 'Manage Ticket', 'Resolution', 'History']; // TODO: use this line when start developing History system
     const tabMenuList = ['Details', 'Resolution', 'Manage Ticket'];
-    if (user?.roleName !== ROLES.ADMIN) tabMenuList.splice(1, 1);
+    if (user?.roleName !== ROLES.ADMIN)
+      return tabMenuList.filter((t) => t !== 'Manage Ticket');
     return tabMenuList;
   };
 
