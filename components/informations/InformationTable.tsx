@@ -1,15 +1,16 @@
 import { format } from 'date-fns';
 import { useAtom } from 'jotai';
 import { Information } from '../../models/Information';
-import { informationsAtom } from '../../pages/informations';
 
 type Props = {
   openDetailModal: (info: Information) => void;
+  informations: Information[];
 };
 
-export default function InformationTable({ openDetailModal }: Props) {
-  const [informations] = useAtom(informationsAtom);
-
+export default function InformationTable({
+  openDetailModal,
+  informations,
+}: Props) {
   return (
     <div className="flex flex-col">
       <div className="overflow-x-auto">

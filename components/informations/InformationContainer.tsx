@@ -4,7 +4,11 @@ import { Information } from '../../models/Information';
 import InformationDetailModal from '../information-detail-modal/InformationDetailModal';
 import InformationTable from './InformationTable';
 
-export default function InformationContainer() {
+type Props = {
+  informations: Information[];
+};
+
+export default function InformationContainer({ informations }: Props) {
   const [openDetailModal, setOpenDetailModal] = useState(false);
   const [selected, setSelected] = useState<Information>(null);
 
@@ -30,7 +34,10 @@ export default function InformationContainer() {
           </div>
         </div>
         <div className="p-1">
-          <InformationTable openDetailModal={openModal} />
+          <InformationTable
+            openDetailModal={openModal}
+            informations={informations}
+          />
         </div>
       </div>
     </>

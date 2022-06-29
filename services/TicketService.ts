@@ -5,10 +5,15 @@ import { BaseService } from './BaseService';
 import { TicketSummary } from '../models/TicketSummary';
 
 export class TicketService extends BaseService {
-  public async getTickets(requesterEmail?: string): Promise<Ticket[]> {
+  public async getTicketsBySemester(
+    semesterId: string,
+    requesterEmail?: string
+  ): Promise<Ticket[]> {
     const result: AxiosResponse<Ticket[]> = await this.wrapper.handle(
       axios.get(
-        `${this.BASE_URL}/tickets?requesterEmail=${requesterEmail ?? ''}`,
+        `${this.BASE_URL}/tickets?semesterId=${semesterId}&requesterEmail=${
+          requesterEmail ?? ''
+        }`,
         this.headersWithToken()
       )
     );

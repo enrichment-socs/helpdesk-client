@@ -1,11 +1,13 @@
 import { ArchiveIcon } from '@heroicons/react/solid';
 import { useAtom } from 'jotai';
-import { ticketsAtom } from '../../pages/tickets';
+import { Ticket } from '../../models/Ticket';
 import TicketTable from '../tickets/TicketTable';
 
-export default function TicketContainer() {
-  const [tickets] = useAtom(ticketsAtom);
+type Props = {
+  tickets: Ticket[];
+};
 
+export default function TicketContainer({ tickets }: Props) {
   return (
     <>
       <div className="ml-2 mt-5 p-2 border-2 rounded divide-y">

@@ -13,20 +13,16 @@ import { TicketService } from '../../services/TicketService';
 import { SessionUser } from '../../models/SessionUser';
 import TicketContainer from '../../components/ticket-detail/TicketContainer';
 
-export const ticketsAtom = atom([] as Ticket[]);
-
 type Props = {
   tickets: Ticket[];
 };
 
 const TicketPage: NextPage<Props> = ({ tickets }) => {
-  useHydrateAtoms([[ticketsAtom, tickets]] as const);
-
   return (
     <Layout
       controlWidth={false}
       className="max-w-[96rem] px-2 sm:px-6 lg:px-8 mx-auto mb-8">
-      <TicketContainer />
+      <TicketContainer tickets={tickets} />
     </Layout>
   );
 };
@@ -48,8 +44,11 @@ export const getServerSideProps = withSessionSsr(
     const ticketService = new TicketService(user?.accessToken);
     const tickets =
       user?.roleName === ROLES.USER
-        ? await ticketService.getTickets(user?.email)
-        : await ticketService.getTickets();
+        ? await ticketService.getTicketsBySemester(
+            sessionActiveSemester.id,
+            user?.email
+          )
+        : await ticketService.getTicketsBySemester(sessionActiveSemester.id);
 
     return {
       props: {

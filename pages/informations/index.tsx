@@ -13,18 +13,14 @@ import { getInitialServerProps } from '../../shared/libs/initialize-server-props
 import { withSessionSsr } from '../../shared/libs/session';
 import Layout from '../../widgets/_Layout';
 
-export const informationsAtom = atom([] as Information[]);
-
 type Props = {
   informations: Information[];
 };
 
 const InformationsPage: NextPage<Props> = ({ informations }) => {
-  useHydrateAtoms([[informationsAtom, informations]] as const);
-
   return (
     <Layout>
-      <InformationContainer />
+      <InformationContainer informations={informations} />
     </Layout>
   );
 };
@@ -44,7 +40,9 @@ export const getServerSideProps = withSessionSsr(
 
     const user = session?.user as SessionUser;
     const infoService = new InformationService(user?.accessToken);
-    const informations = await infoService.getAll();
+    const informations = await infoService.getBySemester(
+      sessionActiveSemester.id
+    );
 
     return {
       props: {

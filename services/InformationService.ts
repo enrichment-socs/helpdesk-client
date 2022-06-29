@@ -11,9 +11,12 @@ export class InformationService extends BaseService {
     return result.data;
   }
 
-  public async getAll(): Promise<Information> {
+  public async getBySemester(semesterId: string): Promise<Information[]> {
     const result = await this.wrapper.handle(
-      axios.get(`${this.BASE_URL}/informations`, this.headersWithToken())
+      axios.get(
+        `${this.BASE_URL}/informations?semesterId=${semesterId}`,
+        this.headersWithToken()
+      )
     );
     return result.data;
   }
