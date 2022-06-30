@@ -2,6 +2,7 @@ import { atom } from 'jotai';
 import { useHydrateAtoms } from 'jotai/utils';
 import { NextPage } from 'next';
 import { getSession } from 'next-auth/react';
+import { useEffect, useState } from 'react';
 import InformationContainer from '../../components/informations/InformationContainer';
 import { Information } from '../../models/Information';
 import { SessionUser } from '../../models/SessionUser';
@@ -15,12 +16,34 @@ import Layout from '../../widgets/_Layout';
 
 type Props = {
   informations: Information[];
+  count: number;
+  initialTake: number;
+  initialSkip: number;
 };
 
-const InformationsPage: NextPage<Props> = ({ informations }) => {
+const InformationsPage: NextPage<Props> = ({
+  informations: serverInformations,
+  count,
+  initialSkip,
+  initialTake,
+}) => {
+  const [skip, setSkip] = useState(initialSkip);
+  const [informations, setInformations] = useState(serverInformations);
+
+  useEffect(() => {
+    setInformations(serverInformations);
+  }, [serverInformations]);
+
   return (
     <Layout>
-      <InformationContainer informations={informations} />
+      <InformationContainer
+        take={initialTake}
+        skip={skip}
+        setSkip={setSkip}
+        totalCount={count}
+        setInformations={setInformations}
+        informations={informations}
+      />
     </Layout>
   );
 };
@@ -40,8 +63,12 @@ export const getServerSideProps = withSessionSsr(
 
     const user = session?.user as SessionUser;
     const infoService = new InformationService(user?.accessToken);
-    const informations = await infoService.getBySemester(
-      sessionActiveSemester.id
+    const initialTake = 10;
+    const initialSkip = 0;
+    const { count, informations } = await infoService.getBySemester(
+      sessionActiveSemester.id,
+      initialTake,
+      initialSkip
     );
 
     return {
@@ -50,6 +77,9 @@ export const getServerSideProps = withSessionSsr(
         session,
         sessionActiveSemester,
         informations,
+        count,
+        initialTake,
+        initialSkip,
       },
     };
   }
