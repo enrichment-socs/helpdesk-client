@@ -4,4 +4,7 @@ export interface CreateUserDto {
   name: string;
   department: string;
   roleId: string;
+  jobTitle?: string;
+  companyName?: string;
+  officeLocation?: string;
 }

@@ -33,4 +33,30 @@ export class UserService extends BaseService {
 
     return res.data;
   }
+
+  public async createUser(createUserDto: CreateUserDto) {
+    const res: AxiosResponse<User> = await this.wrapper.handle(
+      axios.post(`${this.BASE_URL}/users`, createUserDto, this.headersWithToken())
+    );
+    return res.data;
+  }
+
+  public async updateUser(dto: CreateUserDto, id: string) {
+    const res: AxiosResponse<User> = await this.wrapper.handle(
+      axios.patch(`${this.BASE_URL}/users/${id}`, dto, this.headersWithToken())
+    );
+
+    return res.data;
+  }
+
+  public async deleteUser(id: string) {
+    const result: AxiosResponse<User> = await this.wrapper.handle(
+      axios.delete(
+        `${this.BASE_URL}/users/${id}`,
+        this.headersWithToken(),
+      )
+    );
+
+    return result.data;
+  }
 }

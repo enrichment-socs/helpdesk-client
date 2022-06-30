@@ -4,6 +4,7 @@ import { NextPage } from 'next';
 import { getSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import ManageUsersTable from '../../../components/users/ManageUsersTable';
+import UserFormModal from '../../../components/users/UserFormModal';
 import { Role } from '../../../models/Role';
 import { SessionUser } from '../../../models/SessionUser';
 import { User } from '../../../models/User';
@@ -31,13 +32,26 @@ const ManageUsersPage: NextPage<Props> = ({ currRoles, currUsers }) => {
   const [searchNameInput, setSearchNameInput] = useState<string>(null);
   const [displayedUsers, setDisplayedUsers] = useState<User[] | null>(users);
 
+  const [openFormModal, setOpenFormModal] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+
+  const openModal = (user: User | null) => {
+    setSelectedUser(user);
+    setOpenFormModal(true);
+  };
+
   const filterUserByRoleAndName = () => {
     let filteredUsers =
       selectedRoleID && selectedRoleID !== 'all'
         ? users.filter((user) => user.role.id === selectedRoleID)
         : users;
 
-    filteredUsers = searchNameInput && searchNameInput.trim() !== "" ? filteredUsers.filter((user) => user.name.toLowerCase().includes(searchNameInput.toLowerCase())) : filteredUsers;
+    filteredUsers =
+      searchNameInput && searchNameInput.trim() !== ''
+        ? filteredUsers.filter((user) =>
+            user.name.toLowerCase().includes(searchNameInput.toLowerCase())
+          )
+        : filteredUsers;
 
     setDisplayedUsers(filteredUsers);
   };
@@ -46,10 +60,27 @@ const ManageUsersPage: NextPage<Props> = ({ currRoles, currUsers }) => {
     filterUserByRoleAndName();
   }, [selectedRoleID, searchNameInput]);
 
+  useEffect(() => {
+    setDisplayedUsers(users);
+  }, [users]);
+
   return (
     <Layout>
+      <UserFormModal
+        isOpen={openFormModal}
+        setIsOpen={setOpenFormModal}
+        user={selectedUser}
+        currRoles={currRoles}
+      />
+
       <div className="font-bold text-2xl mb-4 flex items-center justify-between  ">
         <h1>Manage Users</h1>
+        <button
+          type="button"
+          onClick={() => openModal(null)}
+          className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+          Create
+        </button>
       </div>
       <div className="mb-4">
         <span className="font-bold">Filter By Role:</span>
@@ -75,7 +106,7 @@ const ManageUsersPage: NextPage<Props> = ({ currRoles, currUsers }) => {
           onChange={(event) => setSearchNameInput(event.target.value)}
         />
       </div>
-      <ManageUsersTable users={displayedUsers} />
+      <ManageUsersTable users={displayedUsers} openModal={openModal} />
     </Layout>
   );
 };
