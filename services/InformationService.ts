@@ -11,10 +11,14 @@ export class InformationService extends BaseService {
     return result.data;
   }
 
-  public async getBySemester(semesterId: string): Promise<Information[]> {
+  public async getBySemester(
+    semesterId: string,
+    take?: number,
+    skip?: number
+  ): Promise<{ count: number; informations: Information[] }> {
     const result = await this.wrapper.handle(
       axios.get(
-        `${this.BASE_URL}/informations?semesterId=${semesterId}`,
+        `${this.BASE_URL}/informations?semesterId=${semesterId}&take=${take}&skip=${skip}`,
         this.headersWithToken()
       )
     );

@@ -10,7 +10,7 @@ import { Ticket } from '../../models/Ticket';
 import { TicketService } from '../../services/TicketService';
 import { SessionUser } from '../../models/SessionUser';
 import TicketContainer from '../../components/ticket-detail/TicketContainer';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 type Props = {
   tickets: Ticket[];
@@ -28,7 +28,10 @@ const TicketPage: NextPage<Props> = ({
   const [skip, setSkip] = useState(initialSkip);
   const [tickets, setTickets] = useState(serverTickets);
 
-  console.log({ count, tickets });
+  useEffect(() => {
+    setTickets(serverTickets);
+  }, [serverTickets]);
+
   return (
     <Layout
       controlWidth={false}
