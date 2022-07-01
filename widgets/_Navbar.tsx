@@ -96,7 +96,7 @@ export default function Navbar() {
   const user = session.data.user as SessionUser;
 
   const logOut = async () => {
-    await signOut();
+    await signOut({ redirect: false });
     router.push('/auth/login');
   };
 

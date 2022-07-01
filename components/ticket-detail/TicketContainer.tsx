@@ -37,7 +37,7 @@ export default function TicketContainer({
   const [activeSemester] = useAtom(activeSemesterAtom);
 
   const fetchTickets = async (take: number, skip: number) => {
-    const requesterName = user?.roleName === ROLES.USER ? user.email : null;
+    const requesterName = user?.roleName === ROLES.USER ? user?.email : null;
     const wrapper = new ClientPromiseWrapper(toast);
     const { tickets } = await wrapper.handle(
       ticketService.getTicketsBySemester(

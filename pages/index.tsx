@@ -74,7 +74,7 @@ const Home: NextPage<Props> = ({
               announcements={announcements}
             />
 
-            {user.roleName === ROLES.USER ? (
+            {user?.roleName === ROLES.USER ? (
               <UserTicketSummaryContainer ticketSummary={ticketSummary} />
             ) : (
               <AdminTicketSummaryContainer ticketSummary={ticketSummary} />
@@ -82,7 +82,7 @@ const Home: NextPage<Props> = ({
           </div>
         </div>
 
-        {user.roleName === ROLES.ADMIN && (
+        {user?.roleName === ROLES.ADMIN && (
           <MessageContainer
             take={initialTake}
             skip={skipMessageCount}
@@ -91,7 +91,7 @@ const Home: NextPage<Props> = ({
           />
         )}
 
-        {user.roleName === ROLES.USER && (
+        {user?.roleName === ROLES.USER && (
           <FAQContainer faqCategories={faqCategories} />
         )}
       </div>
@@ -125,12 +125,12 @@ export const getServerSideProps = withSessionSsr(
     const initialTake = 10;
     const initialSkip = 0;
     const { messages, count } =
-      user.roleName === ROLES.USER
+      user?.roleName === ROLES.USER
         ? { messages: [], count: 0 }
         : await messageService.getMessages(initialTake, initialSkip);
 
     let faqCategories = null;
-    if (user.roleName === ROLES.USER) {
+    if (user?.roleName === ROLES.USER) {
       const faqCategoryService = new FAQCategoryService(user?.accessToken);
       faqCategories = await faqCategoryService.getAll();
     }
