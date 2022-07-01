@@ -81,7 +81,7 @@ export default function Navbar() {
           title: 'Users',
           href: '/users',
           roles: [ROLES.SUPER_ADMIN],
-        }
+        },
       ],
     },
     {
@@ -96,8 +96,7 @@ export default function Navbar() {
   const user = session.data.user as SessionUser;
 
   const logOut = async () => {
-    const callbackUrl = process.env.NEXT_PUBLIC_LOGOUT_CALLBACK_URL;
-    signOut({ callbackUrl });
+    signOut({ callbackUrl: '/helpdesk/auth/login' });
   };
 
   return (
@@ -149,7 +148,10 @@ export default function Navbar() {
                           <div
                             className={`tracking-wide text-center cursor-pointer hover:text-primary min-w-[3rem] py-4 text-gray-600 font-semibold ${
                               router.pathname.includes(link.href) &&
-                              router.pathname.split('/')[1].toLowerCase().includes(link.title.toLowerCase())
+                              router.pathname
+                                .split('/')[1]
+                                .toLowerCase()
+                                .includes(link.title.toLowerCase())
                                 ? 'border-b-2 border-primary font-bold'
                                 : ''
                             }`}>

@@ -11,6 +11,7 @@ import jwt_decode from 'jwt-decode';
 import axios from 'axios';
 
 export default NextAuth({
+  site: process.env.NEXTAUTH_URL,
   session: {
     jwt: true,
     maxAge: 1 * 60 * 60,
