@@ -28,6 +28,7 @@ import { ChevronUpIcon } from '@heroicons/react/solid';
 import { addHours } from 'date-fns';
 import ReactTooltip from 'react-tooltip';
 import { DateHelper } from '../../shared/libs/date-helper';
+import { PRIORITY } from '../../shared/constants/priority';
 
 type Props = {
   onClose: () => void;
@@ -62,14 +63,7 @@ export default function MessageDetailModalAction({
   const [selectedCategoryId, setSelectedCategoryId] = useState('');
   const [selectedPriorityId, setSelectedPriorityId] = useState('');
   const [selectedAdminId, setSelectedAdminId] = useState('');
-
-  const getInitialDueBy = (): Date => {
-    const dueDate = new Date();
-    dueDate.setDate(dueDate.getDate() + 1);
-    return DateHelper.roundUpHours(dueDate);
-  };
-
-  const [selectedDueDate, setSelectedDueDate] = useState(getInitialDueBy());
+  const [selectedDueDate, setSelectedDueDate] = useState(new Date());
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -80,6 +74,14 @@ export default function MessageDetailModalAction({
       const fetchedCategories = await categoryService.getAll();
       const fetchedPriorities = await priorityService.getAll();
       const fetchedAdmins = await usersService.getUsersWithAdminRole();
+
+      const initialDueDate = new Date();
+      const lowestPrio = fetchedPriorities.find(
+        (c) => c.priorityName === PRIORITY.LOW
+      );
+      const deadlineDays = Math.floor(lowestPrio.deadlineHours / 24);
+      initialDueDate.setDate(initialDueDate.getDate() + deadlineDays);
+      setSelectedDueDate(DateHelper.roundUpHours(initialDueDate));
 
       setCategories(fetchedCategories);
       setPriorities(fetchedPriorities);
