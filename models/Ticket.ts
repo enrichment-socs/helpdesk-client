@@ -2,6 +2,7 @@ import { Category } from './Category';
 import { Priority } from './Priority';
 import { Semester } from './Semester';
 import { Status } from './Status';
+import { TicketStatus } from './TicketStatus';
 import { User } from './User';
 
 export class Ticket {
@@ -12,6 +13,7 @@ export class Ticket {
   public status: Status;
   public category: Category;
   public priority: Priority;
+  ticketStatuses: TicketStatus[];
   senderName: string;
   senderEmail: string;
   subject: string;
