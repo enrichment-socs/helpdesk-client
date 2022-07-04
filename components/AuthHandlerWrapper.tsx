@@ -11,7 +11,8 @@ export default function AuthHandlerWrapper() {
       const tokenPayload: any = jwt_decode(user.accessToken);
       const expDate = new Date(tokenPayload.exp * 1000);
       const now = new Date();
-      if (now >= expDate) signOut();
+      if (now >= expDate)
+        signOut({ callbackUrl: process.env.NEXT_PUBLIC_LOGIN_ABSOLUTE_URL });
     }
   }, [clientSession]);
 
