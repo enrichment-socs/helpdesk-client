@@ -93,11 +93,10 @@ export default function Navbar() {
 
   const router = useRouter();
   const session = useSession();
-  const user = session.data.user as SessionUser;
+  const user = session?.data?.user as SessionUser;
 
   const logOut = async () => {
-    await signOut({ redirect: false });
-    router.push('/auth/login');
+    await signOut({ callbackUrl: process.env.NEXT_PUBLIC_LOGIN_ABSOLUTE_URL });
   };
 
   return (
