@@ -1,6 +1,8 @@
 import { useRouter } from 'next/router';
-import { format } from 'date-fns';
+import { differenceInHours, format } from 'date-fns';
 import { Ticket } from '../../models/Ticket';
+import { STATUS } from '../../shared/constants/status';
+import { PRIORITY } from '../../shared/constants/priority';
 
 type Props = {
   tickets: Ticket[];
@@ -11,6 +13,22 @@ const TicketTable: React.FC<Props> = ({ tickets }) => {
 
   const rowClickHandler = (id: string) => {
     router.push(`/tickets/${id}`);
+  };
+
+  const getRowBgColor = (ticket: Ticket) => {
+    const currDate = new Date();
+
+    if (ticket.status.statusName === STATUS.CLOSED)
+      return 'bg-green-200 hover:bg-green-300';
+    if (
+      ticket.priority.priorityName === PRIORITY.URGENT ||
+      differenceInHours(new Date(ticket.dueBy), currDate) <= 24
+    )
+      return 'bg-red-200 hover:bg-red-300';
+    if (ticket.priority.priorityName === PRIORITY.HIGH)
+      return 'bg-amber-200 hover:bg-amber-300';
+
+    return '';
   };
 
   return (
@@ -72,8 +90,10 @@ const TicketTable: React.FC<Props> = ({ tickets }) => {
                     <tr
                       key={data.id}
                       className={`cursor-pointer ${
-                        index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
-                      } transition duration-300 ease-in-out hover:bg-sky-100`}
+                        index % 2 === 0 ? 'bg-white' : 'bg-gray-50 '
+                      } transition duration-300 hover:bg-sky-100 ease-in-out ${getRowBgColor(
+                        data
+                      )}`}
                       onClick={rowClickHandler.bind(this, data.id)}>
                       <td className="max-w-[32rem] truncate px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {data.subject || 'No Subject'}
