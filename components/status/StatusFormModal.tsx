@@ -18,6 +18,7 @@ type Props = {
 
 type FormData = {
   statusName: string;
+  statusIndex: number;
 };
 
 export default function StatusFormModal({ isOpen, setIsOpen, status }: Props) {
@@ -36,6 +37,7 @@ export default function StatusFormModal({ isOpen, setIsOpen, status }: Props) {
 
   useEffect(() => {
     setValue('statusName', status?.statusName);
+    setValue('statusIndex', status?.statusIndex);
   }, [status]);
 
   const onSubmit: SubmitHandler<FormData> = async (payload) => {
@@ -132,6 +134,31 @@ export default function StatusFormModal({ isOpen, setIsOpen, status }: Props) {
                     {errors.statusName?.type === 'required' && (
                       <small className="text-red-500">
                         Status name must be filled
+                      </small>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Status Index
+                    </label>
+                    <div className="mt-1">
+                      <input
+                        {...register('statusIndex', {
+                          required: true,
+                        })}
+                        type="text"
+                        className={`${
+                          errors.statusIndex
+                            ? 'border-red-300'
+                            : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+                        } mt-1 block w-full outline-none p-2 text-base border sm:text-sm rounded-md`}
+                        placeholder="Pending"
+                      />
+                    </div>
+                    {errors.statusIndex?.type === 'required' && (
+                      <small className="text-red-500">
+                        Status index must be filled
                       </small>
                     )}
                   </div>

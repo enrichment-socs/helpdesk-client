@@ -45,6 +45,11 @@ export default function ManageStatusTable({ statuses, openModal }: Props) {
                     className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                     Status Name
                   </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                    Status Index
+                  </th>
                   <th scope="col" className="relative px-6 py-3">
                     <span className="sr-only">Edit</span>
                   </th>
@@ -52,29 +57,34 @@ export default function ManageStatusTable({ statuses, openModal }: Props) {
               </thead>
               <tbody>
                 {statuses &&
-                  statuses.map((stat, idx) => (
-                    <tr
-                      key={stat.id}
-                      className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {stat.statusName}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-1">
-                        <button
-                          type="button"
-                          onClick={() => openModal(stat)}
-                          className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                          Update
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => onDelete(stat)}
-                          className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                  statuses
+                    .sort((f, s) => f.statusIndex - s.statusIndex)
+                    .map((stat, idx) => (
+                      <tr
+                        key={stat.id}
+                        className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                          {stat.statusName}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                          {stat.statusIndex}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-1">
+                          <button
+                            type="button"
+                            onClick={() => openModal(stat)}
+                            className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Update
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => onDelete(stat)}
+                            className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
               </tbody>
             </table>
           </div>
