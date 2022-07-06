@@ -21,3 +21,10 @@ export class Ticket {
   created_at: string;
   updated_at: string;
 }
+
+export class TicketFilterModel {
+  requesterEmail: string;
+  priority: string;
+  status: string;
+  query: string;
+}

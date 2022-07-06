@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import { Ticket } from '../models/Ticket';
+import { Ticket, TicketFilterModel } from '../models/Ticket';
 import { CreateTicketDto } from '../models/dto/tickets/create-ticket.dto';
 import { BaseService } from './BaseService';
 import { TicketSummary } from '../models/TicketSummary';
@@ -7,23 +7,22 @@ import { TicketSummary } from '../models/TicketSummary';
 export class TicketService extends BaseService {
   public async getTicketsBySemester(
     semesterId: string,
-    requesterEmail?: string,
+    filter: TicketFilterModel,
     take?: number,
     skip?: number
   ): Promise<{ count: number; tickets: Ticket[] }> {
+    const {
+      requesterEmail = '',
+      priority = '',
+      status = '',
+      query = '',
+    } = filter;
+
+    const url = `${this.BASE_URL}/tickets?semesterId=${semesterId}&take=${take}&skip=${skip}&requesterEmail=${requesterEmail}&priority=${priority}&status=${status}&query=${query}`;
     const result: AxiosResponse<{
       count: number;
       tickets: Ticket[];
-    }> = await this.wrapper.handle(
-      axios.get(
-        `${
-          this.BASE_URL
-        }/tickets?semesterId=${semesterId}&take=${take}&skip=${skip}&requesterEmail=${
-          requesterEmail ?? ''
-        }`,
-        this.headersWithToken()
-      )
-    );
+    }> = await this.wrapper.handle(axios.get(url, this.headersWithToken()));
 
     return result.data;
   }

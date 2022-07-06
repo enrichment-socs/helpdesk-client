@@ -1,13 +1,14 @@
 import { ArchiveIcon } from '@heroicons/react/solid';
 import { useAtom } from 'jotai';
 import { useSession } from 'next-auth/react';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { useRouter } from 'next/router';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { activeSemesterAtom } from '../../atom';
 import { Priority } from '../../models/Priority';
 import { SessionUser } from '../../models/SessionUser';
 import { Status } from '../../models/Status';
-import { Ticket } from '../../models/Ticket';
+import { Ticket, TicketFilterModel } from '../../models/Ticket';
 import { TicketService } from '../../services/TicketService';
 import { ROLES } from '../../shared/constants/roles';
 import { ClientPromiseWrapper } from '../../shared/libs/client-promise-wrapper';
@@ -41,17 +42,60 @@ export default function TicketContainer({
   const user = session.data.user as SessionUser;
   const ticketService = new TicketService(user.accessToken);
   const [activeSemester] = useAtom(activeSemesterAtom);
+  const router = useRouter();
+
+  const {
+    priority: priorityNameQuery,
+    status: statusNameQuery,
+    query: searchQuery,
+  } = router.query;
+  const [priorityFilter, setPriorityFilter] = useState(
+    (priorityNameQuery as string) || ''
+  );
+  const [statusFilter, setStatusFilter] = useState(
+    (statusNameQuery as string) || ''
+  );
+  const [queryFilter, setQueryFilter] = useState((searchQuery as string) || '');
+
+  useEffect(() => {
+    setPriorityFilter((priorityNameQuery as string) || '');
+    setStatusFilter((statusNameQuery as string) || '');
+    setQueryFilter((searchQuery as string) || '');
+  }, []);
+
+  useEffect(() => {
+    router.push({
+      query: {
+        priority: priorityFilter,
+        status: statusFilter,
+        query: queryFilter,
+      },
+    });
+  }, [priorityFilter, statusFilter, queryFilter]);
+
+  const onStatusFilterChange = (e) => {
+    setStatusFilter(e.target.value);
+  };
+
+  const onPriorityFilterChange = (e) => {
+    setPriorityFilter(e.target.value);
+  };
+
+  const onQueryFilterChange = (e) => {
+    const ENTER_KEY_CODE = 13;
+    if (e.keyCode === ENTER_KEY_CODE) setQueryFilter(e.target.value);
+  };
 
   const fetchTickets = async (take: number, skip: number) => {
-    const requesterName = user?.roleName === ROLES.USER ? user?.email : null;
     const wrapper = new ClientPromiseWrapper(toast);
+    const filter: TicketFilterModel = {
+      requesterEmail: user?.roleName === ROLES.USER ? user.email : '',
+      priority: priorityFilter,
+      query: queryFilter,
+      status: statusFilter,
+    };
     const { tickets } = await wrapper.handle(
-      ticketService.getTicketsBySemester(
-        activeSemester.id,
-        requesterName,
-        take,
-        skip
-      )
+      ticketService.getTicketsBySemester(activeSemester.id, filter, take, skip)
     );
     return tickets;
   };
@@ -69,31 +113,45 @@ export default function TicketContainer({
             <div className="text-lg">Filter:</div>
 
             <div>
-              <select className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 cursor-pointer focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md">
-                <option>All Status</option>
+              <select
+                onChange={onStatusFilterChange}
+                value={statusFilter.toLowerCase()}
+                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 cursor-pointer focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md">
+                <option value="">All Status</option>
                 {statuses.map((status) => (
-                  <option key={status.id}>{status.statusName}</option>
+                  <option
+                    value={status.statusName.toLowerCase()}
+                    key={status.id}>
+                    {status.statusName}
+                  </option>
                 ))}
               </select>
             </div>
 
             <div>
-              <select className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 cursor-pointer focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md">
-                <option>All Priority</option>
+              <select
+                onChange={onPriorityFilterChange}
+                value={priorityFilter.toLowerCase()}
+                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 cursor-pointer focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md">
+                <option value="">All Priority</option>
                 {priorities.map((priority) => (
-                  <option key={priority.id}>{priority.priorityName}</option>
+                  <option
+                    value={priority.priorityName.toLowerCase()}
+                    key={priority.id}>
+                    {priority.priorityName}
+                  </option>
                 ))}
               </select>
             </div>
 
             <div>
-              <div className="mt-1">
-                <input
-                  type="text"
-                  className="shadow-sm focus:ring-primary focus:border-primary block w-full sm:text-sm border py-2 px-4 w-[22rem] border-gray-300 rounded-md"
-                  placeholder="Filter by Subject / Requester Name / Assigned to"
-                />
-              </div>
+              <input
+                type="text"
+                onKeyDown={onQueryFilterChange}
+                defaultValue={queryFilter}
+                className="shadow-sm focus:ring-primary focus:border-primary block w-full sm:text-sm border py-2 px-4 w-[22rem] border-gray-300 rounded-md"
+                placeholder="Filter by Subject / Requester Name / Assigned to"
+              />
             </div>
           </div>
         </div>

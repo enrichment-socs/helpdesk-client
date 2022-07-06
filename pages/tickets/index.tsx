@@ -6,7 +6,7 @@ import { withSessionSsr } from '../../shared/libs/session';
 import { SemesterService } from '../../services/SemesterService';
 import { AuthHelper } from '../../shared/libs/auth-helper';
 import { ROLES } from '../../shared/constants/roles';
-import { Ticket } from '../../models/Ticket';
+import { Ticket, TicketFilterModel } from '../../models/Ticket';
 import { TicketService } from '../../services/TicketService';
 import { SessionUser } from '../../models/SessionUser';
 import TicketContainer from '../../components/ticket-detail/TicketContainer';
@@ -60,7 +60,7 @@ const TicketPage: NextPage<Props> = ({
 };
 
 export const getServerSideProps = withSessionSsr(
-  async function getServerSideProps({ req }) {
+  async function getServerSideProps({ req, query }) {
     const { session, semesters, sessionActiveSemester } =
       await getInitialServerProps(req, getSession, new SemesterService());
 
@@ -72,6 +72,7 @@ export const getServerSideProps = withSessionSsr(
         },
       };
 
+    const { priority, status, query: searchQuery } = query;
     const initialTake = 10;
     const initialSkip = 0;
     const user = session.user as SessionUser;
@@ -79,10 +80,15 @@ export const getServerSideProps = withSessionSsr(
     const statusService = new StatusService(user?.accessToken);
     const priorityService = new PriorityService(user?.accessToken);
 
-    const requesterName = user?.roleName === ROLES.USER ? user.email : null;
+    const filter: TicketFilterModel = {
+      requesterEmail: user?.roleName === ROLES.USER ? user.email : null,
+      priority: (priority as string) || '',
+      query: (searchQuery as string) || '',
+      status: (status as string) || '',
+    };
     const { count, tickets } = await ticketService.getTicketsBySemester(
       sessionActiveSemester.id,
-      requesterName,
+      filter,
       initialTake,
       initialSkip
     );
