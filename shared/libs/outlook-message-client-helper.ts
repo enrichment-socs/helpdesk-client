@@ -16,7 +16,7 @@ export class OutlookMessageClientHelper {
     let content = useUniqueBody
       ? this.message.uniqueBody.content
       : this.message.body.content;
-    const contentIds = content.match(CONTENT_ID_REGEX);
+    const contentIds = content.match(CONTENT_ID_REGEX) || '';
 
     attachments
       .filter(
