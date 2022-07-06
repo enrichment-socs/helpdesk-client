@@ -90,7 +90,6 @@ export default function TicketContainer({
   const fetchTickets = async (take: number, skip: number) => {
     const wrapper = new ClientPromiseWrapper(toast);
     const filter: TicketFilterModel = {
-      requesterEmail: user?.roleName === ROLES.USER ? user.email : '',
       priority: priorityFilter,
       query: queryFilter,
       status: statusFilter,
@@ -107,7 +106,9 @@ export default function TicketContainer({
         <div className="flex justify-between items-center px-2 mb-2">
           <div className="text-lg font-bold mb-3 mt-2 flex items-center">
             <ArchiveIcon className="h-5 w-5" />
-            <span className="ml-3">Tickets</span>
+            <span className="ml-3">
+              {user?.roleName === ROLES.USER ? 'My' : ''} Tickets
+            </span>
           </div>
 
           <div className="flex space-x-4 items-center">

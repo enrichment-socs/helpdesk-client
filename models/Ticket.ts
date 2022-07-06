@@ -23,7 +23,6 @@ export class Ticket {
 }
 
 export class TicketFilterModel {
-  requesterEmail: string;
   priority: string;
   status: string;
   query: string;

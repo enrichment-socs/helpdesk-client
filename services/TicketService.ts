@@ -11,14 +11,9 @@ export class TicketService extends BaseService {
     take?: number,
     skip?: number
   ): Promise<{ count: number; tickets: Ticket[] }> {
-    const {
-      requesterEmail = '',
-      priority = '',
-      status = '',
-      query = '',
-    } = filter;
+    const { priority = '', status = '', query = '' } = filter;
 
-    const url = `${this.BASE_URL}/tickets?semesterId=${semesterId}&take=${take}&skip=${skip}&requesterEmail=${requesterEmail}&priority=${priority}&status=${status}&query=${query}`;
+    const url = `${this.BASE_URL}/tickets?semesterId=${semesterId}&take=${take}&skip=${skip}&priority=${priority}&status=${status}&query=${query}`;
     const result: AxiosResponse<{
       count: number;
       tickets: Ticket[];

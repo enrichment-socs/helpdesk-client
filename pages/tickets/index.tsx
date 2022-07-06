@@ -81,7 +81,6 @@ export const getServerSideProps = withSessionSsr(
     const priorityService = new PriorityService(user?.accessToken);
 
     const filter: TicketFilterModel = {
-      requesterEmail: user?.roleName === ROLES.USER ? user.email : null,
       priority: (priority as string) || '',
       query: (searchQuery as string) || '',
       status: (status as string) || '',
