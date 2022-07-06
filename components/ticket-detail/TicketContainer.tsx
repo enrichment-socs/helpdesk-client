@@ -71,6 +71,7 @@ export default function TicketContainer({
         query: queryFilter,
       },
     });
+    setPageNumber(1);
   }, [priorityFilter, statusFilter, queryFilter]);
 
   const onStatusFilterChange = (e) => {
