@@ -39,16 +39,8 @@ const InformationDetailModal = ({
   const session = useSession();
   const user = session?.data?.user as SessionUser;
   const graphApiService = new GraphApiService(user.accessToken);
-  const [processedConversationMessages, setProcessedConversationMessages] =
-    useState([]);
-  const [
-    conversationMessageAttachmentDictionary,
-    setConversationMessageAttachmentDictionary,
-  ] = useState([]);
-
-  const [outlookMessage, setOutlookMessage] = useState<OutlookMessage>(null);
-  const [attachments, setAttachments] = useState<
-    OutlookMessageAttachmentValue[]
+  const [attachmentArrays, setAttachmentArrays] = useState<
+    OutlookMessageAttachmentValue[][]
   >([]);
   const [
     outlookMessagesInThisConversation,
@@ -57,9 +49,7 @@ const InformationDetailModal = ({
 
   const close = () => {
     setIsOpen(false);
-    setOutlookMessage(null);
-    setConversationMessageAttachmentDictionary([]);
-    setProcessedConversationMessages([]);
+    setAttachmentArrays([]);
     setOutlookMessagesInThisConversation([]);
     setInfo(null);
   };
@@ -72,30 +62,39 @@ const InformationDetailModal = ({
   }, [info]);
 
   const fetchInfo = async () => {
-    const messagesInConversation =
+    const messagesByConversation =
       await graphApiService.getMessagesByConversation(info.conversationId);
 
-    const firstMessage = messagesInConversation[0];
+    for (let i = 0; i < messagesByConversation.length; i++) {
+      const useUniqueBody = i !== 0;
+      const message = messagesByConversation[i];
+      const bodyContent = useUniqueBody
+        ? message.uniqueBody.content
+        : message.body.content;
+      const contentIds = bodyContent.match(CONTENT_ID_REGEX);
 
-    const bodyContent = firstMessage.body.content;
-    const contentIds = bodyContent.match(CONTENT_ID_REGEX);
+      let attachments = [];
+      if (message.hasAttachments || contentIds) {
+        const messageAttachment = await graphApiService.getMessageAttachments(
+          message.id
+        );
 
-    if (contentIds || firstMessage.hasAttachments) {
-      const messageAttachment = await graphApiService.getMessageAttachments(
-        firstMessage.id
-      );
+        const helper = new OutlookMessageClientHelper(message);
+        let processedContent = helper.replaceBodyImageWithCorrectSource(
+          messageAttachment.value,
+          useUniqueBody
+        );
 
-      const outlookHelper = new OutlookMessageClientHelper(firstMessage);
-      let processedContent = outlookHelper.replaceBodyImageWithCorrectSource(
-        messageAttachment.value
-      );
+        if (useUniqueBody) message.uniqueBody.content = processedContent;
+        else message.body.content = processedContent;
 
-      firstMessage.body.content = processedContent;
-      setAttachments(messageAttachment.value);
+        attachments = messageAttachment.value;
+      }
+
+      setAttachmentArrays((prev) => [...prev, attachments]);
     }
 
-    setOutlookMessage(firstMessage);
-    setOutlookMessagesInThisConversation(messagesInConversation);
+    setOutlookMessagesInThisConversation(messagesByConversation);
   };
 
   return (
@@ -139,7 +138,7 @@ const InformationDetailModal = ({
                   <Dialog.Title
                     as="h3"
                     className="font-medium leading-6 text-gray-900">
-                    Message Detail
+                    Information Detail
                   </Dialog.Title>
 
                   <button onClick={close}>
@@ -147,24 +146,19 @@ const InformationDetailModal = ({
                   </button>
                 </div>
 
-                <div className="mt-2 p-6">
-                  <InformationDetailModalHeader message={outlookMessage} />
+                <div className=" p-6">
+                  <InformationDetailModalHeader
+                    message={outlookMessagesInThisConversation[0]}
+                  />
                   <InformationDetailModalBody
-                    message={outlookMessage}
-                    attachments={attachments}
+                    message={outlookMessagesInThisConversation[0]}
+                    attachments={attachmentArrays[0]}
                   />
 
-                  {outlookMessagesInThisConversation.slice(1).length > 0 && (
-                    <InformationDetailModalConversations
-                      messages={outlookMessagesInThisConversation.slice(1)}
-                      attachmentsDict={conversationMessageAttachmentDictionary}
-                      setAttachmentsDict={
-                        setConversationMessageAttachmentDictionary
-                      }
-                      processedMessage={processedConversationMessages}
-                      setProcessedMessage={setProcessedConversationMessages}
-                    />
-                  )}
+                  <InformationDetailModalConversations
+                    outlookMessages={outlookMessagesInThisConversation.slice(1)}
+                    attachmentsArray={attachmentArrays.slice(1)}
+                  />
 
                   <div className="flex justify-end space-x-2 p-4">
                     <button
