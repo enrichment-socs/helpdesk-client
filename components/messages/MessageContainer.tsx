@@ -23,9 +23,10 @@ type Props = {
 export default function MessageContainer({
   take,
   skip,
-  totalCount,
+  totalCount: serverTotalCount,
   setSkip,
 }: Props) {
+  const [totalCount, setTotalCount] = useState(serverTotalCount);
   const [, setMessages] = useAtom(messagesAtom);
   const [isSync, setIsSync] = useState(false);
 
@@ -43,18 +44,19 @@ export default function MessageContainer({
 
   const syncAndGetMessages = async () => {
     await graphApiService.syncMessages();
-    const { messages } = await messageService.getMessages(take, 0);
-    return messages;
+    const { messages, count } = await messageService.getMessages(take, 0);
+    return { messages, count };
   };
 
   const handleSyncMessages = async () => {
     setIsSync(true);
-    const messages = await toast.promise(syncAndGetMessages(), {
+    const { messages, count } = await toast.promise(syncAndGetMessages(), {
       loading: 'Syncing Messages',
       success: 'Messages synced',
       error: (e) => e.toString(),
     });
     setMessages(messages);
+    setTotalCount(count);
     setPageNumber(1);
     setSkip(0);
     setThreeFirstPageNumber([1, 2, 3]);
