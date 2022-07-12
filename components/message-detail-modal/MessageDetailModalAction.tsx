@@ -130,7 +130,7 @@ export default function MessageDetailModalAction({
       conversationId: message.conversationId,
       senderName: currentOutlookMessage.sender.emailAddress.name,
       senderEmail: currentOutlookMessage.sender.emailAddress.address,
-      subject: firstOutlookMessageFromConversation.subject,
+      subject: firstOutlookMessageFromConversation.subject ? firstOutlookMessageFromConversation.subject : '(No Subject)',
       dueBy: selectedDueDate,
     };
 
