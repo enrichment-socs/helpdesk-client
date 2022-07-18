@@ -34,13 +34,16 @@ export class UserService extends BaseService {
     return res.data;
   }
 
-  public async getUsersByFilter(filter: UserFilterModel): Promise<User[]> {
+  public async getUsersByFilter(
+    filter: UserFilterModel,
+    take?: number,
+    skip?: number
+  ): Promise<{ count: number; users: User[] }> {
     const { roleId = '', query = '' } = filter;
 
-    const url = `${this.BASE_URL}/users/filters?roleId=${roleId}&query=${query}`;
-    const result: AxiosResponse<User[]> = await this.wrapper.handle(
-      axios.get(url, this.headersWithToken())
-    );
+    const url = `${this.BASE_URL}/users/filters?roleId=${roleId}&query=${query}&take=${take}&skip=${skip}`;
+    const result: AxiosResponse<{ count: number; users: User[] }> =
+      await this.wrapper.handle(axios.get(url, this.headersWithToken()));
 
     return result.data;
   }
