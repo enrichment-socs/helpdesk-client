@@ -11,3 +11,8 @@ export interface User {
   officeLocation?: string;
   role: Role;
 }
+
+export class UserFilterModel {
+  roleId: string;
+  query: string;
+}

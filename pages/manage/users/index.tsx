@@ -1,13 +1,14 @@
 import { atom, useAtom } from 'jotai';
-import { useHydrateAtoms } from 'jotai/utils';
+import { useHydrateAtoms, useUpdateAtom } from 'jotai/utils';
 import { NextPage } from 'next';
 import { getSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import ManageUsersTable from '../../../components/users/ManageUsersTable';
 import UserFormModal from '../../../components/users/UserFormModal';
 import { Role } from '../../../models/Role';
 import { SessionUser } from '../../../models/SessionUser';
-import { User } from '../../../models/User';
+import { User, UserFilterModel } from '../../../models/User';
 import { RoleService } from '../../../services/RoleService';
 import { SemesterService } from '../../../services/SemesterService';
 import { UserService } from '../../../services/UserService';
@@ -24,41 +25,43 @@ type Props = {
   currUsers: User[];
 };
 
-const ManageUsersPage: NextPage<Props> = ({ currRoles, currUsers }) => {
+const ManageUsersPage: NextPage<Props> = ({ currRoles, currUsers: serverUsers }) => {
   const [users] = useAtom(usersAtom);
-  useHydrateAtoms([[usersAtom, currUsers]] as const);
+  useHydrateAtoms([[usersAtom, serverUsers]] as const);
+  const updateCurrentUsers = useUpdateAtom(usersAtom);
 
-  const [selectedRoleID, setSelectedRoleID] = useState(null);
-  const [searchNameInput, setSearchNameInput] = useState<string>(null);
   const [displayedUsers, setDisplayedUsers] = useState<User[] | null>(users);
 
   const [openFormModal, setOpenFormModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const router = useRouter();
+
+  const {
+    roleId: roleIdQuery,
+    query: searchQuery,
+  } = router.query;
+
+  const [roleIdFilter, setRoleIdFilter] = useState((roleIdQuery as string) || '');
+  const [queryFilter, setQueryFilter] = useState((searchQuery as string) || '');
+
+  useEffect(() => {
+    router.push({
+      query: {
+        roleId: roleIdFilter,
+        query: queryFilter,
+      }
+    });
+  }, [roleIdFilter, queryFilter]);
 
   const openModal = (user: User | null) => {
     setSelectedUser(user);
     setOpenFormModal(true);
   };
 
-  const filterUserByRoleAndName = () => {
-    let filteredUsers =
-      selectedRoleID && selectedRoleID !== 'all'
-        ? users.filter((user) => user.role.id === selectedRoleID)
-        : users;
-
-    filteredUsers =
-      searchNameInput && searchNameInput.trim() !== ''
-        ? filteredUsers.filter((user) =>
-            user.name.toLowerCase().includes(searchNameInput.toLowerCase())
-          )
-        : filteredUsers;
-
-    setDisplayedUsers(filteredUsers);
-  };
-
   useEffect(() => {
-    filterUserByRoleAndName();
-  }, [selectedRoleID, searchNameInput]);
+    setDisplayedUsers(serverUsers);
+    updateCurrentUsers(serverUsers);
+  }, [serverUsers]);
 
   useEffect(() => {
     setDisplayedUsers(users);
@@ -86,8 +89,8 @@ const ManageUsersPage: NextPage<Props> = ({ currRoles, currUsers }) => {
         <span className="font-bold">Filter By Role:</span>
         <select
           className="mt-1 block w-full pl-3 outline-none pr-10 py-2 text-base border sm:text-sm rounded-md"
-          onChange={(event) => setSelectedRoleID(event.target.value)}>
-          <option value="all">All</option>
+          onChange={(event) => setRoleIdFilter(event.target.value)}>
+          <option value="">All</option>
           {currRoles.map((role, idx) => (
             <option key={idx} value={role.id}>
               {role.roleName}
@@ -96,14 +99,14 @@ const ManageUsersPage: NextPage<Props> = ({ currRoles, currUsers }) => {
         </select>
       </div>
       <div className="mb-4">
-        <span className="font-bold">Search By Name:</span>
+        <span className="font-bold">Search By Name / Code / Email / Department:</span>
         <input
           className="mt-1 block w-full outline-none p-2 text-base border sm:text-sm rounded-md"
           type="text"
           name="name"
           id="name"
           placeholder="Input user name..."
-          onChange={(event) => setSearchNameInput(event.target.value)}
+          onChange={(event) => setQueryFilter(event.target.value)}
         />
       </div>
       <ManageUsersTable users={displayedUsers} openModal={openModal} />
@@ -112,7 +115,7 @@ const ManageUsersPage: NextPage<Props> = ({ currRoles, currUsers }) => {
 };
 
 export const getServerSideProps = withSessionSsr(
-  async function getServerSideProps({ req }) {
+  async function getServerSideProps({ req, query }) {
     const { session, semesters, sessionActiveSemester } =
       await getInitialServerProps(req, getSession, new SemesterService());
 
@@ -125,11 +128,18 @@ export const getServerSideProps = withSessionSsr(
       };
     }
 
+    const { roleId, query: searchQuery } = query;
     const user = session.user as SessionUser;
     const usersService = new UserService(user.accessToken);
     const rolesService = new RoleService(user.accessToken);
-    const currUsers = await usersService.getAll();
     const currRoles = await rolesService.getAll();
+
+    const filter: UserFilterModel = {
+      roleId: (roleId as string) || '',
+      query: (searchQuery as string) || '',
+    };
+
+    const currUsers = await usersService.getUsersByFilter(filter);
 
     return {
       props: {

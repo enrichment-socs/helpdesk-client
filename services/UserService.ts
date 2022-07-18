@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 import { CreateUserDto } from '../models/dto/create-user.dto';
 import { SessionUser } from '../models/SessionUser';
-import { User } from '../models/User';
+import { User, UserFilterModel } from '../models/User';
 import { BaseService } from './BaseService';
 
 export class UserService extends BaseService {
@@ -34,9 +34,24 @@ export class UserService extends BaseService {
     return res.data;
   }
 
+  public async getUsersByFilter(filter: UserFilterModel): Promise<User[]> {
+    const { roleId = '', query = '' } = filter;
+
+    const url = `${this.BASE_URL}/users/filters?roleId=${roleId}&query=${query}`;
+    const result: AxiosResponse<User[]> = await this.wrapper.handle(
+      axios.get(url, this.headersWithToken())
+    );
+
+    return result.data;
+  }
+
   public async createUser(createUserDto: CreateUserDto) {
     const res: AxiosResponse<User> = await this.wrapper.handle(
-      axios.post(`${this.BASE_URL}/users`, createUserDto, this.headersWithToken())
+      axios.post(
+        `${this.BASE_URL}/users`,
+        createUserDto,
+        this.headersWithToken()
+      )
     );
     return res.data;
   }
@@ -51,10 +66,7 @@ export class UserService extends BaseService {
 
   public async deleteUser(id: string) {
     const result: AxiosResponse<User> = await this.wrapper.handle(
-      axios.delete(
-        `${this.BASE_URL}/users/${id}`,
-        this.headersWithToken(),
-      )
+      axios.delete(`${this.BASE_URL}/users/${id}`, this.headersWithToken())
     );
 
     return result.data;
