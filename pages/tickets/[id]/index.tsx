@@ -177,21 +177,23 @@ const TicketDetailPage: NextPage<Props> = ({
             </div>
             <div className="font-medium text-2xl ml-5">
               <div>{ticket.subject}</div>
-              <div className="flex divide-x text-sm mt-1">
+              <div className="flex flex-col md:flex-row md:divide-x text-sm mt-1">
                 <div className="font-normal text-gray">
                   by
-                  <span className="font-bold mx-2">{ticket.senderName}</span>
-                  on
-                  <span className="mx-2">
-                    {outlookMessages
-                      ? format(
-                          new Date(outlookMessages[0].receivedDateTime),
-                          'dd MMM yyyy, kk:mm'
-                        )
-                      : '-- --- ----'}
+                  <span className="font-bold mx-2 ">{ticket.senderName}</span>
+                  <span className="block md:inline mt-2 md:mt-0">
+                    on{' '}
+                    <span className="mr-0 md:mr-2">
+                      {outlookMessages
+                        ? format(
+                            new Date(outlookMessages[0].receivedDateTime),
+                            'dd MMM yyyy, kk:mm'
+                          )
+                        : '-- --- ----'}
+                    </span>
                   </span>
                 </div>
-                <div className="px-2 font-normal">
+                <div className="md:px-2 mt-2 md:mt-0 font-normal">
                   Due By:{' '}
                   <span className="font-bold">
                     {format(new Date(ticket.dueBy), 'dd MMM yyyy, kk:mm')}
@@ -205,7 +207,7 @@ const TicketDetailPage: NextPage<Props> = ({
                 </span>
               </div>
             </div>
-            <div className="ml-auto mr-5">
+            <div className="ml-auto mr-5 hidden md:block">
               <button
                 className="bg-primary hover:bg-primary-dark text-sm text-white font-bold py-2 px-2 rounded"
                 onClick={toggleInformation}>
@@ -218,7 +220,7 @@ const TicketDetailPage: NextPage<Props> = ({
             {/* Tabs */}
 
             <div className="text-sm font-medium text-center text-gray-500 border-b border-gray-200">
-              <ul className="flex flex-wrap -mb-px">
+              <ul className="flex overflow-auto -mb-px">
                 {getTabMenuList().map((menu, index) => {
                   return (
                     <li className="mr-2" key={index}>

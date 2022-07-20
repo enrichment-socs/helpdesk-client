@@ -54,13 +54,13 @@ const TicketTable: React.FC<Props> = ({ tickets }) => {
 
   return (
     <>
-      <div className="flex items-center">
+      <div className="flex items-center" style={{ overflowX: 'auto' }}>
         <div className="mr-4 text-sm font-semibold">Legends:</div>
         <ul className="flex space-x-4 py-4 items-center">
           {legends.map((legend) => (
             <li key={legend.title} className="flex space-x-1 items-center">
               <div className={`w-4 h-4 ${legend.color}`}></div>
-              <div className="text-sm">{legend.title}</div>
+              <div className="text-sm truncate">{legend.title}</div>
             </li>
           ))}
         </ul>

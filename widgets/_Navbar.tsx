@@ -101,8 +101,8 @@ export default function Navbar() {
 
   return (
     <div>
-      <div className="flex justify-between items-center max-w-7xl px-2 sm:px-6 lg:px-8 mx-auto">
-        <div className="flex">
+      <div className="flex flex-col md:flex-row justify-between items-center max-w-7xl px-2 sm:px-6 lg:px-8 mx-auto">
+        <div className="flex w-full">
           <div>
             <Image src={ribbon} height={110} width={38} alt="" />
           </div>
@@ -111,7 +111,7 @@ export default function Navbar() {
           </div>
         </div>
 
-        <div className="text-right mt-4">
+        <div className="w-full text-right mt-4">
           <div className="font-bold text-gray-600">
             Welcome, <span className="text-primary">{user.name}</span>
           </div>
@@ -169,7 +169,7 @@ export default function Navbar() {
         <button
           onClick={() => logOut()}
           className="cursor-pointer hover:text-primary text-gray-600 font-bold flex space-x-1 items-center">
-          <span className="block">Sign Out</span>{' '}
+          <span className="hidden md:block">Sign Out</span>{' '}
           <LogoutIcon className="w-5 h-5" />
         </button>
       </nav>

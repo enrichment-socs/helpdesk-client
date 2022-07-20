@@ -27,9 +27,8 @@ export default function AnnouncementContainer({
   };
 
   return (
-    <div
-      className={`mx-2 p-2 border-2 md:w-3/4 min-h-[24rem] rounded divide-y`}>
-      <div className="text-lg font-bold mb-3 flex items-center">
+    <div className={`mx-2 p-2 border-2 md:w-3/4 min-h-[24rem] rounded`}>
+      <div className="text-lg font-bold mb-1 flex items-center border-b border-gray-300 pb-3">
         <SpeakerphoneIcon className="h-5 w-5" />
         <span className="ml-3">Announcement</span>
       </div>
@@ -44,17 +43,17 @@ export default function AnnouncementContainer({
       {announcements.map((announcement) => (
         <div
           onClick={() => onAnnouncementClick(announcement)}
-          className="p-3 hover:bg-gray-50 rounded cursor-pointer"
+          className="p-3 hover:bg-gray-50 rounded cursor-pointer border-b border-gray-200 pb-6"
           key={announcement.id}>
           <div className="font-semibold">{announcement.title}</div>
           <div className="mt-1 flex divide-x">
-            <div className="pr-3 flex flex-col justify-center items-center text-center md:flex-row">
+            <div className="text-sm md:text-base pr-3 flex flex-col justify-center items-center text-center md:flex-row">
               <span className="text-slate-600">From :</span>
               <span className="md:ml-2 font-medium">
                 {format(new Date(announcement.startDate), 'yyyy-MM-dd HH:mm')}
               </span>
             </div>
-            <div className="px-3 flex flex-col justify-center items-center text-center md:flex-row">
+            <div className="text-sm md:text-base px-3 flex flex-col justify-center items-center text-center md:flex-row">
               <span className="text-slate-600">To :</span>
               <span className="md:ml-2 font-medium">
                 {format(new Date(announcement.endDate), 'yyyy-MM-dd HH:mm')}

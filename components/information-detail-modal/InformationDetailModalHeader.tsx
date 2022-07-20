@@ -93,53 +93,59 @@ export default function InformationDetailModalHeader({ message }: Props) {
             leaveTo="transform scale-50 opacity-0">
             <Disclosure.Panel className="p-4 text-sm text-gray-500">
               {message ? (
-                <ul className="bg-white border border-gray-200   text-gray-900">
-                  <li className="flex px-6 border-b border-gray-200 w-full">
-                    <div className="w-1/4 py-2 border-r border-gray-200">
+                <ul className="bg-white border border-gray-200 text-gray-900">
+                  <li className="flex flex-col md:flex-row text-center px-6 border-b border-gray-200 w-full">
+                    <div className="font-semibold w-full md:w-1/4 py-2 border-b md:border-r border-gray-200">
                       Subject
                     </div>
-                    <div className="w-3/4 py-2 ml-4">{getSubjectInfo()}</div>
+                    <div className="w-full md:w-3/4 py-2 ml-4">
+                      {getSubjectInfo()}
+                    </div>
                   </li>
 
-                  <li className="flex px-6 border-b border-gray-200 w-full">
-                    <div className="w-1/4 py-2 border-r border-gray-200">
+                  <li className="flex flex-col md:flex-row text-center px-6 border-b border-gray-200 w-full">
+                    <div className="font-semibold w-full md:w-1/4 py-2 border-b md:border-r border-gray-200">
                       From
                     </div>
-                    <div className="w-3/4 py-2 ml-4">{getSenderInfo()}</div>
+                    <div className="w-full md:w-3/4 py-2 ml-4">
+                      {getSenderInfo()}
+                    </div>
                   </li>
 
-                  <li className="flex px-6 border-b border-gray-200 w-full">
-                    <div className="w-1/4 py-2 border-r border-gray-200">
+                  <li className="flex flex-col md:flex-row text-center px-6 border-b border-gray-200 w-full">
+                    <div className="font-semibold w-full md:w-1/4 py-2 border-b md:border-r border-gray-200">
                       To
                     </div>
-                    <div className="w-3/4 py-2 ml-4">
+                    <div className="w-full md:w-3/4 py-2 ml-4">
                       {getToRecipientsInfo()}
                     </div>
                   </li>
 
-                  <li className="flex px-6 border-b border-gray-200 w-full">
-                    <div className="w-1/4 py-2 border-r border-gray-200">
+                  <li className="flex flex-col md:flex-row text-center px-6 border-b border-gray-200 w-full">
+                    <div className="font-semibold w-full md:w-1/4 py-2 border-b md:border-r border-gray-200">
                       Cc
                     </div>
-                    <div className="w-3/4 py-2 ml-4">
+                    <div className="w-full md:w-3/4 py-2 ml-4">
                       {getCcRecipientsInfo()}
                     </div>
                   </li>
 
-                  <li className="flex px-6 border-b border-gray-200 w-full">
-                    <div className="w-1/4 py-2 border-r border-gray-200">
+                  <li className="flex flex-col md:flex-row text-center px-6 border-b border-gray-200 w-full">
+                    <div className="font-semibold w-full md:w-1/4 py-2 border-b md:border-r border-gray-200">
                       Received at
                     </div>
-                    <div className="w-3/4 py-2 ml-4">
+                    <div className="w-full md:w-3/4 py-2 ml-4">
                       {getReceivedDateTimeInfo()}
                     </div>
                   </li>
 
-                  <li className="flex px-6 w-full">
-                    <div className="w-1/4 py-2 border-r border-gray-200">
+                  <li className="flex flex-col md:flex-row text-center px-6 w-full">
+                    <div className="font-semibold w-full md:w-1/4 py-2 border-b md:border-r border-gray-200">
                       Web Link
                     </div>
-                    <div className="w-3/4 py-2 ml-4">{getWebLink()}</div>
+                    <div className="w-full md:w-3/4 py-2 ml-4">
+                      {getWebLink()}
+                    </div>
                   </li>
                 </ul>
               ) : (

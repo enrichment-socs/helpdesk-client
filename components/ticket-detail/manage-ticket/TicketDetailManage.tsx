@@ -130,7 +130,7 @@ export default function TicketDetailManage({
     <section className="text-gray-800">
       <div>
         <h2 className="font-semibold text-lg mb-2">Action</h2>
-        <div className=" p-4 border border-red-300 rounded bg-red-50 flex justify-between">
+        <div className=" p-4 border border-red-300 rounded bg-red-50 flex flex-col md:flex-row justify-between">
           <div className="text-sm">
             <h3 className="font-medium">Delete this ticket.</h3>
             <p>
@@ -148,7 +148,7 @@ export default function TicketDetailManage({
                 enableDeleteButton
                   ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500 text-white'
                   : 'bg-gray-400 text-gray-100'
-              } inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2`}>
+              } w-full justify-center text-center mt-2 md:mt-0 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2`}>
               Delete Ticket
             </button>
           </div>
@@ -181,7 +181,7 @@ export default function TicketDetailManage({
                     onClick={() => updateStatus(STATUS.IN_PROGRESS, false)}
                     type="button"
                     className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 rounded-md shadow-sm text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
-                    Change Status to{' '}
+                    <span className="hidden md:block">Change Status to </span>
                     <span className="font-bold ml-1">{STATUS.IN_PROGRESS}</span>
                     <ChevronRightIcon className="h-5 w-5" />
                   </button>
@@ -197,7 +197,7 @@ export default function TicketDetailManage({
                       onClick={() => updateStatus(STATUS.PENDING, true)}
                       type="button"
                       className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 rounded-md shadow-sm text-gray-800 bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-600">
-                      Change Status to{' '}
+                      <span className="hidden md:block">Change Status to </span>
                       <span className="font-bold ml-1">{STATUS.PENDING}</span>
                     </button>
 
@@ -205,7 +205,7 @@ export default function TicketDetailManage({
                       onClick={() => updateStatus(STATUS.RESOLVED, true)}
                       type="button"
                       className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-600">
-                      Change Status to{' '}
+                      <span className="hidden md:block">Change Status to </span>
                       <span className="font-bold ml-1">{STATUS.RESOLVED}</span>
                       <ChevronRightIcon className="h-5 w-5" />
                     </button>
@@ -221,7 +221,7 @@ export default function TicketDetailManage({
                     onClick={() => updateStatus(STATUS.IN_PROGRESS, true)}
                     type="button"
                     className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 rounded-md shadow-sm text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
-                    Change Status to{' '}
+                    <span className="hidden md:block">Change Status to </span>
                     <span className="font-bold ml-1">{STATUS.IN_PROGRESS}</span>
                     <ChevronRightIcon className="h-5 w-5" />
                   </button>
@@ -243,7 +243,7 @@ export default function TicketDetailManage({
                       type="button"
                       className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 rounded-md shadow-sm text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
                       <ChevronLeftIcon className="h-5 w-5" />
-                      Change Status to{' '}
+                      <span className="hidden md:block">Change Status to </span>
                       <span className="font-bold ml-1">
                         {STATUS.IN_PROGRESS}
                       </span>
@@ -258,8 +258,10 @@ export default function TicketDetailManage({
                           ? 'bg-green-600 hover:bg-green-700'
                           : 'bg-gray-400'
                       } inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 rounded-md shadow-sm text-white focus:outline-none`}>
-                      Change Status to{' '}
-                      <span className="font-bold ml-1">{STATUS.CLOSED}</span>{' '}
+                      <span className="hidden md:block">Change Status to </span>
+                      <span className="font-bold ml-1">
+                        {STATUS.CLOSED}
+                      </span>{' '}
                       <ChevronRightIcon className="h-5 w-5" />
                     </button>
                   </div>

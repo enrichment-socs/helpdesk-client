@@ -130,7 +130,9 @@ export default function MessageDetailModalAction({
       conversationId: message.conversationId,
       senderName: currentOutlookMessage.sender.emailAddress.name,
       senderEmail: currentOutlookMessage.sender.emailAddress.address,
-      subject: firstOutlookMessageFromConversation.subject ? firstOutlookMessageFromConversation.subject : '(No Subject)',
+      subject: firstOutlookMessageFromConversation.subject
+        ? firstOutlookMessageFromConversation.subject
+        : '(No Subject)',
       dueBy: selectedDueDate,
     };
 
@@ -362,7 +364,7 @@ export default function MessageDetailModalAction({
                           ? 'bg-primary hover:bg-primary-dark'
                           : 'bg-gray-300'
                       } inline-flex items-center px-12 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary`}>
-                      {canSave ? `Save as ${selectedType}` : 'Loading ...'}
+                      {canSave ? `Save` : 'Loading ...'}
                     </button>
                   </Then>
                 </If>

@@ -46,9 +46,9 @@ const TicketDetailConversation = ({
                 ? 'bg-primary hover:bg-primary-dark text-white'
                 : 'text-gray-900 bg-gray-200 hover:bg-gray-300'
             } flex justify-between items-center w-full px-4 py-2 text-sm font-medium text-left focus:outline-none focus-visible:ring focus-visible:ring-gray-500 focus-visible:ring-opacity-75`}>
-            <span className="font-bold">{getSenderInfo()}</span>
+            <span className="font-bold truncate">{getSenderInfo()}</span>
             <div className="flex">
-              <span className="font-normal text-xs">
+              <span className="font-normal text-xs hidden md:block">
                 {getReceivedDateTimeInfo()}
               </span>
               <ChevronUpIcon
