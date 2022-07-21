@@ -25,10 +25,9 @@ import { STATUS } from '../../shared/constants/status';
 import { ClientPromiseWrapper } from '../../shared/libs/client-promise-wrapper';
 import { Disclosure, Transition } from '@headlessui/react';
 import { ChevronUpIcon } from '@heroicons/react/solid';
-import { addHours, getDay } from 'date-fns';
 import ReactTooltip from 'react-tooltip';
 import { DateHelper } from '../../shared/libs/date-helper';
-import { PRIORITY } from '../../shared/constants/priority';
+import { TicketUtils } from '../../shared/libs/ticket-utils';
 
 type Props = {
   onClose: () => void;
@@ -165,24 +164,11 @@ export default function MessageDetailModalAction({
   const handleOnPriorityChange = (newPriorityId) => {
     if (!newPriorityId) return;
     const selectedPriority = priorities.find((p) => p.id === newPriorityId);
-    const HOURS_IN_DAY = 24;
-    const deadlineDays = selectedPriority.deadlineHours / HOURS_IN_DAY;
-    const SUNDAY = 0;
-    let dueDate = new Date();
-    let addedHours = 0;
-
-    for (let i = 1; i <= deadlineDays; i++) {
-      dueDate = addHours(dueDate, HOURS_IN_DAY);
-      console.log(getDay(dueDate));
-      if (getDay(dueDate) == SUNDAY) {
-        dueDate = addHours(dueDate, HOURS_IN_DAY);
-        addedHours += HOURS_IN_DAY;
-      }
-    }
+    const { dueDate, addedHours } = TicketUtils.calculateDueDate(
+      selectedPriority.deadlineHours
+    );
 
     setTotalAddedHours(addedHours);
-    dueDate.setSeconds(0);
-    dueDate.setMinutes(0);
     setSelectedPriorityId(newPriorityId);
     setSelectedDueDate(dueDate);
   };
