@@ -25,7 +25,7 @@ import { STATUS } from '../../shared/constants/status';
 import { ClientPromiseWrapper } from '../../shared/libs/client-promise-wrapper';
 import { Disclosure, Transition } from '@headlessui/react';
 import { ChevronUpIcon } from '@heroicons/react/solid';
-import { addHours } from 'date-fns';
+import { addHours, getDay } from 'date-fns';
 import ReactTooltip from 'react-tooltip';
 import { DateHelper } from '../../shared/libs/date-helper';
 import { PRIORITY } from '../../shared/constants/priority';
@@ -65,6 +65,16 @@ export default function MessageDetailModalAction({
   const [selectedAdminId, setSelectedAdminId] = useState('');
   const [selectedDueDate, setSelectedDueDate] = useState(new Date());
 
+  const [totalAddedHours, setTotalAddedHours] = useState(0);
+
+  useEffect(() => {
+    if (selectedPriorityId && selectedAdminId && selectedCategoryId) {
+      setCanSave(true);
+    } else {
+      setCanSave(false);
+    }
+  }, [selectedPriorityId, selectedAdminId, selectedCategoryId]);
+
   useEffect(() => {
     const fetchInitialData = async () => {
       const categoryService = new CategoryService(user?.accessToken);
@@ -75,24 +85,13 @@ export default function MessageDetailModalAction({
       const fetchedPriorities = await priorityService.getAll();
       const fetchedAdmins = await usersService.getUsersWithAdminRole();
 
-      const initialDueDate = new Date();
-      const lowestPrio = fetchedPriorities.find(
-        (c) => c.priorityName === PRIORITY.LOW
-      );
-      const deadlineDays = Math.floor(lowestPrio.deadlineHours / 24);
-      initialDueDate.setDate(initialDueDate.getDate() + deadlineDays);
-      setSelectedDueDate(DateHelper.roundUpHours(initialDueDate));
+      setSelectedDueDate(DateHelper.roundUpHours(new Date()));
 
       setCategories(fetchedCategories);
       setPriorities(fetchedPriorities);
       setAdmins(fetchedAdmins);
 
-      setSelectedCategoryId(fetchedCategories[0]?.id ?? '');
-      setSelectedPriorityId(fetchedPriorities[0]?.id ?? '');
-      setSelectedAdminId(fetchedAdmins[0]?.id ?? '');
       setSelectedSemesterId(activeSemester.id);
-
-      setCanSave(true);
     };
 
     const wrapper = new ClientPromiseWrapper(toast);
@@ -164,9 +163,24 @@ export default function MessageDetailModalAction({
   };
 
   const handleOnPriorityChange = (newPriorityId) => {
+    if (!newPriorityId) return;
     const selectedPriority = priorities.find((p) => p.id === newPriorityId);
+    const HOURS_IN_DAY = 24;
+    const deadlineDays = selectedPriority.deadlineHours / HOURS_IN_DAY;
+    const SUNDAY = 0;
     let dueDate = new Date();
-    dueDate = addHours(dueDate, selectedPriority.deadlineHours + 1);
+    let addedHours = 0;
+
+    for (let i = 1; i <= deadlineDays; i++) {
+      dueDate = addHours(dueDate, HOURS_IN_DAY);
+      console.log(getDay(dueDate));
+      if (getDay(dueDate) == SUNDAY) {
+        dueDate = addHours(dueDate, HOURS_IN_DAY);
+        addedHours += HOURS_IN_DAY;
+      }
+    }
+
+    setTotalAddedHours(addedHours);
     dueDate.setSeconds(0);
     dueDate.setMinutes(0);
     setSelectedPriorityId(newPriorityId);
@@ -259,6 +273,9 @@ export default function MessageDetailModalAction({
                             }
                             defaultValue={selectedCategoryId}
                             className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                            <option value={''} key={-1}>
+                              --- SELECT CATEGORY ---
+                            </option>
                             {categories.map((category) => (
                               <option value={category.id} key={category.id}>
                                 {category.categoryName}
@@ -291,6 +308,12 @@ export default function MessageDetailModalAction({
                               </ReactTooltip>
                             </>
                           )}
+
+                          {selectedCategoryId === '' && (
+                            <small className="text-red-400">
+                              * Category must be chosen
+                            </small>
+                          )}
                         </div>
 
                         <div>
@@ -298,17 +321,26 @@ export default function MessageDetailModalAction({
                             Priority
                           </label>
                           <select
-                            onChange={(e) =>
-                              handleOnPriorityChange(e.target.value)
-                            }
+                            onChange={(e) => {
+                              handleOnPriorityChange(e.target.value);
+                              setSelectedPriorityId(e.target.value);
+                            }}
                             defaultValue={selectedPriorityId}
                             className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                            <option value={''} key={-1}>
+                              --- SELECT PRIORITY ---
+                            </option>
                             {priorities.map((priority) => (
                               <option value={priority.id} key={priority.id}>
                                 {priority.priorityName}
                               </option>
                             ))}
                           </select>
+                          {selectedPriorityId === '' && (
+                            <small className="text-red-400">
+                              * Priority must be chosen
+                            </small>
+                          )}
                         </div>
 
                         <div>
@@ -319,12 +351,20 @@ export default function MessageDetailModalAction({
                             onChange={(e) => setSelectedAdminId(e.target.value)}
                             defaultValue={selectedAdminId}
                             className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                            <option value={''} key={-1}>
+                              --- SELECT ADMIN ---
+                            </option>
                             {admins.map((admin) => (
                               <option value={admin.id} key={admin.id}>
                                 {admin.code} - {admin.name}
                               </option>
                             ))}
                           </select>
+                          {selectedAdminId === '' && (
+                            <small className="text-red-400">
+                              * Admin must be chosen
+                            </small>
+                          )}
                         </div>
 
                         <div>
@@ -335,10 +375,17 @@ export default function MessageDetailModalAction({
                             selected={selectedDueDate}
                             showTimeSelect
                             dateFormat="Pp"
+                            disabled
                             onChange={setSelectedDueDate}
                             className={`${'border-gray-300 focus:ring-blue-500 focus:border-blue-500'} mt-1 block w-full outline-none p-2 text-base border sm:text-sm rounded-md`}
                           />
                         </div>
+                        {totalAddedHours > 0 && (
+                          <small className="text-blue-500">
+                            The due date is added by {totalAddedHours} hours due
+                            to colliding with Sunday
+                          </small>
+                        )}
                       </Then>
                     </If>
                   </div>
@@ -364,7 +411,7 @@ export default function MessageDetailModalAction({
                           ? 'bg-primary hover:bg-primary-dark'
                           : 'bg-gray-300'
                       } inline-flex items-center px-12 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary`}>
-                      {canSave ? `Save` : 'Loading ...'}
+                      Save
                     </button>
                   </Then>
                 </If>
