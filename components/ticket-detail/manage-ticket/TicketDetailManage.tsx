@@ -23,6 +23,7 @@ import SuccessAlert from '../../../widgets/SuccessAlert';
 import TicketStatusChangeLogTable from './TicketStatusChangeLogTable';
 import { TicketService } from '../../../services/TicketService';
 import { useRouter } from 'next/router';
+import { ROLES } from '../../../shared/constants/roles';
 
 type Props = {
   ticketStatuses: TicketStatus[];
@@ -160,7 +161,11 @@ export default function TicketDetailManage({
         <TicketStatusChangeLogTable ticketStatuses={ticketStatuses} />
       </div>
 
-      <If condition={user?.id === ticket.assignedTo.id}>
+      <If
+        condition={
+          user?.id === ticket.assignedTo.id ||
+          user?.roleName === ROLES.SUPER_ADMIN
+        }>
         <Then>
           <div className="mt-8">
             <h2 className="font-semibold text-lg mb-2">Manage Ticket Status</h2>

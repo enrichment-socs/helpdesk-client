@@ -64,7 +64,13 @@ export const getServerSideProps = withSessionSsr(
     const { session, semesters, sessionActiveSemester } =
       await getInitialServerProps(req, getSession, new SemesterService());
 
-    if (!AuthHelper.isLoggedInAndHasRole(session, [ROLES.ADMIN, ROLES.USER]))
+    if (
+      !AuthHelper.isLoggedInAndHasRole(session, [
+        ROLES.ADMIN,
+        ROLES.USER,
+        ROLES.SUPER_ADMIN,
+      ])
+    )
       return {
         redirect: {
           destination: '/',

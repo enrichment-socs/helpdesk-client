@@ -25,12 +25,12 @@ export default function Navbar() {
     {
       title: 'Tickets',
       href: '/tickets',
-      roles: [ROLES.USER, ROLES.ADMIN],
+      roles: [ROLES.USER, ROLES.ADMIN, ROLES.SUPER_ADMIN],
     },
     {
       title: 'Informations',
       href: '/informations',
-      roles: [ROLES.ADMIN],
+      roles: [ROLES.ADMIN, ROLES.SUPER_ADMIN],
     },
     {
       title: 'Manage',

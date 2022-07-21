@@ -114,7 +114,7 @@ const TicketDetailPage: NextPage<Props> = ({
   const getTabMenuList = () => {
     // const tabMenuList = ['Details', 'Manage Ticket', 'Resolution', 'History']; // TODO: use this line when start developing History system
     const tabMenuList = ['Details', 'Resolution', 'Manage Ticket'];
-    if (user?.roleName !== ROLES.ADMIN)
+    if (user?.roleName === ROLES.USER)
       return tabMenuList.filter((t) => t !== 'Manage Ticket');
     return tabMenuList;
   };
@@ -267,7 +267,13 @@ export const getServerSideProps = withSessionSsr(
     const { session, semesters, sessionActiveSemester } =
       await getInitialServerProps(req, getSession, new SemesterService());
 
-    if (!AuthHelper.isLoggedInAndHasRole(session, [ROLES.ADMIN, ROLES.USER]))
+    if (
+      !AuthHelper.isLoggedInAndHasRole(session, [
+        ROLES.ADMIN,
+        ROLES.USER,
+        ROLES.SUPER_ADMIN,
+      ])
+    )
       return {
         redirect: {
           destination: '/',
