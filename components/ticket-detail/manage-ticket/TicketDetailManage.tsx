@@ -13,6 +13,7 @@ import { TicketService } from '../../../services/TicketService';
 import { useRouter } from 'next/router';
 import { TicketDueDate } from '../../../models/TicketDueDate';
 import TicketDetailManageStatus from './TicketDetailManageStatus';
+import TicketDetailManageDueDate from './TicketDetailManageDueDate';
 
 type Props = {
   statuses: Status[];
@@ -68,7 +69,18 @@ export default function TicketDetailManage({
 
   return (
     <section className="text-gray-800">
-      <div>
+      <TicketDetailManageStatus
+        ticket={ticket}
+        statuses={statuses}
+        resolution={resolution}
+        ticketStatuses={ticketStatuses}
+        setTicketStatuses={setTicketStatuses}
+        getCurrentStatus={getCurrentStatus}
+      />
+
+      <TicketDetailManageDueDate ticketDueDates={ticketDueDates} />
+
+      <div className="mt-8 border border-gray-300 rounded p-4">
         <h2 className="font-semibold text-lg mb-2">Action</h2>
         <div className=" p-4 border border-red-300 rounded bg-red-50 flex flex-col md:flex-row justify-between">
           <div className="text-sm">
@@ -94,15 +106,6 @@ export default function TicketDetailManage({
           </div>
         </div>
       </div>
-
-      <TicketDetailManageStatus
-        ticket={ticket}
-        statuses={statuses}
-        resolution={resolution}
-        ticketStatuses={ticketStatuses}
-        setTicketStatuses={setTicketStatuses}
-        getCurrentStatus={getCurrentStatus}
-      />
 
       {getCurrentStatus() === STATUS.CLOSED && (
         <SuccessAlert

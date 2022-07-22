@@ -95,8 +95,8 @@ export default function TicketDetailManageStatus({
   };
 
   return (
-    <>
-      <div className="mt-8">
+    <div className="border border-gray-300 rounded p-4">
+      <div>
         <h2 className="font-semibold text-lg mb-2">Ticket Status Change Log</h2>
         <TicketStatusChangeLogTable ticketStatuses={ticketStatuses} />
       </div>
@@ -222,6 +222,6 @@ export default function TicketDetailManageStatus({
           />
         </Else>
       </If>
-    </>
+    </div>
   );
 }
