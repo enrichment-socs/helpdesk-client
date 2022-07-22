@@ -39,6 +39,9 @@ export default function TicketStatusChangeLogTable({ ticketStatuses }: Props) {
                     className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                     Created at
                   </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"></th>
                 </tr>
               </thead>
               <tbody>
@@ -73,6 +76,13 @@ export default function TicketStatusChangeLogTable({ ticketStatuses }: Props) {
                         {format(
                           new Date(data.created_at),
                           'dd MMM yyyy, kk:mm'
+                        )}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {index === ticketStatuses.length - 1 && (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary text-gray-100">
+                            Current
+                          </span>
                         )}
                       </td>
                     </tr>
