@@ -33,18 +33,22 @@ import { Status } from '../../../models/Status';
 import { OutlookMessageClientHelper } from '../../../shared/libs/outlook-message-client-helper';
 import { ClientPromiseWrapper } from '../../../shared/libs/client-promise-wrapper';
 import toast from 'react-hot-toast';
+import { TicketDueDateService } from '../../../services/TicketDueDateService';
+import { TicketDueDate } from '../../../models/TicketDueDate';
 
 type Props = {
   ticket: Ticket;
   resolution: TicketResolution;
   ticketStatuses: TicketStatus[];
   statuses: Status[];
+  ticketDueDates: TicketDueDate[];
 };
 
 const TicketDetailPage: NextPage<Props> = ({
   ticket,
   resolution: serverResolution,
   ticketStatuses: serverTicketStatuses,
+  ticketDueDates: serverTicketDueDates,
   statuses,
 }) => {
   const router = useRouter();
@@ -64,6 +68,8 @@ const TicketDetailPage: NextPage<Props> = ({
     useState<TicketResolution>(serverResolution);
   const [ticketStatuses, setTicketStatuses] =
     useState<TicketStatus[]>(serverTicketStatuses);
+  const [ticketDueDates, setTicketDueDates] =
+    useState<TicketDueDate[]>(serverTicketDueDates);
 
   const getCurrentStatus = () => {
     if (ticketStatuses.length == 0) return 'No Status';
@@ -155,6 +161,8 @@ const TicketDetailPage: NextPage<Props> = ({
           ticketStatuses={ticketStatuses}
           setTicketStatuses={setTicketStatuses}
           resolution={resolution}
+          ticketDueDates={ticketDueDates}
+          setTicketDueDates={setTicketDueDates}
         />
       );
     }
@@ -286,6 +294,7 @@ export const getServerSideProps = withSessionSsr(
     const resolutionService = new TicketResolutionService(user?.accessToken);
     const ticketStatusService = new TicketStatusService(user?.accessToken);
     const statusService = new StatusService(user?.accessToken);
+    const ticketDueDateService = new TicketDueDateService(user?.accessToken);
 
     const ticket = await ticketService.get(params.id as string);
 
@@ -305,6 +314,9 @@ export const getServerSideProps = withSessionSsr(
       ticket.id
     );
     const statuses = await statusService.getAll();
+    const ticketDueDates = await ticketDueDateService.getAllByTicketId(
+      ticket.id
+    );
 
     return {
       props: {
@@ -314,6 +326,7 @@ export const getServerSideProps = withSessionSsr(
         ticket,
         resolution,
         ticketStatuses,
+        ticketDueDates,
         statuses,
       },
     };
