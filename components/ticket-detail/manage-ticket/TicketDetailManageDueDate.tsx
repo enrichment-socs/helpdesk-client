@@ -1,33 +1,75 @@
 import { CalendarIcon } from '@heroicons/react/outline';
 import { addHours } from 'date-fns';
+import { SetStateAction } from 'jotai';
+import { useSession } from 'next-auth/react';
 import dynamic from 'next/dynamic';
-import { useState } from 'react';
+import { Dispatch, useState } from 'react';
 import toast from 'react-hot-toast';
+import { CreateTicketDueDateDto } from '../../../models/dto/ticket-due-dates/create-ticket-due-date.dto';
+import { SessionUser } from '../../../models/SessionUser';
+import { Ticket } from '../../../models/Ticket';
 import { TicketDueDate } from '../../../models/TicketDueDate';
+import { TicketDueDateService } from '../../../services/TicketDueDateService';
+import { ClientPromiseWrapper } from '../../../shared/libs/client-promise-wrapper';
+import { confirm } from '../../../shared/libs/confirm-dialog-helper';
 import TicketDueDateChangeLogTable from './TicketDueDateChangeLogTable';
 const DatePicker = dynamic(import('react-datepicker'), { ssr: false }) as any;
 
 type Props = {
   ticketDueDates: TicketDueDate[];
+  setTicketDueDates: Dispatch<SetStateAction<TicketDueDate[]>>;
+  ticket: Ticket;
 };
 
-export default function TicketDetailManageDueDate({ ticketDueDates }: Props) {
-  const [reason, setReason] = useState('');
+export default function TicketDetailManageDueDate({
+  ticketDueDates,
+  ticket,
+  setTicketDueDates,
+}: Props) {
+  const session = useSession();
+  const user = session.data.user as SessionUser;
+  const ticketDueDateService = new TicketDueDateService(user?.accessToken);
 
-  let initialDueDate = new Date();
+  let initialDueDate = new Date(ticket.dueBy);
   initialDueDate = addHours(initialDueDate, 1);
   initialDueDate.setMinutes(0);
   initialDueDate.setSeconds(0);
   const [selectedDueDate, setSelectedDueDate] = useState(initialDueDate);
+  const [reason, setReason] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!reason) toast.error('Reason must be filled');
+    const now = new Date();
+
+    if (selectedDueDate.getTime() < now.getTime()) {
+      toast.error('Due date cant be in the past');
+      return;
+    } else if (!reason) {
+      toast.error('Reason must be filled');
+      return;
+    }
+
+    const message = 'Are you sure you want to change the due date ?';
+    if (await confirm(message)) {
+      const dto: CreateTicketDueDateDto = {
+        dueDate: selectedDueDate,
+        reason,
+        ticketId: ticket.id,
+      };
+      toast.promise(ticketDueDateService.add(dto), {
+        success: (newDueDate) => {
+          setTicketDueDates([...ticketDueDates, newDueDate]);
+          return 'Due date succesfully updated';
+        },
+        loading: 'Updating due date...',
+        error: (e) => e.toString(),
+      });
+    }
   };
 
   return (
-    <div className="border border-gray-300 rounded p-4 mt-8">
+    <div className="border border-gray-300 rounded p-4 mt-8 shadow-sm">
       <div>
         <h2 className="font-semibold text-lg mb-2">
           Ticket Due Dates Change Log

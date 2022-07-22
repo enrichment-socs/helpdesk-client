@@ -78,9 +78,13 @@ export default function TicketDetailManage({
         getCurrentStatus={getCurrentStatus}
       />
 
-      <TicketDetailManageDueDate ticketDueDates={ticketDueDates} />
+      <TicketDetailManageDueDate
+        ticketDueDates={ticketDueDates}
+        setTicketDueDates={setTicketDueDates}
+        ticket={ticket}
+      />
 
-      <div className="mt-8 border border-gray-300 rounded p-4">
+      <div className="mt-8 border border-gray-300 rounded p-4 shadow-sm">
         <h2 className="font-semibold text-lg mb-2">Action</h2>
         <div className=" p-4 border border-red-300 rounded bg-red-50 flex flex-col md:flex-row justify-between">
           <div className="text-sm">
