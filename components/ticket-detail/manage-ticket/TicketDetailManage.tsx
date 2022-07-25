@@ -76,6 +76,7 @@ export default function TicketDetailManage({
         ticketStatuses={ticketStatuses}
         setTicketStatuses={setTicketStatuses}
         getCurrentStatus={getCurrentStatus}
+        setTicketDueDates={setTicketDueDates}
       />
 
       <TicketDetailManageDueDate

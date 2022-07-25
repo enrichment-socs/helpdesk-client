@@ -9,7 +9,6 @@ import { Status } from '../../../models/Status';
 import { Ticket } from '../../../models/Ticket';
 import { TicketResolution } from '../../../models/TicketResolution';
 import { TicketStatus } from '../../../models/TicketStatus';
-import { TicketService } from '../../../services/TicketService';
 import { TicketStatusService } from '../../../services/TicketStatusService';
 import { ROLES } from '../../../shared/constants/roles';
 import { STATUS } from '../../../shared/constants/status';
@@ -17,11 +16,14 @@ import { ClientPromiseWrapper } from '../../../shared/libs/client-promise-wrappe
 import InfoAlert from '../../../widgets/InfoAlert';
 import TicketStatusChangeLogTable from './TicketStatusChangeLogTable';
 import { confirm } from '../../../shared/libs/confirm-dialog-helper';
+import { TicketDueDate } from '../../../models/TicketDueDate';
+import { TicketDueDateService } from '../../../services/TicketDueDateService';
 
 type Props = {
   resolution: TicketResolution;
   ticketStatuses: TicketStatus[];
   setTicketStatuses: Dispatch<SetStateAction<TicketStatus[]>>;
+  setTicketDueDates: Dispatch<SetStateAction<TicketDueDate[]>>;
   statuses: Status[];
   ticket: Ticket;
   getCurrentStatus: () => string;
@@ -34,13 +36,14 @@ export default function TicketDetailManageStatus({
   statuses,
   ticket,
   getCurrentStatus,
+  setTicketDueDates,
 }: Props) {
   const session = useSession();
   const user = session?.data?.user as SessionUser;
 
   const [reason, setReason] = useState('');
-  const ticketService = new TicketService(user?.accessToken);
   const ticketStatusService = new TicketStatusService(user?.accessToken);
+  const ticketDueDateService = new TicketDueDateService(user?.accessToken);
 
   const renderReasonInputText = () => {
     return (
@@ -84,12 +87,22 @@ export default function TicketDetailManageStatus({
         userId: user.id,
       };
 
+      if (getCurrentStatus() === STATUS.PENDING) {
+        toast(
+          'Ticket deadline has been extended due to previous ticket status is PENDING'
+        );
+      }
+
       const wrapper = new ClientPromiseWrapper(toast);
       const addedStatus = await wrapper.handle(ticketStatusService.add(dto));
 
       setTicketStatuses([...ticketStatuses, addedStatus]);
+      const ticketDueDates = await ticketDueDateService.getAllByTicketId(
+        ticket.id
+      );
+      setTicketDueDates(ticketDueDates);
+
       setReason('');
-      toast.dismiss();
       toast.success('Status updated succesfully');
     }
   };
