@@ -27,3 +27,8 @@ export class TicketFilterModel {
   status: string;
   query: string;
 }
+
+export class PendingTicketFilterModel {
+  priority: string;
+  query: string;
+}

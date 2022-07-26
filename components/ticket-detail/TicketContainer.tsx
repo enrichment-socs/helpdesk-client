@@ -66,6 +66,7 @@ export default function TicketContainer({
   useEffect(() => {
     router.push({
       query: {
+        ...router.query,
         priority: priorityFilter,
         status: statusFilter,
         query: queryFilter,

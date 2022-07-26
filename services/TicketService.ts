@@ -1,8 +1,9 @@
 import axios, { AxiosResponse } from 'axios';
-import { Ticket, TicketFilterModel } from '../models/Ticket';
+import { PendingTicketFilterModel, Ticket, TicketFilterModel } from '../models/Ticket';
 import { CreateTicketDto } from '../models/dto/tickets/create-ticket.dto';
 import { BaseService } from './BaseService';
 import { TicketSummary } from '../models/TicketSummary';
+import { STATUS } from '../shared/constants/status';
 
 export class TicketService extends BaseService {
   public async getTicketsBySemester(
@@ -14,6 +15,23 @@ export class TicketService extends BaseService {
     const { priority = '', status = '', query = '' } = filter;
 
     const url = `${this.BASE_URL}/tickets?semesterId=${semesterId}&take=${take}&skip=${skip}&priority=${priority}&status=${status}&query=${query}`;
+    const result: AxiosResponse<{
+      count: number;
+      tickets: Ticket[];
+    }> = await this.wrapper.handle(axios.get(url, this.headersWithToken()));
+
+    return result.data;
+  }
+
+  public async getPendingTicketsBySemester(
+    semesterId: string,
+    filter: PendingTicketFilterModel,
+    take?: number,
+    skip?: number
+  ): Promise<{ count: number; tickets: Ticket[] }> {
+    const { priority = '', query = '' } = filter;
+
+    const url = `${this.BASE_URL}/tickets/pending?semesterId=${semesterId}&take=${take}&skip=${skip}&priority=${priority}&query=${query}`;
     const result: AxiosResponse<{
       count: number;
       tickets: Ticket[];
