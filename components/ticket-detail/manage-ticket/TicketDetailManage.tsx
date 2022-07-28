@@ -94,6 +94,7 @@ export default function TicketDetailManage({
         ticketDueDates={ticketDueDates}
         setTicketDueDates={setTicketDueDates}
         ticket={ticket}
+        getCurrentStatus={getCurrentStatus}
       />
 
       {TicketUtils.isEligibleToManage(user, ticket) && (
