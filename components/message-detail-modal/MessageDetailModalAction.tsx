@@ -67,12 +67,17 @@ export default function MessageDetailModalAction({
   const [totalAddedHours, setTotalAddedHours] = useState(0);
 
   useEffect(() => {
+    if (selectedType === MESSAGE_TYPE.INFORMATION) {
+      setCanSave(true);
+      return;
+    }
+
     if (selectedPriorityId && selectedAdminId && selectedCategoryId) {
       setCanSave(true);
     } else {
       setCanSave(false);
     }
-  }, [selectedPriorityId, selectedAdminId, selectedCategoryId]);
+  }, [selectedPriorityId, selectedAdminId, selectedCategoryId, selectedType]);
 
   useEffect(() => {
     const fetchInitialData = async () => {
