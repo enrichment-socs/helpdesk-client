@@ -37,6 +37,10 @@ const TicketTable: React.FC<Props> = ({ tickets }) => {
     const currDate = new Date();
     const dueDate = new Date(ticket.dueBy);
 
+    if (ticket.status.statusName === STATUS.PENDING) {
+      return 'bg-yellow-200';
+    }
+
     if (ticket.status.statusName === STATUS.CLOSED)
       return 'bg-green-200 hover:bg-green-300';
     if (
@@ -66,7 +70,7 @@ const TicketTable: React.FC<Props> = ({ tickets }) => {
         </ul>
       </div>
 
-      <div className="flex flex-col">
+      <div className="flex flex-col overflow-hidden border border-gray-200">
         <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
             <div className="shadow overflow-auto border-b border-gray-200">
@@ -129,7 +133,7 @@ const TicketTable: React.FC<Props> = ({ tickets }) => {
                           data
                         )}`}
                         onClick={rowClickHandler.bind(this, data.id)}>
-                        <td className="max-w-[32rem] truncate px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        <td className="max-w-[20rem] truncate px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                           {data.subject || 'No Subject'}
                         </td>
                         <td className="max-w-[16rem] truncate px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
