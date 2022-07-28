@@ -6,9 +6,15 @@ import { PRIORITY } from '../../shared/constants/priority';
 
 type Props = {
   tickets: Ticket[];
+  showLegends?: boolean;
+  forPending?: boolean;
 };
 
-const TicketTable: React.FC<Props> = ({ tickets }) => {
+const TicketTable: React.FC<Props> = ({
+  tickets,
+  showLegends = true,
+  forPending = false,
+}) => {
   const router = useRouter();
   const legends = [
     {
@@ -38,7 +44,7 @@ const TicketTable: React.FC<Props> = ({ tickets }) => {
     const dueDate = new Date(ticket.dueBy);
 
     if (ticket.status.statusName === STATUS.PENDING) {
-      return 'bg-yellow-200';
+      return 'bg-yellow-200 hover:bg-yellow-300';
     }
 
     if (ticket.status.statusName === STATUS.CLOSED)
@@ -58,17 +64,19 @@ const TicketTable: React.FC<Props> = ({ tickets }) => {
 
   return (
     <>
-      <div className="flex items-center" style={{ overflowX: 'auto' }}>
-        <div className="mr-4 text-sm font-semibold">Legends:</div>
-        <ul className="flex space-x-4 py-4 items-center">
-          {legends.map((legend) => (
-            <li key={legend.title} className="flex space-x-1 items-center">
-              <div className={`w-4 h-4 ${legend.color}`}></div>
-              <div className="text-sm truncate">{legend.title}</div>
-            </li>
-          ))}
-        </ul>
-      </div>
+      {showLegends && (
+        <div className="flex items-center" style={{ overflowX: 'auto' }}>
+          <div className="mr-4 text-sm font-semibold">Legends:</div>
+          <ul className="flex space-x-4 py-4 items-center">
+            {legends.map((legend) => (
+              <li key={legend.title} className="flex space-x-1 items-center">
+                <div className={`w-4 h-4 ${legend.color}`}></div>
+                <div className="text-sm truncate">{legend.title}</div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       <div className="flex flex-col overflow-hidden border border-gray-200">
         <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -95,7 +103,7 @@ const TicketTable: React.FC<Props> = ({ tickets }) => {
                     <th
                       scope="col"
                       className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                      Due By
+                      Due By {forPending ? '(Freezed)' : ''}
                     </th>
                     <th
                       scope="col"

@@ -1,4 +1,5 @@
 import { ArchiveIcon } from '@heroicons/react/solid';
+import { InformationCircleIcon } from '@heroicons/react/outline';
 import { useAtom } from 'jotai';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
@@ -13,6 +14,7 @@ import { ROLES } from '../../shared/constants/roles';
 import { ClientPromiseWrapper } from '../../shared/libs/client-promise-wrapper';
 import CustomPaginator from '../../widgets/CustomPaginator';
 import TicketTable from '../tickets/TicketTable';
+import ReactTooltip from 'react-tooltip';
 
 type Props = {
   pendingTickets: Ticket[];
@@ -41,10 +43,8 @@ export default function PendingTicketContainer({
   const [activeSemester] = useAtom(activeSemesterAtom);
   const router = useRouter();
 
-  const {
-    pendingPriority: priorityNameQuery,
-    pendingQuery: searchQuery,
-  } = router.query;
+  const { pendingPriority: priorityNameQuery, pendingQuery: searchQuery } =
+    router.query;
   const [priorityFilter, setPriorityFilter] = useState(
     (priorityNameQuery as string) || ''
   );
@@ -82,7 +82,12 @@ export default function PendingTicketContainer({
       query: queryFilter,
     };
     const { tickets } = await wrapper.handle(
-      ticketService.getPendingTicketsBySemester(activeSemester.id, filter, take, skip)
+      ticketService.getPendingTicketsBySemester(
+        activeSemester.id,
+        filter,
+        take,
+        skip
+      )
     );
     return tickets;
   };
@@ -93,8 +98,28 @@ export default function PendingTicketContainer({
         <div className="overflow-x-auto flex justify-between items-center px-2 mb-2">
           <div className="text-lg font-bold mb-3 mt-2 flex items-center">
             <ArchiveIcon className="h-5 w-5" />
-            <span className="ml-3 mr-10">
-              {user?.roleName === ROLES.USER ? 'My' : ''} Pending Tickets
+            <span className="ml-3 mr-10 flex items-center">
+              <div className="mr-2">
+                {user?.roleName === ROLES.USER ? 'My' : ''} Pending Tickets
+              </div>
+              <InformationCircleIcon
+                data-tip
+                data-for="pending-ticket-desc"
+                className="w-5 h-5"
+              />
+
+              <ReactTooltip
+                id="pending-ticket-desc"
+                place="right"
+                effect="solid">
+                <div>
+                  Ticket which status is <b>Pending</b> means that the problem
+                  depends on external factor(s) that are outside of our
+                  team&lsquo;s control (ex: waiting for data from another
+                  division), hence the deadline of the ticket will be frozen
+                  until it is resolved.
+                </div>
+              </ReactTooltip>
             </span>
           </div>
 
@@ -129,7 +154,11 @@ export default function PendingTicketContainer({
           </div>
         </div>
         <div className="p-1">
-          <TicketTable tickets={pendingTickets} />
+          <TicketTable
+            showLegends={false}
+            tickets={pendingTickets}
+            forPending
+          />
 
           <CustomPaginator
             take={take}
