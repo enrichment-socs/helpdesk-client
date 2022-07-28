@@ -14,6 +14,10 @@ import { useRouter } from 'next/router';
 import { TicketDueDate } from '../../../models/TicketDueDate';
 import TicketDetailManageStatus from './TicketDetailManageStatus';
 import TicketDetailManageDueDate from './TicketDetailManageDueDate';
+import InfoAlert from '../../../widgets/InfoAlert';
+import { ROLES } from '../../../shared/constants/roles';
+import { User } from '../../../models/User';
+import { TicketUtils } from '../../../shared/libs/ticket-utils';
 
 type Props = {
   statuses: Status[];
@@ -69,6 +73,13 @@ export default function TicketDetailManage({
 
   return (
     <section className="text-gray-800">
+      {!TicketUtils.isEligibleToManage(user, ticket) && (
+        <InfoAlert
+          message="Ticket could only be managed by the ticket handler"
+          className="mb-4"
+        />
+      )}
+
       <TicketDetailManageStatus
         ticket={ticket}
         statuses={statuses}
@@ -85,32 +96,34 @@ export default function TicketDetailManage({
         ticket={ticket}
       />
 
-      <div className="mt-8 border border-gray-300 rounded p-4 shadow-sm">
-        <h2 className="font-semibold text-lg mb-2">Action</h2>
-        <div className=" p-4 border border-red-300 rounded bg-red-50 flex flex-col md:flex-row justify-between">
-          <div className="text-sm">
-            <h3 className="font-medium">Delete this ticket.</h3>
-            <p>
-              Once you delete this ticket, there is no going back. Please be
-              certain. Ticket cant be deleted if it&rsquo;s already closed
-            </p>
-          </div>
+      {TicketUtils.isEligibleToManage(user, ticket) && (
+        <div className="mt-8 border border-gray-300 rounded p-4 shadow-sm">
+          <h2 className="font-semibold text-lg mb-2">Action</h2>
+          <div className=" p-4 border border-red-300 rounded bg-red-50 flex flex-col md:flex-row justify-between">
+            <div className="text-sm">
+              <h3 className="font-medium">Delete this ticket.</h3>
+              <p>
+                Once you delete this ticket, there is no going back. Please be
+                certain. Ticket cant be deleted if it&rsquo;s already closed
+              </p>
+            </div>
 
-          <div>
-            <button
-              disabled={!enableDeleteButton}
-              onClick={handleDeleteTicket}
-              type="button"
-              className={`${
-                enableDeleteButton
-                  ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500 text-white'
-                  : 'bg-gray-400 text-gray-100'
-              } w-full justify-center text-center mt-2 md:mt-0 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2`}>
-              Delete Ticket
-            </button>
+            <div>
+              <button
+                disabled={!enableDeleteButton}
+                onClick={handleDeleteTicket}
+                type="button"
+                className={`${
+                  enableDeleteButton
+                    ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500 text-white'
+                    : 'bg-gray-400 text-gray-100'
+                } w-full justify-center text-center mt-2 md:mt-0 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2`}>
+                Delete Ticket
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {getCurrentStatus() === STATUS.CLOSED && (
         <SuccessAlert

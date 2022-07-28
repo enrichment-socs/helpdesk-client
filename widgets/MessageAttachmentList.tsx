@@ -16,14 +16,14 @@ export default function MessageAttachmentList({ attachments }: Props) {
   };
 
   return (
-    <ul className="flex flex-wrap space-x-2">
+    <ul className="flex flex-wrap">
       {attachments
         .filter((att) => !att.isInline)
         .map((attachment, idx) => (
           <li key={idx}>
             <button
               onClick={() => downloadAttachment(attachment)}
-              className="flex space-x-2 items-center border border-blue-100 py-2 px-4 text-sm rounded bg-blue-100 hover:bg-blue-200">
+              className="mb-2 mr-2 flex space-x-2 items-center border border-blue-100 py-2 px-4 text-sm rounded bg-blue-100 hover:bg-blue-200">
               <span>{attachment.name}</span>
               <DownloadIcon className="w-4 h-4 ml-2" />
             </button>

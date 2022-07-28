@@ -1,4 +1,7 @@
 import { addHours, getDay } from 'date-fns';
+import { SessionUser } from '../../models/SessionUser';
+import { Ticket } from '../../models/Ticket';
+import { ROLES } from '../constants/roles';
 
 export class TicketUtils {
   static calculateDueDate(deadlineHours) {
@@ -31,5 +34,10 @@ export class TicketUtils {
     dueDate.setMinutes(0);
 
     return { dueDate, addedHours };
+  }
+
+  static isEligibleToManage(user: SessionUser, ticket: Ticket): boolean {
+    if (user.roleName === ROLES.SUPER_ADMIN) return true;
+    return user.roleName === ROLES.ADMIN && user.id === ticket.assignedTo.id;
   }
 }

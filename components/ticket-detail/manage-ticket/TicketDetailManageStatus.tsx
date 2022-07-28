@@ -18,6 +18,7 @@ import TicketStatusChangeLogTable from './TicketStatusChangeLogTable';
 import { confirm } from '../../../shared/libs/confirm-dialog-helper';
 import { TicketDueDate } from '../../../models/TicketDueDate';
 import { TicketDueDateService } from '../../../services/TicketDueDateService';
+import { TicketUtils } from '../../../shared/libs/ticket-utils';
 
 type Props = {
   resolution: TicketResolution;
@@ -114,11 +115,7 @@ export default function TicketDetailManageStatus({
         <TicketStatusChangeLogTable ticketStatuses={ticketStatuses} />
       </div>
 
-      <If
-        condition={
-          user?.id === ticket.assignedTo.id ||
-          user?.roleName === ROLES.SUPER_ADMIN
-        }>
+      <If condition={TicketUtils.isEligibleToManage(user, ticket)}>
         <Then>
           <div className="mt-8">
             <h2 className="font-semibold text-lg mb-2">Manage Ticket Status</h2>
@@ -228,12 +225,6 @@ export default function TicketDetailManageStatus({
             </Switch>
           </div>
         </Then>
-        <Else>
-          <InfoAlert
-            message="Ticket could only be managed by the ticket handler"
-            className="mt-4"
-          />
-        </Else>
       </If>
     </div>
   );
