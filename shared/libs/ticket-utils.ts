@@ -30,7 +30,7 @@ export class TicketUtils {
       }
     }
 
-    dueDate = addHours(dueDate, HOURS_IN_DAY); // tambah sejem lagi biar dibuletin ke atas.
+    dueDate = addHours(dueDate, 1); // tambah sejem lagi biar dibuletin ke atas.
     dueDate.setSeconds(0);
     dueDate.setMinutes(0);
 
