@@ -20,15 +20,15 @@ import MessageContainer from '../components/messages/MessageContainer';
 import AdminTicketSummaryContainer from '../components/ticket-summaries/admin/AdminTicketSummaryContainer';
 import UserTicketSummaryContainer from '../components/ticket-summaries/user/UserTicketSummaryContainer';
 import { MessageService } from '../services/MessageService';
-import FAQContainer from '../components/faqs/FAQContainer';
-import { FAQCategoryService } from '../services/FAQCategoryService';
-import { FAQCategory } from '../models/FAQCategory';
+import GuidelineContainer from '../components/guidelines/GuidelineContainer';
+import { GuidelineCategoryService } from '../services/GuidelineCategoryService';
+import { GuidelineCategory } from '../models/GuidelineCategory';
 import { TicketService } from '../services/TicketService';
 import { TicketSummary } from '../models/TicketSummary';
 
 type Props = {
   announcements: Announcement[];
-  faqCategories: FAQCategory[];
+  faqCategories: GuidelineCategory[];
   messages: Message[] | [];
   initialTake: number;
   initialSkip: number;
@@ -92,7 +92,7 @@ const Home: NextPage<Props> = ({
         )}
 
         {user?.roleName === ROLES.USER && (
-          <FAQContainer faqCategories={faqCategories} />
+          <GuidelineContainer guidelineCategories={faqCategories} />
         )}
       </div>
     </Layout>
@@ -131,7 +131,9 @@ export const getServerSideProps = withSessionSsr(
 
     let faqCategories = null;
     if (user?.roleName === ROLES.USER) {
-      const faqCategoryService = new FAQCategoryService(user?.accessToken);
+      const faqCategoryService = new GuidelineCategoryService(
+        user?.accessToken
+      );
       faqCategories = await faqCategoryService.getAll();
     }
 

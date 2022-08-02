@@ -1,4 +1,4 @@
-export class FAQCategory {
+export class GuidelineCategory {
   id: string;
   categoryName: string;
 }

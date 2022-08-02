@@ -2,28 +2,28 @@ import { Disclosure, Transition } from '@headlessui/react';
 import { ChevronUpIcon } from '@heroicons/react/solid';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
-import { FAQ } from '../../models/FAQ';
-import { FAQCategory } from '../../models/FAQCategory';
+import { Guideline } from '../../models/Guideline';
+import { GuidelineCategory } from '../../models/GuidelineCategory';
 import { SessionUser } from '../../models/SessionUser';
-import { FAQService } from '../../services/FAQService';
+import { GuidelineService } from '../../services/GuidelineService';
 import SkeletonLoading from '../../widgets/SkeletonLoading';
 
 type Props = {
-  faqCategory: FAQCategory;
+  guidelineCategory: GuidelineCategory;
 };
 
-const FAQAccordion: React.FC<Props> = ({ faqCategory }) => {
+const GuidelineAccordion: React.FC<Props> = ({ guidelineCategory }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [currFAQs, setCurrFAQs] = useState<FAQ[]>(null);
+  const [currFAQs, setCurrFAQs] = useState<Guideline[]>(null);
 
   const session = useSession();
   const user = session?.data?.user as SessionUser;
-  const faqService = new FAQService(user?.accessToken);
+  const faqService = new GuidelineService(user?.accessToken);
 
   const getCurrCategoryFAQs = async () => {
     setIsLoading(true);
 
-    const faqs = await faqService.getByFAQCategory(faqCategory.id);
+    const faqs = await faqService.getByFAQCategory(guidelineCategory.id);
     setCurrFAQs(faqs);
     setIsLoading(false);
   };
@@ -40,7 +40,7 @@ const FAQAccordion: React.FC<Props> = ({ faqCategory }) => {
             className={`${
               open ? 'rounded-t' : 'rounded-lg'
             } flex justify-between items-center w-full px-4 py-2 font-medium text-left text-sky-900 bg-sky-100 hover:bg-sky-200 focus:outline-none focus-visible:ring focus-visible:ring-sky-500 focus-visible:ring-opacity-75 mt-3`}>
-            <span>{faqCategory.categoryName}</span>
+            <span>{guidelineCategory.categoryName}</span>
             <ChevronUpIcon
               className={`${open ? 'rotate-180 transform' : ''} h-5 w-5`}
             />
@@ -103,4 +103,4 @@ const FAQAccordion: React.FC<Props> = ({ faqCategory }) => {
   );
 };
 
-export default FAQAccordion;
+export default GuidelineAccordion;

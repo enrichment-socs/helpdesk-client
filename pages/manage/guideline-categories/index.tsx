@@ -3,40 +3,40 @@ import { useHydrateAtoms } from 'jotai/utils';
 import { NextPage } from 'next';
 import { getSession } from 'next-auth/react';
 import { useState } from 'react';
-import FAQCategoryFormModal from '../../../components/faq-categories/FAQCategoryFormModal';
-import ManageFAQCategoriesTable from '../../../components/faq-categories/ManageFAQCategoriesTable';
+import GuidelineCategoryFormModal from '../../../components/guideline-categories/GuidelineCategoryFormModal';
+import ManageGuidelineCategoriesTable from '../../../components/guideline-categories/ManageGuidelineCategoriesTable';
 import Layout from '../../../widgets/_Layout';
 import { AuthHelper } from '../../../shared/libs/auth-helper';
 import { ROLES } from '../../../shared/constants/roles';
 import { getInitialServerProps } from '../../../shared/libs/initialize-server-props';
 import { withSessionSsr } from '../../../shared/libs/session';
-import { FAQCategory } from '../../../models/FAQCategory';
-import { FAQCategoryService } from '../../../services/FAQCategoryService';
+import { GuidelineCategory } from '../../../models/GuidelineCategory';
+import { GuidelineCategoryService } from '../../../services/GuidelineCategoryService';
 import { SemesterService } from '../../../services/SemesterService';
 import { SessionUser } from '../../../models/SessionUser';
 
-export const faqCategoriesAtom = atom([] as FAQCategory[]);
+export const faqCategoriesAtom = atom([] as GuidelineCategory[]);
 
 type Props = {
-  currFAQCategories: FAQCategory[];
+  currFAQCategories: GuidelineCategory[];
 };
 
 const ManageFAQCategoriesPage: NextPage<Props> = ({ currFAQCategories }) => {
   const [faqCategories] = useAtom(faqCategoriesAtom);
   const [openFormModal, setOpenFormModal] = useState(false);
   const [selectedFAQCategory, setSelectedFAQCategory] =
-    useState<FAQCategory | null>(null);
+    useState<GuidelineCategory | null>(null);
 
   useHydrateAtoms([[faqCategoriesAtom, currFAQCategories]] as const);
 
-  const openModal = (faqCategory: FAQCategory | null) => {
+  const openModal = (faqCategory: GuidelineCategory | null) => {
     setSelectedFAQCategory(faqCategory);
     setOpenFormModal(true);
   };
 
   return (
     <Layout>
-      <FAQCategoryFormModal
+      <GuidelineCategoryFormModal
         isOpen={openFormModal}
         setIsOpen={setOpenFormModal}
         faqCategory={selectedFAQCategory}
@@ -51,7 +51,7 @@ const ManageFAQCategoriesPage: NextPage<Props> = ({ currFAQCategories }) => {
           Create
         </button>
       </div>
-      <ManageFAQCategoriesTable
+      <ManageGuidelineCategoriesTable
         faqCategories={faqCategories}
         openModal={openModal}
       />
@@ -74,7 +74,7 @@ export const getServerSideProps = withSessionSsr(
     }
 
     const user = session.user as SessionUser;
-    const faqCategoriesService = new FAQCategoryService(user.accessToken);
+    const faqCategoriesService = new GuidelineCategoryService(user.accessToken);
     const currFAQCategories = await faqCategoriesService.getAll();
 
     return {

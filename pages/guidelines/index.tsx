@@ -1,11 +1,11 @@
 import { useHydrateAtoms } from 'jotai/utils';
 import { NextPage } from 'next';
 import { getSession } from 'next-auth/react';
-import FAQContainer from '../../components/faqs/FAQContainer';
-import { FAQCategory } from '../../models/FAQCategory';
+import GuidelineContainer from '../../components/guidelines/GuidelineContainer';
+import { GuidelineCategory } from '../../models/GuidelineCategory';
 import { SessionUser } from '../../models/SessionUser';
-import { FAQCategoryService } from '../../services/FAQCategoryService';
-import { FAQService } from '../../services/FAQService';
+import { GuidelineCategoryService } from '../../services/GuidelineCategoryService';
+import { GuidelineService } from '../../services/GuidelineService';
 import { SemesterService } from '../../services/SemesterService';
 import { ROLES } from '../../shared/constants/roles';
 import { AuthHelper } from '../../shared/libs/auth-helper';
@@ -14,13 +14,13 @@ import { withSessionSsr } from '../../shared/libs/session';
 import Layout from '../../widgets/_Layout';
 
 type Props = {
-  faqCategories: FAQCategory[];
+  guidelineCategories: GuidelineCategory[];
 };
 
-const FAQPage: NextPage<Props> = ({ faqCategories }) => {
+const FAQPage: NextPage<Props> = ({ guidelineCategories }) => {
   return (
     <Layout>
-      <FAQContainer faqCategories={faqCategories} />
+      <GuidelineContainer guidelineCategories={guidelineCategories} />
     </Layout>
   );
 };
@@ -44,16 +44,18 @@ export const getServerSideProps = withSessionSsr(
       };
 
     const user = session?.user as SessionUser;
-    const faqCategoryService = new FAQCategoryService(user?.accessToken);
+    const guidelineCategoryService = new GuidelineCategoryService(
+      user?.accessToken
+    );
 
-    const faqCategories = await faqCategoryService.getAll();
+    const guidelineCategories = await guidelineCategoryService.getAll();
 
     return {
       props: {
         semesters,
         session,
         sessionActiveSemester,
-        faqCategories,
+        guidelineCategories,
       },
     };
   }

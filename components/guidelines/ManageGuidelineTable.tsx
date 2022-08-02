@@ -2,29 +2,29 @@ import { useAtom } from 'jotai';
 import { useSession } from 'next-auth/react';
 import toast from 'react-hot-toast';
 import { confirm } from '../../shared/libs/confirm-dialog-helper';
-import { FAQ } from '../../models/FAQ';
+import { Guideline } from '../../models/Guideline';
 import { SessionUser } from '../../models/SessionUser';
-import { faqsAtom } from '../../pages/manage/faqs';
-import { FAQService } from '../../services/FAQService';
+import { faqsAtom } from '../../pages/manage/guidelines';
+import { GuidelineService } from '../../services/GuidelineService';
 
 type Props = {
-  faqs: FAQ[];
-  openModal: (faqs: FAQ | null) => void;
+  guidelines: Guideline[];
+  openModal: (faqs: Guideline | null) => void;
 };
 
-const ManageFAQsTable: React.FC<Props> = ({ faqs, openModal }) => {
+const ManageGuidelinesTable: React.FC<Props> = ({ guidelines, openModal }) => {
   const [, setFAQs] = useAtom(faqsAtom);
   const session = useSession();
   const user = session?.data?.user as SessionUser;
 
-  const onDelete = async (faq: FAQ) => {
-    const faqService = new FAQService(user.accessToken);
-    const message = `Are you sure you want to delete FAQ "<b>${faq.question}</b>" ?`;
+  const onDelete = async (guideline: Guideline) => {
+    const guidelineService = new GuidelineService(user.accessToken);
+    const message = `Are you sure you want to delete FAQ "<b>${guideline.question}</b>" ?`;
     if (await confirm(message)) {
-      await toast.promise(faqService.deleteFAQ(faq.id), {
+      await toast.promise(guidelineService.deleteFAQ(guideline.id), {
         loading: 'Deleting FAQ...',
         success: (r) => {
-          setFAQs(faqs.filter((f) => f.id !== faq.id));
+          setFAQs(guidelines.filter((f) => f.id !== guideline.id));
           return 'Sucesfully deleted the selected FAQ';
         },
         error: (e) => e.toString(),
@@ -43,12 +43,12 @@ const ManageFAQsTable: React.FC<Props> = ({ faqs, openModal }) => {
                   <th
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                    FAQ Question
+                    Guideline Question
                   </th>
                   <th
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                    FAQ Category
+                    Guideline Category
                   </th>
                   <th scope="col" className="relative px-6 py-3">
                     <span className="sr-only">Edit</span>
@@ -56,27 +56,27 @@ const ManageFAQsTable: React.FC<Props> = ({ faqs, openModal }) => {
                 </tr>
               </thead>
               <tbody>
-                {faqs &&
-                  faqs.map((faq, idx) => (
+                {guidelines &&
+                  guidelines.map((guideline, idx) => (
                     <tr
-                      key={faq.id}
+                      key={guideline.id}
                       className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {faq.question}
+                        {guideline.question}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {faq.faqCategory.categoryName}
+                        {guideline.guidelineCategory.categoryName}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-1">
                         <button
                           type="button"
-                          onClick={() => openModal(faq)}
+                          onClick={() => openModal(guideline)}
                           className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                           Update
                         </button>
                         <button
                           type="button"
-                          onClick={() => onDelete(faq)}
+                          onClick={() => onDelete(guideline)}
                           className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
                           Delete
                         </button>
@@ -92,4 +92,4 @@ const ManageFAQsTable: React.FC<Props> = ({ faqs, openModal }) => {
   );
 };
 
-export default ManageFAQsTable;
+export default ManageGuidelinesTable;

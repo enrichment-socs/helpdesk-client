@@ -58,13 +58,13 @@ export default function Navbar() {
           roles: [ROLES.SUPER_ADMIN],
         },
         {
-          title: 'FAQ Categories',
-          href: '/faq-categories',
+          title: 'Guideline Categories',
+          href: '/guideline-categories',
           roles: [ROLES.SUPER_ADMIN],
         },
         {
-          title: 'FAQs',
-          href: '/faqs',
+          title: 'Guidelines',
+          href: '/guidelines',
           roles: [ROLES.SUPER_ADMIN],
         },
         {
@@ -85,8 +85,8 @@ export default function Navbar() {
       ],
     },
     {
-      title: 'FAQ',
-      href: '/faqs',
+      title: 'Guidelines',
+      href: '/guidelines',
       roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN],
     },
   ];

@@ -5,12 +5,12 @@ import dynamic from 'next/dynamic';
 import { Dispatch, Fragment, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { CreateFAQDto } from '../../models/dto/faqs/create-faq.dto';
-import { FAQ } from '../../models/FAQ';
+import { CreateGuidelineDto } from '../../models/dto/guidelines/create-guideline.dto';
+import { Guideline } from '../../models/Guideline';
 import { SessionUser } from '../../models/SessionUser';
-import { faqCategoriesAtom } from '../../pages/manage/faq-categories';
-import { faqsAtom } from '../../pages/manage/faqs';
-import { FAQService } from '../../services/FAQService';
+import { faqCategoriesAtom } from '../../pages/manage/guideline-categories';
+import { faqsAtom } from '../../pages/manage/guidelines';
+import { GuidelineService } from '../../services/GuidelineService';
 
 const QuillNoSSRWrapper = dynamic(import('react-quill'), {
   ssr: false,
@@ -33,16 +33,16 @@ const modules = {
 type Props = {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
-  faq: FAQ | null;
+  faq: Guideline | null;
 };
 
 type FormData = {
   question: string;
   answer: string;
-  faqCategoryId: string;
+  guidelineCategoryId: string;
 };
 
-const FAQFormModal: React.FC<Props> = ({ isOpen, setIsOpen, faq }) => {
+const GuidelineFormModal: React.FC<Props> = ({ isOpen, setIsOpen, faq }) => {
   const [faqs, setFaqs] = useAtom(faqsAtom);
   const [faqCategories, setFAQCategories] = useAtom(faqCategoriesAtom);
   const [loading, setLoading] = useState(false);
@@ -64,7 +64,7 @@ const FAQFormModal: React.FC<Props> = ({ isOpen, setIsOpen, faq }) => {
     register('answer', { required: true });
     setValue('answer', faq?.answer);
 
-    setValue('faqCategoryId', faq?.faqCategory.id);
+    setValue('guidelineCategoryId', faq?.guidelineCategory.id);
   }, [faq, register, setValue]);
 
   const answerContent = watch('answer') || '';
@@ -73,11 +73,11 @@ const FAQFormModal: React.FC<Props> = ({ isOpen, setIsOpen, faq }) => {
 
   const onSubmit: SubmitHandler<FormData> = async (payload) => {
     setLoading(true);
-    const faqService = new FAQService(user.accessToken);
+    const faqService = new GuidelineService(user.accessToken);
     await toast.promise(
       faq
-        ? faqService.updateFAQ(payload as CreateFAQDto, faq.id)
-        : faqService.addFAQ(payload as CreateFAQDto),
+        ? faqService.updateFAQ(payload as CreateGuidelineDto, faq.id)
+        : faqService.addFAQ(payload as CreateGuidelineDto),
       {
         loading: faq ? 'Updating FAQ...' : 'Adding FAQ...',
         success: (result) => {
@@ -92,10 +92,10 @@ const FAQFormModal: React.FC<Props> = ({ isOpen, setIsOpen, faq }) => {
           setIsOpen(false);
           setValue('question', '');
           setValue('answer', '');
-          setValue('faqCategoryId', '');
+          setValue('guidelineCategoryId', '');
           return faq
-            ? `Successfully updated the FAQ`
-            : `Succesfully added new FAQ`;
+            ? `Successfully updated the guideline`
+            : `Succesfully added new guideline`;
         },
         error: (e) => e.toString(),
       }
@@ -196,11 +196,11 @@ const FAQFormModal: React.FC<Props> = ({ isOpen, setIsOpen, faq }) => {
                       FAQ Category
                     </label>
                     <select
-                      {...register('faqCategoryId', {
+                      {...register('guidelineCategoryId', {
                         required: true,
                       })}
                       className={`${
-                        errors.faqCategoryId
+                        errors.guidelineCategoryId
                           ? 'border-red-300'
                           : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
                       } mt-1 block w-full pl-3 outline-none pr-10 py-2 text-base border sm:text-sm rounded-md`}>
@@ -216,7 +216,7 @@ const FAQFormModal: React.FC<Props> = ({ isOpen, setIsOpen, faq }) => {
                         );
                       })}
                     </select>
-                    {errors.faqCategoryId?.type === 'required' && (
+                    {errors.guidelineCategoryId?.type === 'required' && (
                       <small className="text-red-500">
                         FAQ Category must be selected
                       </small>
@@ -245,4 +245,4 @@ const FAQFormModal: React.FC<Props> = ({ isOpen, setIsOpen, faq }) => {
   );
 };
 
-export default FAQFormModal;
+export default GuidelineFormModal;

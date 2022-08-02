@@ -3,44 +3,47 @@ import { useHydrateAtoms } from 'jotai/utils';
 import { NextPage } from 'next';
 import { getSession } from 'next-auth/react';
 import { useState } from 'react';
-import FAQFormModal from '../../../components/faqs/FAQFormModal';
-import ManageFAQsTable from '../../../components/faqs/ManageFAQsTable';
-import { FAQ } from '../../../models/FAQ';
-import { FAQCategory } from '../../../models/FAQCategory';
+import GuidelineFormModal from '../../../components/guidelines/GuidelineFormModal';
+import ManageGuidelinesTable from '../../../components/guidelines/ManageGuidelineTable';
+import { Guideline } from '../../../models/Guideline';
+import { GuidelineCategory } from '../../../models/GuidelineCategory';
 import { SessionUser } from '../../../models/SessionUser';
-import { FAQCategoryService } from '../../../services/FAQCategoryService';
-import { FAQService } from '../../../services/FAQService';
+import { GuidelineCategoryService } from '../../../services/GuidelineCategoryService';
+import { GuidelineService } from '../../../services/GuidelineService';
 import { SemesterService } from '../../../services/SemesterService';
 import { ROLES } from '../../../shared/constants/roles';
 import { AuthHelper } from '../../../shared/libs/auth-helper';
 import { getInitialServerProps } from '../../../shared/libs/initialize-server-props';
 import { withSessionSsr } from '../../../shared/libs/session';
 import Layout from '../../../widgets/_Layout';
-import { faqCategoriesAtom } from '../faq-categories';
+import { faqCategoriesAtom } from '../guideline-categories';
 
-export const faqsAtom = atom([] as FAQ[]);
+export const faqsAtom = atom([] as Guideline[]);
 
 type Props = {
-  currFAQCategories: FAQCategory[];
-  currFAQs: FAQ[];
+  currFAQCategories: GuidelineCategory[];
+  currFAQs: Guideline[];
 };
 
-const ManageFAQCategoriesPage: NextPage<Props> = ({ currFAQCategories, currFAQs }) => {
+const ManageFAQCategoriesPage: NextPage<Props> = ({
+  currFAQCategories,
+  currFAQs,
+}) => {
   const [faqs] = useAtom(faqsAtom);
   const [openFormModal, setOpenFormModal] = useState(false);
-  const [selectedFAQ, setSelectedFAQ] = useState<FAQ | null>(null);
+  const [selectedFAQ, setSelectedFAQ] = useState<Guideline | null>(null);
 
   useHydrateAtoms([[faqCategoriesAtom, currFAQCategories]] as const);
-  useHydrateAtoms([[faqsAtom, currFAQs]] as const)
+  useHydrateAtoms([[faqsAtom, currFAQs]] as const);
 
-  const openModal = (faq: FAQ | null) => {
+  const openModal = (faq: Guideline | null) => {
     setSelectedFAQ(faq);
     setOpenFormModal(true);
   };
 
   return (
     <Layout>
-      <FAQFormModal
+      <GuidelineFormModal
         isOpen={openFormModal}
         setIsOpen={setOpenFormModal}
         faq={selectedFAQ}
@@ -55,10 +58,7 @@ const ManageFAQCategoriesPage: NextPage<Props> = ({ currFAQCategories, currFAQs 
           Create
         </button>
       </div>
-      <ManageFAQsTable
-        faqs={faqs}
-        openModal={openModal}
-      />
+      <ManageGuidelinesTable guidelines={faqs} openModal={openModal} />
     </Layout>
   );
 };
@@ -78,8 +78,8 @@ export const getServerSideProps = withSessionSsr(
     }
 
     const user = session.user as SessionUser;
-    const faqCategoriesService = new FAQCategoryService(user.accessToken);
-    const faqsService = new FAQService(user.accessToken);
+    const faqCategoriesService = new GuidelineCategoryService(user.accessToken);
+    const faqsService = new GuidelineService(user.accessToken);
 
     const currFAQCategories = await faqCategoriesService.getAll();
     const currFAQs = await faqsService.getAll();

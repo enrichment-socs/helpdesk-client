@@ -3,24 +3,24 @@ import { SetStateAction, useAtom } from 'jotai';
 import { Dispatch, Fragment, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { CreateFAQCategoryDto } from '../../models/dto/faq-categories/create-faq-category.dto';
-import { FAQCategory } from '../../models/FAQCategory';
-import { faqCategoriesAtom } from '../../pages/manage/faq-categories';
-import { FAQCategoryService } from '../../services/FAQCategoryService';
+import { CreateGuidelineCategoryDto } from '../../models/dto/guideline-categories/create-guideline-category.dto';
+import { GuidelineCategory } from '../../models/GuidelineCategory';
+import { faqCategoriesAtom } from '../../pages/manage/guideline-categories';
+import { GuidelineCategoryService } from '../../services/GuidelineCategoryService';
 import { useSession } from 'next-auth/react';
 import { SessionUser } from '../../models/SessionUser';
 
 type Props = {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
-  faqCategory: FAQCategory | null;
+  faqCategory: GuidelineCategory | null;
 };
 
 type FormData = {
   categoryName: string;
 };
 
-export default function FAQCategoryFormModal({
+export default function GuidelineCategoryFormModal({
   isOpen,
   setIsOpen,
   faqCategory,
@@ -43,14 +43,16 @@ export default function FAQCategoryFormModal({
 
   const onSubmit: SubmitHandler<FormData> = async (payload) => {
     setLoading(true);
-    const faqCategoriesService = new FAQCategoryService(user.accessToken);
+    const faqCategoriesService = new GuidelineCategoryService(user.accessToken);
     await toast.promise(
       faqCategory
         ? faqCategoriesService.updateFAQCategory(
-            payload as CreateFAQCategoryDto,
+            payload as CreateGuidelineCategoryDto,
             faqCategory.id
           )
-        : faqCategoriesService.addFAQCategory(payload as CreateFAQCategoryDto),
+        : faqCategoriesService.addFAQCategory(
+            payload as CreateGuidelineCategoryDto
+          ),
       {
         loading: faqCategory
           ? 'Updating FAQ category...'

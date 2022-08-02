@@ -1,18 +1,18 @@
 import { useAtom } from 'jotai';
 import toast from 'react-hot-toast';
 import { confirm } from '../../shared/libs/confirm-dialog-helper';
-import { FAQCategory } from '../../models/FAQCategory';
-import { faqCategoriesAtom } from '../../pages/manage/faq-categories';
-import { FAQCategoryService } from '../../services/FAQCategoryService';
+import { GuidelineCategory } from '../../models/GuidelineCategory';
+import { faqCategoriesAtom } from '../../pages/manage/guideline-categories';
+import { GuidelineCategoryService } from '../../services/GuidelineCategoryService';
 import { useSession } from 'next-auth/react';
 import { SessionUser } from '../../models/SessionUser';
 
 type Props = {
-  faqCategories: FAQCategory[];
-  openModal: (faqCategories: FAQCategory | null) => void;
+  faqCategories: GuidelineCategory[];
+  openModal: (faqCategories: GuidelineCategory | null) => void;
 };
 
-export default function ManageFAQCategoriesTable({
+export default function ManageGuidelineCategoriesTable({
   faqCategories,
   openModal,
 }: Props) {
@@ -20,8 +20,8 @@ export default function ManageFAQCategoriesTable({
   const session = useSession();
   const user = session?.data?.user as SessionUser;
 
-  const onDelete = async (faqCategory: FAQCategory) => {
-    const faqCategoriesService = new FAQCategoryService(user.accessToken);
+  const onDelete = async (faqCategory: GuidelineCategory) => {
+    const faqCategoriesService = new GuidelineCategoryService(user.accessToken);
     const message = `Are you sure you want to delete <b>${faqCategory.categoryName}</b> ?`;
     if (await confirm(message)) {
       await toast.promise(
