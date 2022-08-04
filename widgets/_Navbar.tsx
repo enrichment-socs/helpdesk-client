@@ -28,7 +28,7 @@ export default function Navbar() {
     },
     {
       title: 'Tickets',
-      href: '/tickets',
+      href: `/tickets?pendingPriority=&pendingQuery=${user?.name}&priority=&status=&query=${user?.name}`,
       roles: [ROLES.USER, ROLES.ADMIN, ROLES.SUPER_ADMIN],
     },
     {

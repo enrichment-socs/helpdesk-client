@@ -6,7 +6,11 @@ import { withSessionSsr } from '../../shared/libs/session';
 import { SemesterService } from '../../services/SemesterService';
 import { AuthHelper } from '../../shared/libs/auth-helper';
 import { ROLES } from '../../shared/constants/roles';
-import { PendingTicketFilterModel, Ticket, TicketFilterModel } from '../../models/Ticket';
+import {
+  PendingTicketFilterModel,
+  Ticket,
+  TicketFilterModel,
+} from '../../models/Ticket';
 import { TicketService } from '../../services/TicketService';
 import { SessionUser } from '../../models/SessionUser';
 import TicketContainer from '../../components/ticket-detail/TicketContainer';
@@ -73,7 +77,7 @@ const TicketPage: NextPage<Props> = ({
         priorities={priorities}
       />
 
-      <PendingTicketContainer 
+      <PendingTicketContainer
         take={pendingInitialTake}
         skip={pendingSkip}
         setSkip={setPendingSkip}
@@ -114,21 +118,18 @@ export const getServerSideProps = withSessionSsr(
       status: (status as string) || '',
     };
 
-
     const { pendingPriority, pendingQuery: pendingSearchQuery } = query;
     const pendingInitialTake = 10;
     const pendingInitialSkip = 0;
     const pendingFilter: PendingTicketFilterModel = {
       priority: (pendingPriority as string) || '',
       query: (pendingSearchQuery as string) || '',
-    }
+    };
 
     const user = session.user as SessionUser;
     const ticketService = new TicketService(user?.accessToken);
     const statusService = new StatusService(user?.accessToken);
     const priorityService = new PriorityService(user?.accessToken);
-
-    
 
     const { count, tickets } = await ticketService.getTicketsBySemester(
       sessionActiveSemester.id,
@@ -137,18 +138,21 @@ export const getServerSideProps = withSessionSsr(
       initialSkip
     );
 
-    const { count: pendingCount, tickets: pendingTickets } = await ticketService.getPendingTicketsBySemester(
-      sessionActiveSemester.id,
-      pendingFilter,
-      pendingInitialTake,
-      pendingInitialSkip
-    );
+    const { count: pendingCount, tickets: pendingTickets } =
+      await ticketService.getPendingTicketsBySemester(
+        sessionActiveSemester.id,
+        pendingFilter,
+        pendingInitialTake,
+        pendingInitialSkip
+      );
 
     let statuses = await statusService.getAll();
     const priorities = await priorityService.getAll();
 
-    statuses = statuses.filter((status) => status.statusName !== STATUS.PENDING);
-    
+    statuses = statuses.filter(
+      (status) => status.statusName !== STATUS.PENDING
+    );
+
     return {
       props: {
         semesters,
