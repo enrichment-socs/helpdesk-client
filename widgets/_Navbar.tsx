@@ -16,6 +16,10 @@ import { useSession } from 'next-auth/react';
 import { useEffect } from 'react';
 
 export default function Navbar() {
+  const router = useRouter();
+  const session = useSession();
+  const user = session?.data?.user as SessionUser;
+
   const links: (NavLink | DropdownNavLink)[] = [
     {
       title: 'Home',
@@ -90,10 +94,6 @@ export default function Navbar() {
       roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN],
     },
   ];
-
-  const router = useRouter();
-  const session = useSession();
-  const user = session?.data?.user as SessionUser;
 
   const logOut = async () => {
     await signOut({ callbackUrl: process.env.NEXT_PUBLIC_LOGIN_ABSOLUTE_URL });

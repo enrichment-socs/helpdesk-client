@@ -3,7 +3,7 @@ import { InformationCircleIcon } from '@heroicons/react/outline';
 import { useAtom } from 'jotai';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import toast from 'react-hot-toast';
 import { activeSemesterAtom } from '../../atom';
 import { Priority } from '../../models/Priority';
@@ -45,41 +45,33 @@ export default function PendingTicketContainer({
 
   const { pendingPriority: priorityNameQuery, pendingQuery: searchQuery } =
     router.query;
-  const [priorityFilter, setPriorityFilter] = useState(
-    (priorityNameQuery as string) || ''
-  );
-  const [queryFilter, setQueryFilter] = useState((searchQuery as string) || '');
-
-  useEffect(() => {
-    setPriorityFilter((priorityNameQuery as string) || '');
-    setQueryFilter((searchQuery as string) || '');
-  }, []);
-
-  useEffect(() => {
-    router.push({
-      query: {
-        ...router.query,
-        pendingPriority: priorityFilter,
-        pendingQuery: queryFilter,
-      },
-    });
-    setPageNumber(1);
-  }, [priorityFilter, queryFilter]);
 
   const onPriorityFilterChange = (e) => {
-    setPriorityFilter(e.target.value);
+    updateRouter(e.target.value, searchQuery as string);
   };
 
   const onQueryFilterChange = (e) => {
     const ENTER_KEY_CODE = 13;
-    if (e.keyCode === ENTER_KEY_CODE) setQueryFilter(e.target.value);
+    if (e.keyCode === ENTER_KEY_CODE)
+      updateRouter(priorityNameQuery as string, e.target.value);
+  };
+
+  const updateRouter = (pendingPriority: string, pendingQuery: string) => {
+    router.push({
+      query: {
+        ...router.query,
+        pendingPriority,
+        pendingQuery,
+      },
+    });
+    setPageNumber(1);
   };
 
   const fetchTickets = async (take: number, skip: number) => {
     const wrapper = new ClientPromiseWrapper(toast);
     const filter: PendingTicketFilterModel = {
-      priority: priorityFilter,
-      query: queryFilter,
+      priority: priorityNameQuery as string,
+      query: searchQuery as string,
     };
     const { tickets } = await wrapper.handle(
       ticketService.getPendingTicketsBySemester(
@@ -129,7 +121,7 @@ export default function PendingTicketContainer({
             <div>
               <select
                 onChange={onPriorityFilterChange}
-                value={priorityFilter.toLowerCase()}
+                value={(priorityNameQuery as string).toLowerCase()}
                 className="min-w-[10rem] mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 cursor-pointer focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md">
                 <option value="">All Priority</option>
                 {priorities.map((priority) => (
@@ -146,7 +138,7 @@ export default function PendingTicketContainer({
               <input
                 type="text"
                 onKeyDown={onQueryFilterChange}
-                defaultValue={queryFilter}
+                defaultValue={searchQuery as string}
                 className="shadow-sm focus:ring-primary focus:border-primary block w-full sm:text-sm border py-2 px-4 w-[22rem] border-gray-300 rounded-md"
                 placeholder="Filter by Subject / Requester Name / Assigned to"
               />

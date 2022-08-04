@@ -2,7 +2,7 @@ import { ArchiveIcon } from '@heroicons/react/solid';
 import { useAtom } from 'jotai';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import toast from 'react-hot-toast';
 import { activeSemesterAtom } from '../../atom';
 import { Priority } from '../../models/Priority';
@@ -49,51 +49,52 @@ export default function TicketContainer({
     status: statusNameQuery,
     query: searchQuery,
   } = router.query;
-  const [priorityFilter, setPriorityFilter] = useState(
-    (priorityNameQuery as string) || ''
-  );
-  const [statusFilter, setStatusFilter] = useState(
-    (statusNameQuery as string) || ''
-  );
-  const [queryFilter, setQueryFilter] = useState((searchQuery as string) || '');
-
-  useEffect(() => {
-    setPriorityFilter((priorityNameQuery as string) || '');
-    setStatusFilter((statusNameQuery as string) || '');
-    setQueryFilter((searchQuery as string) || '');
-  }, []);
-
-  useEffect(() => {
-    router.push({
-      query: {
-        ...router.query,
-        priority: priorityFilter,
-        status: statusFilter,
-        query: queryFilter,
-      },
-    });
-    setPageNumber(1);
-  }, [priorityFilter, statusFilter, queryFilter]);
 
   const onStatusFilterChange = (e) => {
-    setStatusFilter(e.target.value);
+    updateRouter(
+      priorityNameQuery as string,
+      e.target.value,
+      searchQuery as string
+    );
   };
 
   const onPriorityFilterChange = (e) => {
-    setPriorityFilter(e.target.value);
+    updateRouter(
+      e.target.value,
+      statusNameQuery as string,
+      searchQuery as string
+    );
   };
 
   const onQueryFilterChange = (e) => {
     const ENTER_KEY_CODE = 13;
-    if (e.keyCode === ENTER_KEY_CODE) setQueryFilter(e.target.value);
+    if (e.keyCode === ENTER_KEY_CODE) {
+      updateRouter(
+        priorityNameQuery as string,
+        statusNameQuery as string,
+        e.target.value
+      );
+    }
+  };
+
+  const updateRouter = (priority: string, status: string, query: string) => {
+    router.push({
+      query: {
+        ...router.query,
+        priority,
+        status,
+        query,
+      },
+    });
+    setPageNumber(1);
   };
 
   const fetchTickets = async (take: number, skip: number) => {
     const wrapper = new ClientPromiseWrapper(toast);
     const filter: TicketFilterModel = {
-      priority: priorityFilter,
-      query: queryFilter,
-      status: statusFilter,
+      priority: priorityNameQuery as string,
+      query: searchQuery as string,
+      status: statusNameQuery as string,
     };
     const { tickets } = await wrapper.handle(
       ticketService.getTicketsBySemester(activeSemester.id, filter, take, skip)
@@ -118,7 +119,7 @@ export default function TicketContainer({
             <div>
               <select
                 onChange={onStatusFilterChange}
-                value={statusFilter.toLowerCase()}
+                value={(statusNameQuery as string).toLowerCase()}
                 className="min-w-[10rem] mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 cursor-pointer focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md">
                 <option value="">All Status</option>
                 {statuses.map((status) => (
@@ -134,7 +135,7 @@ export default function TicketContainer({
             <div>
               <select
                 onChange={onPriorityFilterChange}
-                value={priorityFilter.toLowerCase()}
+                value={(priorityNameQuery as string).toLowerCase()}
                 className="min-w-[10rem] mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 cursor-pointer focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md">
                 <option value="">All Priority</option>
                 {priorities.map((priority) => (
@@ -151,7 +152,7 @@ export default function TicketContainer({
               <input
                 type="text"
                 onKeyDown={onQueryFilterChange}
-                defaultValue={queryFilter}
+                defaultValue={searchQuery}
                 className="shadow-sm focus:ring-primary focus:border-primary block w-full sm:text-sm border py-2 px-4 w-[22rem] border-gray-300 rounded-md"
                 placeholder="Filter by Subject / Requester Name / Assigned to"
               />
