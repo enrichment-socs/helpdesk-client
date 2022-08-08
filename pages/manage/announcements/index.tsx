@@ -14,14 +14,17 @@ import { SemesterService } from '../../../services/SemesterService';
 import { SessionUser } from '../../../models/SessionUser';
 import { AuthHelper } from '../../../shared/libs/auth-helper';
 import { ROLES } from '../../../shared/constants/roles';
+import { RoleService } from '../../../services/RoleService';
+import { Role } from '../../../models/Role';
 
 export const announcementsAtom = atom([] as Announcement[]);
 
 type Props = {
   currAnnouncements: Announcement[];
+  roles: Role[];
 };
 
-const ManageRolesPage: NextPage<Props> = ({ currAnnouncements }) => {
+const ManageRolesPage: NextPage<Props> = ({ currAnnouncements, roles }) => {
   useHydrateAtoms([[announcementsAtom, currAnnouncements]] as const);
   const [announcements, setAnnouncement] = useAtom(announcementsAtom);
   const [openFormModal, setOpenFormModal] = useState(false);
@@ -43,6 +46,7 @@ const ManageRolesPage: NextPage<Props> = ({ currAnnouncements }) => {
         isOpen={openFormModal}
         setIsOpen={setOpenFormModal}
         announcement={selectedAnnouncement}
+        roles={roles}
       />
 
       <div className="font-bold text-2xl mb-4 flex items-center justify-between  ">
@@ -78,10 +82,13 @@ export const getServerSideProps = withSessionSsr(
 
     const user = session.user as SessionUser;
     const announcementService = new AnnouncementService(user.accessToken);
+    const roleService = new RoleService(user.accessToken);
 
     const currAnnouncements = await announcementService.getBySemester(
       sessionActiveSemester.id
     );
+
+    const roles = await roleService.getAll();
 
     return {
       props: {
@@ -89,6 +96,7 @@ export const getServerSideProps = withSessionSsr(
         session,
         sessionActiveSemester,
         currAnnouncements,
+        roles,
       },
     };
   }

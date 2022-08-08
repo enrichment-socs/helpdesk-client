@@ -58,6 +58,11 @@ export default function ManageAnnouncementsTable({
                   <th
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                    Target Role
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                     Start Date
                   </th>
                   <th
@@ -85,6 +90,9 @@ export default function ManageAnnouncementsTable({
                       className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {announcement.title}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {announcement.role ? announcement.role.roleName : 'All'}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {format(

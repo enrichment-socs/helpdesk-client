@@ -4,4 +4,5 @@ export interface CreateAnnouncementDto {
   startDate: Date;
   endDate: Date;
   semesterId?: string;
+  roleId?: string;
 }

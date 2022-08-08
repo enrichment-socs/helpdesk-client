@@ -13,6 +13,7 @@ import { add } from 'date-fns';
 import { useSession } from 'next-auth/react';
 import { SessionUser } from '../../models/SessionUser';
 import { DateHelper } from '../../shared/libs/date-helper';
+import { Role } from '../../models/Role';
 const QuillNoSSRWrapper = dynamic(import('react-quill'), {
   ssr: false,
   loading: () => <p>Loading ...</p>,
@@ -36,6 +37,7 @@ type Props = {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   announcement: Announcement | null;
+  roles: Role[];
 };
 
 type FormData = {
@@ -43,12 +45,14 @@ type FormData = {
   body: string;
   startDate: Date;
   endDate: Date;
+  roleId?: string;
 };
 
 export default function AnnouncementFormModal({
   isOpen,
   setIsOpen,
   announcement,
+  roles,
 }: Props) {
   const [announcements, setAnnouncements] = useAtom(announcementsAtom);
   const [loading, setLoading] = useState(false);
@@ -72,6 +76,7 @@ export default function AnnouncementFormModal({
     );
 
     setValue('title', announcement?.title);
+    setValue('roleId', announcement?.role?.id);
 
     register('startDate', { required: true });
     setValue(
@@ -102,6 +107,7 @@ export default function AnnouncementFormModal({
       ...payload,
     };
 
+    if (!dto.roleId) dto.roleId = null;
     if (!announcement) dto.semesterId = activeSemester.id;
     const announcementService = new AnnouncementService(user.accessToken);
 
@@ -122,7 +128,7 @@ export default function AnnouncementFormModal({
                   else return a;
                 })
               )
-            : setAnnouncements([result, ...announcements]);
+            : setAnnouncements([...announcements, result]);
           setIsOpen(false);
           setValue('title', '');
           return announcement
@@ -222,6 +228,23 @@ export default function AnnouncementFormModal({
                         Body must be filled
                       </small>
                     )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Target Role
+                    </label>
+                    <select
+                      {...register('roleId')}
+                      className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                      defaultValue="">
+                      <option value="">All</option>
+                      {roles.map((role) => (
+                        <option key={role.id} value={role.id}>
+                          {role.roleName}
+                        </option>
+                      ))}
+                    </select>
                   </div>
 
                   <div>
