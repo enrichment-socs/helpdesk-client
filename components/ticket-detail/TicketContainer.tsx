@@ -2,7 +2,7 @@ import { ArchiveIcon } from '@heroicons/react/solid';
 import { useAtom } from 'jotai';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { activeSemesterAtom } from '../../atom';
 import { Priority } from '../../models/Priority';
@@ -43,6 +43,7 @@ export default function TicketContainer({
   const ticketService = new TicketService(user.accessToken);
   const [activeSemester] = useAtom(activeSemesterAtom);
   const router = useRouter();
+  const queryInput = useRef(null);
 
   const {
     priority: priorityNameQuery,
@@ -102,6 +103,18 @@ export default function TicketContainer({
     return tickets;
   };
 
+  const onResetFilter = () => {
+    router.push({
+      query: {
+        ...router.query,
+        priority: '',
+        status: '',
+        query: '',
+      },
+    });
+    queryInput.current.value = '';
+  };
+
   return (
     <>
       <div className="ml-2 mt-5 p-2 border-2 rounded divide-y">
@@ -151,11 +164,21 @@ export default function TicketContainer({
             <div>
               <input
                 type="text"
+                ref={queryInput}
                 onKeyDown={onQueryFilterChange}
                 defaultValue={searchQuery || ''}
                 className="shadow-sm focus:ring-primary focus:border-primary block w-full sm:text-sm border py-2 px-4 w-[22rem] border-gray-300 rounded-md"
                 placeholder="Filter by Subject / Requester Name / Assigned to"
               />
+            </div>
+
+            <div>
+              <button
+                onClick={onResetFilter}
+                type="button"
+                className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Clear Filter
+              </button>
             </div>
           </div>
         </div>
