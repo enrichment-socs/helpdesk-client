@@ -119,7 +119,8 @@ export const getServerSideProps = withSessionSsr(
     const ticketService = new TicketService(user.accessToken);
 
     const announcements = await announcementService.getBySemester(
-      sessionActiveSemester.id
+      sessionActiveSemester.id,
+      true
     );
 
     const initialTake = 10;

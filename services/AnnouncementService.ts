@@ -20,10 +20,10 @@ export class AnnouncementService extends BaseService {
     return res.data;
   }
 
-  public async getBySemester(semesterId: string) {
+  public async getBySemester(semesterId: string, withRole: boolean = false) {
     const res: AxiosResponse<Announcement[]> = await this.wrapper.handle(
       axios.get(
-        `${this.BASE_URL}/announcements?semesterId=${semesterId}`,
+        `${this.BASE_URL}/announcements?semesterId=${semesterId}&withRole=${withRole}`,
         this.headersWithToken()
       )
     );
