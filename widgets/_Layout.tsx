@@ -26,7 +26,7 @@ export default function Layout({
       <Head>
         <title>Enrichment SoCS Helpdesk</title>
         <meta name="description" content="Enrichment SoCS Consultation App" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" type="image/x-icon"  href="/helpdesk/favicon.ico" />
       </Head>
 
       {withNavbar && <Navbar />}
