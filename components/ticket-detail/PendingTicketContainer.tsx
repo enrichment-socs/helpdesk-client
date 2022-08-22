@@ -89,9 +89,8 @@ export default function PendingTicketContainer({
     router.push({
       query: {
         ...router.query,
-        priority: '',
-        status: '',
-        query: '',
+        pendingPriority: '',
+        pendingQuery: '',
       },
     });
     queryInput.current.value = '';
