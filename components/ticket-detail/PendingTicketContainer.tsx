@@ -3,7 +3,7 @@ import { InformationCircleIcon } from '@heroicons/react/outline';
 import { useAtom } from 'jotai';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { Dispatch, SetStateAction, useRef, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { activeSemesterAtom } from '../../atom';
 import { Priority } from '../../models/Priority';
@@ -46,7 +46,6 @@ export default function PendingTicketContainer({
 
   const { pendingPriority: priorityNameQuery, pendingQuery: searchQuery } =
     router.query;
-  queryInput.current.value = searchQuery;
 
   const onPriorityFilterChange = (e) => {
     updateRouter(e.target.value, searchQuery as string);
@@ -152,7 +151,7 @@ export default function PendingTicketContainer({
                 type="text"
                 ref={queryInput}
                 onKeyDown={onQueryFilterChange}
-                defaultValue={(searchQuery as string) || ''}
+                defaultValue={searchQuery || ''}
                 className="shadow-sm focus:ring-primary focus:border-primary block w-full sm:text-sm border py-2 px-4 w-[22rem] border-gray-300 rounded-md"
                 placeholder="Filter by Subject / Requester Name / Assigned to"
               />
