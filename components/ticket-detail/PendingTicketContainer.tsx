@@ -46,6 +46,7 @@ export default function PendingTicketContainer({
 
   const { pendingPriority: priorityNameQuery, pendingQuery: searchQuery } =
     router.query;
+  queryInput.current.value = searchQuery;
 
   const onPriorityFilterChange = (e) => {
     updateRouter(e.target.value, searchQuery as string);
