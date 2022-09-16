@@ -1,3 +1,4 @@
+import { ReplyIcon } from '@heroicons/react/outline';
 import { DownloadIcon } from '@heroicons/react/solid';
 import { OutlookMessage } from '../../../models/OutlookMessage';
 import { OutlookMessageAttachmentValue } from '../../../models/OutlookMessageAttachment';
@@ -8,12 +9,14 @@ type Props = {
   message: OutlookMessage;
   attachments: OutlookMessageAttachmentValue[];
   useUniqueBody?: boolean;
+  showControl?: boolean;
 };
 
 const TicketDetailConversationBody = ({
   message,
   attachments,
   useUniqueBody = true,
+  showControl = false,
 }: Props) => {
   return (
     <div className="pt-2">
@@ -34,6 +37,14 @@ const TicketDetailConversationBody = ({
           </div>
         )}
       </div>
+
+      {showControl && (
+        <div className="flex justify-end">
+          <button className="flex items-center bg-primary hover:bg-primary-dark text-white rounded px-3 py-1">
+            Reply <ReplyIcon className="w-4 h-4 ml-2" />
+          </button>
+        </div>
+      )}
     </div>
   );
 };

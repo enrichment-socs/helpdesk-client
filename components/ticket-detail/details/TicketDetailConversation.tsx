@@ -12,6 +12,7 @@ type Props = {
   attachments: OutlookMessageAttachmentValue[];
   defaultOpen?: boolean;
   useUniqueBody?: boolean;
+  showControl?: boolean;
 };
 
 const TicketDetailConversation = ({
@@ -19,6 +20,7 @@ const TicketDetailConversation = ({
   attachments,
   defaultOpen = false,
   useUniqueBody = true,
+  showControl = false,
 }: Props) => {
   const getSenderInfo = () => {
     if (!message) return <SkeletonLoading width="100%" />;
@@ -70,6 +72,7 @@ const TicketDetailConversation = ({
                   message={message}
                   attachments={attachments}
                   useUniqueBody={useUniqueBody}
+                  showControl={showControl}
                 />
               </div>
             </Disclosure.Panel>

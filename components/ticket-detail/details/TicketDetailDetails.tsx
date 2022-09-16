@@ -63,6 +63,7 @@ const TicketDetailDetails: React.FC<Props> = ({
                         useUniqueBody={false}
                         message={outlookMessages[0]}
                         attachments={attachmentsArrays[0]}
+                        showControl={true}
                       />
                     ) : (
                       <MultiLineSkeletonLoading width="100%" />
@@ -107,6 +108,7 @@ const TicketDetailDetails: React.FC<Props> = ({
                             key={message.id}
                             message={message}
                             attachments={attachmentsArrays[realIdx]}
+                            showControl
                           />
                         );
                       })
