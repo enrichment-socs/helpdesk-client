@@ -24,16 +24,16 @@ const TicketDetailConversationBody = ({
   const [, setReplyRecipients] = useAtom(replyRecipientsAtom);
 
   const onReply = () => {
-    const toRecipients = message.toRecipients
-      .map((recipient) => recipient.emailAddress.address)
-      .join(', ');
+    const toRecipients = message.from.emailAddress.address;
     const ccRecipients = message.ccRecipients
       .map((recipient) => recipient.emailAddress.address)
       .join(', ');
 
     setReplyRecipients({
+      subject: `Re: ${message.subject}`,
       toRecipients,
       ccRecipients,
+      messageId: message.id,
     });
 
     if (replyComponentRef) {

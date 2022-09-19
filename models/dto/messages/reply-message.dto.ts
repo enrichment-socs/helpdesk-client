@@ -6,13 +6,11 @@ export interface ReplyMessageDto {
     };
     toRecipients: {
       emailAddress: {
-        name: string;
         address: string;
       };
     }[];
     ccRecipients: {
       emailAddress: {
-        name: string;
         address: string;
       };
     }[];

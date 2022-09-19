@@ -1,8 +1,16 @@
 import { useAtom } from 'jotai';
 import dynamic from 'next/dynamic';
+import { useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { replyRecipientsAtom } from '../../../atom';
+import { ReplyMessageDto } from '../../../models/dto/messages/reply-message.dto';
+import { GraphApiService } from '../../../services/GraphApiService';
 import { EMAIL_REGEX } from '../../../shared/constants/regex';
+import { confirm } from '../../../shared/libs/confirm-dialog-helper';
+import { useSession } from 'next-auth/react';
+import { SessionUser } from '../../../models/SessionUser';
+import toast from 'react-hot-toast';
+import { useRouter } from 'next/dist/client/router';
 
 const QuillNoSSRWrapper = dynamic(import('react-quill'), {
   ssr: false,
@@ -26,10 +34,12 @@ type FormData = {
   message: string;
   ccRecipients: string;
   toRecipients?: string;
+  messageId: string;
 };
-
 const TicketDetailReply = () => {
-  const [replyRecipients] = useAtom(replyRecipientsAtom);
+  const session = useSession();
+  const user = session?.data?.user as SessionUser;
+  const [replyRecipients, setReplyRecipients] = useAtom(replyRecipientsAtom);
 
   const {
     register,
@@ -39,8 +49,17 @@ const TicketDetailReply = () => {
     formState: { errors },
   } = useForm<FormData>();
 
-  setValue('toRecipients', replyRecipients.toRecipients);
-  setValue('ccRecipients', replyRecipients.ccRecipients);
+  const router = useRouter();
+
+  useEffect(() => {
+    setValue('toRecipients', replyRecipients.toRecipients);
+    setValue('ccRecipients', replyRecipients.ccRecipients);
+    setValue('messageId', replyRecipients.messageId);
+  }, [replyRecipients]);
+
+  useEffect(() => {
+    register('message', { required: true });
+  }, []);
 
   const messageContent = watch('message') || '';
   const onMessageChange = (value) => setValue('message', value);
@@ -64,15 +83,90 @@ const TicketDetailReply = () => {
   const onSubmit: SubmitHandler<FormData> = async ({
     ccRecipients,
     toRecipients,
-    message,
+    message: content,
   }) => {
-    console.log({ ccRecipients, toRecipients, message });
+    if (
+      await confirm(
+        'Please <b>double check</b> to and cc recipients. Are you sure you want to reply ?'
+      )
+    ) {
+      const graphService = new GraphApiService(user.accessToken);
+      const dto: ReplyMessageDto = {
+        message: {
+          body: {
+            contentType: 'html',
+            content,
+          },
+          ccRecipients:
+            ccRecipients.length > 0
+              ? ccRecipients.split(';').map((address) => {
+                  return {
+                    emailAddress: {
+                      address,
+                    },
+                  };
+                })
+              : [],
+          toRecipients: toRecipients.split(';').map((address) => {
+            return {
+              emailAddress: {
+                address,
+              },
+            };
+          }),
+        },
+      };
+
+      await toast.promise(
+        graphService.replyEmail(replyRecipients.messageId, dto),
+        {
+          loading: 'Sending reply...',
+          success: () => {
+            setReplyRecipients({
+              ccRecipients: '',
+              toRecipients: '',
+              messageId: '',
+              subject: '',
+            });
+            setValue('message', '');
+            router.reload();
+            return 'Reply success!';
+          },
+          error: (e) => {
+            console.log(e);
+            return 'Ups, something wrong happened';
+          },
+        }
+      );
+    }
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="text-sm">
       <div>
         <section className="flex flex-col space-y-3">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Message ID
+            </label>
+            <div className="mt-1">
+              <input
+                disabled={true}
+                type="text"
+                className={`${
+                  errors?.toRecipients ? 'border-red-300' : 'border-gray-300'
+                } shadow-sm px-2 py-1 block w-full sm:text-sm border rounded outline-none`}
+                {...register('messageId', { required: true })}
+              />
+            </div>
+            {errors?.messageId && (
+              <small className="text-red-500">
+                Please select a message by clicking &lsquo;reply&rsquo; button
+                on a message
+              </small>
+            )}
+          </div>
+
           <div>
             <label className="block text-sm font-medium text-gray-700">
               To Recipients (seperated by semicolon)
