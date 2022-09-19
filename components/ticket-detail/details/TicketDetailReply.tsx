@@ -1,5 +1,7 @@
+import { useAtom } from 'jotai';
 import dynamic from 'next/dynamic';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { replyRecipientsAtom } from '../../../atom';
 import { EMAIL_REGEX } from '../../../shared/constants/regex';
 
 const QuillNoSSRWrapper = dynamic(import('react-quill'), {
@@ -26,7 +28,9 @@ type FormData = {
   toRecipients?: string;
 };
 
-export default function TicketDetailReply() {
+const TicketDetailReply = () => {
+  const [replyRecipients] = useAtom(replyRecipientsAtom);
+
   const {
     register,
     handleSubmit,
@@ -34,6 +38,9 @@ export default function TicketDetailReply() {
     watch,
     formState: { errors },
   } = useForm<FormData>();
+
+  setValue('toRecipients', replyRecipients.toRecipients);
+  setValue('ccRecipients', replyRecipients.ccRecipients);
 
   const messageContent = watch('message') || '';
   const onMessageChange = (value) => setValue('message', value);
@@ -140,4 +147,6 @@ export default function TicketDetailReply() {
       </div>
     </form>
   );
-}
+};
+
+export default TicketDetailReply;

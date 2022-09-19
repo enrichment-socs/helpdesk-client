@@ -1,8 +1,9 @@
 import { ReplyIcon } from '@heroicons/react/outline';
-import { DownloadIcon } from '@heroicons/react/solid';
+import { useAtom } from 'jotai';
+import { MutableRefObject } from 'react';
+import { replyRecipientsAtom } from '../../../atom';
 import { OutlookMessage } from '../../../models/OutlookMessage';
 import { OutlookMessageAttachmentValue } from '../../../models/OutlookMessageAttachment';
-import { DownloadHelper } from '../../../shared/libs/download-helper';
 import MessageAttachmentList from '../../../widgets/MessageAttachmentList';
 
 type Props = {
@@ -10,6 +11,7 @@ type Props = {
   attachments: OutlookMessageAttachmentValue[];
   useUniqueBody?: boolean;
   showControl?: boolean;
+  replyComponentRef?: MutableRefObject<HTMLFormElement>;
 };
 
 const TicketDetailConversationBody = ({
@@ -17,7 +19,28 @@ const TicketDetailConversationBody = ({
   attachments,
   useUniqueBody = true,
   showControl = false,
+  replyComponentRef = null,
 }: Props) => {
+  const [, setReplyRecipients] = useAtom(replyRecipientsAtom);
+
+  const onReply = () => {
+    const toRecipients = message.toRecipients
+      .map((recipient) => recipient.emailAddress.address)
+      .join(', ');
+    const ccRecipients = message.ccRecipients
+      .map((recipient) => recipient.emailAddress.address)
+      .join(', ');
+
+    setReplyRecipients({
+      toRecipients,
+      ccRecipients,
+    });
+
+    if (replyComponentRef) {
+      replyComponentRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className="pt-2">
       <div>
@@ -40,7 +63,9 @@ const TicketDetailConversationBody = ({
 
       {showControl && (
         <div className="flex justify-end">
-          <button className="flex items-center bg-primary hover:bg-primary-dark text-white rounded px-3 py-1">
+          <button
+            onClick={onReply}
+            className="flex items-center bg-primary hover:bg-primary-dark text-white rounded px-3 py-1">
             Reply <ReplyIcon className="w-4 h-4 ml-2" />
           </button>
         </div>

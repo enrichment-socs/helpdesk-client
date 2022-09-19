@@ -1,6 +1,7 @@
 import { Disclosure, Transition } from '@headlessui/react';
 import { ChevronUpIcon } from '@heroicons/react/solid';
 import { format } from 'date-fns';
+import { MutableRefObject } from 'react';
 import { OutlookMessage } from '../../../models/OutlookMessage';
 import { OutlookMessageAttachmentValue } from '../../../models/OutlookMessageAttachment';
 import SkeletonLoading from '../../../widgets/SkeletonLoading';
@@ -13,6 +14,7 @@ type Props = {
   defaultOpen?: boolean;
   useUniqueBody?: boolean;
   showControl?: boolean;
+  replyComponentRef?: MutableRefObject<HTMLFormElement>;
 };
 
 const TicketDetailConversation = ({
@@ -21,6 +23,7 @@ const TicketDetailConversation = ({
   defaultOpen = false,
   useUniqueBody = true,
   showControl = false,
+  replyComponentRef = null,
 }: Props) => {
   const getSenderInfo = () => {
     if (!message) return <SkeletonLoading width="100%" />;
@@ -73,6 +76,7 @@ const TicketDetailConversation = ({
                   attachments={attachments}
                   useUniqueBody={useUniqueBody}
                   showControl={showControl}
+                  replyComponentRef={replyComponentRef}
                 />
               </div>
             </Disclosure.Panel>
