@@ -22,7 +22,7 @@ const modules = {
     [{ size: [] }],
     ['bold', 'italic', 'underline', 'strike', 'blockquote'],
     [{ list: 'ordered' }, { list: 'bullet' }],
-    ['link', 'image', 'video'],
+    ['link', 'image'],
   ],
   clipboard: {
     // toggle to add extra line breaks when pasting HTML:
@@ -122,13 +122,6 @@ const TicketDetailReply = () => {
         {
           loading: 'Sending reply...',
           success: () => {
-            setReplyRecipients({
-              ccRecipients: '',
-              toRecipients: '',
-              messageId: '',
-              subject: '',
-            });
-            setValue('message', '');
             router.reload();
             return 'Reply success!';
           },
@@ -154,7 +147,7 @@ const TicketDetailReply = () => {
                 disabled={true}
                 type="text"
                 className={`${
-                  errors?.toRecipients ? 'border-red-300' : 'border-gray-300'
+                  errors?.messageId ? 'border-red-300' : 'border-gray-300'
                 } shadow-sm px-2 py-1 block w-full sm:text-sm border rounded outline-none`}
                 {...register('messageId', { required: true })}
               />
