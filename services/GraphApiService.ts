@@ -1,9 +1,13 @@
 import { BaseService } from './BaseService';
 import axios, { AxiosResponse } from 'axios';
 import { OutlookMessage } from '../models/OutlookMessage';
-import { OutlookMessageAttachment } from '../models/OutlookMessageAttachment';
+import {
+  OutlookMessageAttachment,
+  OutlookMessageAttachmentValue,
+} from '../models/OutlookMessageAttachment';
 import { GraphUser } from '../models/GraphUser';
 import { ReplyMessageDto } from '../models/dto/messages/reply-message.dto';
+import { AddAttachmentDto } from '../models/dto/messages/add-attachment.dto';
 
 export class GraphApiService extends BaseService {
   public async syncMessages(): Promise<void> {
@@ -67,6 +71,20 @@ export class GraphApiService extends BaseService {
       )
     );
     return result.data; //message id;
+  }
+
+  public async addAttachments(
+    id: string,
+    dto: AddAttachmentDto
+  ): Promise<OutlookMessageAttachmentValue> {
+    const result = await this.wrapper.handle(
+      axios.post(
+        `${this.BASE_URL}/graph-api/messages/${id}/attachments`,
+        dto,
+        this.headersWithToken()
+      )
+    );
+    return result.data;
   }
 
   public async send(id: string): Promise<void> {

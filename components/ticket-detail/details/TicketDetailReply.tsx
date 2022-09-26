@@ -12,6 +12,8 @@ import { SessionUser } from '../../../models/SessionUser';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/dist/client/router';
 import { ClientPromiseWrapper } from '../../../shared/libs/client-promise-wrapper';
+import { toBase64 } from '../../../shared/libs/file-utils';
+import { AddAttachmentDto } from '../../../models/dto/messages/add-attachment.dto';
 
 const QuillNoSSRWrapper = dynamic(import('react-quill'), {
   ssr: false,
@@ -35,6 +37,7 @@ type FormData = {
   ccRecipients: string;
   toRecipients?: string;
   messageId: string;
+  attachments: File[];
 };
 const TicketDetailReply = () => {
   const session = useSession();
@@ -84,6 +87,7 @@ const TicketDetailReply = () => {
     ccRecipients,
     toRecipients,
     message: content,
+    attachments,
   }) => {
     if (
       await confirm(
@@ -123,6 +127,26 @@ const TicketDetailReply = () => {
         graphService.createReply(replyRecipients.messageId, dto)
       );
       toast.dismiss(createReplyToast);
+
+      if (attachments.length > 0) {
+        const uploadAttachmentsToast = toast('Uploading attachments');
+
+        for (let attachment of attachments) {
+          const base64bytes = await toBase64(attachment);
+          const contentBytes = base64bytes.split('base64,')[1];
+          const payload: AddAttachmentDto = {
+            contentBytes,
+            contentType: attachment.type,
+            name: attachment.name,
+            size: attachment.size,
+            isInline: false,
+          };
+
+          await graphService.addAttachments(draftMessageId, payload);
+        }
+
+        toast.dismiss(uploadAttachmentsToast);
+      }
 
       const sendReplyToast = toast('Sending reply...', { icon: '🔄' });
       await wrapper.handle(graphService.send(draftMessageId));
@@ -220,6 +244,19 @@ const TicketDetailReply = () => {
             {errors?.message && (
               <small className="text-red-500">Message field is required</small>
             )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Attachments
+            </label>
+            <input
+              {...register('attachments')}
+              type="file"
+              onChange={(e) => console.log(e.target.files)}
+              className="border border-gray-300 p-2 rounded w-full"
+              multiple
+            />
           </div>
         </section>
 
