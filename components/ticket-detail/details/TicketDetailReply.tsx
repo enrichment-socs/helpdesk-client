@@ -11,6 +11,7 @@ import { useSession } from 'next-auth/react';
 import { SessionUser } from '../../../models/SessionUser';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/dist/client/router';
+import { ClientPromiseWrapper } from '../../../shared/libs/client-promise-wrapper';
 
 const QuillNoSSRWrapper = dynamic(import('react-quill'), {
   ssr: false,
@@ -22,10 +23,9 @@ const modules = {
     [{ size: [] }],
     ['bold', 'italic', 'underline', 'strike', 'blockquote'],
     [{ list: 'ordered' }, { list: 'bullet' }],
-    ['link', 'image'],
+    ['link'],
   ],
   clipboard: {
-    // toggle to add extra line breaks when pasting HTML:
     matchVisual: false,
   },
 };
@@ -39,7 +39,7 @@ type FormData = {
 const TicketDetailReply = () => {
   const session = useSession();
   const user = session?.data?.user as SessionUser;
-  const [replyRecipients, setReplyRecipients] = useAtom(replyRecipientsAtom);
+  const [replyRecipients] = useAtom(replyRecipientsAtom);
 
   const {
     register,
@@ -55,11 +55,11 @@ const TicketDetailReply = () => {
     setValue('toRecipients', replyRecipients.toRecipients);
     setValue('ccRecipients', replyRecipients.ccRecipients);
     setValue('messageId', replyRecipients.messageId);
-  }, [replyRecipients]);
+  }, [replyRecipients, setValue]);
 
   useEffect(() => {
     register('message', { required: true });
-  }, []);
+  }, [register]);
 
   const messageContent = watch('message') || '';
   const onMessageChange = (value) => setValue('message', value);
@@ -117,20 +117,19 @@ const TicketDetailReply = () => {
         },
       };
 
-      await toast.promise(
-        graphService.replyEmail(replyRecipients.messageId, dto),
-        {
-          loading: 'Sending reply...',
-          success: () => {
-            router.reload();
-            return 'Reply success!';
-          },
-          error: (e) => {
-            console.log(e);
-            return 'Ups, something wrong happened';
-          },
-        }
+      const wrapper = new ClientPromiseWrapper(toast);
+      const createReplyToast = toast('Creating reply draft...', { icon: '🔄' });
+      const draftMessageId = await wrapper.handle(
+        graphService.createReply(replyRecipients.messageId, dto)
       );
+      toast.dismiss(createReplyToast);
+
+      const sendReplyToast = toast('Sending reply...', { icon: '🔄' });
+      await wrapper.handle(graphService.send(draftMessageId));
+      toast.dismiss(sendReplyToast);
+
+      toast.success('Message replied!');
+      router.reload();
     }
   };
 

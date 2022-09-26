@@ -58,11 +58,22 @@ export class GraphApiService extends BaseService {
     return result.data;
   }
 
-  public async replyEmail(id: string, dto: ReplyMessageDto): Promise<void> {
+  public async createReply(id: string, dto: ReplyMessageDto): Promise<string> {
     const result = await this.wrapper.handle(
       axios.post(
-        `${this.BASE_URL}/graph-api/messages/${id}/reply`,
+        `${this.BASE_URL}/graph-api/messages/${id}/createReply`,
         dto,
+        this.headersWithToken()
+      )
+    );
+    return result.data; //message id;
+  }
+
+  public async send(id: string): Promise<void> {
+    const result = await this.wrapper.handle(
+      axios.post(
+        `${this.BASE_URL}/graph-api/messages/${id}/send`,
+        {},
         this.headersWithToken()
       )
     );

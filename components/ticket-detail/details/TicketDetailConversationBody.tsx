@@ -27,7 +27,7 @@ const TicketDetailConversationBody = ({
     const toRecipients = message.from.emailAddress.address;
     const ccRecipients = message.ccRecipients
       .map((recipient) => recipient.emailAddress.address)
-      .join(', ');
+      .join(';');
 
     setReplyRecipients({
       subject: `Re: ${message.subject}`,
