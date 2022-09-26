@@ -49,7 +49,7 @@ const TicketDetailConversation = ({
             className={`${open ? 'rounded-t' : 'rounded'} ${
               defaultOpen
                 ? 'bg-primary hover:bg-primary-dark text-white'
-                : 'text-gray-900 bg-gray-200 hover:bg-gray-300'
+                : 'text-gray-900 bg-gray-100 border hover:bg-gray-200'
             } flex justify-between items-center w-full px-4 py-2 text-sm font-medium text-left focus:outline-none focus-visible:ring focus-visible:ring-gray-500 focus-visible:ring-opacity-75`}>
             <span className="font-bold truncate">{getSenderInfo()}</span>
             <div className="flex">

@@ -14,6 +14,7 @@ import { useRouter } from 'next/dist/client/router';
 import { ClientPromiseWrapper } from '../../../shared/libs/client-promise-wrapper';
 import { toBase64 } from '../../../shared/libs/file-utils';
 import { AddAttachmentDto } from '../../../models/dto/messages/add-attachment.dto';
+import InfoAlert from '../../../widgets/InfoAlert';
 
 const QuillNoSSRWrapper = dynamic(import('react-quill'), {
   ssr: false,
@@ -250,6 +251,10 @@ const TicketDetailReply = () => {
             <label className="block text-sm font-medium text-gray-700">
               Body
             </label>
+            <InfoAlert
+              className="my-2"
+              message="Do not copy image to the text field, it will broke the message, upload attachment(s) instead!"
+            />
             <QuillNoSSRWrapper
               modules={modules}
               theme="snow"

@@ -126,7 +126,7 @@ const TicketDetailDetails: React.FC<Props> = ({
         </Disclosure>
 
         <div ref={replyComponentRef}>
-          <Disclosure defaultOpen as="div" className="mt-2">
+          <Disclosure as="div" className="mt-2">
             {({ open }) => (
               <>
                 <Disclosure.Button
@@ -156,7 +156,7 @@ const TicketDetailDetails: React.FC<Props> = ({
           </Disclosure>
         </div>
 
-        <Disclosure defaultOpen as="div" className="mt-2">
+        <Disclosure as="div" className="mt-2">
           {({ open }) => (
             <>
               <Disclosure.Button
