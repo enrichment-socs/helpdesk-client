@@ -37,7 +37,7 @@ type FormData = {
   ccRecipients: string;
   toRecipients?: string;
   messageId: string;
-  attachments: File[];
+  attachments: FileList;
 };
 const TicketDetailReply = () => {
   const session = useSession();
@@ -81,6 +81,18 @@ const TicketDetailReply = () => {
 
     if (forToRecipients) return validations;
     return { seperatedBySemiColon: validations.seperatedBySemiColon };
+  };
+
+  const validateAttachments = (files: FileList) => {
+    if (files.length > 0) {
+      const isMoreThanThreeMB = Array.from(files).some((file) => {
+        const sizeInMB = file.size / 1024 / 1024;
+        return sizeInMB > 3;
+      });
+
+      return !isMoreThanThreeMB;
+    }
+    return true;
   };
 
   const onSubmit: SubmitHandler<FormData> = async ({
@@ -128,10 +140,13 @@ const TicketDetailReply = () => {
       );
       toast.dismiss(createReplyToast);
 
-      if (attachments.length > 0) {
-        const uploadAttachmentsToast = toast('Uploading attachments');
+      const hasAttachments = attachments.length > 0;
+      if (hasAttachments) {
+        const uploadAttachmentsToast = toast('Uploading attachments', {
+          icon: '🔄',
+        });
 
-        for (let attachment of attachments) {
+        for (let attachment of Array.from(attachments)) {
           const base64bytes = await toBase64(attachment);
           const contentBytes = base64bytes.split('base64,')[1];
           const payload: AddAttachmentDto = {
@@ -251,12 +266,18 @@ const TicketDetailReply = () => {
               Attachments
             </label>
             <input
-              {...register('attachments')}
+              {...register('attachments', {
+                validate: validateAttachments,
+              })}
               type="file"
-              onChange={(e) => console.log(e.target.files)}
               className="border border-gray-300 p-2 rounded w-full"
               multiple
             />
+            {errors?.attachments && (
+              <small className="text-red-500">
+                File size must be less than 3 MB
+              </small>
+            )}
           </div>
         </section>
 
