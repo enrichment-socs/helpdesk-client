@@ -9,6 +9,7 @@ import { CreateTicketDueDateDto } from '../../../models/dto/ticket-due-dates/cre
 import { SessionUser } from '../../../models/SessionUser';
 import { Ticket } from '../../../models/Ticket';
 import { TicketDueDate } from '../../../models/TicketDueDate';
+import { TicketStatus } from '../../../models/TicketStatus';
 import { TicketDueDateService } from '../../../services/TicketDueDateService';
 import { STATUS } from '../../../shared/constants/status';
 import { confirm } from '../../../shared/libs/confirm-dialog-helper';
@@ -20,14 +21,14 @@ type Props = {
   ticketDueDates: TicketDueDate[];
   setTicketDueDates: Dispatch<SetStateAction<TicketDueDate[]>>;
   ticket: Ticket;
-  getCurrentStatus: () => string;
+  ticketStatuses: TicketStatus[];
 };
 
 export default function TicketDetailManageDueDate({
   ticketDueDates,
   ticket,
   setTicketDueDates,
-  getCurrentStatus,
+  ticketStatuses,
 }: Props) {
   const session = useSession();
   const user = session.data.user as SessionUser;
@@ -81,7 +82,7 @@ export default function TicketDetailManageDueDate({
       </div>
 
       {TicketUtils.isEligibleToManage(user, ticket) &&
-        getCurrentStatus() !== STATUS.CLOSED && (
+        TicketUtils.getCurrentStatus(ticketStatuses) !== STATUS.CLOSED && (
           <form onSubmit={handleSubmit}>
             <h2 className="font-semibold text-lg mb-2 mt-8">Manage Due Date</h2>
 

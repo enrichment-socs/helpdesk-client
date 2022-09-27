@@ -1,6 +1,7 @@
 import { addHours, getDay } from 'date-fns';
 import { SessionUser } from '../../models/SessionUser';
 import { Ticket } from '../../models/Ticket';
+import { TicketStatus } from '../../models/TicketStatus';
 import { ROLES } from '../constants/roles';
 
 export class TicketUtils {
@@ -41,4 +42,9 @@ export class TicketUtils {
     if (user.roleName === ROLES.SUPER_ADMIN) return true;
     return user.roleName === ROLES.ADMIN && user.id === ticket.assignedTo.id;
   }
+
+  static getCurrentStatus = (statuses: TicketStatus[]) => {
+    if (statuses.length == 0) return 'No Status';
+    return statuses[statuses.length - 1].status.statusName;
+  };
 }

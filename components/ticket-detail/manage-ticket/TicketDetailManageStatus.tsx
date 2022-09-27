@@ -28,7 +28,6 @@ type Props = {
   setTicketDueDates: Dispatch<SetStateAction<TicketDueDate[]>>;
   statuses: Status[];
   ticket: Ticket;
-  getCurrentStatus: () => string;
 };
 
 export default function TicketDetailManageStatus({
@@ -37,7 +36,6 @@ export default function TicketDetailManageStatus({
   setTicketStatuses,
   statuses,
   ticket,
-  getCurrentStatus,
   setTicketDueDates,
 }: Props) {
   const session = useSession();
@@ -76,7 +74,9 @@ export default function TicketDetailManageStatus({
       return;
     }
 
-    const message = `Are you sure you want to change the status from <b>${getCurrentStatus()}</b> to <b>${statusName}</b> ${
+    const message = `Are you sure you want to change the status from <b>${TicketUtils.getCurrentStatus(
+      ticketStatuses
+    )}</b> to <b>${statusName}</b> ${
       shouldFillReason ? `with reason: <b>${reason}</b>` : ''
     } ?`;
     if (await confirm(message)) {
@@ -87,7 +87,7 @@ export default function TicketDetailManageStatus({
         userId: user.id,
       };
 
-      if (getCurrentStatus() === STATUS.PENDING) {
+      if (TicketUtils.getCurrentStatus(ticketStatuses) === STATUS.PENDING) {
         toast(
           'Ticket deadline has been extended due to previous ticket status is PENDING'
         );
@@ -124,12 +124,16 @@ export default function TicketDetailManageStatus({
                 className="border border-gray-300 rounded p-2 w-full"
                 type="text"
                 disabled
-                value={getCurrentStatus()}
+                value={TicketUtils.getCurrentStatus(ticketStatuses)}
               />
             </div>
 
             <Switch>
-              <Case condition={getCurrentStatus() === STATUS.ASSIGNED}>
+              <Case
+                condition={
+                  TicketUtils.getCurrentStatus(ticketStatuses) ===
+                  STATUS.ASSIGNED
+                }>
                 <div className="flex space-x-4 justify-end mt-3">
                   <button
                     onClick={() => updateStatus(STATUS.IN_PROGRESS, false)}
@@ -142,7 +146,11 @@ export default function TicketDetailManageStatus({
                 </div>
               </Case>
 
-              <Case condition={getCurrentStatus() === STATUS.IN_PROGRESS}>
+              <Case
+                condition={
+                  TicketUtils.getCurrentStatus(ticketStatuses) ===
+                  STATUS.IN_PROGRESS
+                }>
                 <div>
                   {renderReasonInputText()}
 
@@ -203,7 +211,11 @@ export default function TicketDetailManageStatus({
                 </div>
               </Case>
 
-              <Case condition={getCurrentStatus() === STATUS.PENDING}>
+              <Case
+                condition={
+                  TicketUtils.getCurrentStatus(ticketStatuses) ===
+                  STATUS.PENDING
+                }>
                 {renderReasonInputText()}
 
                 <div className="flex space-x-4 justify-between mt-3">
@@ -243,7 +255,11 @@ export default function TicketDetailManageStatus({
                 </ReactTooltip>
               </Case>
 
-              <Case condition={getCurrentStatus() === STATUS.RESOLVED}>
+              <Case
+                condition={
+                  TicketUtils.getCurrentStatus(ticketStatuses) ===
+                  STATUS.RESOLVED
+                }>
                 <div>
                   {renderReasonInputText()}
                   {!resolution && (
