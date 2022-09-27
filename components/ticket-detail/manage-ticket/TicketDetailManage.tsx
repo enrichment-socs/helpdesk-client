@@ -1,22 +1,16 @@
 import { useSession } from 'next-auth/react';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import toast from 'react-hot-toast';
+import { Dispatch, SetStateAction } from 'react';
 import { Ticket } from '../../../models/Ticket';
 import { TicketStatus } from '../../../models/TicketStatus';
 import { TicketResolution } from '../../../models/TicketResolution';
 import { SessionUser } from '../../../models/SessionUser';
 import { Status } from '../../../models/Status';
 import { STATUS } from '../../../shared/constants/status';
-import { confirm } from '../../../shared/libs/confirm-dialog-helper';
 import SuccessAlert from '../../../widgets/SuccessAlert';
-import { TicketService } from '../../../services/TicketService';
-import { useRouter } from 'next/router';
 import { TicketDueDate } from '../../../models/TicketDueDate';
 import TicketDetailManageStatus from './TicketDetailManageStatus';
 import TicketDetailManageDueDate from './TicketDetailManageDueDate';
 import InfoAlert from '../../../widgets/InfoAlert';
-import { ROLES } from '../../../shared/constants/roles';
-import { User } from '../../../models/User';
 import { TicketUtils } from '../../../shared/libs/ticket-utils';
 import TicketDetailManageAction from './TicketDetailManageAction';
 

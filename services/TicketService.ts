@@ -1,9 +1,13 @@
 import axios, { AxiosResponse } from 'axios';
-import { PendingTicketFilterModel, Ticket, TicketFilterModel } from '../models/Ticket';
+import {
+  PendingTicketFilterModel,
+  Ticket,
+  TicketFilterModel,
+} from '../models/Ticket';
 import { CreateTicketDto } from '../models/dto/tickets/create-ticket.dto';
 import { BaseService } from './BaseService';
 import { TicketSummary } from '../models/TicketSummary';
-import { STATUS } from '../shared/constants/status';
+import { UpdateSenderInfoDto } from '../models/dto/tickets/update-sender-info.dto';
 
 export class TicketService extends BaseService {
   public async getTicketsBySemester(
@@ -50,6 +54,18 @@ export class TicketService extends BaseService {
   public async get(id: string) {
     const result: AxiosResponse<Ticket> = await this.wrapper.handle(
       axios.get(`${this.BASE_URL}/tickets/${id}`, this.headersWithToken())
+    );
+
+    return result.data;
+  }
+
+  public async updateSenderInfo(id: string, dto: UpdateSenderInfoDto) {
+    const result: AxiosResponse<any> = await this.wrapper.handle(
+      axios.put(
+        `${this.BASE_URL}/tickets/${id}/updateSenderInfo`,
+        dto,
+        this.headersWithToken()
+      )
     );
 
     return result.data;
