@@ -126,7 +126,7 @@ const TicketDetailDetails: React.FC<Props> = ({
         </Disclosure>
 
         <div ref={replyComponentRef}>
-          <Disclosure as="div" className="mt-2">
+          <Disclosure as="div" defaultOpen className="mt-2">
             {({ open }) => (
               <>
                 <Disclosure.Button
