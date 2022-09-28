@@ -1,10 +1,9 @@
 import { MailIcon, RefreshIcon } from '@heroicons/react/solid';
 import { useAtom } from 'jotai';
 import { useSession } from 'next-auth/react';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { SessionUser } from '../../models/SessionUser';
-import { messagesAtom } from '../../pages';
 import { GraphApiService } from '../../services/GraphApiService';
 import MessagesTable from './MessagesTable';
 import MessageDetailModal from '../message-detail-modal/MessageDetailModal';
@@ -12,22 +11,17 @@ import CustomPaginator from '../../widgets/CustomPaginator';
 import { MessageService } from '../../services/MessageService';
 import { Message } from '../../models/Message';
 import { ClientPromiseWrapper } from '../../shared/libs/client-promise-wrapper';
+import IndexStore from '../../stores';
 
 type Props = {
   take: number;
-  skip: number;
-  setSkip: Dispatch<SetStateAction<number>>;
-  totalCount: number;
 };
 
-export default function MessageContainer({
-  take,
-  skip,
-  totalCount: serverTotalCount,
-  setSkip,
-}: Props) {
-  const [totalCount, setTotalCount] = useState(serverTotalCount);
-  const [, setMessages] = useAtom(messagesAtom);
+export default function MessageContainer({ take }: Props) {
+  const [totalCount, setTotalCount] = useAtom(IndexStore.totalMessagesCount);
+  const [skip, setSkip] = useAtom(IndexStore.skipCount);
+
+  const [, setMessages] = useAtom(IndexStore.messages);
   const [isSync, setIsSync] = useState(false);
 
   const [pageNumber, setPageNumber] = useState(1);
@@ -35,7 +29,6 @@ export default function MessageContainer({
 
   const [openMessageModal, setOpenMessageModal] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState<Message>(null);
-  useState<string>(null);
 
   const session = useSession();
   const user = session?.data?.user as SessionUser;

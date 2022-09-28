@@ -1,4 +1,3 @@
-import { ChartBarIcon } from '@heroicons/react/solid';
 import type { NextPage } from 'next';
 import { getSession, useSession } from 'next-auth/react';
 import Layout from '../widgets/_Layout';
@@ -9,9 +8,8 @@ import { AnnouncementService } from '../services/AnnouncementService';
 import { Announcement } from '../models/Announcement';
 import AnnouncementContainer from '../components/pages/home/AnnouncementContainer';
 import AnnouncementDetailModal from '../components/announcements/AnnouncementDetailModal';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { SessionUser } from '../models/SessionUser';
-import { GraphApiService } from '../services/GraphApiService';
 import { Message } from '../models/Message';
 import { ROLES } from '../shared/constants/roles';
 import { useHydrateAtoms } from 'jotai/utils';
@@ -25,6 +23,7 @@ import { GuidelineCategoryService } from '../services/GuidelineCategoryService';
 import { GuidelineCategory } from '../models/GuidelineCategory';
 import { TicketService } from '../services/TicketService';
 import { TicketSummary } from '../models/TicketSummary';
+import IndexStore from '../stores';
 
 type Props = {
   announcements: Announcement[];
@@ -41,21 +40,23 @@ export const messagesAtom = atom([] as Message[]);
 const Home: NextPage<Props> = ({
   announcements,
   faqCategories,
-  messages: serverMessages,
+  messages,
   initialTake,
   initialSkip,
   messageCount,
   ticketSummary,
 }) => {
-  useHydrateAtoms([[messagesAtom, serverMessages]] as const);
+  useHydrateAtoms([
+    [IndexStore.messages, messages],
+    [IndexStore.skipCount, initialSkip],
+    [IndexStore.totalMessagesCount, messageCount],
+  ] as const);
 
   const [openAnnouncementModal, setOpenAnnouncementModal] = useState(false);
   const [openAnnouncement, setOpenAnnouncement] = useState<Announcement>(null);
 
   const session = useSession();
   const user = session?.data?.user as SessionUser;
-
-  const [skipMessageCount, setSkipMessageCount] = useState(initialSkip);
 
   return (
     <Layout>
@@ -83,12 +84,7 @@ const Home: NextPage<Props> = ({
         </div>
 
         {user?.roleName === ROLES.ADMIN && (
-          <MessageContainer
-            take={initialTake}
-            skip={skipMessageCount}
-            setSkip={setSkipMessageCount}
-            totalCount={messageCount}
-          />
+          <MessageContainer take={initialTake} />
         )}
 
         {user?.roleName === ROLES.USER && (

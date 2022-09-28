@@ -1,11 +1,8 @@
 import { format } from 'date-fns';
 import { useAtom } from 'jotai';
-import { useSession } from 'next-auth/react';
 import { Dispatch, SetStateAction } from 'react';
 import { Message } from '../../models/Message';
-import { SessionUser } from '../../models/SessionUser';
-import { messagesAtom } from '../../pages';
-import { GraphApiService } from '../../services/GraphApiService';
+import IndexStore from '../../stores';
 
 type Props = {
   setOpenMessageModal: Dispatch<SetStateAction<boolean>>;
@@ -18,8 +15,7 @@ const MessagesTable = ({
   setSelectedMessage,
   startNumber,
 }: Props) => {
-  const [messages] = useAtom(messagesAtom);
-  const session = useSession();
+  const [messages] = useAtom(IndexStore.messages);
 
   const onMessageClick = async (message: Message) => {
     setSelectedMessage(message);
