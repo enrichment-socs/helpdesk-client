@@ -3,6 +3,7 @@
   (for example: we update the router query string using router.push), atoms will not get updated.
   To force the atoms update, we need to use useSetAtom function in useEffect whenever a server side props changed.
   Hence, I (LL20-2) created this hook to reduce the redundancy of applying such solutions.
+  Reference: https://github.com/pmndrs/jotai/discussions/669
 */
 
 /* eslint-disable react-hooks/exhaustive-deps */
