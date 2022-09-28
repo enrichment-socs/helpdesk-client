@@ -1,31 +1,22 @@
 import { Disclosure, Transition } from '@headlessui/react';
 import { ChevronUpIcon } from '@heroicons/react/solid';
-import { OutlookMessage } from '../../../models/OutlookMessage';
-import { OutlookMessageAttachmentValue } from '../../../models/OutlookMessageAttachment';
 import MultiLineSkeletonLoading from '../../../widgets/MultiLineSkeletonLoading';
 import TicketDetailConversationBody from './TicketDetailConversationBody';
 import TicketDetailConversationHeader from './TicketDetailConversationHeader';
 import TicketDetailProperties from './TicketDetailProperties';
 import TicketDetailConversation from './TicketDetailConversation';
-import { Ticket } from '../../../models/Ticket';
-import { TicketResolution } from '../../../models/TicketResolution';
 import TicketDetailReply from './TicketDetailReply';
 import { useRef } from 'react';
+import { useAtom } from 'jotai';
+import TicketDetailStore from '../../../stores/tickets/[id]';
 
-type Props = {
-  outlookMessages: OutlookMessage[];
-  attachmentsArrays: OutlookMessageAttachmentValue[][];
-  ticket: Ticket;
-  resolution: TicketResolution;
-};
-
-const TicketDetailDetails: React.FC<Props> = ({
-  outlookMessages,
-  attachmentsArrays,
-  ticket,
-  resolution,
-}) => {
+const TicketDetailDetails = () => {
   const replyComponentRef = useRef(null);
+
+  const [outlookMessages] = useAtom(TicketDetailStore.outlookMessages);
+  const [attachmentsArrays] = useAtom(TicketDetailStore.attachmentsArray);
+  const [ticket] = useAtom(TicketDetailStore.ticket);
+  const [resolution] = useAtom(TicketDetailStore.resolution);
 
   return (
     <div>

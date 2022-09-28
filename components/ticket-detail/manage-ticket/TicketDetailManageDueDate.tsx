@@ -1,35 +1,27 @@
 import { CalendarIcon } from '@heroicons/react/outline';
 import { addHours } from 'date-fns';
-import { SetStateAction } from 'jotai';
+import { useAtom } from 'jotai';
 import { useSession } from 'next-auth/react';
 import dynamic from 'next/dynamic';
-import { Dispatch, useState } from 'react';
+import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { CreateTicketDueDateDto } from '../../../models/dto/ticket-due-dates/create-ticket-due-date.dto';
 import { SessionUser } from '../../../models/SessionUser';
-import { Ticket } from '../../../models/Ticket';
-import { TicketDueDate } from '../../../models/TicketDueDate';
-import { TicketStatus } from '../../../models/TicketStatus';
 import { TicketDueDateService } from '../../../services/TicketDueDateService';
 import { STATUS } from '../../../shared/constants/status';
 import { confirm } from '../../../shared/libs/confirm-dialog-helper';
 import { TicketUtils } from '../../../shared/libs/ticket-utils';
+import TicketDetailStore from '../../../stores/tickets/[id]';
 import TicketDueDateChangeLogTable from './TicketDueDateChangeLogTable';
 const DatePicker = dynamic(import('react-datepicker'), { ssr: false }) as any;
 
-type Props = {
-  ticketDueDates: TicketDueDate[];
-  setTicketDueDates: Dispatch<SetStateAction<TicketDueDate[]>>;
-  ticket: Ticket;
-  ticketStatuses: TicketStatus[];
-};
+export default function TicketDetailManageDueDate() {
+  const [ticket] = useAtom(TicketDetailStore.ticket);
+  const [ticketStatuses] = useAtom(TicketDetailStore.ticketStatuses);
+  const [ticketDueDates, setTicketDueDates] = useAtom(
+    TicketDetailStore.ticketDueDates
+  );
 
-export default function TicketDetailManageDueDate({
-  ticketDueDates,
-  ticket,
-  setTicketDueDates,
-  ticketStatuses,
-}: Props) {
   const session = useSession();
   const user = session.data.user as SessionUser;
   const ticketDueDateService = new TicketDueDateService(user?.accessToken);

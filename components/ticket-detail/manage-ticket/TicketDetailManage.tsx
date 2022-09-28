@@ -13,28 +13,22 @@ import TicketDetailManageDueDate from './TicketDetailManageDueDate';
 import InfoAlert from '../../../widgets/InfoAlert';
 import { TicketUtils } from '../../../shared/libs/ticket-utils';
 import TicketDetailManageAction from './TicketDetailManageAction';
+import { useAtom } from 'jotai';
+import TicketDetailStore from '../../../stores/tickets/[id]';
 
-type Props = {
-  statuses: Status[];
-  ticket: Ticket;
-  resolution: TicketResolution;
-  ticketStatuses: TicketStatus[];
-  setTicketStatuses: Dispatch<SetStateAction<TicketStatus[]>>;
-  ticketDueDates: TicketDueDate[];
-  setTicketDueDates: Dispatch<SetStateAction<TicketDueDate[]>>;
-};
-
-export default function TicketDetailManage({
-  ticketStatuses,
-  resolution,
-  statuses,
-  ticket,
-  setTicketStatuses,
-  ticketDueDates,
-  setTicketDueDates,
-}: Props) {
+export default function TicketDetailManage() {
   const session = useSession();
   const user = session?.data?.user as SessionUser;
+
+  const [resolution] = useAtom(TicketDetailStore.resolution);
+  const [ticketStatuses, setTicketStatuses] = useAtom(
+    TicketDetailStore.ticketStatuses
+  );
+  const [ticketDueDates, setTicketDueDates] = useAtom(
+    TicketDetailStore.ticketDueDates
+  );
+  const [statuses] = useAtom(TicketDetailStore.statuses);
+  const [ticket] = useAtom(TicketDetailStore.ticket);
 
   return (
     <section className="text-gray-800">
@@ -45,27 +39,12 @@ export default function TicketDetailManage({
         />
       )}
 
-      <TicketDetailManageStatus
-        ticket={ticket}
-        statuses={statuses}
-        resolution={resolution}
-        ticketStatuses={ticketStatuses}
-        setTicketStatuses={setTicketStatuses}
-        setTicketDueDates={setTicketDueDates}
-      />
+      <TicketDetailManageStatus/>
 
-      <TicketDetailManageDueDate
-        ticketDueDates={ticketDueDates}
-        setTicketDueDates={setTicketDueDates}
-        ticket={ticket}
-        ticketStatuses={ticketStatuses}
-      />
+      <TicketDetailManageDueDate/>
 
       {TicketUtils.isEligibleToManage(user, ticket) && (
-        <TicketDetailManageAction
-          ticket={ticket}
-          ticketStatuses={ticketStatuses}
-        />
+        <TicketDetailManageAction/>
       )}
 
       {TicketUtils.getCurrentStatus(ticketStatuses) === STATUS.CLOSED && (

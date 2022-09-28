@@ -1,23 +1,18 @@
+import { useAtom } from 'jotai';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { SessionUser } from '../../../models/SessionUser';
-import { Ticket } from '../../../models/Ticket';
-import { TicketStatus } from '../../../models/TicketStatus';
 import { TicketService } from '../../../services/TicketService';
 import { STATUS } from '../../../shared/constants/status';
+import TicketDetailStore from '../../../stores/tickets/[id]';
 import ChangeSenderInfoModal from './ChangeSenderInfoModal';
 
-type Props = {
-  ticketStatuses: TicketStatus[];
-  ticket: Ticket;
-};
+export default function TicketDetailManageAction() {
+  const [ticket] = useAtom(TicketDetailStore.ticket);
+  const [ticketStatuses] = useAtom(TicketDetailStore.ticketStatuses);
 
-export default function TicketDetailManageAction({
-  ticketStatuses,
-  ticket,
-}: Props) {
   const session = useSession();
   const user = session?.data?.user as SessionUser;
   const ticketService = new TicketService(user?.accessToken);

@@ -2,8 +2,6 @@ import { Transition } from '@headlessui/react';
 import { TicketIcon } from '@heroicons/react/solid';
 import { NextPage } from 'next';
 import { getSession, useSession } from 'next-auth/react';
-import Image from 'next/image';
-import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import TicketDetailDetails from '../../../components/ticket-detail/details/TicketDetailDetails';
 import TicketDetailHistory from '../../../components/ticket-detail/histories/TicketDetailHistory';
@@ -19,9 +17,7 @@ import { Ticket } from '../../../models/Ticket';
 import { SessionUser } from '../../../models/SessionUser';
 import { TicketService } from '../../../services/TicketService';
 import { format } from 'date-fns';
-import { OutlookMessage } from '../../../models/OutlookMessage';
 import { GraphApiService } from '../../../services/GraphApiService';
-import { OutlookMessageAttachmentValue } from '../../../models/OutlookMessageAttachment';
 import { CONTENT_ID_REGEX } from '../../../shared/constants/regex';
 import { TicketResolutionService } from '../../../services/TicketResolutionService';
 import { TicketResolution } from '../../../models/TicketResolution';
@@ -35,6 +31,10 @@ import { ClientPromiseWrapper } from '../../../shared/libs/client-promise-wrappe
 import toast from 'react-hot-toast';
 import { TicketDueDateService } from '../../../services/TicketDueDateService';
 import { TicketDueDate } from '../../../models/TicketDueDate';
+import { useHydrateAtoms } from 'jotai/utils';
+import TicketDetailStore from '../../../stores/tickets/[id]';
+import { useAtom } from 'jotai';
+import { TicketUtils } from '../../../shared/libs/ticket-utils';
 
 type Props = {
   ticket: Ticket;
@@ -46,35 +46,29 @@ type Props = {
 
 const TicketDetailPage: NextPage<Props> = ({
   ticket,
-  resolution: serverResolution,
-  ticketStatuses: serverTicketStatuses,
-  ticketDueDates: serverTicketDueDates,
+  resolution,
+  ticketStatuses,
+  ticketDueDates,
   statuses,
 }) => {
-  const router = useRouter();
-  const { id } = router.query;
+  useHydrateAtoms([
+    [TicketDetailStore.ticket, ticket],
+    [TicketDetailStore.resolution, resolution],
+    [TicketDetailStore.ticketStatuses, ticketStatuses],
+    [TicketDetailStore.ticketDueDates, ticketDueDates],
+    [TicketDetailStore.statuses, statuses],
+  ] as const);
+
   const [currentTab, setCurrentTab] = useState('Details');
   const [isShowInformation, setIsShowInformation] = useState(false);
 
   const session = useSession();
   const user = session?.data?.user as SessionUser;
   const graphApiService = new GraphApiService(user.accessToken);
-  const [outlookMessages, setOutlookMessages] =
-    useState<OutlookMessage[]>(null);
-  const [attachmentArrays, setAttachmentArrays] = useState<
-    OutlookMessageAttachmentValue[][]
-  >([]);
-  const [resolution, setResolution] =
-    useState<TicketResolution>(serverResolution);
-  const [ticketStatuses, setTicketStatuses] =
-    useState<TicketStatus[]>(serverTicketStatuses);
-  const [ticketDueDates, setTicketDueDates] =
-    useState<TicketDueDate[]>(serverTicketDueDates);
-
-  const getCurrentStatus = () => {
-    if (ticketStatuses.length == 0) return 'No Status';
-    return ticketStatuses[ticketStatuses.length - 1].status.statusName;
-  };
+  const [outlookMessages, setOutlookMessages] = useAtom(
+    TicketDetailStore.outlookMessages
+  );
+  const [, setAttachmentArrays] = useAtom(TicketDetailStore.attachmentsArray);
 
   useEffect(() => {
     const wrapper = new ClientPromiseWrapper(toast);
@@ -118,53 +112,22 @@ const TicketDetailPage: NextPage<Props> = ({
   };
 
   const getTabMenuList = () => {
-    // const tabMenuList = ['Details', 'Manage Ticket', 'Resolution', 'History']; // TODO: use this line when start developing History system
-    const tabMenuList = ['Details', 'Resolution', 'Manage Ticket'];
+    const tabMenuList = ['Details', 'Resolution', 'Manage Ticket', 'History'];
     if (user?.roleName === ROLES.USER)
       return tabMenuList.filter((t) => t !== 'Manage Ticket');
     return tabMenuList;
   };
 
   const getTabContent = () => {
-    if (currentTab === 'Details') {
-      return (
-        <TicketDetailDetails
-          outlookMessages={outlookMessages}
-          attachmentsArrays={attachmentArrays}
-          ticket={ticket}
-          resolution={resolution}
-        />
-      );
-    }
-
-    if (currentTab === 'Resolution') {
-      return (
-        <TicketDetailResolution
-          ticket={ticket}
-          firstOutlookMessage={outlookMessages[0]}
-          resolution={resolution}
-          setResolution={setResolution}
-          ticketStatuses={ticketStatuses}
-        />
-      );
-    }
-
-    if (currentTab === 'History') {
-      return <TicketDetailHistory />;
-    }
-
-    if (currentTab === 'Manage Ticket') {
-      return (
-        <TicketDetailManage
-          ticket={ticket}
-          statuses={statuses}
-          ticketStatuses={ticketStatuses}
-          setTicketStatuses={setTicketStatuses}
-          resolution={resolution}
-          ticketDueDates={ticketDueDates}
-          setTicketDueDates={setTicketDueDates}
-        />
-      );
+    switch (currentTab) {
+      case 'Details':
+        return <TicketDetailDetails />;
+      case 'Resolution':
+        return <TicketDetailResolution />;
+      case 'Manage Ticket':
+        return <TicketDetailManage />;
+      case 'History':
+        return <TicketDetailHistory />;
     }
   };
 
@@ -211,7 +174,7 @@ const TicketDetailPage: NextPage<Props> = ({
               <div className="text-sm mt-1">
                 <span className="font-normal">Current Status </span>:{' '}
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary text-gray-100">
-                  {getCurrentStatus()}
+                  {TicketUtils.getCurrentStatus(ticketStatuses)}
                 </span>
               </div>
             </div>

@@ -1,34 +1,23 @@
 import { useSession } from 'next-auth/react';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Else, If, Then } from 'react-if';
-import { Ticket } from '../../../models/Ticket';
-import { TicketStatus } from '../../../models/TicketStatus';
-import { OutlookMessage } from '../../../models/OutlookMessage';
-import { TicketResolution } from '../../../models/TicketResolution';
 import { SessionUser } from '../../../models/SessionUser';
 import { ROLES } from '../../../shared/constants/roles';
 import { STATUS } from '../../../shared/constants/status';
 import InfoAlert from '../../../widgets/InfoAlert';
 import TicketDetailResolutionForm from './TicketDetailResolutionForm';
 import TicketDetailResolutionProperties from './TicketDetailResolutionProperties';
+import { useAtom } from 'jotai';
+import TicketDetailStore from '../../../stores/tickets/[id]';
 
-type Prop = {
-  ticket: Ticket;
-  firstOutlookMessage: OutlookMessage;
-  resolution: TicketResolution;
-  setResolution: Dispatch<SetStateAction<TicketResolution>>;
-  ticketStatuses: TicketStatus[];
-};
-
-const TicketDetailResolution = ({
-  ticket,
-  firstOutlookMessage,
-  resolution,
-  setResolution,
-  ticketStatuses,
-}: Prop) => {
+const TicketDetailResolution = () => {
   const session = useSession();
   const user = session?.data?.user as SessionUser;
+
+  const [ticketStatuses] = useAtom(TicketDetailStore.ticketStatuses);
+  const [resolution, setResolution] = useAtom(TicketDetailStore.resolution);
+  const [ticket] = useAtom(TicketDetailStore.ticket);
+  const [outlookMessages] = useAtom(TicketDetailStore.outlookMessages);
+  const firstOutlookMessage = outlookMessages[0];
 
   const canCreateResolution = () => {
     if (ticketStatuses.length == 0) return false;

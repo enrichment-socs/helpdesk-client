@@ -1,45 +1,32 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/solid';
 import { useSession } from 'next-auth/react';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { useState } from 'react';
 import toast from 'react-hot-toast';
-import { Else, If, Switch, Then, Case } from 'react-if';
+import { If, Switch, Then, Case } from 'react-if';
 import { CreateTicketStatusDto } from '../../../models/dto/ticket-statuses/create-ticket-status.dto';
 import { SessionUser } from '../../../models/SessionUser';
-import { Status } from '../../../models/Status';
-import { Ticket } from '../../../models/Ticket';
-import { TicketResolution } from '../../../models/TicketResolution';
-import { TicketStatus } from '../../../models/TicketStatus';
 import { TicketStatusService } from '../../../services/TicketStatusService';
-import { ROLES } from '../../../shared/constants/roles';
 import { STATUS } from '../../../shared/constants/status';
 import { ClientPromiseWrapper } from '../../../shared/libs/client-promise-wrapper';
-import InfoAlert from '../../../widgets/InfoAlert';
 import TicketStatusChangeLogTable from './TicketStatusChangeLogTable';
 import { confirm } from '../../../shared/libs/confirm-dialog-helper';
-import { TicketDueDate } from '../../../models/TicketDueDate';
 import { TicketDueDateService } from '../../../services/TicketDueDateService';
 import { TicketUtils } from '../../../shared/libs/ticket-utils';
 import ReactTooltip from 'react-tooltip';
+import { useAtom } from 'jotai';
+import TicketDetailStore from '../../../stores/tickets/[id]';
 
-type Props = {
-  resolution: TicketResolution;
-  ticketStatuses: TicketStatus[];
-  setTicketStatuses: Dispatch<SetStateAction<TicketStatus[]>>;
-  setTicketDueDates: Dispatch<SetStateAction<TicketDueDate[]>>;
-  statuses: Status[];
-  ticket: Ticket;
-};
-
-export default function TicketDetailManageStatus({
-  resolution,
-  ticketStatuses,
-  setTicketStatuses,
-  statuses,
-  ticket,
-  setTicketDueDates,
-}: Props) {
+export default function TicketDetailManageStatus() {
   const session = useSession();
   const user = session?.data?.user as SessionUser;
+
+  const [resolution] = useAtom(TicketDetailStore.resolution);
+  const [ticketStatuses, setTicketStatuses] = useAtom(
+    TicketDetailStore.ticketStatuses
+  );
+  const [, setTicketDueDates] = useAtom(TicketDetailStore.ticketDueDates);
+  const [statuses] = useAtom(TicketDetailStore.statuses);
+  const [ticket] = useAtom(TicketDetailStore.ticket);
 
   const [reason, setReason] = useState('');
   const ticketStatusService = new TicketStatusService(user?.accessToken);
