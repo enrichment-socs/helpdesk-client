@@ -2,46 +2,36 @@ import { ArchiveIcon } from '@heroicons/react/solid';
 import { useAtom } from 'jotai';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { Dispatch, SetStateAction, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { activeSemesterAtom } from '../../atom';
-import { Priority } from '../../models/Priority';
 import { SessionUser } from '../../models/SessionUser';
-import { Status } from '../../models/Status';
-import { Ticket, TicketFilterModel } from '../../models/Ticket';
+import { TicketFilterModel } from '../../models/Ticket';
 import { TicketService } from '../../services/TicketService';
 import { ROLES } from '../../shared/constants/roles';
 import { ClientPromiseWrapper } from '../../shared/libs/client-promise-wrapper';
+import TicketStore from '../../stores/tickets';
 import CustomPaginator from '../../widgets/CustomPaginator';
 import TicketTable from '../tickets/TicketTable';
 
 type Props = {
-  tickets: Ticket[];
-  setTickets: Dispatch<SetStateAction<Ticket[]>>;
   take: number;
-  skip: number;
-  setSkip: Dispatch<SetStateAction<number>>;
-  totalCount: number;
-  statuses: Status[];
-  priorities: Priority[];
 };
 
-export default function TicketContainer({
-  tickets,
-  take,
-  skip,
-  setSkip,
-  totalCount,
-  setTickets,
-  statuses,
-  priorities,
-}: Props) {
+export default function TicketContainer({ take }: Props) {
+  const [tickets, setTickets] = useAtom(TicketStore.tickets);
+  const [skip, setSkip] = useAtom(TicketStore.skip);
+  const [statuses] = useAtom(TicketStore.statuses);
+  const [priorities] = useAtom(TicketStore.priorities);
+  const [totalCount] = useAtom(TicketStore.count);
+  const [activeSemester] = useAtom(activeSemesterAtom);
+
   const [pageNumber, setPageNumber] = useState(1);
   const [threeFirstPageNumber, setThreeFirstPageNumber] = useState([1, 2, 3]);
+
   const session = useSession();
   const user = session.data.user as SessionUser;
   const ticketService = new TicketService(user.accessToken);
-  const [activeSemester] = useAtom(activeSemesterAtom);
   const router = useRouter();
   const queryInput = useRef(null);
 

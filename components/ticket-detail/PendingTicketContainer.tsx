@@ -3,44 +3,37 @@ import { InformationCircleIcon } from '@heroicons/react/outline';
 import { useAtom } from 'jotai';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { activeSemesterAtom } from '../../atom';
-import { Priority } from '../../models/Priority';
 import { SessionUser } from '../../models/SessionUser';
-import { PendingTicketFilterModel, Ticket } from '../../models/Ticket';
+import { PendingTicketFilterModel } from '../../models/Ticket';
 import { TicketService } from '../../services/TicketService';
 import { ROLES } from '../../shared/constants/roles';
 import { ClientPromiseWrapper } from '../../shared/libs/client-promise-wrapper';
 import CustomPaginator from '../../widgets/CustomPaginator';
 import TicketTable from '../tickets/TicketTable';
 import ReactTooltip from 'react-tooltip';
+import TicketStore from '../../stores/tickets';
 
 type Props = {
-  pendingTickets: Ticket[];
-  setPendingTickets: Dispatch<SetStateAction<Ticket[]>>;
   take: number;
-  skip: number;
-  setSkip: Dispatch<SetStateAction<number>>;
-  totalCount: number;
-  priorities: Priority[];
 };
 
-export default function PendingTicketContainer({
-  pendingTickets,
-  take,
-  skip,
-  setSkip,
-  totalCount,
-  setPendingTickets,
-  priorities,
-}: Props) {
+export default function PendingTicketContainer({ take }: Props) {
+  const [pendingTickets, setPendingTickets] = useAtom(
+    TicketStore.pendingTickets
+  );
+  const [skip, setSkip] = useAtom(TicketStore.pendingSkip);
+  const [priorities] = useAtom(TicketStore.priorities);
+  const [totalCount] = useAtom(TicketStore.pendingCount);
+  const [activeSemester] = useAtom(activeSemesterAtom);
+
   const [pageNumber, setPageNumber] = useState(1);
   const [threeFirstPageNumber, setThreeFirstPageNumber] = useState([1, 2, 3]);
   const session = useSession();
   const user = session.data.user as SessionUser;
   const ticketService = new TicketService(user.accessToken);
-  const [activeSemester] = useAtom(activeSemesterAtom);
   const router = useRouter();
   const queryInput = useRef(null);
 
@@ -116,7 +109,7 @@ export default function PendingTicketContainer({
                 id="pending-ticket-desc"
                 place="right"
                 effect="solid">
-                <div>
+                <div className="bg-blue-100 p-2 border border-blue-200 rounded">
                   Ticket which status is <b>Pending</b> means that the problem
                   depends on external factor(s) that are outside of our
                   team&lsquo;s control (ex: waiting for data from another

@@ -14,14 +14,18 @@ import {
 import { TicketService } from '../../services/TicketService';
 import { SessionUser } from '../../models/SessionUser';
 import TicketContainer from '../../components/ticket-detail/TicketContainer';
-import { useEffect, useState } from 'react';
-import { TicketStatusService } from '../../services/TicketStatusService';
 import { StatusService } from '../../services/StatusService';
 import { Status } from '../../models/Status';
 import { PriorityService } from '../../services/PriorityService';
 import { Priority } from '../../models/Priority';
 import { STATUS } from '../../shared/constants/status';
 import PendingTicketContainer from '../../components/ticket-detail/PendingTicketContainer';
+import { useHydrateAtoms } from 'jotai/utils';
+import TicketStore from '../../stores/tickets';
+import { Provider, useAtom, useSetAtom } from 'jotai';
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
+import useHydrateAndSyncAtom from '../../hooks/useHydrateAndSyncAtom';
 
 type Props = {
   tickets: Ticket[];
@@ -48,44 +52,35 @@ const TicketPage: NextPage<Props> = ({
   statuses,
   priorities,
 }) => {
-  const [skip, setSkip] = useState(initialSkip);
-  const [tickets, setTickets] = useState(serverTickets);
-
-  const [pendingSkip, setPendingSkip] = useState(pendingInitialSkip);
-  const [pendingTickets, setPendingTickets] = useState(serverPendingTickets);
-
-  useEffect(() => {
-    setTickets(serverTickets);
-  }, [serverTickets]);
-
-  useEffect(() => {
-    setPendingTickets(serverPendingTickets);
-  }, [serverPendingTickets]);
+  useHydrateAndSyncAtom([
+    [TicketStore.tickets, useSetAtom(TicketStore.tickets), serverTickets],
+    [TicketStore.skip, useSetAtom(TicketStore.skip), initialSkip],
+    [
+      TicketStore.pendingTickets,
+      useSetAtom(TicketStore.pendingTickets),
+      serverPendingTickets,
+    ],
+    [
+      TicketStore.pendingSkip,
+      useSetAtom(TicketStore.pendingSkip),
+      pendingInitialSkip,
+    ],
+    [TicketStore.statuses, useSetAtom(TicketStore.statuses), statuses],
+    [TicketStore.priorities, useSetAtom(TicketStore.priorities), priorities],
+    [TicketStore.count, useSetAtom(TicketStore.count), count],
+    [
+      TicketStore.pendingCount,
+      useSetAtom(TicketStore.pendingCount),
+      pendingCount,
+    ],
+  ]);
 
   return (
     <Layout
       controlWidth={false}
       className="max-w-[96rem] px-2 sm:px-6 lg:px-8 mx-auto mb-8">
-      <TicketContainer
-        take={initialTake}
-        skip={skip}
-        setSkip={setSkip}
-        totalCount={count}
-        tickets={tickets}
-        setTickets={setTickets}
-        statuses={statuses}
-        priorities={priorities}
-      />
-
-      <PendingTicketContainer
-        take={pendingInitialTake}
-        skip={pendingSkip}
-        setSkip={setPendingSkip}
-        totalCount={pendingCount}
-        pendingTickets={pendingTickets}
-        setPendingTickets={setPendingTickets}
-        priorities={priorities}
-      />
+      <TicketContainer take={initialTake} />
+      <PendingTicketContainer take={pendingInitialTake} />
     </Layout>
   );
 };
