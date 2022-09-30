@@ -5,10 +5,10 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { CreateGuidelineCategoryDto } from '../../models/dto/guideline-categories/create-guideline-category.dto';
 import { GuidelineCategory } from '../../models/GuidelineCategory';
-import { faqCategoriesAtom } from '../../pages/manage/guideline-categories';
 import { GuidelineCategoryService } from '../../services/GuidelineCategoryService';
 import { useSession } from 'next-auth/react';
 import { SessionUser } from '../../models/SessionUser';
+import { guidelineCategoriesAtom } from '../../atom';
 
 type Props = {
   isOpen: boolean;
@@ -25,7 +25,7 @@ export default function GuidelineCategoryFormModal({
   setIsOpen,
   faqCategory,
 }: Props) {
-  const [faqCategories, setFAQCategories] = useAtom(faqCategoriesAtom);
+  const [faqCategories, setFAQCategories] = useAtom(guidelineCategoriesAtom);
   const [loading, setLoading] = useState(false);
   const session = useSession();
   const user = session?.data?.user as SessionUser;

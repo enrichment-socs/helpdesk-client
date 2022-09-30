@@ -5,11 +5,10 @@ import dynamic from 'next/dynamic';
 import { Dispatch, Fragment, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
+import { guidelineCategoriesAtom, guidelinesAtom } from '../../atom';
 import { CreateGuidelineDto } from '../../models/dto/guidelines/create-guideline.dto';
 import { Guideline } from '../../models/Guideline';
 import { SessionUser } from '../../models/SessionUser';
-import { faqCategoriesAtom } from '../../pages/manage/guideline-categories';
-import { faqsAtom } from '../../pages/manage/guidelines';
 import { GuidelineService } from '../../services/GuidelineService';
 
 const QuillNoSSRWrapper = dynamic(import('react-quill'), {
@@ -43,8 +42,9 @@ type FormData = {
 };
 
 const GuidelineFormModal: React.FC<Props> = ({ isOpen, setIsOpen, faq }) => {
-  const [faqs, setFaqs] = useAtom(faqsAtom);
-  const [faqCategories, setFAQCategories] = useAtom(faqCategoriesAtom);
+  const [faqs, setFaqs] = useAtom(guidelinesAtom);
+
+  const [guidelineCategories, setGuidelineCategories] = useAtom(guidelineCategoriesAtom);
   const [loading, setLoading] = useState(false);
   const session = useSession();
   const user = session?.data?.user as SessionUser;
@@ -208,7 +208,7 @@ const GuidelineFormModal: React.FC<Props> = ({ isOpen, setIsOpen, faq }) => {
                       {/* <option value="Even">Even</option>
                       <option value="Odd">Odd</option> */}
 
-                      {faqCategories.map((fc, idx) => {
+                      {guidelineCategories.map((fc, idx) => {
                         return (
                           <option key={idx} value={fc.id}>
                             {fc.categoryName}

@@ -2,10 +2,10 @@ import { useAtom } from 'jotai';
 import toast from 'react-hot-toast';
 import { confirm } from '../../shared/libs/confirm-dialog-helper';
 import { GuidelineCategory } from '../../models/GuidelineCategory';
-import { faqCategoriesAtom } from '../../pages/manage/guideline-categories';
 import { GuidelineCategoryService } from '../../services/GuidelineCategoryService';
 import { useSession } from 'next-auth/react';
 import { SessionUser } from '../../models/SessionUser';
+import { guidelineCategoriesAtom } from '../../atom';
 
 type Props = {
   faqCategories: GuidelineCategory[];
@@ -16,7 +16,7 @@ export default function ManageGuidelineCategoriesTable({
   faqCategories,
   openModal,
 }: Props) {
-  const [, setFAQCategories] = useAtom(faqCategoriesAtom);
+  const [, setFAQCategories] = useAtom(guidelineCategoriesAtom);
   const session = useSession();
   const user = session?.data?.user as SessionUser;
 

@@ -3,6 +3,7 @@ import { useHydrateAtoms } from 'jotai/utils';
 import { NextPage } from 'next';
 import { getSession } from 'next-auth/react';
 import { useState } from 'react';
+import { guidelineCategoriesAtom, guidelinesAtom } from '../../../atom';
 import GuidelineFormModal from '../../../components/guidelines/GuidelineFormModal';
 import ManageGuidelinesTable from '../../../components/guidelines/ManageGuidelineTable';
 import { Guideline } from '../../../models/Guideline';
@@ -16,9 +17,6 @@ import { AuthHelper } from '../../../shared/libs/auth-helper';
 import { getInitialServerProps } from '../../../shared/libs/initialize-server-props';
 import { withSessionSsr } from '../../../shared/libs/session';
 import Layout from '../../../widgets/_Layout';
-import { faqCategoriesAtom } from '../guideline-categories';
-
-export const faqsAtom = atom([] as Guideline[]);
 
 type Props = {
   currFAQCategories: GuidelineCategory[];
@@ -29,12 +27,13 @@ const ManageFAQCategoriesPage: NextPage<Props> = ({
   currFAQCategories,
   currFAQs,
 }) => {
-  const [faqs] = useAtom(faqsAtom);
   const [openFormModal, setOpenFormModal] = useState(false);
   const [selectedFAQ, setSelectedFAQ] = useState<Guideline | null>(null);
 
-  useHydrateAtoms([[faqCategoriesAtom, currFAQCategories]] as const);
-  useHydrateAtoms([[faqsAtom, currFAQs]] as const);
+  useHydrateAtoms([
+    [guidelineCategoriesAtom, currFAQCategories],
+    [guidelinesAtom, currFAQs],
+  ] as const);
 
   const openModal = (faq: Guideline | null) => {
     setSelectedFAQ(faq);
@@ -58,7 +57,7 @@ const ManageFAQCategoriesPage: NextPage<Props> = ({
           Create
         </button>
       </div>
-      <ManageGuidelinesTable guidelines={faqs} openModal={openModal} />
+      <ManageGuidelinesTable openModal={openModal} />
     </Layout>
   );
 };

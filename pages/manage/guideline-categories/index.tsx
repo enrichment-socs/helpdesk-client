@@ -14,20 +14,19 @@ import { GuidelineCategory } from '../../../models/GuidelineCategory';
 import { GuidelineCategoryService } from '../../../services/GuidelineCategoryService';
 import { SemesterService } from '../../../services/SemesterService';
 import { SessionUser } from '../../../models/SessionUser';
-
-export const faqCategoriesAtom = atom([] as GuidelineCategory[]);
+import { guidelineCategoriesAtom } from '../../../atom';
 
 type Props = {
   currFAQCategories: GuidelineCategory[];
 };
 
 const ManageFAQCategoriesPage: NextPage<Props> = ({ currFAQCategories }) => {
-  const [faqCategories] = useAtom(faqCategoriesAtom);
+  const [faqCategories] = useAtom(guidelineCategoriesAtom);
   const [openFormModal, setOpenFormModal] = useState(false);
   const [selectedFAQCategory, setSelectedFAQCategory] =
     useState<GuidelineCategory | null>(null);
 
-  useHydrateAtoms([[faqCategoriesAtom, currFAQCategories]] as const);
+  useHydrateAtoms([[guidelineCategoriesAtom, currFAQCategories]] as const);
 
   const openModal = (faqCategory: GuidelineCategory | null) => {
     setSelectedFAQCategory(faqCategory);

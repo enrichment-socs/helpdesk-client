@@ -4,16 +4,16 @@ import toast from 'react-hot-toast';
 import { confirm } from '../../shared/libs/confirm-dialog-helper';
 import { Guideline } from '../../models/Guideline';
 import { SessionUser } from '../../models/SessionUser';
-import { faqsAtom } from '../../pages/manage/guidelines';
 import { GuidelineService } from '../../services/GuidelineService';
+import { guidelinesAtom } from '../../atom';
 
 type Props = {
-  guidelines: Guideline[];
   openModal: (faqs: Guideline | null) => void;
 };
 
-const ManageGuidelinesTable: React.FC<Props> = ({ guidelines, openModal }) => {
-  const [, setFAQs] = useAtom(faqsAtom);
+const ManageGuidelinesTable: React.FC<Props> = ({ openModal }) => {
+  const [guidelines, setGuidelines] = useAtom(guidelinesAtom);
+
   const session = useSession();
   const user = session?.data?.user as SessionUser;
 
@@ -24,7 +24,7 @@ const ManageGuidelinesTable: React.FC<Props> = ({ guidelines, openModal }) => {
       await toast.promise(guidelineService.deleteFAQ(guideline.id), {
         loading: 'Deleting FAQ...',
         success: (r) => {
-          setFAQs(guidelines.filter((f) => f.id !== guideline.id));
+          setGuidelines(guidelines.filter((f) => f.id !== guideline.id));
           return 'Sucesfully deleted the selected FAQ';
         },
         error: (e) => e.toString(),
