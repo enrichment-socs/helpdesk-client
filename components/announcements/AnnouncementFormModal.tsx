@@ -5,7 +5,6 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { Announcement } from '../../models/Announcement';
 import { CreateAnnouncementDto } from '../../models/dto/announcements/create-announcement.dto';
-import { announcementsAtom } from '../../pages/manage/announcements';
 import { AnnouncementService } from '../../services/AnnouncementService';
 import { activeSemesterAtom } from '../../atom';
 import dynamic from 'next/dynamic';
@@ -14,6 +13,7 @@ import { useSession } from 'next-auth/react';
 import { SessionUser } from '../../models/SessionUser';
 import { DateHelper } from '../../shared/libs/date-helper';
 import { Role } from '../../models/Role';
+import AnnouncementStore from '../../stores/manage/announcements';
 const QuillNoSSRWrapper = dynamic(import('react-quill'), {
   ssr: false,
   loading: () => <p>Loading ...</p>,
@@ -54,7 +54,7 @@ export default function AnnouncementFormModal({
   announcement,
   roles,
 }: Props) {
-  const [announcements, setAnnouncements] = useAtom(announcementsAtom);
+  const [announcements, setAnnouncements] = useAtom(AnnouncementStore.announcements);
   const [loading, setLoading] = useState(false);
   const [activeSemester] = useAtom(activeSemesterAtom);
   const session = useSession();

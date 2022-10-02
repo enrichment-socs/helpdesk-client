@@ -2,22 +2,20 @@ import { useAtom } from 'jotai';
 import toast from 'react-hot-toast';
 import { confirm } from '../../shared/libs/confirm-dialog-helper';
 import { Announcement } from '../../models/Announcement';
-import { announcementsAtom } from '../../pages/manage/announcements';
 import { AnnouncementService } from '../../services/AnnouncementService';
 import { format } from 'date-fns';
 import { useSession } from 'next-auth/react';
 import { SessionUser } from '../../models/SessionUser';
+import AnnouncementStore from '../../stores/manage/announcements';
 
 type Props = {
-  announcements: Announcement[];
   openModal: (announcement: Announcement | null) => void;
 };
 
 export default function ManageAnnouncementsTable({
-  announcements,
   openModal,
 }: Props) {
-  const [, setAnnouncements] = useAtom(announcementsAtom);
+  const [announcements, setAnnouncements] = useAtom(AnnouncementStore.announcements);
 
   const session = useSession();
   const user = session?.data?.user as SessionUser;
