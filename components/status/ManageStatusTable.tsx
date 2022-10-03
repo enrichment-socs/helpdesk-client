@@ -2,10 +2,10 @@ import { useAtom } from 'jotai';
 import toast from 'react-hot-toast';
 import { confirm } from '../../shared/libs/confirm-dialog-helper';
 import { Status } from '../../models/Status';
-import { statusAtom } from '../../pages/manage/status';
 import { StatusService } from '../../services/StatusService';
 import { useSession } from 'next-auth/react';
 import { SessionUser } from '../../models/SessionUser';
+import StatusStore from '../../stores/manage/status';
 
 type Props = {
   statuses: Status[];
@@ -13,7 +13,7 @@ type Props = {
 };
 
 export default function ManageStatusTable({ statuses, openModal }: Props) {
-  const [, setStatuses] = useAtom(statusAtom);
+  const [, setStatuses] = useAtom(StatusStore.status);
   const session = useSession();
   const user = session?.data?.user as SessionUser;
   const statusService = new StatusService(user.accessToken);

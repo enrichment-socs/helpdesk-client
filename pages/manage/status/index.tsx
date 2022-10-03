@@ -14,19 +14,18 @@ import { Status } from '../../../models/Status';
 import { SemesterService } from '../../../services/SemesterService';
 import { StatusService } from '../../../services/StatusService';
 import { SessionUser } from '../../../models/SessionUser';
-
-export const statusAtom = atom([] as Status[]);
+import StatusStore from '../../../stores/manage/status';
 
 type Props = {
   currStatuses: Status[];
 };
 
 const ManageStatusPage: NextPage<Props> = ({ currStatuses }) => {
-  const [statuses] = useAtom(statusAtom);
+  const [statuses] = useAtom(StatusStore.status);
   const [openFormModal, setOpenFormModal] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<Status | null>(null);
 
-  useHydrateAtoms([[statusAtom, currStatuses]] as const);
+  useHydrateAtoms([[StatusStore.status, currStatuses]] as const);
 
   const openModal = (status: Status | null) => {
     setSelectedStatus(status);
