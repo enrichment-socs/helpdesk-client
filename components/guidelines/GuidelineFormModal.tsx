@@ -5,11 +5,12 @@ import dynamic from 'next/dynamic';
 import { Dispatch, Fragment, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { guidelineCategoriesAtom, guidelinesAtom } from '../../atom';
+import { guidelineCategoriesAtom } from '../../atom';
 import { CreateGuidelineDto } from '../../models/dto/guidelines/create-guideline.dto';
 import { Guideline } from '../../models/Guideline';
 import { SessionUser } from '../../models/SessionUser';
 import { GuidelineService } from '../../services/GuidelineService';
+import GuidelineStore from '../../stores/manage/guidelines';
 
 const QuillNoSSRWrapper = dynamic(import('react-quill'), {
   ssr: false,
@@ -42,7 +43,7 @@ type FormData = {
 };
 
 const GuidelineFormModal: React.FC<Props> = ({ isOpen, setIsOpen, faq }) => {
-  const [faqs, setFaqs] = useAtom(guidelinesAtom);
+  const [faqs, setFaqs] = useAtom(GuidelineStore.guidelines);
 
   const [guidelineCategories, setGuidelineCategories] = useAtom(guidelineCategoriesAtom);
   const [loading, setLoading] = useState(false);
@@ -79,7 +80,7 @@ const GuidelineFormModal: React.FC<Props> = ({ isOpen, setIsOpen, faq }) => {
         ? faqService.updateFAQ(payload as CreateGuidelineDto, faq.id)
         : faqService.addFAQ(payload as CreateGuidelineDto),
       {
-        loading: faq ? 'Updating FAQ...' : 'Adding FAQ...',
+        loading: faq ? 'Updating Guideline...' : 'Adding Guideline...',
         success: (result) => {
           faq
             ? setFaqs(

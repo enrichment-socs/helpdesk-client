@@ -5,14 +5,14 @@ import { confirm } from '../../shared/libs/confirm-dialog-helper';
 import { Guideline } from '../../models/Guideline';
 import { SessionUser } from '../../models/SessionUser';
 import { GuidelineService } from '../../services/GuidelineService';
-import { guidelinesAtom } from '../../atom';
+import GuidelineStore from '../../stores/manage/guidelines';
 
 type Props = {
   openModal: (faqs: Guideline | null) => void;
 };
 
 const ManageGuidelinesTable: React.FC<Props> = ({ openModal }) => {
-  const [guidelines, setGuidelines] = useAtom(guidelinesAtom);
+  const [guidelines, setGuidelines] = useAtom(GuidelineStore.guidelines);
 
   const session = useSession();
   const user = session?.data?.user as SessionUser;

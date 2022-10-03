@@ -3,7 +3,7 @@ import { useHydrateAtoms } from 'jotai/utils';
 import { NextPage } from 'next';
 import { getSession } from 'next-auth/react';
 import { useState } from 'react';
-import { guidelineCategoriesAtom, guidelinesAtom } from '../../../atom';
+import { guidelineCategoriesAtom } from '../../../atom';
 import GuidelineFormModal from '../../../components/guidelines/GuidelineFormModal';
 import ManageGuidelinesTable from '../../../components/guidelines/ManageGuidelineTable';
 import { Guideline } from '../../../models/Guideline';
@@ -16,6 +16,7 @@ import { ROLES } from '../../../shared/constants/roles';
 import { AuthHelper } from '../../../shared/libs/auth-helper';
 import { getInitialServerProps } from '../../../shared/libs/initialize-server-props';
 import { withSessionSsr } from '../../../shared/libs/session';
+import GuidelineStore from '../../../stores/manage/guidelines';
 import Layout from '../../../widgets/_Layout';
 
 type Props = {
@@ -32,7 +33,7 @@ const ManageFAQCategoriesPage: NextPage<Props> = ({
 
   useHydrateAtoms([
     [guidelineCategoriesAtom, currFAQCategories],
-    [guidelinesAtom, currFAQs],
+    [GuidelineStore.guidelines, currFAQs],
   ] as const);
 
   const openModal = (faq: Guideline | null) => {
