@@ -3,9 +3,9 @@ import { useSession } from 'next-auth/react';
 import toast from 'react-hot-toast';
 import { Priority } from '../../models/Priority';
 import { SessionUser } from '../../models/SessionUser';
-import { prioritiesAtom } from '../../pages/manage/priorities';
 import { PriorityService } from '../../services/PriorityService';
 import { confirm } from '../../shared/libs/confirm-dialog-helper';
+import PriorityStore from '../../stores/manage/priorities';
 
 type Prop = {
   priorities: Priority[];
@@ -13,7 +13,7 @@ type Prop = {
 };
 
 export default function ManagePrioritiesTable({ priorities, openModal }: Prop) {
-  const [, setPrioritiesVal] = useAtom(prioritiesAtom);
+  const [, setPrioritiesVal] = useAtom(PriorityStore.priorities);
   const session = useSession();
   const user = session?.data?.user as SessionUser;
   const prioritiesService = new PriorityService(user.accessToken);
