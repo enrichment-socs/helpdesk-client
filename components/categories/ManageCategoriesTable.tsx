@@ -3,9 +3,9 @@ import { useSession } from 'next-auth/react';
 import toast from 'react-hot-toast';
 import { Category } from '../../models/Category';
 import { SessionUser } from '../../models/SessionUser';
-import { categoriesAtom } from '../../pages/manage/categories';
 import { CategoryService } from '../../services/CategoryService';
 import { confirm } from '../../shared/libs/confirm-dialog-helper';
+import CategoryStore from '../../stores/manage/categories';
 
 type Prop = {
   categories: Category[];
@@ -13,7 +13,7 @@ type Prop = {
 };
 
 export default function ManageCategoriesTable({ categories, openModal }: Prop) {
-  const [, setCategoriesVal] = useAtom(categoriesAtom);
+  const [, setCategoriesVal] = useAtom(CategoryStore.categories);
   const session = useSession();
   const user = session?.data?.user as SessionUser;
 
