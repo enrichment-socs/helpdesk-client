@@ -5,10 +5,10 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { CreateRoleDto } from '../../models/dto/roles/create-role.dto';
 import { Role } from '../../models/Role';
-import { rolesAtom } from '../../pages/manage/roles';
 import { RoleService } from '../../services/RoleService';
 import { useSession } from 'next-auth/react';
 import { SessionUser } from '../../models/SessionUser';
+import RoleStore from '../../stores/manage/roles';
 
 type Props = {
   isOpen: boolean;
@@ -21,7 +21,7 @@ type FormData = {
 };
 
 export default function RoleFormModal({ isOpen, setIsOpen, role }: Props) {
-  const [roles, setRoles] = useAtom(rolesAtom);
+  const [roles, setRoles] = useAtom(RoleStore.roles);
   const [loading, setLoading] = useState(false);
   const session = useSession();
   const user = session?.data?.user as SessionUser;

@@ -14,19 +14,18 @@ import { Role } from '../../../models/Role';
 import { RoleService } from '../../../services/RoleService';
 import { SemesterService } from '../../../services/SemesterService';
 import { SessionUser } from '../../../models/SessionUser';
-
-export const rolesAtom = atom([] as Role[]);
+import RoleStore from '../../../stores/manage/roles';
 
 type Props = {
   currRoles: Role[];
 };
 
 const ManageRolesPage: NextPage<Props> = ({ currRoles }) => {
-  const [roles] = useAtom(rolesAtom);
+  const [roles] = useAtom(RoleStore.roles);
   const [openFormModal, setOpenFormModal] = useState(false);
   const [selectedRole, setSelectedRole] = useState<Role | null>(null);
 
-  useHydrateAtoms([[rolesAtom, currRoles]] as const);
+  useHydrateAtoms([[RoleStore.roles, currRoles]] as const);
 
   const openModal = (role: Role | null) => {
     setSelectedRole(role);

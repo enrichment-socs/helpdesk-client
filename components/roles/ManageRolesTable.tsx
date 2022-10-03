@@ -2,10 +2,10 @@ import { useAtom } from 'jotai';
 import toast from 'react-hot-toast';
 import { confirm } from '../../shared/libs/confirm-dialog-helper';
 import { Role } from '../../models/Role';
-import { rolesAtom } from '../../pages/manage/roles';
 import { RoleService } from '../../services/RoleService';
 import { useSession } from 'next-auth/react';
 import { SessionUser } from '../../models/SessionUser';
+import RoleStore from '../../stores/manage/roles';
 
 type Props = {
   roles: Role[];
@@ -13,7 +13,7 @@ type Props = {
 };
 
 export default function ManageRolesTable({ roles, openModal }: Props) {
-  const [, setRoles] = useAtom(rolesAtom);
+  const [, setRoles] = useAtom(RoleStore.roles);
   const session = useSession();
   const user = session?.data?.user as SessionUser;
   const rolesService = new RoleService(user.accessToken);
