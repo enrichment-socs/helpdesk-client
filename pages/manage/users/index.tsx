@@ -145,7 +145,7 @@ const ManageUsersPage: NextPage<Props> = ({
           onChange={(event) => setQueryFilter(event.target.value)}
         />
       </div>
-      <ManageUsersTable users={displayedUsers} openModal={openModal} />
+      <ManageUsersTable openModal={openModal} />
 
       <CustomPaginator
         take={initialTake}
