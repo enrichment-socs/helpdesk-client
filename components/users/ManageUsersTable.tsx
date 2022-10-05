@@ -3,17 +3,16 @@ import { useSession } from 'next-auth/react';
 import toast from 'react-hot-toast';
 import { SessionUser } from '../../models/SessionUser';
 import { User } from '../../models/User';
-import { usersAtom } from '../../pages/manage/users';
 import { UserService } from '../../services/UserService';
 import { confirm } from '../../shared/libs/confirm-dialog-helper';
+import UserStore from '../../stores/manage/users';
 
 type Props = {
-    users: User[];
     openModal: (user: User | null) => void;
 }
 
-export default function ManageUsersTable({ users, openModal }: Props) {
-  const [, setUsers] = useAtom(usersAtom);
+export default function ManageUsersTable({ openModal }: Props) {
+  const [users, setUsers] = useAtom(UserStore.users);
   const session = useSession();
   const sessionUser = session?.data?.user as SessionUser;
 

@@ -18,10 +18,9 @@ import { AuthHelper } from '../../../shared/libs/auth-helper';
 import { ClientPromiseWrapper } from '../../../shared/libs/client-promise-wrapper';
 import { getInitialServerProps } from '../../../shared/libs/initialize-server-props';
 import { withSessionSsr } from '../../../shared/libs/session';
+import UserStore from '../../../stores/manage/users';
 import CustomPaginator from '../../../widgets/CustomPaginator';
 import Layout from '../../../widgets/_Layout';
-
-export const usersAtom = atom([] as User[]);
 
 type Props = {
   currRoles: Role[];
@@ -38,9 +37,9 @@ const ManageUsersPage: NextPage<Props> = ({
   initialTake,
   count: initialCount,
 }) => {
-  const [users] = useAtom(usersAtom);
-  useHydrateAtoms([[usersAtom, serverUsers]] as const);
-  const updateCurrentUsers = useUpdateAtom(usersAtom);
+  const [users] = useAtom(UserStore.users);
+  useHydrateAtoms([[UserStore.users, serverUsers]] as const);
+  const updateCurrentUsers = useUpdateAtom(UserStore.users);
 
   const [displayedUsers, setDisplayedUsers] = useState<User[] | null>(users);
 
