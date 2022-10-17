@@ -13,7 +13,7 @@ import { useSession } from 'next-auth/react';
 import { SessionUser } from '../../models/SessionUser';
 import { DateHelper } from '../../shared/libs/date-helper';
 import { Role } from '../../models/Role';
-import AnnouncementStore from '../../stores/manage/announcements';
+import ManageAnnouncementStore from '../../stores/manage/announcements';
 const QuillNoSSRWrapper = dynamic(import('react-quill'), {
   ssr: false,
   loading: () => <p>Loading ...</p>,
@@ -54,7 +54,7 @@ export default function AnnouncementFormModal({
   announcement,
   roles,
 }: Props) {
-  const [announcements, setAnnouncements] = useAtom(AnnouncementStore.announcements);
+  const [announcements, setAnnouncements] = useAtom(ManageAnnouncementStore.announcements);
   const [loading, setLoading] = useState(false);
   const [activeSemester] = useAtom(activeSemesterAtom);
   const session = useSession();

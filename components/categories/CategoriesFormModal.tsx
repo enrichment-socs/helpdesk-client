@@ -9,7 +9,7 @@ import { Category } from '../../models/Category';
 import { CreateCategoryDto } from '../../models/dto/categories/create-category-dto';
 import { SessionUser } from '../../models/SessionUser';
 import { CategoryService } from '../../services/CategoryService';
-import CategoryStore from '../../stores/manage/categories';
+import ManageCategoryStore from '../../stores/manage/categories';
 
 type Props = {
   isOpen: boolean;
@@ -27,7 +27,7 @@ export default function CategoriesFormModal({
   setIsOpen,
   category,
 }: Props) {
-  const [categoriesVal, setCategoriesVal] = useAtom(CategoryStore.categories);
+  const [categoriesVal, setCategoriesVal] = useAtom(ManageCategoryStore.categories);
   const [loading, setLoading] = useState(false);
   const session = useSession();
   const user = session?.data?.user as SessionUser;

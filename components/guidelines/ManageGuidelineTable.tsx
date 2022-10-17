@@ -5,27 +5,27 @@ import { confirm } from '../../shared/libs/confirm-dialog-helper';
 import { Guideline } from '../../models/Guideline';
 import { SessionUser } from '../../models/SessionUser';
 import { GuidelineService } from '../../services/GuidelineService';
-import GuidelineStore from '../../stores/manage/guidelines';
+import ManageGuidelineStore from '../../stores/manage/guidelines';
 
 type Props = {
   openModal: (faqs: Guideline | null) => void;
 };
 
 const ManageGuidelinesTable: React.FC<Props> = ({ openModal }) => {
-  const [guidelines, setGuidelines] = useAtom(GuidelineStore.guidelines);
+  const [guidelines, setGuidelines] = useAtom(ManageGuidelineStore.guidelines);
 
   const session = useSession();
   const user = session?.data?.user as SessionUser;
 
   const onDelete = async (guideline: Guideline) => {
     const guidelineService = new GuidelineService(user.accessToken);
-    const message = `Are you sure you want to delete FAQ "<b>${guideline.question}</b>" ?`;
+    const message = `Are you sure you want to delete guideline "<b>${guideline.question}</b>" ?`;
     if (await confirm(message)) {
       await toast.promise(guidelineService.deleteFAQ(guideline.id), {
-        loading: 'Deleting FAQ...',
+        loading: 'Deleting guideline...',
         success: (r) => {
           setGuidelines(guidelines.filter((f) => f.id !== guideline.id));
-          return 'Sucesfully deleted the selected FAQ';
+          return 'Sucesfully deleted the selected guideline';
         },
         error: (e) => e.toString(),
       });

@@ -1,8 +1,8 @@
 import { atom } from "jotai";
 import { Category } from "../../../models/Category";
 
-const CategoryStore = {
+const ManageCategoryStore = {
     categories: atom<Category[]>([]),
 }
 
-export default CategoryStore;
+export default ManageCategoryStore;

@@ -16,7 +16,7 @@ import { AuthHelper } from '../../../shared/libs/auth-helper';
 import { ROLES } from '../../../shared/constants/roles';
 import { RoleService } from '../../../services/RoleService';
 import { Role } from '../../../models/Role';
-import AnnouncementStore from '../../../stores/manage/announcements';
+import ManageAnnouncementStore from '../../../stores/manage/announcements';
 
 type Props = {
   currAnnouncements: Announcement[];
@@ -24,8 +24,8 @@ type Props = {
 };
 
 const ManageRolesPage: NextPage<Props> = ({ currAnnouncements, roles }) => {
-  useHydrateAtoms([[AnnouncementStore.announcements, currAnnouncements]] as const);
-  const [announcements, setAnnouncement] = useAtom(AnnouncementStore.announcements);
+  useHydrateAtoms([[ManageAnnouncementStore.announcements, currAnnouncements]] as const);
+  const [announcements, setAnnouncement] = useAtom(ManageAnnouncementStore.announcements);
   const [openFormModal, setOpenFormModal] = useState(false);
   const [selectedAnnouncement, setSelectedAnnouncement] =
     useState<Announcement | null>(null);

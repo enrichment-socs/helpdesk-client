@@ -5,7 +5,7 @@ import { Role } from '../../models/Role';
 import { RoleService } from '../../services/RoleService';
 import { useSession } from 'next-auth/react';
 import { SessionUser } from '../../models/SessionUser';
-import RoleStore from '../../stores/manage/roles';
+import ManageRoleStore from '../../stores/manage/roles';
 
 type Props = {
   roles: Role[];
@@ -13,7 +13,7 @@ type Props = {
 };
 
 export default function ManageRolesTable({ roles, openModal }: Props) {
-  const [, setRoles] = useAtom(RoleStore.roles);
+  const [, setRoles] = useAtom(ManageRoleStore.roles);
   const session = useSession();
   const user = session?.data?.user as SessionUser;
   const rolesService = new RoleService(user.accessToken);

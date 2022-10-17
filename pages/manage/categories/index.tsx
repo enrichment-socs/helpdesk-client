@@ -14,20 +14,20 @@ import { Category } from '../../../models/Category';
 import { CategoryService } from '../../../services/CategoryService';
 import { SemesterService } from '../../../services/SemesterService';
 import { SessionUser } from '../../../models/SessionUser';
-import CategoryStore from '../../../stores/manage/categories';
+import ManageCategoryStore from '../../../stores/manage/categories';
 
 type Props = {
   categories: Category[];
 };
 
 const ManageCategoriesPage: NextPage<Props> = ({ categories }) => {
-  const [categoriesVal] = useAtom(CategoryStore.categories);
+  const [categoriesVal] = useAtom(ManageCategoryStore.categories);
   const [openFormModal, setOpenFormModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
     null
   );
 
-  useHydrateAtoms([[CategoryStore.categories, categories]] as const);
+  useHydrateAtoms([[ManageCategoryStore.categories, categories]] as const);
 
   const openModal = (category: Category | null) => {
     setSelectedCategory(category);

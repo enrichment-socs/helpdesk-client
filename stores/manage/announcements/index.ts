@@ -1,8 +1,8 @@
 import { atom } from "jotai";
 import { Announcement } from "../../../models/Announcement";
 
-const AnnouncementStore = {
+const ManageAnnouncementStore = {
     announcements: atom<Announcement[]>([]),
 }
 
-export default AnnouncementStore;
+export default ManageAnnouncementStore;

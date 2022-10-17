@@ -1,8 +1,8 @@
 import { atom } from "jotai";
 import { Priority } from "../../../models/Priority";
 
-const PriorityStore = {
+const ManagePriorityStore = {
     priorities: atom<Priority[]>([]),
 }
 
-export default PriorityStore;
+export default ManagePriorityStore;

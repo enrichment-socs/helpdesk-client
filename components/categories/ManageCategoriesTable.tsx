@@ -5,7 +5,7 @@ import { Category } from '../../models/Category';
 import { SessionUser } from '../../models/SessionUser';
 import { CategoryService } from '../../services/CategoryService';
 import { confirm } from '../../shared/libs/confirm-dialog-helper';
-import CategoryStore from '../../stores/manage/categories';
+import ManageCategoryStore from '../../stores/manage/categories';
 
 type Prop = {
   categories: Category[];
@@ -13,7 +13,7 @@ type Prop = {
 };
 
 export default function ManageCategoriesTable({ categories, openModal }: Prop) {
-  const [, setCategoriesVal] = useAtom(CategoryStore.categories);
+  const [, setCategoriesVal] = useAtom(ManageCategoryStore.categories);
   const session = useSession();
   const user = session?.data?.user as SessionUser;
 

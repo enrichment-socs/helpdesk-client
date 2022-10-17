@@ -16,7 +16,7 @@ import { ROLES } from '../../../shared/constants/roles';
 import { AuthHelper } from '../../../shared/libs/auth-helper';
 import { getInitialServerProps } from '../../../shared/libs/initialize-server-props';
 import { withSessionSsr } from '../../../shared/libs/session';
-import GuidelineStore from '../../../stores/manage/guidelines';
+import ManageGuidelineStore from '../../../stores/manage/guidelines';
 import Layout from '../../../widgets/_Layout';
 
 type Props = {
@@ -33,7 +33,7 @@ const ManageFAQCategoriesPage: NextPage<Props> = ({
 
   useHydrateAtoms([
     [guidelineCategoriesAtom, currFAQCategories],
-    [GuidelineStore.guidelines, currFAQs],
+    [ManageGuidelineStore.guidelines, currFAQs],
   ] as const);
 
   const openModal = (faq: Guideline | null) => {

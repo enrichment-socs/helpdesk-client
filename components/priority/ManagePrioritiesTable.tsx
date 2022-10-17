@@ -5,7 +5,7 @@ import { Priority } from '../../models/Priority';
 import { SessionUser } from '../../models/SessionUser';
 import { PriorityService } from '../../services/PriorityService';
 import { confirm } from '../../shared/libs/confirm-dialog-helper';
-import PriorityStore from '../../stores/manage/priorities';
+import ManagePriorityStore from '../../stores/manage/priorities';
 
 type Prop = {
   priorities: Priority[];
@@ -13,7 +13,7 @@ type Prop = {
 };
 
 export default function ManagePrioritiesTable({ priorities, openModal }: Prop) {
-  const [, setPrioritiesVal] = useAtom(PriorityStore.priorities);
+  const [, setPrioritiesVal] = useAtom(ManagePriorityStore.priorities);
   const session = useSession();
   const user = session?.data?.user as SessionUser;
   const prioritiesService = new PriorityService(user.accessToken);

@@ -14,20 +14,20 @@ import { Priority } from '../../../models/Priority';
 import { PriorityService } from '../../../services/PriorityService';
 import { SemesterService } from '../../../services/SemesterService';
 import { SessionUser } from '../../../models/SessionUser';
-import PriorityStore from '../../../stores/manage/priorities';
+import ManagePriorityStore from '../../../stores/manage/priorities';
 
 type Props = {
   priorities: Priority[];
 };
 
 const ManageCategoriesPage: NextPage<Props> = ({ priorities }) => {
-  const [prioritiesVal] = useAtom(PriorityStore.priorities);
+  const [prioritiesVal] = useAtom(ManagePriorityStore.priorities);
   const [openFormModal, setOpenFormModal] = useState(false);
   const [selectedPriority, setSelectedPriority] = useState<Priority | null>(
     null
   );
 
-  useHydrateAtoms([[PriorityStore.priorities, priorities]] as const);
+  useHydrateAtoms([[ManagePriorityStore.priorities, priorities]] as const);
 
   const openModal = (priority: Priority | null) => {
     setSelectedPriority(priority);

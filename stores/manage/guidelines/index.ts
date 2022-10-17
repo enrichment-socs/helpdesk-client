@@ -2,8 +2,8 @@ import { atom } from "jotai";
 import { Guideline } from "../../../models/Guideline";
 import { GuidelineCategory } from "../../../models/GuidelineCategory";
 
-const GuidelineStore = {
+const ManageGuidelineStore = {
     guidelines: atom<Guideline[]>([]),
 };
 
-export default GuidelineStore;
+export default ManageGuidelineStore;

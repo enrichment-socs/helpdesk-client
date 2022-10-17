@@ -8,7 +8,7 @@ import { CreatePriorityDto } from '../../models/dto/priority/create-prioritiy.dt
 import { Priority } from '../../models/Priority';
 import { SessionUser } from '../../models/SessionUser';
 import { PriorityService } from '../../services/PriorityService';
-import PriorityStore from '../../stores/manage/priorities';
+import ManagePriorityStore from '../../stores/manage/priorities';
 
 type Props = {
   isOpen: boolean;
@@ -27,7 +27,7 @@ export default function PrioritiesFormModal({
   setIsOpen,
   priority,
 }: Props) {
-  const [prioritiesVal, setprioritiesVal] = useAtom(PriorityStore.priorities);
+  const [prioritiesVal, setprioritiesVal] = useAtom(ManagePriorityStore.priorities);
   const [loading, setLoading] = useState(false);
   const session = useSession();
   const user = session?.data?.user as SessionUser;

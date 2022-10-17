@@ -10,7 +10,7 @@ import { CreateGuidelineDto } from '../../models/dto/guidelines/create-guideline
 import { Guideline } from '../../models/Guideline';
 import { SessionUser } from '../../models/SessionUser';
 import { GuidelineService } from '../../services/GuidelineService';
-import GuidelineStore from '../../stores/manage/guidelines';
+import ManageGuidelineStore from '../../stores/manage/guidelines';
 
 const QuillNoSSRWrapper = dynamic(import('react-quill'), {
   ssr: false,
@@ -43,7 +43,7 @@ type FormData = {
 };
 
 const GuidelineFormModal: React.FC<Props> = ({ isOpen, setIsOpen, faq }) => {
-  const [faqs, setFaqs] = useAtom(GuidelineStore.guidelines);
+  const [faqs, setFaqs] = useAtom(ManageGuidelineStore.guidelines);
 
   const [guidelineCategories, setGuidelineCategories] = useAtom(guidelineCategoriesAtom);
   const [loading, setLoading] = useState(false);

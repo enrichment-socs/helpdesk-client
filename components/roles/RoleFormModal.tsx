@@ -8,7 +8,7 @@ import { Role } from '../../models/Role';
 import { RoleService } from '../../services/RoleService';
 import { useSession } from 'next-auth/react';
 import { SessionUser } from '../../models/SessionUser';
-import RoleStore from '../../stores/manage/roles';
+import ManageRoleStore from '../../stores/manage/roles';
 
 type Props = {
   isOpen: boolean;
@@ -21,7 +21,7 @@ type FormData = {
 };
 
 export default function RoleFormModal({ isOpen, setIsOpen, role }: Props) {
-  const [roles, setRoles] = useAtom(RoleStore.roles);
+  const [roles, setRoles] = useAtom(ManageRoleStore.roles);
   const [loading, setLoading] = useState(false);
   const session = useSession();
   const user = session?.data?.user as SessionUser;

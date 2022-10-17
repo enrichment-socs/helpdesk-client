@@ -6,7 +6,7 @@ import { AnnouncementService } from '../../services/AnnouncementService';
 import { format } from 'date-fns';
 import { useSession } from 'next-auth/react';
 import { SessionUser } from '../../models/SessionUser';
-import AnnouncementStore from '../../stores/manage/announcements';
+import ManageAnnouncementStore from '../../stores/manage/announcements';
 
 type Props = {
   openModal: (announcement: Announcement | null) => void;
@@ -15,7 +15,7 @@ type Props = {
 export default function ManageAnnouncementsTable({
   openModal,
 }: Props) {
-  const [announcements, setAnnouncements] = useAtom(AnnouncementStore.announcements);
+  const [announcements, setAnnouncements] = useAtom(ManageAnnouncementStore.announcements);
 
   const session = useSession();
   const user = session?.data?.user as SessionUser;
