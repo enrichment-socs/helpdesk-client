@@ -5,14 +5,14 @@ import { SessionUser } from '../../models/SessionUser';
 import { User } from '../../models/User';
 import { UserService } from '../../services/UserService';
 import { confirm } from '../../shared/libs/confirm-dialog-helper';
-import UserStore from '../../stores/manage/users';
+import ManageUserStore from '../../stores/manage/users';
 
 type Props = {
     openModal: (user: User | null) => void;
 }
 
 export default function ManageUsersTable({ openModal }: Props) {
-  const [users, setUsers] = useAtom(UserStore.users);
+  const [users, setUsers] = useAtom(ManageUserStore.users);
   const session = useSession();
   const sessionUser = session?.data?.user as SessionUser;
 

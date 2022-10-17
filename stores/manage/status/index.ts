@@ -1,8 +1,8 @@
 import { atom } from "jotai";
 import { Status } from "../../../models/Status";
 
-const StatusStore = {
+const ManageStatusStore = {
     status: atom<Status[]>([]),
 }
 
-export default StatusStore;
+export default ManageStatusStore;

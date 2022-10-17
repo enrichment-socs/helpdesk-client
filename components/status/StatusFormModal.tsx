@@ -8,7 +8,7 @@ import { CreateStatusDto } from '../../models/dto/status/create-status.dto';
 import { SessionUser } from '../../models/SessionUser';
 import { Status } from '../../models/Status';
 import { StatusService } from '../../services/StatusService';
-import StatusStore from '../../stores/manage/status';
+import ManageStatusStore from '../../stores/manage/status';
 
 type Props = {
   isOpen: boolean;
@@ -22,7 +22,7 @@ type FormData = {
 };
 
 export default function StatusFormModal({ isOpen, setIsOpen, status }: Props) {
-  const [statuses, setStatuses] = useAtom(StatusStore.status);
+  const [statuses, setStatuses] = useAtom(ManageStatusStore.status);
   const [loading, setLoading] = useState(false);
   const session = useSession();
   const user = session?.data?.user as SessionUser;

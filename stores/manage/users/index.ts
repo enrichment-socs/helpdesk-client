@@ -1,8 +1,10 @@
 import { atom } from "jotai";
+import { Role } from "../../../models/Role";
 import { User } from "../../../models/User";
 
-const UserStore = {
+const ManageUserStore = {
     users: atom<User[]>([]),
+    roles: atom<Role[]>([]),
 }
 
-export default UserStore;
+export default ManageUserStore;

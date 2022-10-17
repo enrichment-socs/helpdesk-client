@@ -9,7 +9,7 @@ import { Role } from '../../models/Role';
 import { SessionUser } from '../../models/SessionUser';
 import { User } from '../../models/User';
 import { UserService } from '../../services/UserService';
-import UserStore from '../../stores/manage/users';
+import ManageUserStore from '../../stores/manage/users';
 
 type Props = {
   isOpen: boolean;
@@ -35,7 +35,7 @@ const UserFormModal: React.FC<Props> = ({
   user,
   currRoles,
 }) => {
-  const [users, setUsers] = useAtom(UserStore.users);
+  const [users, setUsers] = useAtom(ManageUserStore.users);
   const [loading, setLoading] = useState(false);
   const session = useSession();
   const sessionUser = session?.data?.user as SessionUser;
