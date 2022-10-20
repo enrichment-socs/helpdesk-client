@@ -35,6 +35,8 @@ import { useHydrateAtoms } from 'jotai/utils';
 import TicketDetailStore from '../../../stores/tickets/[id]';
 import { useAtom } from 'jotai';
 import { TicketUtils } from '../../../shared/libs/ticket-utils';
+import { TicketHistoryService } from '../../../services/TicketHistoryService';
+import { TicketHistory } from '../../../models/TicketHistory';
 
 type Props = {
   ticket: Ticket;
@@ -42,6 +44,7 @@ type Props = {
   ticketStatuses: TicketStatus[];
   statuses: Status[];
   ticketDueDates: TicketDueDate[];
+  ticketHistories: TicketHistory[];
 };
 
 const TicketDetailPage: NextPage<Props> = ({
@@ -49,6 +52,7 @@ const TicketDetailPage: NextPage<Props> = ({
   resolution,
   ticketStatuses,
   ticketDueDates,
+  ticketHistories,
   statuses,
 }) => {
   useHydrateAtoms([
@@ -57,6 +61,7 @@ const TicketDetailPage: NextPage<Props> = ({
     [TicketDetailStore.ticketStatuses, ticketStatuses],
     [TicketDetailStore.ticketDueDates, ticketDueDates],
     [TicketDetailStore.statuses, statuses],
+    [TicketDetailStore.ticketHistories, ticketHistories],
   ] as const);
 
   const [currentTab, setCurrentTab] = useState('Details');
@@ -258,6 +263,7 @@ export const getServerSideProps = withSessionSsr(
     const ticketStatusService = new TicketStatusService(user?.accessToken);
     const statusService = new StatusService(user?.accessToken);
     const ticketDueDateService = new TicketDueDateService(user?.accessToken);
+    const ticketHistoryService = new TicketHistoryService(user?.accessToken);
 
     const ticket = await ticketService.get(params.id as string);
 
@@ -281,6 +287,10 @@ export const getServerSideProps = withSessionSsr(
       ticket.id
     );
 
+    const ticketHistories = await ticketHistoryService.getAllByTicketId(
+      ticket.id
+    );
+
     return {
       props: {
         semesters,
@@ -290,6 +300,7 @@ export const getServerSideProps = withSessionSsr(
         resolution,
         ticketStatuses,
         ticketDueDates,
+        ticketHistories,
         statuses,
       },
     };

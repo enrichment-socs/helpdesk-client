@@ -4,6 +4,7 @@ import { OutlookMessageAttachmentValue } from '../../../models/OutlookMessageAtt
 import { Status } from '../../../models/Status';
 import { Ticket } from '../../../models/Ticket';
 import { TicketDueDate } from '../../../models/TicketDueDate';
+import { TicketHistory } from '../../../models/TicketHistory';
 import { TicketResolution } from '../../../models/TicketResolution';
 import { TicketStatus } from '../../../models/TicketStatus';
 
@@ -12,6 +13,7 @@ const TicketDetailStore = {
   resolution: atom<TicketResolution>(null),
   ticketStatuses: atom<TicketStatus[]>([]),
   ticketDueDates: atom<TicketDueDate[]>([]),
+  ticketHistories: atom<TicketHistory[]>([]),
   statuses: atom<Status[]>([]),
   outlookMessages: atom<OutlookMessage[]>(null),
   attachmentsArray: atom<OutlookMessageAttachmentValue[][]>([]),
