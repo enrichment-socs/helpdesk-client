@@ -8,6 +8,7 @@ import { TicketService } from '../../../services/TicketService';
 import { STATUS } from '../../../shared/constants/status';
 import TicketDetailStore from '../../../stores/tickets/[id]';
 import ChangeSenderInfoModal from './ChangeSenderInfoModal';
+import { confirm } from '../../../shared/libs/confirm-dialog-helper';
 
 export default function TicketDetailManageAction() {
   const [ticket] = useAtom(TicketDetailStore.ticket);

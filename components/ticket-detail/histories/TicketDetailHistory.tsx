@@ -14,7 +14,7 @@ const TicketDetailHistory = () => {
           const ticketHistoryData = JSON.parse(ticketHistory.data);
 
           return (
-            <Disclosure key={ticketHistory.id}>
+            <Disclosure defaultOpen key={ticketHistory.id}>
               {({ open }) => (
                 <>
                   <Disclosure.Button className="flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-sky-900 bg-sky-100 rounded-lg hover:bg-sky-200 focus:outline-none focus-visible:ring focus-visible:ring-sky-500 focus-visible:ring-opacity-75">
@@ -60,7 +60,9 @@ const TicketDetailHistory = () => {
                                 <div className="mb-1">
                                   by
                                   <span className="font-bold ml-2">
-                                    {ticketHistoryData.createdBy ? ticketHistoryData.createdBy : "(No Data)"}
+                                    {ticketHistoryData.createdBy
+                                      ? ticketHistoryData.createdBy
+                                      : '(No Data)'}
                                   </span>
                                 </div>
                                 <div className="mb-1">
