@@ -1,4 +1,5 @@
 import { ReplyIcon } from '@heroicons/react/outline';
+import { CheckIcon } from '@heroicons/react/solid';
 import { useAtom } from 'jotai';
 import { MutableRefObject } from 'react';
 import { replyRecipientsAtom } from '../../../atom';
@@ -10,7 +11,8 @@ type Props = {
   message: OutlookMessage;
   attachments: OutlookMessageAttachmentValue[];
   useUniqueBody?: boolean;
-  showControl?: boolean;
+  canBeReplied?: boolean;
+  canBeMarkedAsResolution?: boolean;
   replyComponentRef?: MutableRefObject<HTMLFormElement>;
 };
 
@@ -18,7 +20,8 @@ const TicketDetailConversationBody = ({
   message,
   attachments,
   useUniqueBody = true,
-  showControl = false,
+  canBeReplied = false,
+  canBeMarkedAsResolution = false,
   replyComponentRef = null,
 }: Props) => {
   const [, setReplyRecipients] = useAtom(replyRecipientsAtom);
@@ -61,15 +64,21 @@ const TicketDetailConversationBody = ({
         )}
       </div>
 
-      {showControl && (
-        <div className="flex justify-end">
+      <div className="flex justify-end">
+        {canBeMarkedAsResolution && (
+          <button className="shadow flex items-center bg-green-600 hover:bg-green-700 text-white rounded px-3 py-1">
+            Mark as Resolution <CheckIcon className="w-4 h-4 ml-2" />
+          </button>
+        )}
+
+        {canBeReplied && (
           <button
             onClick={onReply}
-            className="flex items-center bg-primary hover:bg-primary-dark text-white rounded px-3 py-1">
+            className="ml-3 shadow flex items-center bg-primary hover:bg-primary-dark text-white rounded px-3 py-1">
             Reply <ReplyIcon className="w-4 h-4 ml-2" />
           </button>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

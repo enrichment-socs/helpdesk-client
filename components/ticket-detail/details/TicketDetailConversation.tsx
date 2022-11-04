@@ -13,7 +13,8 @@ type Props = {
   attachments: OutlookMessageAttachmentValue[];
   defaultOpen?: boolean;
   useUniqueBody?: boolean;
-  showControl?: boolean;
+  canBeReplied?: boolean;
+  canBeMarkedAsResolution?: boolean;
   replyComponentRef?: MutableRefObject<HTMLFormElement>;
 };
 
@@ -22,7 +23,8 @@ const TicketDetailConversation = ({
   attachments,
   defaultOpen = false,
   useUniqueBody = true,
-  showControl = false,
+  canBeReplied = false,
+  canBeMarkedAsResolution = false,
   replyComponentRef = null,
 }: Props) => {
   const getSenderInfo = () => {
@@ -75,8 +77,9 @@ const TicketDetailConversation = ({
                   message={message}
                   attachments={attachments}
                   useUniqueBody={useUniqueBody}
-                  showControl={showControl}
+                  canBeReplied={canBeReplied}
                   replyComponentRef={replyComponentRef}
+                  canBeMarkedAsResolution={canBeMarkedAsResolution}
                 />
               </div>
             </Disclosure.Panel>

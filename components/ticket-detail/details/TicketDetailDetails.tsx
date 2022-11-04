@@ -55,7 +55,8 @@ const TicketDetailDetails = () => {
                         useUniqueBody={false}
                         message={outlookMessages[0]}
                         attachments={attachmentsArrays[0]}
-                        showControl={true}
+                        canBeReplied={true}
+                        canBeMarkedAsResolution={false}
                         replyComponentRef={replyComponentRef}
                       />
                     ) : (
@@ -101,7 +102,8 @@ const TicketDetailDetails = () => {
                             key={message.id}
                             message={message}
                             attachments={attachmentsArrays[realIdx]}
-                            showControl
+                            canBeReplied
+                            canBeMarkedAsResolution
                             replyComponentRef={replyComponentRef}
                           />
                         );
