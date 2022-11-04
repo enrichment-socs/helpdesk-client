@@ -9,6 +9,7 @@ import TicketDetailReply from './TicketDetailReply';
 import { useRef } from 'react';
 import { useAtom } from 'jotai';
 import TicketDetailStore from '../../../stores/tickets/[id]';
+import ResolutionConfirmationModal from './ResolutionConfirmationModal';
 
 const TicketDetailDetails = () => {
   const replyComponentRef = useRef(null);
@@ -20,6 +21,8 @@ const TicketDetailDetails = () => {
 
   return (
     <div>
+      <ResolutionConfirmationModal />
+
       <div className="w-full rounded-2xl">
         <Disclosure defaultOpen>
           {({ open }) => (

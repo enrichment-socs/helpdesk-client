@@ -17,6 +17,8 @@ const TicketDetailStore = {
   statuses: atom<Status[]>([]),
   outlookMessages: atom<OutlookMessage[]>(null),
   attachmentsArray: atom<OutlookMessageAttachmentValue[][]>([]),
+  openConfirmResolutionModal: atom<boolean>(false),
+  selectedOutlookMessageId: atom<string>(''),
 };
 
 export default TicketDetailStore;
