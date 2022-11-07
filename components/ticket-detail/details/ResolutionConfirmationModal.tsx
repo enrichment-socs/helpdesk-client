@@ -5,7 +5,10 @@ import { useRouter } from 'next/router';
 import { Fragment, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
+import { CreateTicketResolutionDto } from '../../../models/dto/ticket-resolutions/create-ticket-resolution.dto';
 import { SessionUser } from '../../../models/SessionUser';
+import { TicketResolutionService } from '../../../services/TicketResolutionService';
+import { STATUS } from '../../../shared/constants/status';
 import TicketDetailStore from '../../../stores/tickets/[id]';
 
 type FormData = {
@@ -17,12 +20,21 @@ export default function ResolutionConfirmationModal() {
   const [isOpen, setIsOpen] = useAtom(
     TicketDetailStore.openConfirmResolutionModal
   );
-  const [messageId] = useAtom(TicketDetailStore.selectedOutlookMessageId);
+  const [messageId, setMessageId] = useAtom(
+    TicketDetailStore.selectedOutlookMessageId
+  );
+  const [conversationId, setConversationId] = useAtom(
+    TicketDetailStore.selectedConversationId
+  );
+
+  const [ticket] = useAtom(TicketDetailStore.ticket);
+  const [, setResolution] = useAtom(TicketDetailStore.resolution) as any; //workaround because the setter type is never
+  const [ticketStatuses] = useAtom(TicketDetailStore.ticketStatuses);
+  const latestStatus = ticketStatuses.at(-1);
 
   const session = useSession();
   const user = session?.data?.user as SessionUser;
-
-  const router = useRouter();
+  const resolutionService = new TicketResolutionService(user?.accessToken);
 
   const {
     register,
@@ -31,20 +43,39 @@ export default function ResolutionConfirmationModal() {
   } = useForm<FormData>();
 
   const onSubmit: SubmitHandler<FormData> = async ({ reason }) => {
+    const dto: CreateTicketResolutionDto = {
+      ccRecipients: '',
+      conversationId,
+      resolution: reason,
+      sentToEmail: false,
+      subject: '',
+      ticketId: ticket.id,
+      toRecipients: '',
+      messageId,
+    };
+
     setLoading(true);
-    await toast.promise(new Promise(() => {}), {
+    await toast.promise(resolutionService.add(dto), {
       success: () => {
-        setLoading(false);
-        setIsOpen(false);
-        router.replace(router.asPath);
+        handlePostSuccess();
         return 'Resolution updated!';
       },
       loading: 'Marking this message as resolution...',
       error: (e) => {
         console.error(e);
-        return 'Failed when marking this message as resolution, please contact developer';
+        setLoading(false);
+        return e.message;
       },
     });
+  };
+
+  const handlePostSuccess = async () => {
+    const newestResolution = await resolutionService.getByTicketId(ticket.id);
+    setLoading(false);
+    setIsOpen(false);
+    setMessageId('');
+    setConversationId('');
+    setResolution(newestResolution);
   };
 
   return (
@@ -85,62 +116,85 @@ export default function ResolutionConfirmationModal() {
                 <Dialog.Title
                   as="h3"
                   className="text-lg font-medium leading-6 text-gray-900">
-                  Mark this message as resolution
+                  {latestStatus &&
+                  latestStatus.status.statusName === STATUS.RESOLVED
+                    ? 'Mark this message as resolution'
+                    : 'Ticket not resolved'}
                 </Dialog.Title>
-                <form
-                  onSubmit={handleSubmit(onSubmit)}
-                  className="mt-2 space-y-2">
-                  <div>
-                    <label className="block text-sm text-gray-500">
-                      Are you sure you want to mark this message as resolution ?
-                      Please state your reason below:
-                    </label>
-                    <div className="mt-1">
-                      <input
-                        {...register('reason', {
-                          required: true,
-                        })}
-                        type="text"
-                        className={`${
-                          errors.reason
-                            ? 'border-red-300'
-                            : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
-                        } mt-1 block w-full outline-none p-2 text-base border sm:text-sm rounded-md`}
-                        placeholder="Input reason..."
-                      />
+                {latestStatus &&
+                latestStatus.status.statusName === STATUS.RESOLVED ? (
+                  <form
+                    onSubmit={handleSubmit(onSubmit)}
+                    className="mt-2 space-y-2">
+                    <div>
+                      <label className="block text-sm text-gray-500">
+                        Are you sure you want to mark this message as resolution
+                        ? Please state your reason below:
+                      </label>
+                      <div className="mt-1">
+                        <input
+                          {...register('reason', {
+                            required: true,
+                          })}
+                          type="text"
+                          className={`${
+                            errors.reason
+                              ? 'border-red-300'
+                              : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+                          } mt-1 block w-full outline-none p-2 text-base border sm:text-sm rounded-md`}
+                          placeholder="Input reason..."
+                        />
+                      </div>
+                      {errors.reason?.type === 'required' && (
+                        <small className="text-red-500">
+                          Reason must be filled
+                        </small>
+                      )}
                     </div>
-                    {errors.reason?.type === 'required' && (
-                      <small className="text-red-500">
-                        Reason must be filled
-                      </small>
-                    )}
-                  </div>
 
-                  <div className="mt-4 text-right">
-                    <button
-                      type="button"
-                      disabled={loading}
-                      onClick={() => setIsOpen(false)}
-                      className={`${
-                        loading
-                          ? 'text-gray-600 bg-gray-400'
-                          : 'text-red-900 bg-red-100 hover:bg-red-200'
-                      } mr-3 inline-flex justify-center px-4 py-2 text-sm font-medium border border-transparent rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500`}>
-                      Cancel
-                    </button>
+                    <div className="mt-4 text-right">
+                      <button
+                        type="button"
+                        disabled={loading}
+                        onClick={() => setIsOpen(false)}
+                        className={`${
+                          loading
+                            ? 'text-gray-600 bg-gray-400'
+                            : 'text-red-900 bg-red-100 hover:bg-red-200'
+                        } mr-3 inline-flex justify-center px-4 py-2 text-sm font-medium border border-transparent rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500`}>
+                        Cancel
+                      </button>
 
-                    <button
-                      type="submit"
-                      disabled={loading}
-                      className={`${
-                        loading
-                          ? 'text-gray-600 bg-gray-400'
-                          : 'text-blue-900 bg-blue-100 hover:bg-blue-200'
-                      } inline-flex justify-center px-4 py-2 text-sm font-medium border border-transparent rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500`}>
-                      Submit
-                    </button>
+                      <button
+                        type="submit"
+                        disabled={loading}
+                        className={`${
+                          loading
+                            ? 'text-gray-600 bg-gray-400'
+                            : 'text-blue-900 bg-blue-100 hover:bg-blue-200'
+                        } inline-flex justify-center px-4 py-2 text-sm font-medium border border-transparent rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500`}>
+                        Submit
+                      </button>
+                    </div>
+                  </form>
+                ) : (
+                  <div className="mt-2">
+                    <div className="text-red-400 text-sm">
+                      This ticket must be <b>resolved</b> first before you can
+                      mark this message as resolution.
+                    </div>
+
+                    <div className="mt-4 text-right">
+                      <button
+                        type="button"
+                        disabled={loading}
+                        onClick={() => setIsOpen(false)}
+                        className={`text-gray-900 bg-gray-100 hover:bg-gray-200 mr-3 inline-flex justify-center px-4 py-2 text-sm font-medium border border-transparent rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500`}>
+                        Close
+                      </button>
+                    </div>
                   </div>
-                </form>
+                )}
               </div>
             </Transition.Child>
           </div>

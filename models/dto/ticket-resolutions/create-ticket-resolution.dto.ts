@@ -6,4 +6,5 @@ export class CreateTicketResolutionDto {
   ccRecipients: string;
   toRecipients: string;
   subject: string;
+  messageId?: string;
 }
