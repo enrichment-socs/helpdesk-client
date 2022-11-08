@@ -6,7 +6,6 @@ import React, { useEffect, useState } from 'react';
 import TicketDetailDetails from '../../../components/ticket-detail/details/TicketDetailDetails';
 import TicketDetailHistory from '../../../components/ticket-detail/histories/TicketDetailHistory';
 import TicketDetailInformation from '../../../components/ticket-detail/information/TicketDetailInformation';
-import TicketDetailResolution from '../../../components/ticket-detail/resolutions/TicketDetailResolution';
 import Layout from '../../../widgets/_Layout';
 import { AuthHelper } from '../../../shared/libs/auth-helper';
 import { ROLES } from '../../../shared/constants/roles';

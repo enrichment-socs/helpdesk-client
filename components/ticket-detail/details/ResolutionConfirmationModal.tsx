@@ -44,13 +44,9 @@ export default function ResolutionConfirmationModal() {
 
   const onSubmit: SubmitHandler<FormData> = async ({ reason }) => {
     const dto: CreateTicketResolutionDto = {
-      ccRecipients: '',
       conversationId,
       resolution: reason,
-      sentToEmail: false,
-      subject: '',
       ticketId: ticket.id,
-      toRecipients: '',
       messageId,
     };
 
