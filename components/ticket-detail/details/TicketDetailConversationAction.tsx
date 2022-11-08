@@ -8,13 +8,11 @@ import TicketDetailStore from '../../../stores/tickets/[id]';
 type Props = {
   message: OutlookMessage;
   canBeReplied?: boolean;
-  canBeMarkedAsResolution?: boolean;
   replyComponentRef?: MutableRefObject<HTMLFormElement>;
 };
 
 const TicketDetailConversationAction = ({
   canBeReplied,
-  canBeMarkedAsResolution,
   message,
   replyComponentRef,
 }: Props) => {
@@ -48,11 +46,9 @@ const TicketDetailConversationAction = ({
   };
 
   const onMarkAsResolution = () => {
-    if (!resolution) {
-      setConversationId(message.conversationId);
-      setMessageId(message.id);
-      setOpenModal(true);
-    }
+    setConversationId(message.conversationId);
+    setMessageId(message.id);
+    setOpenModal(true);
   };
 
   const renderResolutionBtn = () => {
@@ -77,7 +73,7 @@ const TicketDetailConversationAction = ({
 
   return (
     <div className="flex justify-end">
-      {canBeMarkedAsResolution && renderResolutionBtn()}
+      {renderResolutionBtn()}
 
       {canBeReplied && (
         <button

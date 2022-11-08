@@ -18,7 +18,6 @@ const TicketDetailConversationBody = ({
   attachments,
   useUniqueBody = true,
   canBeReplied = false,
-  canBeMarkedAsResolution = false,
   replyComponentRef = null,
 }: Props) => {
   return (
@@ -43,7 +42,6 @@ const TicketDetailConversationBody = ({
 
       <TicketDetailConversationAction
         message={message}
-        canBeMarkedAsResolution={canBeMarkedAsResolution}
         canBeReplied={canBeReplied}
         replyComponentRef={replyComponentRef}
       />

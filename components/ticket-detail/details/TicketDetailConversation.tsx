@@ -14,8 +14,8 @@ type Props = {
   defaultOpen?: boolean;
   useUniqueBody?: boolean;
   canBeReplied?: boolean;
-  canBeMarkedAsResolution?: boolean;
   replyComponentRef?: MutableRefObject<HTMLFormElement>;
+  renderBadge: (messageId: string) => void;
 };
 
 const TicketDetailConversation = ({
@@ -24,8 +24,8 @@ const TicketDetailConversation = ({
   defaultOpen = false,
   useUniqueBody = true,
   canBeReplied = false,
-  canBeMarkedAsResolution = false,
   replyComponentRef = null,
+  renderBadge,
 }: Props) => {
   const getSenderInfo = () => {
     if (!message) return <SkeletonLoading width="100%" />;
@@ -53,7 +53,9 @@ const TicketDetailConversation = ({
                 ? 'bg-primary hover:bg-primary-dark text-white'
                 : 'text-gray-900 bg-gray-100 border hover:bg-gray-200'
             } flex justify-between items-center w-full px-4 py-2 text-sm font-medium text-left focus:outline-none focus-visible:ring focus-visible:ring-gray-500 focus-visible:ring-opacity-75`}>
-            <span className="font-bold truncate">{getSenderInfo()}</span>
+            <span className="font-bold truncate flex items-center">
+              {getSenderInfo()} {renderBadge(message.id)}
+            </span>
             <div className="flex">
               <span className="font-normal text-xs hidden md:block">
                 {getReceivedDateTimeInfo()}
@@ -79,7 +81,6 @@ const TicketDetailConversation = ({
                   useUniqueBody={useUniqueBody}
                   canBeReplied={canBeReplied}
                   replyComponentRef={replyComponentRef}
-                  canBeMarkedAsResolution={canBeMarkedAsResolution}
                 />
               </div>
             </Disclosure.Panel>

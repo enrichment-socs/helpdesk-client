@@ -39,6 +39,7 @@ export default function ResolutionConfirmationModal() {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<FormData>();
 
@@ -71,7 +72,16 @@ export default function ResolutionConfirmationModal() {
     setIsOpen(false);
     setMessageId('');
     setConversationId('');
+    setValue('reason', '');
     setResolution(newestResolution);
+  };
+
+  const canCreateResolution = () => {
+    return (
+      latestStatus &&
+      (latestStatus.status.statusName === STATUS.RESOLVED ||
+        latestStatus.status.statusName === STATUS.CLOSED)
+    );
   };
 
   return (
@@ -117,8 +127,7 @@ export default function ResolutionConfirmationModal() {
                     ? 'Mark this message as resolution'
                     : 'Ticket not resolved'}
                 </Dialog.Title>
-                {latestStatus &&
-                latestStatus.status.statusName === STATUS.RESOLVED ? (
+                {canCreateResolution() ? (
                   <form
                     onSubmit={handleSubmit(onSubmit)}
                     className="mt-2 space-y-2">

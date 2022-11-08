@@ -10,6 +10,12 @@ import { useRef } from 'react';
 import { useAtom } from 'jotai';
 import TicketDetailStore from '../../../stores/tickets/[id]';
 import ResolutionConfirmationModal from './ResolutionConfirmationModal';
+import InfoAlert from '../../../widgets/InfoAlert';
+import { useSession } from 'next-auth/react';
+import { SessionUser } from '../../../models/SessionUser';
+import { ROLES } from '../../../shared/constants/roles';
+import SuccessAlert from '../../../widgets/SuccessAlert';
+import { CheckCircleIcon } from '@heroicons/react/solid';
 
 const TicketDetailDetails = () => {
   const replyComponentRef = useRef(null);
@@ -18,10 +24,36 @@ const TicketDetailDetails = () => {
   const [attachmentsArrays] = useAtom(TicketDetailStore.attachmentsArray);
   const [ticket] = useAtom(TicketDetailStore.ticket);
   const [resolution] = useAtom(TicketDetailStore.resolution);
+  const isOldResolution = resolution && resolution.messageId === null;
+
+  const session = useSession();
+  const user = session?.data?.user as SessionUser;
+
+  const renderBadge = (messageId: string) => {
+    if (!messageId || !resolution) return '';
+    if (resolution.messageId !== messageId) return '';
+    return <CheckCircleIcon className="w-4 h-4 ml-2 text-green-600" />;
+  };
 
   return (
     <div>
       <ResolutionConfirmationModal />
+
+      {isOldResolution &&
+        (user?.roleName === ROLES.ADMIN ||
+          user?.roleName === ROLES.SUPER_ADMIN) && (
+          <InfoAlert
+            className="mb-4"
+            message={`Due to update in creating resolution mechanism, resolution for this message needs to be updated. Please mark a message in this ticket as resolution. You can do so by click <b>Mark as Resolution</b> button in one of the message below. <br/><br/> Previous resolution for this ticket was: ${resolution.resolution}`}
+          />
+        )}
+
+      {resolution && (
+        <SuccessAlert
+          className="mb-4"
+          message={`This ticket has been resolved with resolution`}
+        />
+      )}
 
       <div className="w-full rounded-2xl">
         <Disclosure defaultOpen>
@@ -59,7 +91,6 @@ const TicketDetailDetails = () => {
                         message={outlookMessages[0]}
                         attachments={attachmentsArrays[0]}
                         canBeReplied={true}
-                        canBeMarkedAsResolution={false}
                         replyComponentRef={replyComponentRef}
                       />
                     ) : (
@@ -106,8 +137,8 @@ const TicketDetailDetails = () => {
                             message={message}
                             attachments={attachmentsArrays[realIdx]}
                             canBeReplied
-                            canBeMarkedAsResolution
                             replyComponentRef={replyComponentRef}
+                            renderBadge={renderBadge}
                           />
                         );
                       })
