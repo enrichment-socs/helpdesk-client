@@ -1,6 +1,9 @@
+import { useSession } from 'next-auth/react';
 import { MutableRefObject } from 'react';
 import { OutlookMessage } from '../../../models/OutlookMessage';
 import { OutlookMessageAttachmentValue } from '../../../models/OutlookMessageAttachment';
+import { SessionUser } from '../../../models/SessionUser';
+import { ROLES } from '../../../shared/constants/roles';
 import MessageAttachmentList from '../../../widgets/MessageAttachmentList';
 import TicketDetailConversationAction from './TicketDetailConversationAction';
 
@@ -20,6 +23,9 @@ const TicketDetailConversationBody = ({
   canBeReplied = false,
   replyComponentRef = null,
 }: Props) => {
+  const session = useSession();
+  const user = session?.data?.user as SessionUser;
+
   return (
     <div className="pt-2">
       <div>
@@ -40,11 +46,13 @@ const TicketDetailConversationBody = ({
         )}
       </div>
 
-      <TicketDetailConversationAction
-        message={message}
-        canBeReplied={canBeReplied}
-        replyComponentRef={replyComponentRef}
-      />
+      {user?.roleName !== ROLES.USER && (
+        <TicketDetailConversationAction
+          message={message}
+          canBeReplied={canBeReplied}
+          replyComponentRef={replyComponentRef}
+        />
+      )}
     </div>
   );
 };
