@@ -117,7 +117,7 @@ const TicketDetailPage: NextPage<Props> = ({
   };
 
   const getTabMenuList = () => {
-    const tabMenuList = ['Details', 'Resolution', 'Manage Ticket', 'History'];
+    const tabMenuList = ['Details', 'Manage Ticket', 'History'];
     if (user?.roleName === ROLES.USER)
       return tabMenuList.filter((t) => t !== 'Manage Ticket');
     return tabMenuList;
@@ -127,8 +127,6 @@ const TicketDetailPage: NextPage<Props> = ({
     switch (currentTab) {
       case 'Details':
         return <TicketDetailDetails />;
-      case 'Resolution':
-        return <TicketDetailResolution />;
       case 'Manage Ticket':
         return <TicketDetailManage />;
       case 'History':
