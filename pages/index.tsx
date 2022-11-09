@@ -35,8 +35,6 @@ type Props = {
   ticketSummary: TicketSummary;
 };
 
-export const messagesAtom = atom([] as Message[]);
-
 const Home: NextPage<Props> = ({
   announcements,
   faqCategories,

@@ -15,7 +15,7 @@ type Props = {
   useUniqueBody?: boolean;
   canBeReplied?: boolean;
   replyComponentRef?: MutableRefObject<HTMLFormElement>;
-  renderBadge: (messageId: string) => void;
+  renderBadge?: (messageId: string) => void;
 };
 
 const TicketDetailConversation = ({
@@ -54,7 +54,7 @@ const TicketDetailConversation = ({
                 : 'text-gray-900 bg-gray-100 border hover:bg-gray-200'
             } flex justify-between items-center w-full px-4 py-2 text-sm font-medium text-left focus:outline-none focus-visible:ring focus-visible:ring-gray-500 focus-visible:ring-opacity-75`}>
             <span className="font-bold truncate flex items-center">
-              {getSenderInfo()} {renderBadge(message.id)}
+              {getSenderInfo()} {renderBadge ? renderBadge(message.id) : ''}
             </span>
             <div className="flex">
               <span className="font-normal text-xs hidden md:block">

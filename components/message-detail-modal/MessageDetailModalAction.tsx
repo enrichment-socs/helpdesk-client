@@ -13,7 +13,6 @@ import { OutlookMessage } from '../../models/OutlookMessage';
 import { Priority } from '../../models/Priority';
 import { SessionUser } from '../../models/SessionUser';
 import { User } from '../../models/User';
-import { messagesAtom } from '../../pages';
 import { TicketService } from '../../services/TicketService';
 import { CategoryService } from '../../services/CategoryService';
 import { InformationService } from '../../services/InformationService';
@@ -28,6 +27,7 @@ import { ChevronUpIcon } from '@heroicons/react/solid';
 import ReactTooltip from 'react-tooltip';
 import { DateHelper } from '../../shared/libs/date-helper';
 import { TicketUtils } from '../../shared/libs/ticket-utils';
+import IndexStore from '../../stores';
 
 type Props = {
   onClose: () => void;
@@ -47,7 +47,7 @@ export default function MessageDetailModalAction({
   const session = useSession();
   const user = session?.data?.user as SessionUser;
 
-  const [messages, setMessages] = useAtom(messagesAtom);
+  const [messages, setMessages] = useAtom(IndexStore.messages);
 
   const types = Object.keys(MESSAGE_TYPE).map((key) => MESSAGE_TYPE[key]);
   const [canSave, setCanSave] = useState(false);
