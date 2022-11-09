@@ -92,6 +92,7 @@ const TicketDetailDetails = () => {
                         attachments={attachmentsArrays[0]}
                         canBeReplied={true}
                         replyComponentRef={replyComponentRef}
+                        showAdminAction
                       />
                     ) : (
                       <MultiLineSkeletonLoading width="100%" />
@@ -139,6 +140,7 @@ const TicketDetailDetails = () => {
                             canBeReplied
                             replyComponentRef={replyComponentRef}
                             renderBadge={renderBadge}
+                            showAdminAction
                           />
                         );
                       })

@@ -16,6 +16,7 @@ type Props = {
   canBeReplied?: boolean;
   replyComponentRef?: MutableRefObject<HTMLFormElement>;
   renderBadge?: (messageId: string) => void;
+  showAdminAction?: boolean;
 };
 
 const TicketDetailConversation = ({
@@ -26,6 +27,7 @@ const TicketDetailConversation = ({
   canBeReplied = false,
   replyComponentRef = null,
   renderBadge,
+  showAdminAction = false
 }: Props) => {
   const getSenderInfo = () => {
     if (!message) return <SkeletonLoading width="100%" />;
@@ -81,6 +83,7 @@ const TicketDetailConversation = ({
                   useUniqueBody={useUniqueBody}
                   canBeReplied={canBeReplied}
                   replyComponentRef={replyComponentRef}
+                  showAdminAction={showAdminAction}
                 />
               </div>
             </Disclosure.Panel>

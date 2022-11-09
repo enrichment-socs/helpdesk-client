@@ -14,6 +14,7 @@ type Props = {
   canBeReplied?: boolean;
   canBeMarkedAsResolution?: boolean;
   replyComponentRef?: MutableRefObject<HTMLFormElement>;
+  showAdminAction?: boolean;
 };
 
 const TicketDetailConversationBody = ({
@@ -22,6 +23,7 @@ const TicketDetailConversationBody = ({
   useUniqueBody = true,
   canBeReplied = false,
   replyComponentRef = null,
+  showAdminAction = false,
 }: Props) => {
   const session = useSession();
   const user = session?.data?.user as SessionUser;
@@ -46,7 +48,7 @@ const TicketDetailConversationBody = ({
         )}
       </div>
 
-      {user?.roleName !== ROLES.USER && (
+      {user?.roleName !== ROLES.USER && showAdminAction && (
         <TicketDetailConversationAction
           message={message}
           canBeReplied={canBeReplied}
