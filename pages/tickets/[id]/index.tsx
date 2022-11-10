@@ -36,6 +36,7 @@ import { useAtom } from 'jotai';
 import { TicketUtils } from '../../../shared/libs/ticket-utils';
 import { TicketHistoryService } from '../../../services/TicketHistoryService';
 import { TicketHistory } from '../../../models/TicketHistory';
+import { OutlookMessage } from '../../../models/OutlookMessage';
 
 type Props = {
   ticket: Ticket;
@@ -69,9 +70,8 @@ const TicketDetailPage: NextPage<Props> = ({
   const session = useSession();
   const user = session?.data?.user as SessionUser;
   const graphApiService = new GraphApiService(user.accessToken);
-  const [outlookMessages, setOutlookMessages] = useAtom(
-    TicketDetailStore.outlookMessages
-  );
+  const [outlookMessages, setOutlookMessages]: [OutlookMessage[], any] =
+    useAtom(TicketDetailStore.outlookMessages);
   const [, setAttachmentArrays] = useAtom(TicketDetailStore.attachmentsArray);
 
   useEffect(() => {
