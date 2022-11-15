@@ -13,7 +13,7 @@ import { SessionUser } from '../models/SessionUser';
 import { NavLink } from '../models/views/NavLink';
 import { signOut } from 'next-auth/react';
 import { useSession } from 'next-auth/react';
-import { useEffect } from 'react';
+import NavbarNotification from './NavbarNotification';
 
 export default function Navbar() {
   const router = useRouter();
@@ -166,12 +166,16 @@ export default function Navbar() {
           )}
         </ul>
 
-        <button
-          onClick={() => logOut()}
-          className="cursor-pointer hover:text-primary text-gray-600 font-bold flex space-x-1 items-center">
-          <span className="hidden md:block">Sign Out</span>{' '}
-          <LogoutIcon className="w-5 h-5" />
-        </button>
+        <div className="flex space-x-4">
+          <NavbarNotification />
+
+          <button
+            onClick={() => logOut()}
+            className="cursor-pointer hover:text-primary text-gray-600 font-bold flex space-x-1 items-center">
+            <span className="hidden md:block">Sign Out</span>{' '}
+            <LogoutIcon className="w-5 h-5" />
+          </button>
+        </div>
       </nav>
 
       <div className="border-b border-gray-200 mb-6"></div>
