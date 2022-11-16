@@ -1,5 +1,6 @@
 import { BellIcon } from '@heroicons/react/outline';
 import { CheckCircleIcon } from '@heroicons/react/solid';
+import Link from 'next/link';
 import { useState } from 'react';
 import NotificationItem from '../components/notifications/NotificationItem';
 
@@ -18,10 +19,10 @@ const NavbarNotification = () => {
       </button>
 
       <section
-        className={`absolute top-12 w-96 right-0 bg-white border shadow transition-all ${
+        className={`absolute z-10 top-12 w-96 right-0 bg-white border shadow transition-all ${
           showNotification ? 'opacity-100 visible' : 'opacity-0 invisible'
         }`}>
-        <div className="flex justify-between items-center border-b-2">
+        <div className="flex justify-between items-center border-b">
           <div className="flex">
             <div className="border-l-4 border-primary"></div>
             <div className="m-3 text-sm font-medium">Notifications</div>
@@ -33,11 +34,13 @@ const NavbarNotification = () => {
               className="shadow text-white bg-green-600 hover:bg-green-700 py-1 px-3 rounded text-sm">
               <CheckCircleIcon className="w-4 h-4" />
             </button>
-            <button
-              title="View all"
-              className="shadow text-white bg-primary hover:bg-primary-dark py-1 px-3 rounded text-sm">
-              View All
-            </button>
+            <Link href="/notifications" passHref>
+              <button
+                title="View all"
+                className="shadow text-white bg-primary hover:bg-primary-dark py-1 px-3 rounded text-sm">
+                View All
+              </button>
+            </Link>
           </div>
         </div>
 

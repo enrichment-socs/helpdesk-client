@@ -1,9 +1,13 @@
 import { BellIcon } from '@heroicons/react/outline';
 
-const NotificationItem = () => {
+type Props = {
+  showSideList?: boolean;
+};
+
+const NotificationItem = ({ showSideList = true }: Props) => {
   return (
     <div className="flex border-t cursor-pointer hover:bg-gray-100">
-      <div className="border-l-4 border-primary"></div>
+      {showSideList && <div className="border-l-4 border-primary"></div>}
       <div className="flex relative justify-center p-4">
         <BellIcon className="w-7 h-7" />
         <div className="absolute top-3 left-2 w-2 h-2 rounded-full bg-primary"></div>
