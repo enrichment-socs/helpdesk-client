@@ -1,6 +1,12 @@
 import { BellIcon } from '@heroicons/react/outline';
 import { NextPage } from 'next';
+import { getSession } from 'next-auth/react';
 import NotificationItem from '../../components/notifications/NotificationItem';
+import { SemesterService } from '../../services/SemesterService';
+import { ROLES } from '../../shared/constants/roles';
+import { AuthHelper } from '../../shared/libs/auth-helper';
+import { getInitialServerProps } from '../../shared/libs/initialize-server-props';
+import { withSessionSsr } from '../../shared/libs/session';
 import Layout from '../../widgets/_Layout';
 
 const NotificationPage: NextPage = () => {
@@ -20,5 +26,34 @@ const NotificationPage: NextPage = () => {
     </Layout>
   );
 };
+
+export const getServerSideProps = withSessionSsr(
+  async function getServerSideProps({ req, query }) {
+    const { session, semesters, sessionActiveSemester } =
+      await getInitialServerProps(req, getSession, new SemesterService());
+
+    if (
+      !AuthHelper.isLoggedInAndHasRole(session, [
+        ROLES.ADMIN,
+        ROLES.USER,
+        ROLES.SUPER_ADMIN,
+      ])
+    )
+      return {
+        redirect: {
+          destination: '/',
+          permanent: false,
+        },
+      };
+
+    return {
+      props: {
+        semesters,
+        session,
+        sessionActiveSemester,
+      },
+    };
+  }
+);
 
 export default NotificationPage;

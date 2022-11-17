@@ -30,13 +30,13 @@ import { ClientPromiseWrapper } from '../../../shared/libs/client-promise-wrappe
 import toast from 'react-hot-toast';
 import { TicketDueDateService } from '../../../services/TicketDueDateService';
 import { TicketDueDate } from '../../../models/TicketDueDate';
-import { useHydrateAtoms } from 'jotai/utils';
 import TicketDetailStore from '../../../stores/tickets/[id]';
-import { useAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import { TicketUtils } from '../../../shared/libs/ticket-utils';
 import { TicketHistoryService } from '../../../services/TicketHistoryService';
 import { TicketHistory } from '../../../models/TicketHistory';
 import { OutlookMessage } from '../../../models/OutlookMessage';
+import useHydrateAndSyncAtom from '../../../hooks/useHydrateAndSyncAtom';
 
 type Props = {
   ticket: Ticket;
@@ -55,14 +55,38 @@ const TicketDetailPage: NextPage<Props> = ({
   ticketHistories,
   statuses,
 }) => {
-  useHydrateAtoms([
-    [TicketDetailStore.ticket, ticket],
-    [TicketDetailStore.resolution, resolution],
-    [TicketDetailStore.ticketStatuses, ticketStatuses],
-    [TicketDetailStore.ticketDueDates, ticketDueDates],
-    [TicketDetailStore.statuses, statuses],
-    [TicketDetailStore.ticketHistories, ticketHistories],
-  ] as const);
+  useHydrateAndSyncAtom([
+    [
+      TicketDetailStore.ticket,
+      useSetAtom(TicketDetailStore.ticket as any),
+      ticket,
+    ],
+    [
+      TicketDetailStore.resolution,
+      useSetAtom(TicketDetailStore.resolution as any),
+      resolution,
+    ],
+    [
+      TicketDetailStore.ticketStatuses,
+      useSetAtom(TicketDetailStore.ticketStatuses),
+      ticketStatuses,
+    ],
+    [
+      TicketDetailStore.ticketDueDates,
+      useSetAtom(TicketDetailStore.ticketDueDates),
+      ticketDueDates,
+    ],
+    [
+      TicketDetailStore.statuses,
+      useSetAtom(TicketDetailStore.statuses),
+      statuses,
+    ],
+    [
+      TicketDetailStore.ticketHistories,
+      useSetAtom(TicketDetailStore.ticketHistories),
+      ticketHistories,
+    ],
+  ]);
 
   const [currentTab, setCurrentTab] = useState('Details');
   const [isShowInformation, setIsShowInformation] = useState(false);
