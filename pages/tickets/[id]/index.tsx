@@ -101,6 +101,10 @@ const TicketDetailPage: NextPage<Props> = ({
   useEffect(() => {
     const wrapper = new ClientPromiseWrapper(toast);
     wrapper.handle(fetchMessages());
+
+    return () => {
+      setOutlookMessages(null);
+    };
   }, []);
 
   const fetchMessages = async () => {
