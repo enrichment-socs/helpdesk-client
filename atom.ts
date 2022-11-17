@@ -8,6 +8,7 @@ export const activeSemesterAtom = atom<Semester>(null);
 export const semestersAtom = atom([] as Semester[]);
 export const notificationsAtom = atom([] as Notification[]);
 export const notificationsCountAtom = atom(0);
+export const unreadNotificationsCountAtom = atom(0);
 
 export const guidelineCategoriesAtom = atom([] as GuidelineCategory[]);
 

@@ -7,6 +7,7 @@ import {
   activeSemesterAtom,
   notificationsAtom,
   notificationsCountAtom,
+  unreadNotificationsCountAtom,
 } from '../atom';
 import { Semester } from '../models/Semester';
 import NextNProgress from 'nextjs-progressbar';
@@ -21,6 +22,7 @@ type GlobalProps = {
   sessionActiveSemester: Semester;
   notifications: Notification[];
   notificationsCount: number;
+  unreadNotificationsCount: number;
 };
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
@@ -29,10 +31,12 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
     sessionActiveSemester,
     notifications,
     notificationsCount,
+    unreadNotificationsCount,
   }: GlobalProps = pageProps;
   useHydrateAtoms([
     [notificationsAtom, notifications],
     [notificationsCountAtom, notificationsCount],
+    [unreadNotificationsCountAtom, unreadNotificationsCount],
     [semestersAtom, semesters],
     [activeSemesterAtom, sessionActiveSemester],
   ] as const);

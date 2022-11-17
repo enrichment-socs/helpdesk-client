@@ -3,13 +3,18 @@ import { CheckCircleIcon } from '@heroicons/react/solid';
 import { useAtom } from 'jotai';
 import Link from 'next/link';
 import { useState } from 'react';
-import { notificationsAtom, notificationsCountAtom } from '../atom';
+import {
+  notificationsAtom,
+  notificationsCountAtom,
+  unreadNotificationsCountAtom,
+} from '../atom';
 import NotificationItem from '../components/notifications/NotificationItem';
 
 const NavbarNotification = () => {
   const [showNotification, setShowNotification] = useState(false);
   const [notifications] = useAtom(notificationsAtom);
   const [notificationsCount] = useAtom(notificationsCountAtom);
+  const [unreadNotificationsCount] = useAtom(unreadNotificationsCountAtom);
 
   return (
     <div className="relative">
@@ -17,7 +22,7 @@ const NavbarNotification = () => {
         onClick={() => setShowNotification(!showNotification)}
         className="hover:text-primary relative h-full">
         <span className="text-xs absolute top-1 -right-2 text-white rounded-full bg-primary px-1">
-          {notificationsCount}
+          {unreadNotificationsCount}
         </span>
         <BellIcon className="w-5 h-5" />
       </button>

@@ -9,10 +9,12 @@ export class NotificationService extends BaseService {
   ): Promise<{
     notifications: Notification[];
     count: number;
+    unreadCount: number;
   }> {
     const result: AxiosResponse<{
       notifications: Notification[];
       count: number;
+      unreadCount: number;
     }> = await this.wrapper.handle(
       axios.get(
         `${this.BASE_URL}/notifications?take=${take ?? 10}&skip=${skip ?? 0}`,

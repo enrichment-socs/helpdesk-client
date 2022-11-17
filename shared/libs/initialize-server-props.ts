@@ -14,6 +14,7 @@ type Props = {
   notifications: Notification[];
   notificationsCount: number;
   sessionActiveSemester: Semester;
+  unreadNotificationsCount: number;
 };
 
 /* Should only be called from GetServerSideProps in a page */
@@ -28,9 +29,9 @@ export const getInitialServerProps = async (
   const user = session?.user as SessionUser | null;
 
   const notifService = new NotificationService(user ? user.accessToken : '');
-  const { notifications, count } = user
+  const { notifications, count, unreadCount } = user
     ? await notifService.getNotificationsByUser()
-    : { notifications: [], count: 0 };
+    : { notifications: [], count: 0, unreadCount: 0 };
 
   if (!req.session.activeSemester) {
     req.session.activeSemester = dbActiveSemester;
@@ -56,6 +57,7 @@ export const getInitialServerProps = async (
     semesters,
     notifications,
     notificationsCount: count,
+    unreadNotificationsCount: unreadCount,
     sessionActiveSemester: activeSemester ?? null, // handle undefined
   };
 };
