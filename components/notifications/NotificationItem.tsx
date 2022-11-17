@@ -1,10 +1,13 @@
 import { BellIcon } from '@heroicons/react/outline';
+import { format } from 'date-fns';
+import { Notification } from '../../models/Notification';
 
 type Props = {
   showSideList?: boolean;
+  notification: Notification;
 };
 
-const NotificationItem = ({ showSideList = true }: Props) => {
+const NotificationItem = ({ showSideList = true, notification }: Props) => {
   return (
     <div className="flex border-t cursor-pointer hover:bg-gray-100">
       {showSideList && <div className="border-l-4 border-primary"></div>}
@@ -14,8 +17,10 @@ const NotificationItem = ({ showSideList = true }: Props) => {
       </div>
       <div className="w-full mr-4 my-2">
         <div className="flex justify-between text-sm">
-          <span className="font-semibold block">Notification Title 1</span>
-          <small className="block">Nov 20, 2022 11:00</small>
+          <span className="font-semibold block">{notification.title}</span>
+          <small className="block">
+            {format(new Date(notification.created_at), 'MMM dd, yyyy hh:mm')}
+          </small>
         </div>
 
         <div className="flex">

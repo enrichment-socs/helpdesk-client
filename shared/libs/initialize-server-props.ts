@@ -25,7 +25,7 @@ export const getInitialServerProps = async (
   const dbActiveSemester = semesters.find((s) => s.isActive);
   let session = await getSession({ req });
   let activeSemester = req.session.activeSemester ?? dbActiveSemester;
-  const user = session.user as SessionUser | null;
+  const user = session?.user as SessionUser | null;
 
   const notifService = new NotificationService(user ? user.accessToken : '');
   const { notifications, count } = user

@@ -1,11 +1,15 @@
 import { BellIcon } from '@heroicons/react/outline';
 import { CheckCircleIcon } from '@heroicons/react/solid';
+import { useAtom } from 'jotai';
 import Link from 'next/link';
 import { useState } from 'react';
+import { notificationsAtom, notificationsCountAtom } from '../atom';
 import NotificationItem from '../components/notifications/NotificationItem';
 
 const NavbarNotification = () => {
   const [showNotification, setShowNotification] = useState(false);
+  const [notifications] = useAtom(notificationsAtom);
+  const [notificationsCount] = useAtom(notificationsCountAtom);
 
   return (
     <div className="relative">
@@ -13,13 +17,13 @@ const NavbarNotification = () => {
         onClick={() => setShowNotification(!showNotification)}
         className="hover:text-primary relative h-full">
         <span className="text-xs absolute top-1 -right-2 text-white rounded-full bg-primary px-1">
-          5
+          {notificationsCount}
         </span>
         <BellIcon className="w-5 h-5" />
       </button>
 
       <section
-        className={`absolute z-10 top-12 w-96 right-0 bg-white border shadow transition-all ${
+        className={`absolute z-10 top-12 w-[28rem] right-0 bg-white border shadow transition-all ${
           showNotification ? 'opacity-100 visible' : 'opacity-0 invisible'
         }`}>
         <div className="flex justify-between items-center border-b">
@@ -45,11 +49,15 @@ const NavbarNotification = () => {
         </div>
 
         <ul className="max-h-[20rem] overflow-auto">
-          {[1, 2, 3].map((notification) => (
-            <li key={notification}>
-              <NotificationItem />
+          {notifications.map((notification) => (
+            <li key={notification.id}>
+              <NotificationItem notification={notification} />
             </li>
           ))}
+
+          {notifications.length === 0 && (
+            <li className="p-4 text-sm">You have no notifications.</li>
+          )}
         </ul>
       </section>
     </div>
