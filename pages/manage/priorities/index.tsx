@@ -58,8 +58,7 @@ const ManageCategoriesPage: NextPage<Props> = ({ priorities }) => {
 
 export const getServerSideProps = withSessionSsr(
   async function getServerSideProps({ req }) {
-    const { session, semesters, sessionActiveSemester } =
-      await getInitialServerProps(req, getSession, new SemesterService());
+    const { session, ...globalProps } = await getInitialServerProps(req);
 
     if (!AuthHelper.isLoggedInAndHasRole(session, [ROLES.SUPER_ADMIN])) {
       return {
@@ -76,10 +75,9 @@ export const getServerSideProps = withSessionSsr(
 
     return {
       props: {
+        ...globalProps,
         priorities,
-        semesters,
         session,
-        sessionActiveSemester,
       },
     };
   }

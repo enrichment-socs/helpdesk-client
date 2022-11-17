@@ -29,8 +29,8 @@ const NotificationPage: NextPage = () => {
 
 export const getServerSideProps = withSessionSsr(
   async function getServerSideProps({ req, query }) {
-    const { session, semesters, sessionActiveSemester } =
-      await getInitialServerProps(req, getSession, new SemesterService());
+    const { session, sessionActiveSemester, ...globalProps } =
+      await getInitialServerProps(req);
 
     if (
       !AuthHelper.isLoggedInAndHasRole(session, [
@@ -48,7 +48,7 @@ export const getServerSideProps = withSessionSsr(
 
     return {
       props: {
-        semesters,
+        ...globalProps,
         session,
         sessionActiveSemester,
       },

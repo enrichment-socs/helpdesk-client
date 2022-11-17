@@ -24,8 +24,12 @@ type Props = {
 };
 
 const ManageRolesPage: NextPage<Props> = ({ currAnnouncements, roles }) => {
-  useHydrateAtoms([[ManageAnnouncementStore.announcements, currAnnouncements]] as const);
-  const [announcements, setAnnouncement] = useAtom(ManageAnnouncementStore.announcements);
+  useHydrateAtoms([
+    [ManageAnnouncementStore.announcements, currAnnouncements],
+  ] as const);
+  const [announcements, setAnnouncement] = useAtom(
+    ManageAnnouncementStore.announcements
+  );
   const [openFormModal, setOpenFormModal] = useState(false);
   const [selectedAnnouncement, setSelectedAnnouncement] =
     useState<Announcement | null>(null);
@@ -57,17 +61,15 @@ const ManageRolesPage: NextPage<Props> = ({ currAnnouncements, roles }) => {
           Create
         </button>
       </div>
-      <ManageAnnouncementsTable
-        openModal={openModal}
-      />
+      <ManageAnnouncementsTable openModal={openModal} />
     </Layout>
   );
 };
 
 export const getServerSideProps = withSessionSsr(
   async function getServerSideProps({ req }) {
-    const { session, semesters, sessionActiveSemester } =
-      await getInitialServerProps(req, getSession, new SemesterService());
+    const { session, sessionActiveSemester, ...globalProps } =
+      await getInitialServerProps(req);
 
     if (!AuthHelper.isLoggedInAndHasRole(session, [ROLES.SUPER_ADMIN])) {
       return {
@@ -90,7 +92,7 @@ export const getServerSideProps = withSessionSsr(
 
     return {
       props: {
-        semesters,
+        ...globalProps,
         session,
         sessionActiveSemester,
         currAnnouncements,

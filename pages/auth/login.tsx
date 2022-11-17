@@ -191,8 +191,7 @@ const LoginPage: NextPage = () => {
 
 export const getServerSideProps = withSessionSsr(
   async function getServerSideProps({ req }) {
-    const { session, semesters, sessionActiveSemester } =
-      await getInitialServerProps(req, getSession, new SemesterService());
+    const { session, ...globalProps } = await getInitialServerProps(req);
 
     if (session) {
       return {
@@ -205,9 +204,8 @@ export const getServerSideProps = withSessionSsr(
 
     return {
       props: {
+        ...globalProps,
         session,
-        semesters,
-        sessionActiveSemester,
       },
     };
   }

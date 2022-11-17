@@ -165,8 +165,7 @@ const ManageUsersPage: NextPage<Props> = ({
 
 export const getServerSideProps = withSessionSsr(
   async function getServerSideProps({ req, query }) {
-    const { session, semesters, sessionActiveSemester } =
-      await getInitialServerProps(req, getSession, new SemesterService());
+    const { session, ...globalProps } = await getInitialServerProps(req);
 
     if (!AuthHelper.isLoggedInAndHasRole(session, [ROLES.SUPER_ADMIN])) {
       return {
@@ -198,9 +197,8 @@ export const getServerSideProps = withSessionSsr(
 
     return {
       props: {
-        semesters,
+        ...globalProps,
         session,
-        sessionActiveSemester,
         initialTake,
         initialSkip,
         currRoles,
