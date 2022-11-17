@@ -30,7 +30,9 @@ export default function ResolutionConfirmationModal() {
   const [ticket] = useAtom(TicketDetailStore.ticket);
   const [, setResolution] = useAtom(TicketDetailStore.resolution) as any; //workaround because the setter type is never
   const [ticketStatuses] = useAtom(TicketDetailStore.ticketStatuses);
-  const latestStatus = ticketStatuses.at(-1);
+  const latestStatus = ticketStatuses
+    ? ticketStatuses[ticketStatuses.length - 1]
+    : null;
 
   const session = useSession();
   const user = session?.data?.user as SessionUser;
