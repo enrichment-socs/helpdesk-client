@@ -7,6 +7,7 @@ export class Notification {
     | 'TicketAssigned'
     | 'TicketDueDateReminder'
     | 'TicketPendingReminder'
+    | 'TicketDueDateChanged'
     | 'TicketStatusChanged';
   created_at: string;
   updated_at: string;
@@ -24,15 +25,26 @@ export class TicketAssignedNotification {
 
 export class TicketDueDateReminderNotification {
   ticketId: string;
+  subject: string;
   dueDate: string;
+}
+
+export class TicketDueDateUpdatedNotification {
+  ticketId: string;
+  subject: string;
+  fromDate: string;
+  toDate: string;
+  reason: string;
 }
 
 export class TicketPendingReminderNotification {
   ticketId: string;
+  subject: string;
 }
 
 export interface TicketStatusChangedNotification {
   ticketId: string;
+  subject: string;
   from: string;
   to: string;
 }

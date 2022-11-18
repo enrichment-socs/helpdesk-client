@@ -45,7 +45,7 @@ const TicketDetailHistory = () => {
                               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                                 {format(
                                   new Date(ticketHistory.created_at),
-                                  'hh:mm b'
+                                  'HH:mm b'
                                 )}
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
@@ -95,7 +95,7 @@ const TicketDetailHistory = () => {
                                     {ticketHistoryData.dueBy
                                       ? format(
                                           new Date(ticketHistoryData.dueBy),
-                                          'dd-MM-yyyy hh:mm b'
+                                          'dd-MM-yyyy HH:mm b'
                                         )
                                       : '(No Data)'}
                                   </span>

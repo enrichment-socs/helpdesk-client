@@ -1,10 +1,15 @@
-import { BellIcon } from '@heroicons/react/outline';
+import {
+  BellIcon,
+  BookOpenIcon,
+  ClipboardListIcon,
+} from '@heroicons/react/outline';
 import { format } from 'date-fns';
 import { useRouter } from 'next/router';
 import {
   Notification,
   TicketAssignedNotification,
   TicketDueDateReminderNotification,
+  TicketDueDateUpdatedNotification,
   TicketPendingReminderNotification,
   TicketStatusChangedNotification,
 } from '../../models/Notification';
@@ -18,11 +23,11 @@ const NotificationItem = ({ showSideList = true, notification }: Props) => {
   const router = useRouter();
 
   const renderContent = () => {
+    let data = null;
+
     switch (notification.type) {
       case 'TicketAssigned':
-        const data = JSON.parse(
-          notification.data
-        ) as TicketAssignedNotification;
+        data = JSON.parse(notification.data) as TicketAssignedNotification;
         return (
           <div>
             <h4>A new ticket has been assigned to you.</h4>
@@ -43,11 +48,59 @@ const NotificationItem = ({ showSideList = true, notification }: Props) => {
             </p>
           </div>
         );
+      case 'TicketDueDateChanged':
+        data = JSON.parse(
+          notification.data
+        ) as TicketDueDateUpdatedNotification;
+        return (
+          <div>
+            <h4>Ticket due date has been updated.</h4>
+            {data.subject && (
+              <p>
+                Subject: <span className="font-medium">{data.subject}</span>
+              </p>
+            )}
+            <p>
+              From{' '}
+              <span className="font-medium">
+                {format(new Date(data.fromDate), 'MMM dd, yyyy HH:mm')}
+              </span>{' '}
+              to{' '}
+              <span className="font-medium">
+                {format(new Date(data.toDate), 'MMM dd, yyyy HH:mm')}
+              </span>
+            </p>
+
+            <p>
+              Reason: <span className="font-medium">{data.reason}</span>
+            </p>
+          </div>
+        );
+      case 'TicketStatusChanged':
+        data = JSON.parse(notification.data) as TicketStatusChangedNotification;
+        return (
+          <div>
+            <h4>Ticket status has been changed.</h4>
+            {data.subject && (
+              <p>
+                Subject: <span className="font-medium">{data.subject}</span>
+              </p>
+            )}
+            <p>
+              From <span className="font-medium">{data.from}</span> to{' '}
+              <span className="font-medium">{data.to}</span>
+            </p>
+            {data.reason && (
+              <p>
+                Reason: <span className="font-medium">{data.reason}</span>
+              </p>
+            )}
+          </div>
+        );
       case 'TicketDueDateReminder':
         break;
       case 'TicketPendingReminder':
         break;
-      case 'TicketStatusChanged':
         break;
     }
     return <div>No data to be displayed.</div>;
@@ -56,14 +109,25 @@ const NotificationItem = ({ showSideList = true, notification }: Props) => {
   const onClick = () => {
     switch (notification.type) {
       case 'TicketAssigned':
-        const data = JSON.parse(
-          notification.data
-        ) as TicketAssignedNotification;
-        return router.push(`/tickets/${data.ticketId}`);
       case 'TicketDueDateReminder':
       case 'TicketPendingReminder':
       case 'TicketStatusChanged':
-        return;
+      case 'TicketDueDateChanged':
+        const data = JSON.parse(notification.data) as { ticketId: string };
+        return router.push(`/tickets/${data.ticketId}`);
+    }
+  };
+
+  const renderIcon = () => {
+    switch (notification.type) {
+      case 'TicketAssigned':
+        return <BookOpenIcon className="w-7 h-7" />;
+      case 'TicketDueDateReminder':
+      case 'TicketStatusChanged':
+        return <ClipboardListIcon className="w-7 h-7" />;
+      case 'TicketPendingReminder':
+      case 'TicketDueDateChanged':
+        return <BellIcon className="w-7 h-7" />;
     }
   };
 
@@ -73,7 +137,7 @@ const NotificationItem = ({ showSideList = true, notification }: Props) => {
       className="flex border-t cursor-pointer hover:bg-gray-100">
       {showSideList && <div className="border-l-4 border-primary"></div>}
       <div className="flex relative justify-center p-4">
-        <BellIcon className="w-7 h-7" />
+        {renderIcon()}
         {!notification.isRead && (
           <div className="absolute top-3 left-2 w-2 h-2 rounded-full bg-primary"></div>
         )}
@@ -82,12 +146,12 @@ const NotificationItem = ({ showSideList = true, notification }: Props) => {
         <div className="flex justify-between text-sm">
           <span className="font-semibold block">{notification.title}</span>
           <small className="block">
-            {format(new Date(notification.created_at), 'MMM dd, yyyy hh:mm')}
+            {format(new Date(notification.created_at), 'MMM dd, yyyy HH:mm')}
           </small>
         </div>
 
         <div className="flex">
-          <div className="text-xs">{renderContent()}</div>
+          <div className="text-xs mt-1">{renderContent()}</div>
         </div>
       </div>
     </div>
