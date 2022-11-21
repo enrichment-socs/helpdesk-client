@@ -17,7 +17,7 @@ export class NotificationService extends BaseService {
       unreadCount: number;
     }> = await this.wrapper.handle(
       axios.get(
-        `${this.BASE_URL}/notifications?take=${take ?? 10}&skip=${skip ?? 0}`,
+        `${this.BASE_URL}/notifications?take=${take ?? 5}&skip=${skip ?? 0}`,
         this.headersWithToken()
       )
     );

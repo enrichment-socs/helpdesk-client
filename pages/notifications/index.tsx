@@ -1,10 +1,15 @@
 import { BellIcon } from '@heroicons/react/outline';
-import { CheckCircleIcon } from '@heroicons/react/solid';
+import {
+  ArrowLeftIcon,
+  CheckCircleIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+} from '@heroicons/react/solid';
 import { useAtom } from 'jotai';
 import { NextPage } from 'next';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import {
   notificationsAtom,
@@ -24,11 +29,25 @@ const NotificationPage: NextPage = () => {
   const [unreadNotificationsCount, setUnreadNotificationsCount] = useAtom(
     unreadNotificationsCountAtom
   );
+  const [notificationsCount, setNotificationsCount] = useAtom(
+    notificationsCountAtom
+  );
+
+  const take = 5;
+  const [skip, setSkip] = useState(0);
+  const page = skip / take + 1;
+  const totalPage = Math.ceil(notificationsCount / take);
 
   const session = useSession();
   const user = session?.data?.user as SessionUser;
   const notifService = new NotificationService(user?.accessToken);
   const [isLoading, setIsLoading] = useState(false);
+
+  const onChangePage = (newPage: number) => {
+    if (newPage <= 0 || newPage > totalPage) return;
+    const newSkip = (newPage - 1) * take;
+    setSkip(newSkip);
+  };
 
   const markAllAsRead = async () => {
     const message = 'Are you sure you want to mark all notifications as read?';
@@ -53,9 +72,23 @@ const NotificationPage: NextPage = () => {
     }
   };
 
+  useEffect(() => {
+    const handlePageChange = async () => {
+      const refetchedNotifs = await notifService.getNotificationsByUser(
+        take,
+        skip
+      );
+      setNotifications(refetchedNotifs.notifications);
+      setUnreadNotificationsCount(refetchedNotifs.unreadCount);
+      setNotificationsCount(refetchedNotifs.count);
+    };
+
+    handlePageChange();
+  }, [skip]);
+
   return (
     <Layout>
-      <div className={`ml-2 mt-5 border-2 rounded divide-y transition`}>
+      <div className={`mt-5 border-2 rounded divide-y transition`}>
         <div className="p-2 flex justify-between items-center">
           <div className="text-lg font-bold flex items-center">
             <BellIcon className="h-5 w-5" />
@@ -97,6 +130,33 @@ const NotificationPage: NextPage = () => {
           )}
         </ul>
       </div>
+
+      <section className="flex justify-between mt-2">
+        <div>
+          Page <strong>{page}</strong> of <strong>{totalPage}</strong> pages
+        </div>
+
+        <div className="space-x-2">
+          <button
+            onClick={() => onChangePage(page - 1)}
+            disabled={page === 1}
+            className={`shadow px-3 py-1 text-white rounded ${
+              page === 1 ? 'bg-gray-400' : 'bg-primary hover:bg-primary-dark'
+            }`}>
+            <ChevronLeftIcon className="w-5 h-5" />
+          </button>
+          <button
+            disabled={page === totalPage}
+            onClick={() => onChangePage(page + 1)}
+            className={`shadow px-3 py-1 text-white rounded ${
+              page === totalPage
+                ? 'bg-gray-400'
+                : 'bg-primary hover:bg-primary-dark'
+            }`}>
+            <ChevronRightIcon className="w-5 h-5" />
+          </button>
+        </div>
+      </section>
     </Layout>
   );
 };
