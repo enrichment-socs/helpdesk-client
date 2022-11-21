@@ -23,4 +23,26 @@ export class NotificationService extends BaseService {
     );
     return result.data;
   }
+
+  public async markAllAsRead(): Promise<void> {
+    const result: AxiosResponse<void> = await this.wrapper.handle(
+      axios.put(
+        `${this.BASE_URL}/notifications/mark-all-as-read`,
+        undefined,
+        this.headersWithToken()
+      )
+    );
+    return result.data;
+  }
+
+  public async markAsRead(id: string): Promise<void> {
+    const result: AxiosResponse<void> = await this.wrapper.handle(
+      axios.put(
+        `${this.BASE_URL}/notifications/${id}/read`,
+        undefined,
+        this.headersWithToken()
+      )
+    );
+    return result.data;
+  }
 }

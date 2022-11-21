@@ -1,20 +1,55 @@
 import { BellIcon } from '@heroicons/react/outline';
 import { CheckCircleIcon } from '@heroicons/react/solid';
 import { useAtom } from 'jotai';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 import {
   notificationsAtom,
   notificationsCountAtom,
   unreadNotificationsCountAtom,
 } from '../atom';
 import NotificationItem from '../components/notifications/NotificationItem';
+import { SessionUser } from '../models/SessionUser';
+import { NotificationService } from '../services/NotificationService';
+import { confirm } from '../shared/libs/confirm-dialog-helper';
 
 const NavbarNotification = () => {
   const [showNotification, setShowNotification] = useState(false);
-  const [notifications] = useAtom(notificationsAtom);
+  const [notifications, setNotifications] = useAtom(notificationsAtom);
   const [notificationsCount] = useAtom(notificationsCountAtom);
-  const [unreadNotificationsCount] = useAtom(unreadNotificationsCountAtom);
+  const [unreadNotificationsCount, setUnreadNotificationsCount] = useAtom(
+    unreadNotificationsCountAtom
+  );
+
+  const session = useSession();
+  const user = session?.data?.user as SessionUser;
+  const notifService = new NotificationService(user?.accessToken);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const markAllAsRead = async () => {
+    const message = 'Are you sure you want to mark all notifications as read?';
+    if (await confirm(message)) {
+      setIsLoading(true);
+      await toast.promise(notifService.markAllAsRead(), {
+        loading: 'Marking unread notifications as read',
+        success: () => {
+          setIsLoading(false);
+          return 'Marked all notifications as read';
+        },
+        error: (e) => {
+          console.log(e);
+          setIsLoading(false);
+          return 'Something is wrong when marking unread notifications as read, please contact developer';
+        },
+      });
+
+      const refetchedNotifs = await notifService.getNotificationsByUser();
+      setNotifications(refetchedNotifs.notifications);
+      setUnreadNotificationsCount(refetchedNotifs.unreadCount);
+    }
+  };
 
   return (
     <div className="relative">
@@ -39,8 +74,13 @@ const NavbarNotification = () => {
 
           <div className="flex space-x-2 mr-2">
             <button
+              onClick={markAllAsRead}
               title="Mark all as read"
-              className="shadow text-white bg-green-600 hover:bg-green-700 py-1 px-3 rounded text-sm">
+              className={`shadow text-white py-1 px-3 rounded text-sm ${
+                isLoading
+                  ? 'bg-gray-400 text-gray-600'
+                  : 'bg-green-600 hover:bg-green-700'
+              }`}>
               <CheckCircleIcon className="w-4 h-4" />
             </button>
             <Link href="/notifications" passHref>

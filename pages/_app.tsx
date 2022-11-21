@@ -16,6 +16,8 @@ import 'react-quill/dist/quill.snow.css';
 import 'react-datepicker/dist/react-datepicker.css';
 import AuthHandlerWrapper from '../components/AuthHandlerWrapper';
 import { Notification } from '../models/Notification';
+import useHydrateAndSyncAtom from '../hooks/useHydrateAndSyncAtom';
+import { useSetAtom } from 'jotai';
 
 type GlobalProps = {
   semesters: Semester[];
@@ -33,10 +35,21 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
     notificationsCount,
     unreadNotificationsCount,
   }: GlobalProps = pageProps;
+  useHydrateAndSyncAtom([
+    [notificationsAtom, useSetAtom(notificationsAtom), notifications],
+    [
+      notificationsCountAtom,
+      useSetAtom(notificationsCountAtom),
+      notificationsCount,
+    ],
+    [
+      unreadNotificationsCountAtom,
+      useSetAtom(unreadNotificationsCountAtom),
+      unreadNotificationsCount,
+    ],
+  ]);
+
   useHydrateAtoms([
-    [notificationsAtom, notifications],
-    [notificationsCountAtom, notificationsCount],
-    [unreadNotificationsCountAtom, unreadNotificationsCount],
     [semestersAtom, semesters],
     [activeSemesterAtom, sessionActiveSemester],
   ] as const);

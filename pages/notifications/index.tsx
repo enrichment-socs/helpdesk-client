@@ -2,15 +2,56 @@ import { BellIcon } from '@heroicons/react/outline';
 import { CheckCircleIcon } from '@heroicons/react/solid';
 import { useAtom } from 'jotai';
 import { NextPage } from 'next';
-import { notificationsAtom, unreadNotificationsCountAtom } from '../../atom';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
+import toast from 'react-hot-toast';
+import {
+  notificationsAtom,
+  notificationsCountAtom,
+  unreadNotificationsCountAtom,
+} from '../../atom';
 import NotificationItem from '../../components/notifications/NotificationItem';
+import { SessionUser } from '../../models/SessionUser';
+import { NotificationService } from '../../services/NotificationService';
+import { confirm } from '../../shared/libs/confirm-dialog-helper';
 import { getInitialServerProps } from '../../shared/libs/initialize-server-props';
 import { withSessionSsr } from '../../shared/libs/session';
 import Layout from '../../widgets/_Layout';
 
 const NotificationPage: NextPage = () => {
-  const [notifications] = useAtom(notificationsAtom);
-  const [unreadNotificationsCount] = useAtom(unreadNotificationsCountAtom);
+  const [notifications, setNotifications] = useAtom(notificationsAtom);
+  const [unreadNotificationsCount, setUnreadNotificationsCount] = useAtom(
+    unreadNotificationsCountAtom
+  );
+
+  const session = useSession();
+  const user = session?.data?.user as SessionUser;
+  const notifService = new NotificationService(user?.accessToken);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const markAllAsRead = async () => {
+    const message = 'Are you sure you want to mark all notifications as read?';
+    if (await confirm(message)) {
+      setIsLoading(true);
+      await toast.promise(notifService.markAllAsRead(), {
+        loading: 'Marking unread notifications as read',
+        success: () => {
+          setIsLoading(false);
+          return 'Marked all notifications as read';
+        },
+        error: (e) => {
+          console.log(e);
+          setIsLoading(false);
+          return 'Something is wrong when marking unread notifications as read, please contact developer';
+        },
+      });
+
+      const refetchedNotifs = await notifService.getNotificationsByUser();
+      setNotifications(refetchedNotifs.notifications);
+      setUnreadNotificationsCount(refetchedNotifs.unreadCount);
+    }
+  };
 
   return (
     <Layout>
@@ -26,8 +67,14 @@ const NotificationPage: NextPage = () => {
 
           <div>
             <button
+              disabled={isLoading}
               title="Mark all as read"
-              className="flex items-center shadow text-white bg-green-600 hover:bg-green-700 py-2 px-3 rounded text-sm">
+              onClick={markAllAsRead}
+              className={`flex items-center shadow text-white py-2 px-3 rounded text-sm ${
+                isLoading
+                  ? 'bg-green-400 text-gray-600'
+                  : 'bg-green-600 hover:bg-green-700'
+              }`}>
               <div>Mark all as Read</div>{' '}
               <CheckCircleIcon className="ml-2 w-4 h-4" />
             </button>

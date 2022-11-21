@@ -4,7 +4,10 @@ import {
   ClipboardListIcon,
 } from '@heroicons/react/outline';
 import { format } from 'date-fns';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
+import toast from 'react-hot-toast';
 import {
   Notification,
   TicketAssignedNotification,
@@ -13,6 +16,8 @@ import {
   TicketPendingReminderNotification,
   TicketStatusChangedNotification,
 } from '../../models/Notification';
+import { SessionUser } from '../../models/SessionUser';
+import { NotificationService } from '../../services/NotificationService';
 
 type Props = {
   showSideList?: boolean;
@@ -21,6 +26,9 @@ type Props = {
 
 const NotificationItem = ({ showSideList = true, notification }: Props) => {
   const router = useRouter();
+  const session = useSession();
+  const user = session?.data?.user as SessionUser;
+  const notifService = new NotificationService(user?.accessToken);
 
   const renderContent = () => {
     let data = null;
@@ -106,7 +114,7 @@ const NotificationItem = ({ showSideList = true, notification }: Props) => {
     return <div>No data to be displayed.</div>;
   };
 
-  const onClick = () => {
+  const onClick = async () => {
     switch (notification.type) {
       case 'TicketAssigned':
       case 'TicketDueDateReminder':
@@ -114,7 +122,17 @@ const NotificationItem = ({ showSideList = true, notification }: Props) => {
       case 'TicketStatusChanged':
       case 'TicketDueDateChanged':
         const data = JSON.parse(notification.data) as { ticketId: string };
-        return router.push(`/tickets/${data.ticketId}`);
+        await toast.promise(notifService.markAsRead(notification.id), {
+          loading: 'Marking as read...',
+          success: () => {
+            router.push(`/tickets/${data.ticketId}`);
+            return 'Redirecting...';
+          },
+          error: (e) => {
+            console.error(e);
+            return 'Something is wrong when marking this notification as read, please contact developer';
+          },
+        });
     }
   };
 
