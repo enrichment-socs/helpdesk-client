@@ -48,10 +48,19 @@ const TicketDetailDetails = () => {
           />
         )}
 
-      {resolution && (
+      {resolution &&
+        (user?.roleName === ROLES.ADMIN ||
+          user?.roleName === ROLES.SUPER_ADMIN) && (
+          <SuccessAlert
+            className="mb-4"
+            message={`This ticket has been solved with resolution: ${resolution.resolution}`}
+          />
+        )}
+
+      {resolution && user?.roleName === ROLES.USER && (
         <SuccessAlert
           className="mb-4"
-          message={`This ticket has been resolved with resolution`}
+          message={`This ticket has been resolved`}
         />
       )}
 
