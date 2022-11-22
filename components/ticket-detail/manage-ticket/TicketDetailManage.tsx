@@ -15,6 +15,7 @@ import { TicketUtils } from '../../../shared/libs/ticket-utils';
 import TicketDetailManageAction from './TicketDetailManageAction';
 import { useAtom } from 'jotai';
 import TicketDetailStore from '../../../stores/tickets/[id]';
+import TicketResolutionChangeLogTable from './TicketResolutionChangeLogTable';
 
 export default function TicketDetailManage() {
   const session = useSession();
@@ -39,12 +40,14 @@ export default function TicketDetailManage() {
         />
       )}
 
-      <TicketDetailManageStatus/>
+      <TicketResolutionChangeLogTable />
 
-      <TicketDetailManageDueDate/>
+      <TicketDetailManageStatus />
+
+      <TicketDetailManageDueDate />
 
       {TicketUtils.isEligibleToManage(user, ticket) && (
-        <TicketDetailManageAction/>
+        <TicketDetailManageAction />
       )}
 
       {TicketUtils.getCurrentStatus(ticketStatuses) === STATUS.CLOSED && (
