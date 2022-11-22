@@ -1,8 +1,10 @@
 import { CheckCircleIcon, CheckIcon, ReplyIcon } from '@heroicons/react/solid';
 import { useAtom } from 'jotai';
 import { MutableRefObject } from 'react';
+import toast from 'react-hot-toast';
 import { replyRecipientsAtom } from '../../../atom';
 import { OutlookMessage } from '../../../models/OutlookMessage';
+import { STATUS } from '../../../shared/constants/status';
 import TicketDetailStore from '../../../stores/tickets/[id]';
 
 type Props = {
@@ -16,9 +18,9 @@ const TicketDetailConversationAction = ({
   message,
   replyComponentRef,
 }: Props) => {
+  const [ticketStatuses] = useAtom(TicketDetailStore.ticketStatuses);
   const [, setReplyRecipients] = useAtom(replyRecipientsAtom);
   const [resolution] = useAtom(TicketDetailStore.resolution);
-  console.log({ resolution });
   const [, setMessageId] = useAtom(TicketDetailStore.selectedOutlookMessageId);
   const [, setConversationId] = useAtom(
     TicketDetailStore.selectedConversationId
@@ -28,6 +30,17 @@ const TicketDetailConversationAction = ({
   );
 
   const onReply = () => {
+    const latestStatus = ticketStatuses[ticketStatuses.length - 1];
+    if (latestStatus.status.statusName === STATUS.ASSIGNED) {
+      toast.error(() => (
+        <span>
+          Ticket status should be at least <strong>In Progress</strong> before
+          you can reply
+        </span>
+      ));
+      return;
+    }
+
     const toRecipients = message.from.emailAddress.address;
     const ccRecipients = message.ccRecipients
       .map((recipient) => recipient.emailAddress.address)
