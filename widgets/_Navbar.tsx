@@ -52,16 +52,6 @@ export default function Navbar() {
           roles: [ROLES.SUPER_ADMIN],
         },
         {
-          title: 'Roles',
-          href: '/roles',
-          roles: [ROLES.SUPER_ADMIN],
-        },
-        {
-          title: 'Ticket Status',
-          href: '/status',
-          roles: [ROLES.SUPER_ADMIN],
-        },
-        {
           title: 'Guideline Categories',
           href: '/guideline-categories',
           roles: [ROLES.SUPER_ADMIN],
