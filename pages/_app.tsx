@@ -1,6 +1,5 @@
 import '../shared/styles/globals.css';
 import type { AppProps } from 'next/app';
-import { Toaster } from 'react-hot-toast';
 import { useHydrateAtoms } from 'jotai/utils';
 import {
   semestersAtom,
@@ -10,7 +9,6 @@ import {
   unreadNotificationsCountAtom,
 } from '../atom';
 import { Semester } from '../models/Semester';
-import NextNProgress from 'nextjs-progressbar';
 import { SessionProvider } from 'next-auth/react';
 import 'react-quill/dist/quill.snow.css';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -18,6 +16,10 @@ import AuthHandlerWrapper from '../components/AuthHandlerWrapper';
 import { Notification } from '../models/Notification';
 import useHydrateAndSyncAtom from '../hooks/useHydrateAndSyncAtom';
 import { useSetAtom } from 'jotai';
+import dynamic from 'next/dynamic';
+
+const NextNProgress = dynamic(() => import('nextjs-progressbar'));
+const Toaster = dynamic(() => import('react-hot-toast').then((t) => t.Toaster));
 
 type GlobalProps = {
   semesters: Semester[];

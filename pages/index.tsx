@@ -1,9 +1,8 @@
 import type { NextPage } from 'next';
-import { getSession, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import Layout from '../widgets/_Layout';
 import { getInitialServerProps } from '../shared/libs/initialize-server-props';
 import { withSessionSsr } from '../shared/libs/session';
-import { SemesterService } from '../services/SemesterService';
 import { AnnouncementService } from '../services/AnnouncementService';
 import { Announcement } from '../models/Announcement';
 import AnnouncementContainer from '../components/pages/home/AnnouncementContainer';
@@ -13,20 +12,27 @@ import { SessionUser } from '../models/SessionUser';
 import { Message } from '../models/Message';
 import { ROLES } from '../shared/constants/roles';
 import { useHydrateAtoms } from 'jotai/utils';
-import { atom } from 'jotai';
-import MessageContainer from '../components/messages/MessageContainer';
 import AdminTicketSummaryContainer from '../components/ticket-summaries/admin/AdminTicketSummaryContainer';
 import UserTicketSummaryContainer from '../components/ticket-summaries/user/UserTicketSummaryContainer';
 import { MessageService } from '../services/MessageService';
-import GuidelineContainer from '../components/guidelines/GuidelineContainer';
 import { GuidelineCategoryService } from '../services/GuidelineCategoryService';
 import { GuidelineCategory } from '../models/GuidelineCategory';
 import { TicketService } from '../services/TicketService';
 import { TicketSummary } from '../models/TicketSummary';
 import IndexStore from '../stores';
-import ReportDashboard from '../components/report-dashboard/ReportDashboard';
 import { ReportService } from '../services/ReportService';
 import { TicketCountByCategory } from '../models/reports/TicketCountByCategoryt';
+import dynamic from 'next/dynamic';
+
+const MessageContainer = dynamic(
+  () => import('../components/messages/MessageContainer')
+);
+const GuidelineContainer = dynamic(
+  () => import('../components/guidelines/GuidelineContainer')
+);
+const ReportDashboard = dynamic(
+  () => import('../components/report-dashboard/ReportDashboard')
+);
 
 type Props = {
   announcements: Announcement[];
