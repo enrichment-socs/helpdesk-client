@@ -104,6 +104,7 @@ const TicketDetailPage: NextPage<Props> = ({
 
     return () => {
       setOutlookMessages(null);
+      setAttachmentArrays([]);
     };
   }, []);
 
