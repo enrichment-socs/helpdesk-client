@@ -10,7 +10,7 @@ import { TicketStatus } from '../../../models/TicketStatus';
 
 const TicketDetailStore = {
   ticket: atom<Ticket>(null),
-  resolution: atom<TicketResolution>(null),
+  resolutions: atom<TicketResolution[]>([]),
   ticketStatuses: atom<TicketStatus[]>([]),
   ticketDueDates: atom<TicketDueDate[]>([]),
   ticketHistories: atom<TicketHistory[]>([]),

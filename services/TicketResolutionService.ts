@@ -15,8 +15,8 @@ export class TicketResolutionService extends BaseService {
     return result.data;
   }
 
-  public async getByTicketId(ticketId: string): Promise<TicketResolution> {
-    const result: AxiosResponse<TicketResolution> = await this.wrapper.handle(
+  public async getByTicketId(ticketId: string): Promise<TicketResolution[]> {
+    const result: AxiosResponse<TicketResolution[]> = await this.wrapper.handle(
       axios.get(
         `${this.BASE_URL}/ticket-resolutions/byTicket?ticketId=${ticketId}`,
         this.headersWithToken()

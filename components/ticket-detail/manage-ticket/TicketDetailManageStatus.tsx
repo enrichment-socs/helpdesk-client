@@ -20,7 +20,7 @@ export default function TicketDetailManageStatus() {
   const session = useSession();
   const user = session?.data?.user as SessionUser;
 
-  const [resolution] = useAtom(TicketDetailStore.resolution);
+  const [resolutions] = useAtom(TicketDetailStore.resolutions);
   const [ticketStatuses, setTicketStatuses] = useAtom(
     TicketDetailStore.ticketStatuses
   );
@@ -249,7 +249,7 @@ export default function TicketDetailManageStatus() {
                 }>
                 <div>
                   {renderReasonInputText()}
-                  {!resolution && (
+                  {resolutions.length === 0 && (
                     <small className="text-red-400 font-medium">
                       *You must create a resolution before closing this ticket.
                     </small>
@@ -270,9 +270,9 @@ export default function TicketDetailManageStatus() {
                     <button
                       onClick={() => updateStatus(STATUS.CLOSED, false)}
                       type="button"
-                      disabled={!resolution}
+                      disabled={resolutions.length === 0}
                       className={`${
-                        resolution
+                        resolutions.length > 0
                           ? 'bg-green-600 hover:bg-green-700'
                           : 'bg-gray-400'
                       } inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 rounded-md shadow-sm text-white focus:outline-none`}>

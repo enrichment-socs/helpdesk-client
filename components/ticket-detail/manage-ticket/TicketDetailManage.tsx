@@ -21,7 +21,6 @@ export default function TicketDetailManage() {
   const session = useSession();
   const user = session?.data?.user as SessionUser;
 
-  const [resolution] = useAtom(TicketDetailStore.resolution);
   const [ticketStatuses, setTicketStatuses] = useAtom(
     TicketDetailStore.ticketStatuses
   );

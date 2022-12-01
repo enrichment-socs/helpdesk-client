@@ -20,7 +20,7 @@ const TicketDetailConversationAction = ({
 }: Props) => {
   const [ticketStatuses] = useAtom(TicketDetailStore.ticketStatuses);
   const [, setReplyRecipients] = useAtom(replyRecipientsAtom);
-  const [resolution] = useAtom(TicketDetailStore.resolution);
+  const [resolutions] = useAtom(TicketDetailStore.resolutions);
   const [, setMessageId] = useAtom(TicketDetailStore.selectedOutlookMessageId);
   const [, setConversationId] = useAtom(
     TicketDetailStore.selectedConversationId
@@ -65,7 +65,10 @@ const TicketDetailConversationAction = ({
   };
 
   const renderResolutionBtn = () => {
-    if (resolution && resolution.messageId === message.id) {
+    if (
+      resolutions.length > 0 &&
+      resolutions[resolutions.length - 1].messageId === message.id
+    ) {
       return (
         <button
           disabled

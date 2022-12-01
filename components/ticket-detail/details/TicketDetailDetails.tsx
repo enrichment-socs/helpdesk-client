@@ -23,15 +23,19 @@ const TicketDetailDetails = () => {
   const [outlookMessages] = useAtom(TicketDetailStore.outlookMessages);
   const [attachmentsArrays] = useAtom(TicketDetailStore.attachmentsArray);
   const [ticket] = useAtom(TicketDetailStore.ticket);
-  const [resolution] = useAtom(TicketDetailStore.resolution);
-  const isOldResolution = resolution && resolution.messageId === null;
+  const [resolutions] = useAtom(TicketDetailStore.resolutions);
+  const latestResolution =
+    resolutions.length > 0 ? resolutions[resolutions.length - 1] : null;
+  const isOldResolution = latestResolution
+    ? latestResolution.messageId === null
+    : false;
 
   const session = useSession();
   const user = session?.data?.user as SessionUser;
 
   const renderBadge = (messageId: string) => {
-    if (!messageId || !resolution) return '';
-    if (resolution.messageId !== messageId) return '';
+    if (!messageId || !latestResolution) return '';
+    if (latestResolution?.messageId !== messageId) return '';
     return <CheckCircleIcon className="w-4 h-4 ml-2 text-green-600" />;
   };
 
@@ -44,22 +48,24 @@ const TicketDetailDetails = () => {
           user?.roleName === ROLES.SUPER_ADMIN) && (
           <InfoAlert
             className="mb-4"
-            message={`Due to update in creating resolution mechanism, resolution for this message needs to be updated. Please mark a message in this ticket as resolution. You can do so by click <b>Mark as Resolution</b> button in one of the message below. <br/><br/> Previous resolution for this ticket was: ${resolution.resolution}`}
+            message={`Due to update in creating resolution mechanism, resolution for this message needs to be updated. Please mark a message in this ticket as resolution. You can do so by click <b>Mark as Resolution</b> button in one of the message below. <br/><br/> Previous resolution for this ticket was: ${latestResolution?.resolution}`}
           />
         )}
 
-      {resolution &&
+      {resolutions.length > 0 &&
         (user?.roleName === ROLES.ADMIN ||
           user?.roleName === ROLES.SUPER_ADMIN) && (
           <SuccessAlert
             className="mb-4"
             message={`This ticket has been solved and a message has been marked as resolution${
-              resolution.resolution ? ` :${resolution.resolution}` : '.'
+              latestResolution?.resolution
+                ? ` :${latestResolution?.resolution}`
+                : '.'
             }`}
           />
         )}
 
-      {resolution && user?.roleName === ROLES.USER && (
+      {resolutions.length > 0 && user?.roleName === ROLES.USER && (
         <SuccessAlert
           className="mb-4"
           message={`This ticket has been solved and a message has been marked as resolution`}
@@ -223,7 +229,7 @@ const TicketDetailDetails = () => {
                   <TicketDetailProperties
                     ticket={ticket}
                     outlookMessage={outlookMessages ? outlookMessages[0] : null}
-                    resolution={resolution}
+                    resolution={latestResolution}
                   />
                 </Disclosure.Panel>
               </Transition>

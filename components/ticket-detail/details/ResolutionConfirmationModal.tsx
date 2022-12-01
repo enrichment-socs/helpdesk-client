@@ -28,7 +28,7 @@ export default function ResolutionConfirmationModal() {
   );
 
   const [ticket] = useAtom(TicketDetailStore.ticket);
-  const [, setResolution] = useAtom(TicketDetailStore.resolution) as any; //workaround because the setter type is never
+  const [, setResolutions] = useAtom(TicketDetailStore.resolutions) as any; //workaround because the setter type is never
   const [ticketStatuses] = useAtom(TicketDetailStore.ticketStatuses);
   const latestStatus = ticketStatuses
     ? ticketStatuses[ticketStatuses.length - 1]
@@ -69,13 +69,13 @@ export default function ResolutionConfirmationModal() {
   };
 
   const handlePostSuccess = async () => {
-    const newestResolution = await resolutionService.getByTicketId(ticket.id);
+    const newestResolutions = await resolutionService.getByTicketId(ticket.id);
     setLoading(false);
     setIsOpen(false);
     setMessageId('');
     setConversationId('');
     setValue('reason', '');
-    setResolution(newestResolution);
+    setResolutions(newestResolutions);
   };
 
   const canCreateResolution = () => {

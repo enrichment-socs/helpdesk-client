@@ -1,8 +1,9 @@
 import { format } from 'date-fns';
-import { TicketResolution } from '../../../models/TicketResolution';
+import { useAtom } from 'jotai';
+import TicketDetailStore from '../../../stores/tickets/[id]';
 
 export default function TicketResolutionChangeLogTable() {
-  const resolutions: TicketResolution[] = [];
+  const [resolutions] = useAtom(TicketDetailStore.resolutions);
 
   return (
     <div className="border border-gray-300 rounded p-4 shadow-sm">

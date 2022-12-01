@@ -40,7 +40,7 @@ import useHydrateAndSyncAtom from '../../../hooks/useHydrateAndSyncAtom';
 
 type Props = {
   ticket: Ticket;
-  resolution: TicketResolution;
+  resolutions: TicketResolution;
   ticketStatuses: TicketStatus[];
   statuses: Status[];
   ticketDueDates: TicketDueDate[];
@@ -49,7 +49,7 @@ type Props = {
 
 const TicketDetailPage: NextPage<Props> = ({
   ticket,
-  resolution,
+  resolutions,
   ticketStatuses,
   ticketDueDates,
   ticketHistories,
@@ -62,9 +62,9 @@ const TicketDetailPage: NextPage<Props> = ({
       ticket,
     ],
     [
-      TicketDetailStore.resolution,
-      useSetAtom(TicketDetailStore.resolution as any),
-      resolution,
+      TicketDetailStore.resolutions,
+      useSetAtom(TicketDetailStore.resolutions),
+      resolutions,
     ],
     [
       TicketDetailStore.ticketStatuses,
@@ -302,8 +302,7 @@ export const getServerSideProps = withSessionSsr(
       };
     }
 
-    const resolution =
-      (await resolutionService.getByTicketId(ticket.id)) || null;
+    const resolutions = await resolutionService.getByTicketId(ticket.id);
 
     const ticketStatuses = await ticketStatusService.getAllByTicketId(
       ticket.id
@@ -323,7 +322,7 @@ export const getServerSideProps = withSessionSsr(
         session,
         sessionActiveSemester,
         ticket,
-        resolution,
+        resolutions,
         ticketStatuses,
         ticketDueDates,
         ticketHistories,
