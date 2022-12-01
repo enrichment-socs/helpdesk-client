@@ -48,7 +48,7 @@ export default function ResolutionConfirmationModal() {
   const onSubmit: SubmitHandler<FormData> = async ({ reason }) => {
     const dto: CreateTicketResolutionDto = {
       conversationId,
-      resolution: reason,
+      resolution: reason ?? '',
       ticketId: ticket.id,
       messageId,
     };
@@ -136,27 +136,16 @@ export default function ResolutionConfirmationModal() {
                     <div>
                       <label className="block text-sm text-gray-500">
                         Are you sure you want to mark this message as resolution
-                        ? Please state your reason below:
+                        ? Please state your reason below (optional):
                       </label>
                       <div className="mt-1">
                         <input
-                          {...register('reason', {
-                            required: true,
-                          })}
+                          {...register('reason')}
                           type="text"
-                          className={`${
-                            errors.reason
-                              ? 'border-red-300'
-                              : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
-                          } mt-1 block w-full outline-none p-2 text-base border sm:text-sm rounded-md`}
+                          className={`border-gray-300 focus:ring-blue-500 focus:border-blue-500 mt-1 block w-full outline-none p-2 text-base border sm:text-sm rounded-md`}
                           placeholder="Input reason..."
                         />
                       </div>
-                      {errors.reason?.type === 'required' && (
-                        <small className="text-red-500">
-                          Reason must be filled
-                        </small>
-                      )}
                     </div>
 
                     <div className="mt-4 text-right">

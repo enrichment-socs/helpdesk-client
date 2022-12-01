@@ -268,7 +268,7 @@ export default function TicketDetailManageStatus() {
                     </button>
 
                     <button
-                      onClick={() => updateStatus(STATUS.CLOSED, true)}
+                      onClick={() => updateStatus(STATUS.CLOSED, false)}
                       type="button"
                       disabled={!resolution}
                       className={`${
