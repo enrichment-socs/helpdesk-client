@@ -24,6 +24,9 @@ import { GuidelineCategory } from '../models/GuidelineCategory';
 import { TicketService } from '../services/TicketService';
 import { TicketSummary } from '../models/TicketSummary';
 import IndexStore from '../stores';
+import ReportDashboard from '../components/report-dashboard/ReportDashboard';
+import { ReportService } from '../services/ReportService';
+import { TicketCountByCategory } from '../models/reports/TicketCountByCategoryt';
 
 type Props = {
   announcements: Announcement[];
@@ -33,6 +36,7 @@ type Props = {
   initialSkip: number;
   messageCount: number;
   ticketSummary: TicketSummary;
+  ticketsCountByCategories: TicketCountByCategory[];
 };
 
 const Home: NextPage<Props> = ({
@@ -43,11 +47,13 @@ const Home: NextPage<Props> = ({
   initialSkip,
   messageCount,
   ticketSummary,
+  ticketsCountByCategories,
 }) => {
   useHydrateAtoms([
     [IndexStore.messages, messages],
     [IndexStore.skipCount, initialSkip],
     [IndexStore.totalMessagesCount, messageCount],
+    [IndexStore.ticketsCountByCategories, ticketsCountByCategories],
   ] as const);
 
   const [openAnnouncementModal, setOpenAnnouncementModal] = useState(false);
@@ -81,6 +87,8 @@ const Home: NextPage<Props> = ({
           </div>
         </div>
 
+        {user?.roleName === ROLES.SUPER_ADMIN && <ReportDashboard />}
+
         {user?.roleName === ROLES.ADMIN && (
           <MessageContainer take={initialTake} />
         )}
@@ -111,6 +119,7 @@ export const getServerSideProps = withSessionSsr(
     const announcementService = new AnnouncementService(user.accessToken);
     const messageService = new MessageService(user.accessToken);
     const ticketService = new TicketService(user.accessToken);
+    const reportService = new ReportService(user.accessToken);
 
     const announcements = await announcementService.getBySemester(
       sessionActiveSemester.id,
@@ -136,6 +145,11 @@ export const getServerSideProps = withSessionSsr(
       sessionActiveSemester.id
     );
 
+    const ticketsCountByCategories =
+      user.roleName === ROLES.SUPER_ADMIN
+        ? await reportService.getTicketsCountByCategories()
+        : [];
+
     return {
       props: {
         ...globalProps,
@@ -148,6 +162,7 @@ export const getServerSideProps = withSessionSsr(
         initialTake,
         initialSkip,
         ticketSummary,
+        ticketsCountByCategories,
       },
     };
   }
