@@ -23,6 +23,8 @@ import IndexStore from '../stores';
 import { ReportService } from '../services/ReportService';
 import { TicketCountByCategory } from '../models/reports/TicketCountByCategoryt';
 import dynamic from 'next/dynamic';
+import { TicketCountByPriority } from '../models/reports/TicketCountByPriority';
+import { TicketCountByStatus } from '../models/reports/TicketCountByStatus';
 
 const MessageContainer = dynamic(
   () => import('../components/messages/MessageContainer')
@@ -42,7 +44,11 @@ type Props = {
   initialSkip: number;
   messageCount: number;
   ticketSummary: TicketSummary;
-  ticketsCountByCategories: TicketCountByCategory[];
+  reports: {
+    ticketsCountByCategories: TicketCountByCategory[];
+    ticketsCountByPriorities: TicketCountByPriority[];
+    ticketsCountByStatuses: TicketCountByStatus[];
+  };
 };
 
 const Home: NextPage<Props> = ({
@@ -53,13 +59,15 @@ const Home: NextPage<Props> = ({
   initialSkip,
   messageCount,
   ticketSummary,
-  ticketsCountByCategories,
+  reports,
 }) => {
   useHydrateAtoms([
     [IndexStore.messages, messages],
     [IndexStore.skipCount, initialSkip],
     [IndexStore.totalMessagesCount, messageCount],
-    [IndexStore.ticketsCountByCategories, ticketsCountByCategories],
+    [IndexStore.ticketsCountByCategories, reports.ticketsCountByCategories],
+    [IndexStore.ticketsCountByPriorities, reports.ticketsCountByPriorities],
+    [IndexStore.ticketsCountByStatuses, reports.ticketsCountByStatuses],
   ] as const);
 
   const [openAnnouncementModal, setOpenAnnouncementModal] = useState(false);
@@ -156,6 +164,16 @@ export const getServerSideProps = withSessionSsr(
         ? await reportService.getTicketsCountByCategories()
         : [];
 
+    const ticketsCountByPriorities =
+      user.roleName === ROLES.SUPER_ADMIN
+        ? await reportService.getTicketsCountByPriorities()
+        : [];
+
+    const ticketsCountByStatuses =
+      user.roleName === ROLES.SUPER_ADMIN
+        ? await reportService.getTicketsCountByStatuses()
+        : [];
+
     return {
       props: {
         ...globalProps,
@@ -168,7 +186,11 @@ export const getServerSideProps = withSessionSsr(
         initialTake,
         initialSkip,
         ticketSummary,
-        ticketsCountByCategories,
+        reports: {
+          ticketsCountByCategories,
+          ticketsCountByPriorities,
+          ticketsCountByStatuses,
+        },
       },
     };
   }
