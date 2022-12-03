@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai';
-import { Pie } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
 import IndexStore from '../../stores';
 
 export default function TicketCountByCategoryReport() {
@@ -14,9 +14,18 @@ export default function TicketCountByCategoryReport() {
         label: 'Count',
         data: ticketsCountByCategories.map((t) => t.count),
         hoverOffset: 4,
+        borderWidth: 1,
       },
     ],
   };
+
+  const options = {
+    plugins: {
+      legend: {
+        position: 'right',
+      },
+    },
+  } as const;
 
   return (
     <div className="p-2 border-2 rounded">
@@ -24,7 +33,7 @@ export default function TicketCountByCategoryReport() {
         <span className="ml-3">Tickets Count For Each Category</span>
       </div>
 
-      <Pie data={data} />
+      <Bar data={data} />
     </div>
   );
 }

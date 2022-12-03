@@ -134,6 +134,7 @@ export const getServerSideProps = withSessionSsr(
     const messageService = new MessageService(user.accessToken);
     const ticketService = new TicketService(user.accessToken);
     const reportService = new ReportService(user.accessToken);
+    const guidelineCatSvc = new GuidelineCategoryService(user?.accessToken);
 
     const announcements = await announcementService.getBySemester(
       sessionActiveSemester.id,
@@ -143,16 +144,13 @@ export const getServerSideProps = withSessionSsr(
     const initialTake = 10;
     const initialSkip = 0;
     const { messages, count } =
-      user?.roleName === ROLES.USER
+      user?.roleName !== ROLES.ADMIN
         ? { messages: [], count: 0 }
         : await messageService.getMessages(initialTake, initialSkip);
 
     let faqCategories = null;
     if (user?.roleName === ROLES.USER) {
-      const faqCategoryService = new GuidelineCategoryService(
-        user?.accessToken
-      );
-      faqCategories = await faqCategoryService.getAll();
+      faqCategories = await guidelineCatSvc.getAll();
     }
 
     const ticketSummary = await ticketService.getTicketSummary(

@@ -5,12 +5,23 @@ import {
   Tooltip,
   Legend,
   Colors,
+  CategoryScale,
+  LinearScale,
+  BarElement,
 } from 'chart.js';
 import TicketCountByCategoryReport from './TicketCountByCategoryReport';
 import TicketCountByPriorityReport from './TicketCountByPriorityReport';
 import TicketCountByStatusReport from './TicketCountByStatusReport';
 
-ChartJS.register(ArcElement, Tooltip, Legend, Colors);
+ChartJS.register(
+  ArcElement,
+  Tooltip,
+  Legend,
+  Colors,
+  CategoryScale,
+  LinearScale,
+  BarElement
+);
 
 export default function ReportDashboard() {
   return (
@@ -21,8 +32,9 @@ export default function ReportDashboard() {
       </div>
 
       <div className="mx-2 my-4">
-        <div className="grid grid-cols-3 gap-4">
-          <TicketCountByCategoryReport />
+        <TicketCountByCategoryReport />
+
+        <div className="grid grid-cols-3 gap-4 mt-4">
           <TicketCountByPriorityReport />
           <TicketCountByStatusReport />
         </div>
