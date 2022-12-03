@@ -4,7 +4,6 @@ import IndexStore from '../../stores';
 
 export default function TicketCountByHandlerReport() {
   const [ticketsCountByHandlers] = useAtom(IndexStore.ticketsCountByHandlers);
-  console.log({ ticketsCountByHandlers });
 
   const data = {
     labels: ticketsCountByHandlers.map((t) => t.handlerName),
