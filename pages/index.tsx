@@ -21,10 +21,11 @@ import { TicketService } from '../services/TicketService';
 import { TicketSummary } from '../models/TicketSummary';
 import IndexStore from '../stores';
 import { ReportService } from '../services/ReportService';
-import { TicketCountByCategory } from '../models/reports/TicketCountByCategoryt';
+import { TicketCountByCategory } from '../models/reports/TicketCountByCategory';
 import dynamic from 'next/dynamic';
 import { TicketCountByPriority } from '../models/reports/TicketCountByPriority';
 import { TicketCountByStatus } from '../models/reports/TicketCountByStatus';
+import { TicketCountByHandler } from '../models/reports/TicketCountByHandler';
 
 const MessageContainer = dynamic(
   () => import('../components/messages/MessageContainer')
@@ -48,6 +49,7 @@ type Props = {
     ticketsCountByCategories: TicketCountByCategory[];
     ticketsCountByPriorities: TicketCountByPriority[];
     ticketsCountByStatuses: TicketCountByStatus[];
+    ticketsCountByHandlers: TicketCountByHandler[];
   };
 };
 
@@ -68,6 +70,7 @@ const Home: NextPage<Props> = ({
     [IndexStore.ticketsCountByCategories, reports.ticketsCountByCategories],
     [IndexStore.ticketsCountByPriorities, reports.ticketsCountByPriorities],
     [IndexStore.ticketsCountByStatuses, reports.ticketsCountByStatuses],
+    [IndexStore.ticketsCountByHandlers, reports.ticketsCountByHandlers],
   ] as const);
 
   const [openAnnouncementModal, setOpenAnnouncementModal] = useState(false);
@@ -172,6 +175,11 @@ export const getServerSideProps = withSessionSsr(
         ? await reportService.getTicketsCountByStatuses()
         : [];
 
+    const ticketsCountByHandlers =
+      user.roleName === ROLES.SUPER_ADMIN
+        ? await reportService.getTicketsCountByHandlers()
+        : [];
+
     return {
       props: {
         ...globalProps,
@@ -188,6 +196,7 @@ export const getServerSideProps = withSessionSsr(
           ticketsCountByCategories,
           ticketsCountByPriorities,
           ticketsCountByStatuses,
+          ticketsCountByHandlers,
         },
       },
     };

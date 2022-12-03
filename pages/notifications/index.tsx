@@ -114,7 +114,7 @@ const NotificationPage: NextPage = () => {
           </div>
         </div>
         <ul>
-          {notifications.map((notification) => (
+          {notifications?.map((notification) => (
             <li key={notification.id}>
               <NotificationItem
                 notification={notification}

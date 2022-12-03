@@ -94,7 +94,7 @@ const NavbarNotification = () => {
         </div>
 
         <ul className="max-h-[20rem] overflow-auto">
-          {notifications.map((notification) => (
+          {notifications?.map((notification) => (
             <li key={notification.id}>
               <NotificationItem notification={notification} />
             </li>

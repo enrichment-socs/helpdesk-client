@@ -9,6 +9,7 @@ import {
   LinearScale,
   BarElement,
 } from 'chart.js';
+import TicketCountByHandlerReport from './TicketCountByCategoryHandler';
 import TicketCountByCategoryReport from './TicketCountByCategoryReport';
 import TicketCountByPriorityReport from './TicketCountByPriorityReport';
 import TicketCountByStatusReport from './TicketCountByStatusReport';
@@ -37,6 +38,10 @@ export default function ReportDashboard() {
         <div className="grid grid-cols-3 gap-4 mt-4">
           <TicketCountByPriorityReport />
           <TicketCountByStatusReport />
+        </div>
+
+        <div className="mt-4">
+          <TicketCountByHandlerReport />
         </div>
       </div>
     </div>
