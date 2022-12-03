@@ -22,9 +22,10 @@ export default function TicketCountByCategoryReport() {
   const options = {
     plugins: {
       legend: {
-        position: 'right',
+        display: false,
       },
     },
+    indexAxis: 'y',
   } as const;
 
   return (
@@ -33,7 +34,7 @@ export default function TicketCountByCategoryReport() {
         <span className="ml-3">Tickets Count For Each Category</span>
       </div>
 
-      <Bar data={data} />
+      <Bar options={options} data={data} />
     </div>
   );
 }
