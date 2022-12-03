@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 import { TicketCountByCategory } from '../models/reports/TicketCountByCategory';
 import { TicketCountByHandler } from '../models/reports/TicketCountByHandler';
+import { TicketCountByMonth } from '../models/reports/TicketCountByMonth';
 import { TicketCountByPriority } from '../models/reports/TicketCountByPriority';
 import { TicketCountByStatus } from '../models/reports/TicketCountByStatus';
 import { BaseService } from './BaseService';
@@ -47,6 +48,17 @@ export class ReportService extends BaseService {
       await this.wrapper.handle(
         axios.get(
           `${this.BASE_URL}/reports/tickets-count-by-handlers?semesterId=${semesterId}`,
+          this.headersWithToken()
+        )
+      );
+    return result.data;
+  }
+
+  public async getTicketsCountByMonths(semesterId: string = '') {
+    const result: AxiosResponse<TicketCountByMonth[]> =
+      await this.wrapper.handle(
+        axios.get(
+          `${this.BASE_URL}/reports/tickets-count-by-months?semesterId=${semesterId}`,
           this.headersWithToken()
         )
       );

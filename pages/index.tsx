@@ -28,6 +28,7 @@ import { TicketCountByStatus } from '../models/reports/TicketCountByStatus';
 import { TicketCountByHandler } from '../models/reports/TicketCountByHandler';
 import { UserService } from '../services/UserService';
 import { User } from '../models/User';
+import { TicketCountByMonth } from '../models/reports/TicketCountByMonth';
 
 const MessageContainer = dynamic(
   () => import('../components/messages/MessageContainer')
@@ -54,6 +55,7 @@ type Props = {
     ticketsCountByStatuses: TicketCountByStatus[];
     ticketsCountByHandlers: TicketCountByHandler[];
     ticketStatusCountByHandler: TicketCountByStatus[];
+    ticketsCountByMonths: TicketCountByMonth[];
   };
 };
 
@@ -77,6 +79,7 @@ const Home: NextPage<Props> = ({
     [IndexStore.ticketsCountByStatuses, reports.ticketsCountByStatuses],
     [IndexStore.ticketsCountByHandlers, reports.ticketsCountByHandlers],
     [IndexStore.ticketStatusCountByHandler, reports.ticketStatusCountByHandler],
+    [IndexStore.ticketsCountByMonths, reports.ticketsCountByMonths],
     [IndexStore.admins, admins],
     [IndexStore.ticketStatusCountAdminId, admins[0].id],
   ] as const);
@@ -199,6 +202,11 @@ export const getServerSideProps = withSessionSsr(
         ? await reportService.getTicketsCountByStatuses('', admins[0].id)
         : [];
 
+    const ticketsCountByMonths =
+      user.roleName === ROLES.SUPER_ADMIN
+        ? await reportService.getTicketsCountByMonths()
+        : [];
+
     return {
       props: {
         ...globalProps,
@@ -218,6 +226,7 @@ export const getServerSideProps = withSessionSsr(
           ticketsCountByStatuses,
           ticketsCountByHandlers,
           ticketStatusCountByHandler,
+          ticketsCountByMonths,
         },
       },
     };

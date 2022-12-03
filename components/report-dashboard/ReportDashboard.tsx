@@ -8,6 +8,8 @@ import {
   CategoryScale,
   LinearScale,
   BarElement,
+  PointElement,
+  LineElement,
 } from 'chart.js';
 import { useAtom } from 'jotai';
 import { useSession } from 'next-auth/react';
@@ -19,7 +21,7 @@ import TicketCountByHandlerReport from './TicketCountByHandlerReport';
 import TicketCountByCategoryReport from './TicketCountByCategoryReport';
 import TicketCountByPriorityReport from './TicketCountByPriorityReport';
 import TicketCountByStatusReport from './TicketCountByStatusReport';
-import TicketStatusCountByHandlerReport from './TicketStatusCountByHandlerReport';
+import TicketCountByMonthReport from './TicketCountByMonthReport';
 
 ChartJS.register(
   ArcElement,
@@ -28,7 +30,9 @@ ChartJS.register(
   Colors,
   CategoryScale,
   LinearScale,
-  BarElement
+  BarElement,
+  PointElement,
+  LineElement
 );
 
 export default function ReportDashboard() {
@@ -54,6 +58,7 @@ export default function ReportDashboard() {
   const [, setTicketStatusCountByHandler] = useAtom(
     IndexStore.ticketStatusCountByHandler
   );
+  const [, setTicketsCountByMonths] = useAtom(IndexStore.ticketsCountByMonths);
 
   const session = useSession();
   const user = session?.data?.user as SessionUser;
@@ -73,12 +78,16 @@ export default function ReportDashboard() {
         semesterId,
         ticketStatusCountAdminId
       );
+    const ticketsCountByMonths = await reportService.getTicketsCountByMonths(
+      semesterId
+    );
 
     setTicketsCountByCategories(ticketsCountByCategories);
     setTicketsCountByPriorities(ticketsCountByPriorities);
     setTicketsCountByStatuses(ticketsCountByStatuses);
     setTicketsCountByHandlers(ticketsCountByHandlers);
     setTicketStatusCountByHandler(ticketStatusCountByHandler);
+    setTicketsCountByMonths(ticketsCountByMonths);
   };
 
   return (
@@ -115,7 +124,7 @@ export default function ReportDashboard() {
         <div className="grid grid-cols-3 gap-4 mt-4">
           <TicketCountByPriorityReport />
           <TicketCountByStatusReport />
-          <TicketStatusCountByHandlerReport />
+          <TicketCountByMonthReport />
         </div>
       </div>
     </div>
