@@ -100,7 +100,7 @@ const NavbarNotification = () => {
             </li>
           ))}
 
-          {notifications.length === 0 && (
+          {notifications?.length === 0 && (
             <li className="p-4 text-sm">You have no notifications.</li>
           )}
         </ul>

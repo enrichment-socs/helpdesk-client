@@ -123,7 +123,7 @@ const NotificationPage: NextPage = () => {
             </li>
           ))}
 
-          {notifications.length === 0 && (
+          {notifications?.length === 0 && (
             <li className="p-4 text-center">
               You currently have no notifications.
             </li>

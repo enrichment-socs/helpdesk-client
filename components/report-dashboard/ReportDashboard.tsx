@@ -11,15 +11,15 @@ import {
 } from 'chart.js';
 import { useAtom } from 'jotai';
 import { useSession } from 'next-auth/react';
-import { useEffect } from 'react';
 import { semestersAtom } from '../../atom';
 import { SessionUser } from '../../models/SessionUser';
 import { ReportService } from '../../services/ReportService';
 import IndexStore from '../../stores';
-import TicketCountByHandlerReport from './TicketCountByCategoryHandler';
+import TicketCountByHandlerReport from './TicketCountByHandlerReport';
 import TicketCountByCategoryReport from './TicketCountByCategoryReport';
 import TicketCountByPriorityReport from './TicketCountByPriorityReport';
 import TicketCountByStatusReport from './TicketCountByStatusReport';
+import TicketStatusCountByHandlerReport from './TicketStatusCountByHandlerReport';
 
 ChartJS.register(
   ArcElement,
@@ -33,6 +33,12 @@ ChartJS.register(
 
 export default function ReportDashboard() {
   const [semesters] = useAtom(semestersAtom);
+  const [reportSemesterId, setReportSemesterId] = useAtom(
+    IndexStore.reportSemesterId
+  );
+  const [ticketStatusCountAdminId] = useAtom(
+    IndexStore.ticketStatusCountAdminId
+  );
   const [, setTicketsCountByCategories] = useAtom(
     IndexStore.ticketsCountByCategories
   );
@@ -44,6 +50,9 @@ export default function ReportDashboard() {
   );
   const [, setTicketsCountByHandlers] = useAtom(
     IndexStore.ticketsCountByHandlers
+  );
+  const [, setTicketStatusCountByHandler] = useAtom(
+    IndexStore.ticketStatusCountByHandler
   );
 
   const session = useSession();
@@ -59,11 +68,17 @@ export default function ReportDashboard() {
       await reportService.getTicketsCountByStatuses(semesterId);
     const ticketsCountByHandlers =
       await reportService.getTicketsCountByHandlers(semesterId);
+    const ticketStatusCountByHandler =
+      await reportService.getTicketsCountByStatuses(
+        semesterId,
+        ticketStatusCountAdminId
+      );
 
     setTicketsCountByCategories(ticketsCountByCategories);
     setTicketsCountByPriorities(ticketsCountByPriorities);
     setTicketsCountByStatuses(ticketsCountByStatuses);
     setTicketsCountByHandlers(ticketsCountByHandlers);
+    setTicketStatusCountByHandler(ticketStatusCountByHandler);
   };
 
   return (
@@ -77,9 +92,10 @@ export default function ReportDashboard() {
         <label className="text-sm font-medium">Show report for:</label>
         <select
           onChange={(e) => {
+            setReportSemesterId(e.target.value);
             onSemesterChange(e.target.value);
           }}
-          defaultValue={''}
+          defaultValue={reportSemesterId}
           className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md">
           <option value="">All Semester</option>
           {semesters.map((semester) => (
@@ -99,6 +115,7 @@ export default function ReportDashboard() {
         <div className="grid grid-cols-3 gap-4 mt-4">
           <TicketCountByPriorityReport />
           <TicketCountByStatusReport />
+          <TicketStatusCountByHandlerReport />
         </div>
       </div>
     </div>

@@ -26,6 +26,8 @@ import dynamic from 'next/dynamic';
 import { TicketCountByPriority } from '../models/reports/TicketCountByPriority';
 import { TicketCountByStatus } from '../models/reports/TicketCountByStatus';
 import { TicketCountByHandler } from '../models/reports/TicketCountByHandler';
+import { UserService } from '../services/UserService';
+import { User } from '../models/User';
 
 const MessageContainer = dynamic(
   () => import('../components/messages/MessageContainer')
@@ -45,11 +47,13 @@ type Props = {
   initialSkip: number;
   messageCount: number;
   ticketSummary: TicketSummary;
+  admins: User[];
   reports: {
     ticketsCountByCategories: TicketCountByCategory[];
     ticketsCountByPriorities: TicketCountByPriority[];
     ticketsCountByStatuses: TicketCountByStatus[];
     ticketsCountByHandlers: TicketCountByHandler[];
+    ticketStatusCountByHandler: TicketCountByStatus[];
   };
 };
 
@@ -61,6 +65,7 @@ const Home: NextPage<Props> = ({
   initialSkip,
   messageCount,
   ticketSummary,
+  admins,
   reports,
 }) => {
   useHydrateAtoms([
@@ -71,6 +76,9 @@ const Home: NextPage<Props> = ({
     [IndexStore.ticketsCountByPriorities, reports.ticketsCountByPriorities],
     [IndexStore.ticketsCountByStatuses, reports.ticketsCountByStatuses],
     [IndexStore.ticketsCountByHandlers, reports.ticketsCountByHandlers],
+    [IndexStore.ticketStatusCountByHandler, reports.ticketStatusCountByHandler],
+    [IndexStore.admins, admins],
+    [IndexStore.ticketStatusCountAdminId, admins[0].id],
   ] as const);
 
   const [openAnnouncementModal, setOpenAnnouncementModal] = useState(false);
@@ -138,6 +146,7 @@ export const getServerSideProps = withSessionSsr(
     const ticketService = new TicketService(user.accessToken);
     const reportService = new ReportService(user.accessToken);
     const guidelineCatSvc = new GuidelineCategoryService(user?.accessToken);
+    const userService = new UserService(user?.accessToken);
 
     const announcements = await announcementService.getBySemester(
       sessionActiveSemester.id,
@@ -180,6 +189,16 @@ export const getServerSideProps = withSessionSsr(
         ? await reportService.getTicketsCountByHandlers()
         : [];
 
+    const admins =
+      user.roleName === ROLES.SUPER_ADMIN
+        ? await userService.getUsersWithAdminRole()
+        : [];
+
+    const ticketStatusCountByHandler =
+      user.roleName === ROLES.SUPER_ADMIN
+        ? await reportService.getTicketsCountByStatuses('', admins[0].id)
+        : [];
+
     return {
       props: {
         ...globalProps,
@@ -192,11 +211,13 @@ export const getServerSideProps = withSessionSsr(
         initialTake,
         initialSkip,
         ticketSummary,
+        admins,
         reports: {
           ticketsCountByCategories,
           ticketsCountByPriorities,
           ticketsCountByStatuses,
           ticketsCountByHandlers,
+          ticketStatusCountByHandler,
         },
       },
     };

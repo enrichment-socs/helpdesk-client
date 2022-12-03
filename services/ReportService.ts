@@ -17,11 +17,14 @@ export class ReportService extends BaseService {
     return result.data;
   }
 
-  public async getTicketsCountByStatuses(semesterId: string = '') {
+  public async getTicketsCountByStatuses(
+    semesterId: string = '',
+    userId: string = ''
+  ) {
     const result: AxiosResponse<TicketCountByStatus[]> =
       await this.wrapper.handle(
         axios.get(
-          `${this.BASE_URL}/reports/tickets-count-by-statuses?semesterId=${semesterId}`,
+          `${this.BASE_URL}/reports/tickets-count-by-statuses?semesterId=${semesterId}&userId=${userId}`,
           this.headersWithToken()
         )
       );
