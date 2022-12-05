@@ -27,8 +27,8 @@ import { TicketCountByPriority } from '../models/reports/TicketCountByPriority';
 import { TicketCountByStatus } from '../models/reports/TicketCountByStatus';
 import { TicketCountByHandler } from '../models/reports/TicketCountByHandler';
 import { UserService } from '../services/UserService';
-import { User } from '../models/User';
 import { TicketCountByMonth } from '../models/reports/TicketCountByMonth';
+import SpecificHandlerReportDashboard from '../components/report-dashboard/SpecificHandlerReportDashboard';
 
 const MessageContainer = dynamic(
   () => import('../components/messages/MessageContainer')
@@ -109,7 +109,12 @@ const Home: NextPage<Props> = ({
           </div>
         </div>
 
-        {user?.roleName === ROLES.SUPER_ADMIN && <ReportDashboard />}
+        {user?.roleName === ROLES.SUPER_ADMIN && (
+          <>
+            <ReportDashboard />
+            <SpecificHandlerReportDashboard />
+          </>
+        )}
 
         {user?.roleName === ROLES.ADMIN && (
           <MessageContainer take={initialTake} />
