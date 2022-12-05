@@ -5,12 +5,23 @@ import IndexStore from '../../stores';
 export default function TicketCountByMonthReport() {
   const [ticketsCountByMonths] = useAtom(IndexStore.ticketsCountByMonths);
 
-  const data = {
-    labels: ticketsCountByMonths.map((t) => t.month),
+  const firstHalfData = {
+    labels: ticketsCountByMonths.slice(0, 6).map((t) => t.month),
     datasets: [
       {
         label: 'Count',
-        data: ticketsCountByMonths.map((t) => t.count),
+        data: ticketsCountByMonths.slice(0, 6).map((t) => t.count),
+        hoverOffset: 4,
+      },
+    ],
+  };
+
+  const secondHalfData = {
+    labels: ticketsCountByMonths.slice(6, 12).map((t) => t.month),
+    datasets: [
+      {
+        label: 'Count',
+        data: ticketsCountByMonths.slice(6, 12).map((t) => t.count),
         hoverOffset: 4,
       },
     ],
@@ -30,7 +41,8 @@ export default function TicketCountByMonthReport() {
         <span className="ml-3">Ticket Status Count by Month</span>
       </div>
 
-      <Line options={options} data={data} />
+      <Line options={options} data={firstHalfData} />
+      <Line options={options} data={secondHalfData} />
     </div>
   );
 }
