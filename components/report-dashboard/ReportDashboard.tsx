@@ -22,6 +22,7 @@ import TicketCountByCategoryReport from './TicketCountByCategoryReport';
 import TicketCountByPriorityReport from './TicketCountByPriorityReport';
 import TicketCountByStatusReport from './TicketCountByStatusReport';
 import TicketCountByMonthReport from './TicketCountByMonthReport';
+import toast from 'react-hot-toast';
 
 ChartJS.register(
   ArcElement,
@@ -39,9 +40,6 @@ export default function ReportDashboard() {
   const [semesters] = useAtom(semestersAtom);
   const [reportSemesterId, setReportSemesterId] = useAtom(
     IndexStore.reportSemesterId
-  );
-  const [ticketStatusCountAdminId] = useAtom(
-    IndexStore.ticketStatusCountAdminId
   );
   const [, setTicketsCountByCategories] = useAtom(
     IndexStore.ticketsCountByCategories
@@ -65,28 +63,34 @@ export default function ReportDashboard() {
   const reportService = new ReportService(user?.accessToken);
 
   const onSemesterChange = async (semesterId: string) => {
-    const ticketsCountByCategories =
-      await reportService.getTicketsCountByCategories(semesterId);
-    const ticketsCountByPriorities =
-      await reportService.getTicketsCountByPriorities(semesterId);
-    const ticketsCountByStatuses =
-      await reportService.getTicketsCountByStatuses(semesterId);
-    const ticketsCountByHandlers =
-      await reportService.getTicketsCountByHandlers(semesterId);
-    const ticketStatusCountByHandler =
-      await reportService.getTicketsCountByStatuses(
-        semesterId,
-        ticketStatusCountAdminId
-      );
-    const ticketsCountByMonths = await reportService.getTicketsCountByMonths(
-      semesterId
+    const [
+      ticketsCountByCategories,
+      ticketsCountByPriorities,
+      ticketsCountByStatuses,
+      ticketsCountByHandlers,
+      ticketsCountByMonths,
+    ] = await toast.promise(
+      Promise.all([
+        reportService.getTicketsCountByCategories(semesterId),
+        reportService.getTicketsCountByPriorities(semesterId),
+        reportService.getTicketsCountByStatuses(semesterId),
+        reportService.getTicketsCountByHandlers(semesterId),
+        reportService.getTicketsCountByMonths(semesterId),
+      ]),
+      {
+        error: (e) => {
+          console.error(e);
+          return 'Error when re-fetching report data';
+        },
+        loading: 'Updating report data...',
+        success: 'Report updated',
+      }
     );
 
     setTicketsCountByCategories(ticketsCountByCategories);
     setTicketsCountByPriorities(ticketsCountByPriorities);
     setTicketsCountByStatuses(ticketsCountByStatuses);
     setTicketsCountByHandlers(ticketsCountByHandlers);
-    setTicketStatusCountByHandler(ticketStatusCountByHandler);
     setTicketsCountByMonths(ticketsCountByMonths);
   };
 

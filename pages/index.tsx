@@ -48,13 +48,11 @@ type Props = {
   initialSkip: number;
   messageCount: number;
   ticketSummary: TicketSummary;
-  admins: User[];
   reports: {
     ticketsCountByCategories: TicketCountByCategory[];
     ticketsCountByPriorities: TicketCountByPriority[];
     ticketsCountByStatuses: TicketCountByStatus[];
     ticketsCountByHandlers: TicketCountByHandler[];
-    ticketStatusCountByHandler: TicketCountByStatus[];
     ticketsCountByMonths: TicketCountByMonth[];
   };
 };
@@ -67,7 +65,6 @@ const Home: NextPage<Props> = ({
   initialSkip,
   messageCount,
   ticketSummary,
-  admins,
   reports,
 }) => {
   useHydrateAtoms([
@@ -78,10 +75,7 @@ const Home: NextPage<Props> = ({
     [IndexStore.ticketsCountByPriorities, reports.ticketsCountByPriorities],
     [IndexStore.ticketsCountByStatuses, reports.ticketsCountByStatuses],
     [IndexStore.ticketsCountByHandlers, reports.ticketsCountByHandlers],
-    [IndexStore.ticketStatusCountByHandler, reports.ticketStatusCountByHandler],
     [IndexStore.ticketsCountByMonths, reports.ticketsCountByMonths],
-    [IndexStore.admins, admins],
-    [IndexStore.ticketStatusCountAdminId, admins[0].id],
   ] as const);
 
   const [openAnnouncementModal, setOpenAnnouncementModal] = useState(false);
@@ -219,7 +213,6 @@ export const getServerSideProps = withSessionSsr(
         initialTake,
         initialSkip,
         ticketSummary,
-        admins,
         reports: {
           ticketsCountByCategories,
           ticketsCountByPriorities,
