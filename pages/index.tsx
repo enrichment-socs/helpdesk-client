@@ -36,8 +36,8 @@ const MessageContainer = dynamic(
 const GuidelineContainer = dynamic(
   () => import('../components/guidelines/GuidelineContainer')
 );
-const ReportDashboard = dynamic(
-  () => import('../components/report-dashboard/ReportDashboard')
+const GeneralReportDashboard = dynamic(
+  () => import('../components/report-dashboard/GeneralReportDashboard')
 );
 
 type Props = {
@@ -111,7 +111,7 @@ const Home: NextPage<Props> = ({
 
         {user?.roleName === ROLES.SUPER_ADMIN && (
           <>
-            <ReportDashboard />
+            <GeneralReportDashboard />
             <SpecificHandlerReportDashboard />
           </>
         )}

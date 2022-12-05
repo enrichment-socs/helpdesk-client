@@ -36,7 +36,7 @@ ChartJS.register(
   LineElement
 );
 
-export default function ReportDashboard() {
+export default function GeneralReportDashboard() {
   const [semesters] = useAtom(semestersAtom);
   const [reportSemesterId, setReportSemesterId] = useAtom(
     IndexStore.reportSemesterId
