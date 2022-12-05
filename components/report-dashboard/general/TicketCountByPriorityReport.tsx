@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai';
 import { Pie } from 'react-chartjs-2';
-import IndexStore from '../../stores';
+import IndexStore from '../../../stores';
 
 export default function TicketCountByPriorityReport() {
   const [ticketsCountByPriorities] = useAtom(

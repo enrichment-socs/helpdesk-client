@@ -17,11 +17,11 @@ import { semestersAtom } from '../../atom';
 import { SessionUser } from '../../models/SessionUser';
 import { ReportService } from '../../services/ReportService';
 import IndexStore from '../../stores';
-import TicketCountByHandlerReport from './TicketCountByHandlerReport';
-import TicketCountByCategoryReport from './TicketCountByCategoryReport';
-import TicketCountByPriorityReport from './TicketCountByPriorityReport';
-import TicketCountByStatusReport from './TicketCountByStatusReport';
-import TicketCountByMonthReport from './TicketCountByMonthReport';
+import TicketCountByHandlerReport from './general/TicketCountByHandlerReport';
+import TicketCountByCategoryReport from './general/TicketCountByCategoryReport';
+import TicketCountByPriorityReport from './general/TicketCountByPriorityReport';
+import TicketCountByStatusReport from './general/TicketCountByStatusReport';
+import TicketCountByMonthReport from './general/TicketCountByMonthReport';
 import toast from 'react-hot-toast';
 
 ChartJS.register(
