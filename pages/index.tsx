@@ -93,22 +93,6 @@ const Home: NextPage<Props> = ({
       />
 
       <div>
-        <div>
-          <div className="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4">
-            <AnnouncementContainer
-              setOpenAnnouncement={setOpenAnnouncement}
-              setOpenAnnouncementModal={setOpenAnnouncementModal}
-              announcements={announcements}
-            />
-
-            {user?.roleName === ROLES.USER ? (
-              <UserTicketSummaryContainer ticketSummary={ticketSummary} />
-            ) : (
-              <AdminTicketSummaryContainer ticketSummary={ticketSummary} />
-            )}
-          </div>
-        </div>
-
         {user?.roleName === ROLES.SUPER_ADMIN && (
           <>
             <GeneralReportDashboard />
