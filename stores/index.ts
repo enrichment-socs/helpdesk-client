@@ -17,7 +17,9 @@ const IndexStore = {
   ticketsCountByHandlers: atom<TicketCountByHandler[]>([]),
   ticketStatusCountByHandler: atom<TicketCountByStatus[]>([]),
   reportSemesterId: atom<string>(''),
+  handlerReportSemesterId: atom<string>(''),
   ticketsCountByMonths: atom<TicketCountByMonth[]>([]),
+  admins: atom<User[]>([]),
 };
 
 export default IndexStore;

@@ -29,6 +29,7 @@ import { TicketCountByHandler } from '../models/reports/TicketCountByHandler';
 import { UserService } from '../services/UserService';
 import { TicketCountByMonth } from '../models/reports/TicketCountByMonth';
 import SpecificHandlerReportDashboard from '../components/report-dashboard/SpecificHandlerReportDashboard';
+import { User } from '../models/User';
 
 const MessageContainer = dynamic(
   () => import('../components/messages/MessageContainer')
@@ -48,6 +49,7 @@ type Props = {
   initialSkip: number;
   messageCount: number;
   ticketSummary: TicketSummary;
+  admins: User[];
   reports: {
     ticketsCountByCategories: TicketCountByCategory[];
     ticketsCountByPriorities: TicketCountByPriority[];
@@ -65,6 +67,7 @@ const Home: NextPage<Props> = ({
   initialSkip,
   messageCount,
   ticketSummary,
+  admins,
   reports,
 }) => {
   useHydrateAtoms([
@@ -76,6 +79,7 @@ const Home: NextPage<Props> = ({
     [IndexStore.ticketsCountByStatuses, reports.ticketsCountByStatuses],
     [IndexStore.ticketsCountByHandlers, reports.ticketsCountByHandlers],
     [IndexStore.ticketsCountByMonths, reports.ticketsCountByMonths],
+    [IndexStore.admins, admins],
   ] as const);
 
   const [openAnnouncementModal, setOpenAnnouncementModal] = useState(false);
@@ -91,6 +95,24 @@ const Home: NextPage<Props> = ({
         isOpen={openAnnouncementModal}
         setIsOpen={setOpenAnnouncementModal}
       />
+
+      {user.roleName !== ROLES.SUPER_ADMIN && (
+        <div>
+          <div className="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4">
+            <AnnouncementContainer
+              setOpenAnnouncement={setOpenAnnouncement}
+              setOpenAnnouncementModal={setOpenAnnouncementModal}
+              announcements={announcements}
+            />
+
+            {user?.roleName === ROLES.USER ? (
+              <UserTicketSummaryContainer ticketSummary={ticketSummary} />
+            ) : (
+              <AdminTicketSummaryContainer ticketSummary={ticketSummary} />
+            )}
+          </div>
+        </div>
+      )}
 
       <div>
         {user?.roleName === ROLES.SUPER_ADMIN && (
@@ -134,10 +156,13 @@ export const getServerSideProps = withSessionSsr(
     const guidelineCatSvc = new GuidelineCategoryService(user?.accessToken);
     const userService = new UserService(user?.accessToken);
 
-    const announcements = await announcementService.getBySemester(
-      sessionActiveSemester.id,
-      true
-    );
+    const announcements =
+      user.roleName !== ROLES.SUPER_ADMIN
+        ? await announcementService.getBySemester(
+            sessionActiveSemester.id,
+            true
+          )
+        : [];
 
     const initialTake = 10;
     const initialSkip = 0;
@@ -151,9 +176,10 @@ export const getServerSideProps = withSessionSsr(
       faqCategories = await guidelineCatSvc.getAll();
     }
 
-    const ticketSummary = await ticketService.getTicketSummary(
-      sessionActiveSemester.id
-    );
+    const ticketSummary =
+      user.roleName !== ROLES.SUPER_ADMIN
+        ? await ticketService.getTicketSummary(sessionActiveSemester.id)
+        : null;
 
     const ticketsCountByCategories =
       user.roleName === ROLES.SUPER_ADMIN
@@ -202,6 +228,7 @@ export const getServerSideProps = withSessionSsr(
         initialTake,
         initialSkip,
         ticketSummary,
+        admins,
         reports: {
           ticketsCountByCategories,
           ticketsCountByPriorities,
