@@ -3,6 +3,10 @@ import { useAtom } from 'jotai';
 import { useState } from 'react';
 import { semestersAtom } from '../../atom';
 import IndexStore from '../../stores';
+import HandlerTicketCountByCategoryReport from './specific/HandlerTicketCountByCategoryReport';
+import HandlerTicketCountByMonthReport from './specific/HandlerTicketCountByMonthReport';
+import HandlerTicketCountByPriorityReport from './specific/HandlerTicketCountByPriorityReport';
+import HandlerTicketCountByStatusReport from './specific/HandlerTicketCountByStatusReport';
 
 export default function SpecificHandlerReportDashboard() {
   const [handlerReportSemesterId, setHandlerReportSemesterId] = useAtom(
@@ -57,6 +61,16 @@ export default function SpecificHandlerReportDashboard() {
               </option>
             ))}
           </select>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4 mt-4">
+          <HandlerTicketCountByCategoryReport />
+          <HandlerTicketCountByMonthReport />
+        </div>
+
+        <div className="grid grid-cols-3 gap-4 mt-4">
+          <HandlerTicketCountByPriorityReport />
+          <HandlerTicketCountByStatusReport />
         </div>
       </div>
     </div>

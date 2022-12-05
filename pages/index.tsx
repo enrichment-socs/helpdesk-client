@@ -206,11 +206,6 @@ export const getServerSideProps = withSessionSsr(
         ? await userService.getUsersWithAdminRole()
         : [];
 
-    const ticketStatusCountByHandler =
-      user.roleName === ROLES.SUPER_ADMIN
-        ? await reportService.getTicketsCountByStatuses('', admins[0].id)
-        : [];
-
     const ticketsCountByMonths =
       user.roleName === ROLES.SUPER_ADMIN
         ? await reportService.getTicketsCountByMonths()
@@ -234,7 +229,6 @@ export const getServerSideProps = withSessionSsr(
           ticketsCountByPriorities,
           ticketsCountByStatuses,
           ticketsCountByHandlers,
-          ticketStatusCountByHandler,
           ticketsCountByMonths,
         },
       },

@@ -14,12 +14,16 @@ const IndexStore = {
   ticketsCountByCategories: atom<TicketCountByCategory[]>([]),
   ticketsCountByPriorities: atom<TicketCountByPriority[]>([]),
   ticketsCountByStatuses: atom<TicketCountByStatus[]>([]),
+  ticketsCountByMonths: atom<TicketCountByMonth[]>([]),
   ticketsCountByHandlers: atom<TicketCountByHandler[]>([]),
-  ticketStatusCountByHandler: atom<TicketCountByStatus[]>([]),
   reportSemesterId: atom<string>(''),
   handlerReportSemesterId: atom<string>(''),
-  ticketsCountByMonths: atom<TicketCountByMonth[]>([]),
   admins: atom<User[]>([]),
+
+  handlerTicketsCountByCategories: atom<TicketCountByCategory[]>([]),
+  handlerTicketsCountByPriorities: atom<TicketCountByPriority[]>([]),
+  handlerTicketsCountByStatuses: atom<TicketCountByStatus[]>([]),
+  handlerTicketsCountByMonths: atom<TicketCountByMonth[]>([]),
 };
 
 export default IndexStore;

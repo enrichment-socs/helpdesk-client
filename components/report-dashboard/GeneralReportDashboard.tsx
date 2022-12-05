@@ -53,9 +53,6 @@ export default function GeneralReportDashboard() {
   const [, setTicketsCountByHandlers] = useAtom(
     IndexStore.ticketsCountByHandlers
   );
-  const [, setTicketStatusCountByHandler] = useAtom(
-    IndexStore.ticketStatusCountByHandler
-  );
   const [, setTicketsCountByMonths] = useAtom(IndexStore.ticketsCountByMonths);
 
   const session = useSession();
