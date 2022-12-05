@@ -1,5 +1,6 @@
 import { useAtom } from 'jotai';
 import { Pie } from 'react-chartjs-2';
+import { COLORS } from '../../../shared/constants/color';
 import IndexStore from '../../../stores';
 
 export default function HandlerTicketCountByStatusReport() {
@@ -13,6 +14,10 @@ export default function HandlerTicketCountByStatusReport() {
       {
         label: 'Count',
         data: ticketsCountByStatuses.map((t) => t.count),
+        backgroundColor: COLORS.CHART_COLORS.slice(
+          0,
+          ticketsCountByStatuses.length
+        ),
         hoverOffset: 4,
       },
     ],
