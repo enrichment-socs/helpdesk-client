@@ -7,11 +7,14 @@ import { TicketCountByStatus } from '../models/reports/TicketCountByStatus';
 import { BaseService } from './BaseService';
 
 export class ReportService extends BaseService {
-  public async getTicketsCountByCategories(semesterId: string = '') {
+  public async getTicketsCountByCategories(
+    semesterId: string = '',
+    userId: string = ''
+  ) {
     const result: AxiosResponse<TicketCountByCategory[]> =
       await this.wrapper.handle(
         axios.get(
-          `${this.BASE_URL}/reports/tickets-count-by-categories?semesterId=${semesterId}`,
+          `${this.BASE_URL}/reports/tickets-count-by-categories?semesterId=${semesterId}&userId=${userId}`,
           this.headersWithToken()
         )
       );
@@ -32,11 +35,14 @@ export class ReportService extends BaseService {
     return result.data;
   }
 
-  public async getTicketsCountByPriorities(semesterId: string = '') {
+  public async getTicketsCountByPriorities(
+    semesterId: string = '',
+    userId: string = ''
+  ) {
     const result: AxiosResponse<TicketCountByPriority[]> =
       await this.wrapper.handle(
         axios.get(
-          `${this.BASE_URL}/reports/tickets-count-by-priorities?semesterId=${semesterId}`,
+          `${this.BASE_URL}/reports/tickets-count-by-priorities?semesterId=${semesterId}&userId=${userId}`,
           this.headersWithToken()
         )
       );
@@ -54,11 +60,14 @@ export class ReportService extends BaseService {
     return result.data;
   }
 
-  public async getTicketsCountByMonths(semesterId: string = '') {
+  public async getTicketsCountByMonths(
+    semesterId: string = '',
+    userId: string = ''
+  ) {
     const result: AxiosResponse<TicketCountByMonth[]> =
       await this.wrapper.handle(
         axios.get(
-          `${this.BASE_URL}/reports/tickets-count-by-months?semesterId=${semesterId}`,
+          `${this.BASE_URL}/reports/tickets-count-by-months?semesterId=${semesterId}&userId=${userId}`,
           this.headersWithToken()
         )
       );

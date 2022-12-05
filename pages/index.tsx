@@ -28,7 +28,6 @@ import { TicketCountByStatus } from '../models/reports/TicketCountByStatus';
 import { TicketCountByHandler } from '../models/reports/TicketCountByHandler';
 import { UserService } from '../services/UserService';
 import { TicketCountByMonth } from '../models/reports/TicketCountByMonth';
-import SpecificHandlerReportDashboard from '../components/report-dashboard/SpecificHandlerReportDashboard';
 import { User } from '../models/User';
 
 const MessageContainer = dynamic(
@@ -37,8 +36,8 @@ const MessageContainer = dynamic(
 const GuidelineContainer = dynamic(
   () => import('../components/guidelines/GuidelineContainer')
 );
-const GeneralReportDashboard = dynamic(
-  () => import('../components/report-dashboard/GeneralReportDashboard')
+const ReportDashboard = dynamic(
+  () => import('../components/report-dashboard/ReportDashboard')
 );
 
 type Props = {
@@ -96,7 +95,7 @@ const Home: NextPage<Props> = ({
         setIsOpen={setOpenAnnouncementModal}
       />
 
-      {user.roleName !== ROLES.SUPER_ADMIN && (
+      {user?.roleName !== ROLES.SUPER_ADMIN && (
         <div>
           <div className="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4">
             <AnnouncementContainer
@@ -115,12 +114,7 @@ const Home: NextPage<Props> = ({
       )}
 
       <div>
-        {user?.roleName === ROLES.SUPER_ADMIN && (
-          <>
-            <GeneralReportDashboard />
-            <SpecificHandlerReportDashboard />
-          </>
-        )}
+        {user?.roleName === ROLES.SUPER_ADMIN && <ReportDashboard />}
 
         {user?.roleName === ROLES.ADMIN && (
           <MessageContainer take={initialTake} />

@@ -1,16 +1,4 @@
 import { DocumentReportIcon } from '@heroicons/react/outline';
-import {
-  Chart as ChartJS,
-  ArcElement,
-  Tooltip,
-  Legend,
-  Colors,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  PointElement,
-  LineElement,
-} from 'chart.js';
 import { useAtom } from 'jotai';
 import { useSession } from 'next-auth/react';
 import { semestersAtom } from '../../atom';
@@ -23,18 +11,6 @@ import TicketCountByPriorityReport from './general/TicketCountByPriorityReport';
 import TicketCountByStatusReport from './general/TicketCountByStatusReport';
 import TicketCountByMonthReport from './general/TicketCountByMonthReport';
 import toast from 'react-hot-toast';
-
-ChartJS.register(
-  ArcElement,
-  Tooltip,
-  Legend,
-  Colors,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  PointElement,
-  LineElement
-);
 
 export default function GeneralReportDashboard() {
   const [semesters] = useAtom(semestersAtom);
