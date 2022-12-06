@@ -17,16 +17,20 @@
   max-height: 400px;
 }
 
-.display-list ul{
+.ql-editor p {
+  margin: 0;
+}
+
+.display-list ul {
   list-style-type: disc;
   list-style-position: inside;
 }
 
-.display-list ol{
+.display-list ol {
   list-style-type: decimal;
   list-style-position: inside;
 }
 
-.display-link a{
+.display-link a {
   color: rgb(2 132 199);
 }

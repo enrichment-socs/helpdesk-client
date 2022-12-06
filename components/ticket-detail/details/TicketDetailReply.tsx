@@ -63,7 +63,8 @@ const TicketDetailReply = () => {
 
   useEffect(() => {
     register('message', { required: true });
-  }, [register]);
+    setValue('message', '<br><br>Best Regards,<br><b>Enrichment SoCS</b>');
+  }, [register, setValue]);
 
   const messageContent = watch('message') || '';
   const onMessageChange = (value) => setValue('message', value);
