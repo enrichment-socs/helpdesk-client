@@ -14,7 +14,7 @@ export default NextAuth({
   site: process.env.NEXTAUTH_URL,
   session: {
     jwt: true,
-    maxAge: 1 * 60 * 60,
+    maxAge: 24 * 60 * 60,
     strategy: 'jwt',
   },
   callbacks: {
