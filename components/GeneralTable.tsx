@@ -31,7 +31,7 @@ const GeneralTable = ({ table }: Props) => {
                     <td
                       colSpan={table.getHeaderGroups()[0].headers.length}
                       className="text-center p-4">
-                      No Announcement
+                      No Data
                     </td>
                   </tr>
                 )}
