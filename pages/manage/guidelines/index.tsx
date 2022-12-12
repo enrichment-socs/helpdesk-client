@@ -50,7 +50,7 @@ const ManageFAQCategoriesPage: NextPage<Props> = ({
       />
 
       <div className="font-bold text-2xl mb-4 flex items-center justify-between  ">
-        <h1>Manage FAQ</h1>
+        <h1>Manage Guideline</h1>
         <button
           type="button"
           onClick={() => openModal(null)}

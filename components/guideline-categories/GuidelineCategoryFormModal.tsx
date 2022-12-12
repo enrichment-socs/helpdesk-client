@@ -55,8 +55,8 @@ export default function GuidelineCategoryFormModal({
           ),
       {
         loading: faqCategory
-          ? 'Updating FAQ category...'
-          : 'Adding FAQ category...',
+          ? 'Updating Guideline category...'
+          : 'Adding Guideline category...',
         success: (result) => {
           faqCategory
             ? setFAQCategories(
@@ -69,8 +69,8 @@ export default function GuidelineCategoryFormModal({
           setIsOpen(false);
           setValue('categoryName', '');
           return faqCategory
-            ? `Successfully updated the FAQ category`
-            : `Succesfully added new FAQ category`;
+            ? `Successfully updated the Guideline category`
+            : `Succesfully added new Guideline category`;
         },
         error: (e) => e.toString(),
       }

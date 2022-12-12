@@ -17,7 +17,7 @@ type Props = {
   guidelineCategories: GuidelineCategory[];
 };
 
-const FAQPage: NextPage<Props> = ({ guidelineCategories }) => {
+const GuidelinePage: NextPage<Props> = ({ guidelineCategories }) => {
   return (
     <Layout>
       <GuidelineContainer guidelineCategories={guidelineCategories} />
@@ -61,4 +61,4 @@ export const getServerSideProps = withSessionSsr(
   }
 );
 
-export default FAQPage;
+export default GuidelinePage;

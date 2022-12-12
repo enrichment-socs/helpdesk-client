@@ -9,6 +9,7 @@ import { guidelineCategoriesAtom } from '../../atom';
 import { CreateGuidelineDto } from '../../models/dto/guidelines/create-guideline.dto';
 import { Guideline } from '../../models/Guideline';
 import { SessionUser } from '../../models/SessionUser';
+import { GuidelineCategoryService } from '../../services/GuidelineCategoryService';
 import { GuidelineService } from '../../services/GuidelineService';
 import ManageGuidelineStore from '../../stores/manage/guidelines';
 
@@ -45,10 +46,13 @@ type FormData = {
 const GuidelineFormModal: React.FC<Props> = ({ isOpen, setIsOpen, faq }) => {
   const [faqs, setFaqs] = useAtom(ManageGuidelineStore.guidelines);
 
-  const [guidelineCategories, setGuidelineCategories] = useAtom(guidelineCategoriesAtom);
+  const [guidelineCategories, setGuidelineCategories] = useAtom(
+    guidelineCategoriesAtom
+  );
   const [loading, setLoading] = useState(false);
   const session = useSession();
   const user = session?.data?.user as SessionUser;
+  const guidelineCategorySvc = new GuidelineCategoryService(user?.accessToken);
 
   const {
     register,
@@ -67,6 +71,17 @@ const GuidelineFormModal: React.FC<Props> = ({ isOpen, setIsOpen, faq }) => {
 
     setValue('guidelineCategoryId', faq?.guidelineCategory.id);
   }, [faq, register, setValue]);
+
+  useEffect(() => {
+    const fetchGuidelineCategory = async () => {
+      const categories = await guidelineCategorySvc.getAll();
+      setGuidelineCategories(categories);
+    };
+
+    if (user) {
+      fetchGuidelineCategory();
+    }
+  }, [user]);
 
   const answerContent = watch('answer') || '';
 
@@ -143,14 +158,14 @@ const GuidelineFormModal: React.FC<Props> = ({ isOpen, setIsOpen, faq }) => {
                 <Dialog.Title
                   as="h3"
                   className="text-lg font-medium leading-6 text-gray-900">
-                  {faq ? 'Update' : 'Create'} FAQ
+                  {faq ? 'Update' : 'Create'} Guideline
                 </Dialog.Title>
                 <form
                   onSubmit={handleSubmit(onSubmit)}
                   className="mt-2 space-y-2">
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
-                      FAQ Question
+                      Question
                     </label>
                     <div className="mt-1">
                       <input
@@ -168,14 +183,14 @@ const GuidelineFormModal: React.FC<Props> = ({ isOpen, setIsOpen, faq }) => {
                     </div>
                     {errors.question?.type === 'required' && (
                       <small className="text-red-500">
-                        FAQ question must be filled
+                        Question must be filled
                       </small>
                     )}
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
-                      FAQ Answer
+                      Answer
                     </label>
                     <div className="mt-1">
                       <QuillNoSSRWrapper
@@ -187,14 +202,14 @@ const GuidelineFormModal: React.FC<Props> = ({ isOpen, setIsOpen, faq }) => {
                     </div>
                     {errors.answer?.type === 'required' && (
                       <small className="text-red-500">
-                        FAQ answer must be filled
+                        Answer must be filled
                       </small>
                     )}
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
-                      FAQ Category
+                      Category
                     </label>
                     <select
                       {...register('guidelineCategoryId', {
