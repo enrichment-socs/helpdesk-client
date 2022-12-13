@@ -28,6 +28,7 @@ import ReactTooltip from 'react-tooltip';
 import { DateHelper } from '../../shared/libs/date-helper';
 import { TicketUtils } from '../../shared/libs/ticket-utils';
 import IndexStore from '../../stores';
+import { MessageService } from '../../services/MessageService';
 
 type Props = {
   onClose: () => void;
@@ -67,7 +68,10 @@ export default function MessageDetailModalAction({
   const [totalAddedHours, setTotalAddedHours] = useState(0);
 
   useEffect(() => {
-    if (selectedType === MESSAGE_TYPE.INFORMATION) {
+    if (
+      selectedType === MESSAGE_TYPE.INFORMATION ||
+      selectedType === MESSAGE_TYPE.JUNK
+    ) {
       setCanSave(true);
       return;
     }
@@ -111,6 +115,8 @@ export default function MessageDetailModalAction({
       await wrapper.handle(saveTicket());
     } else if (selectedType === MESSAGE_TYPE.INFORMATION) {
       await wrapper.handle(saveInformation());
+    } else if (selectedType === MESSAGE_TYPE.JUNK) {
+      await wrapper.handle(markAsJunk());
     }
 
     toast.dismiss();
@@ -156,6 +162,11 @@ export default function MessageDetailModalAction({
     await infoService.add(dto);
   };
 
+  const markAsJunk = async () => {
+    const messageService = new MessageService(user?.accessToken);
+    await messageService.markAsJunk(message.id);
+  };
+
   const updateMessageState = () => {
     const newMessages = messages.map((currMessage) => {
       if (currMessage.id === message.id) {
@@ -182,9 +193,11 @@ export default function MessageDetailModalAction({
     categories?.find((c) => c.id === selectedCategoryId);
 
   const isSaved = () => {
-    return [MESSAGE_TYPE.TICKET, MESSAGE_TYPE.INFORMATION].includes(
-      message?.savedAs
-    );
+    return [
+      MESSAGE_TYPE.TICKET,
+      MESSAGE_TYPE.INFORMATION,
+      MESSAGE_TYPE.JUNK,
+    ].includes(message?.savedAs);
   };
 
   return (
@@ -235,22 +248,28 @@ export default function MessageDetailModalAction({
                       </select>
                     </div>
 
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">
-                        Semester
-                      </label>
-                      <select
-                        onChange={(e) => setSelectedSemesterId(e.target.value)}
-                        defaultValue={activeSemester.id}
-                        className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                        {semesters.map((semester) => (
-                          <option value={semester.id} key={semester.id}>
-                            {semester.type} Semester {semester.startYear}/
-                            {semester.endYear}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+                    <If condition={selectedType !== MESSAGE_TYPE.JUNK}>
+                      <Then>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700">
+                            Semester
+                          </label>
+                          <select
+                            onChange={(e) =>
+                              setSelectedSemesterId(e.target.value)
+                            }
+                            defaultValue={activeSemester.id}
+                            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                            {semesters.map((semester) => (
+                              <option value={semester.id} key={semester.id}>
+                                {semester.type} Semester {semester.startYear}/
+                                {semester.endYear}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </Then>
+                    </If>
 
                     <If condition={selectedType === MESSAGE_TYPE.TICKET}>
                       <Then>

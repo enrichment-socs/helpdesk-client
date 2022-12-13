@@ -1,7 +1,15 @@
+import {
+  createColumnHelper,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from '@tanstack/react-table';
+import clsx from 'clsx';
 import { format } from 'date-fns';
 import { useAtom } from 'jotai';
 import { Dispatch, SetStateAction } from 'react';
 import { Message } from '../../models/Message';
+import { MESSAGE_TYPE } from '../../shared/constants/message-type';
 import IndexStore from '../../stores';
 
 type Props = {
@@ -16,6 +24,39 @@ const MessagesTable = ({
   startNumber,
 }: Props) => {
   const [messages] = useAtom(IndexStore.messages);
+  const columnHelper = createColumnHelper<Message>();
+  const columns = [
+    columnHelper.display({
+      cell: (info) => `${startNumber + info.row.index}`,
+      header: 'No',
+    }),
+    columnHelper.accessor('senderName', {
+      cell: (info) => info.getValue(),
+      id: 'senderName',
+      header: 'Sender',
+    }),
+    columnHelper.accessor('subject', {
+      cell: (info) => info.getValue() || 'No Subject',
+      id: 'subject',
+      header: 'Subject',
+    }),
+    columnHelper.accessor('receivedDateTime', {
+      cell: (info) => (
+        <>{format(new Date(info.getValue()), 'dd MMM yyyy, kk:mm')}</>
+      ),
+      header: 'Received Date',
+    }),
+    columnHelper.accessor('savedAs', {
+      cell: (info) => info.getValue(),
+      header: 'Saved As',
+    }),
+  ];
+
+  const table = useReactTable({
+    data: messages,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
 
   const onMessageClick = async (message: Message) => {
     setSelectedMessage(message);
@@ -29,70 +70,63 @@ const MessagesTable = ({
           <div className="max-h-[40rem] overflow-auto border border-gray-200">
             <table className="min-w-full divide-y divide-gray-200 relative">
               <thead className="bg-gray-500">
-                <tr>
-                  <th
-                    scope="col"
-                    className="bg-gray-500 sticky top-0 px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                    No
-                  </th>
-                  <th
-                    scope="col"
-                    className="bg-gray-500 sticky top-0 px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                    Sender
-                  </th>
-                  <th
-                    scope="col"
-                    className="bg-gray-500 sticky top-0 px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                    Subject
-                  </th>
-                  <th
-                    scope="col"
-                    className="bg-gray-500 sticky top-0 px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                    Received Date
-                  </th>
-                  <th
-                    scope="col"
-                    className="bg-gray-500 sticky top-0 px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                    Saved as
-                  </th>
-                </tr>
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <tr key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => (
+                      <th
+                        key={header.id}
+                        scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                        {header.column.columnDef.header}
+                      </th>
+                    ))}
+                  </tr>
+                ))}
               </thead>
               <tbody>
-                {messages.length == 0 && (
-                  <tr className="text-center">
-                    <td colSpan={5} className="p-4">
+                {table.getRowModel().rows.length == 0 && (
+                  <tr>
+                    <td
+                      colSpan={table.getHeaderGroups()[0].headers.length}
+                      className="text-center p-4">
                       There are currently no messages
                     </td>
                   </tr>
                 )}
 
-                {messages.map((message, index) => (
-                  <tr
-                    key={index}
-                    className={`cursor-pointer ${
-                      index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
-                    } transition duration-300 ease-in-out hover:bg-sky-100`}
-                    onClick={() => onMessageClick(message)}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {startNumber++}
-                    </td>
-                    <td className="max-w-[16rem] px-6 py-4 truncate text-sm font-medium text-gray-900">
-                      {message.senderName}
-                    </td>
-                    <td className="max-w-[32rem] px-6 py-4 truncate text-sm text-gray-900">
-                      {message.subject || 'No Subject'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {format(
-                        new Date(message.receivedDateTime),
-                        'dd MMM yyyy, kk:mm'
+                {table.getRowModel().rows.map((row, idx) => {
+                  return (
+                    <tr
+                      className={clsx(
+                        'transition duration-300 ease-in-out hover:bg-sky-100 cursor-pointer',
+                        {
+                          'bg-white': idx % 2 === 0,
+                          'bg-gray-50': idx % 2 !== 0,
+                          'text-red-500':
+                            row.original.savedAs === MESSAGE_TYPE.JUNK,
+                        }
                       )}
-                    </td>
-                    <td className="px-6 py-4 truncate text-sm text-gray-900">
-                      {message.savedAs}
-                    </td>
-                  </tr>
-                ))}
+                      onClick={() => onMessageClick(row.original)}
+                      key={row.id}>
+                      {row.getVisibleCells().map((cell) => (
+                        <td
+                          key={cell.id}
+                          className={clsx(
+                            'px-6 py-4 whitespace-nowrap text-sm font-medium truncate',
+                            {
+                              'max-w-[16rem]': cell.column.id === 'senderName',
+                            },
+                            { 'max-w-[32rem]': cell.column.id === 'subject' }
+                          )}>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </td>
+                      ))}
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

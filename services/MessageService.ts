@@ -22,13 +22,22 @@ export class MessageService extends BaseService {
     return result.data;
   }
 
-  public async getMessagesByConversation(
-    conversationId: string,
-  )
-  {
+  public async getMessagesByConversation(conversationId: string) {
     const result = await this.wrapper.handle(
       axios.get(
         `${this.BASE_URL}/messages/conversations/${conversationId}`,
+        this.headersWithToken()
+      )
+    );
+
+    return result.data;
+  }
+
+  public async markAsJunk(messageId: string) {
+    const result = await this.wrapper.handle(
+      axios.post<unknown>(
+        `${this.BASE_URL}/messages/${messageId}/mark-as-junk`,
+        {},
         this.headersWithToken()
       )
     );
