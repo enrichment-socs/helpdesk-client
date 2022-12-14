@@ -12,6 +12,7 @@ import { Message } from '../../models/Message';
 import { ClientPromiseWrapper } from '../../shared/libs/client-promise-wrapper';
 import IndexStore from '../../stores';
 import UnmarkedMessagesTable from './UnmarkedMessageTable';
+import ErrorAlert from '../../widgets/ErrorAlert';
 
 type Props = {
   take: number;
@@ -77,7 +78,7 @@ export default function UnmarkedMessageContainer({ take }: Props) {
       />
       <div className="ml-2 mt-5 p-2 border-2 rounded divide-y">
         <div className="flex justify-between">
-          <div className="text-lg font-bold mb-3 flex items-center">
+          <div className="text-lg font-bold mb-3 flex items-center text-red-500">
             <MailIcon className="h-5 w-5" />
             <span className="ml-3">Unmarked Messages</span>
           </div>
@@ -95,6 +96,17 @@ export default function UnmarkedMessageContainer({ take }: Props) {
           </div>
         </div>
         <div className="p-1">
+          <ErrorAlert className="mt-2">
+            <p className="text-red-500">
+              Messages listed here are messages that have not been marked 7 days
+              after it was received.
+            </p>
+            <p className="text-red-500">
+              Please mark the messages below as <strong>Ticket</strong>,{' '}
+              <strong>Information</strong>, or <strong>Junk</strong>{' '}
+              immediately.
+            </p>
+          </ErrorAlert>
           <UnmarkedMessagesTable
             startNumber={skip + 1}
             setOpenMessageModal={setOpenMessageModal}

@@ -49,6 +49,9 @@ export default function MessageDetailModalAction({
   const user = session?.data?.user as SessionUser;
 
   const [messages, setMessages] = useAtom(IndexStore.messages);
+  const [unmarkedMessages, setUnmarkedMessages] = useAtom(
+    IndexStore.unmarkedMessages
+  );
 
   const types = Object.keys(MESSAGE_TYPE).map((key) => MESSAGE_TYPE[key]);
   const [canSave, setCanSave] = useState(false);
@@ -174,7 +177,15 @@ export default function MessageDetailModalAction({
       }
       return currMessage;
     });
+
+    const newUnmarkedMessages = unmarkedMessages.map((currMessage) => {
+      if (currMessage.id === message.id) {
+        currMessage.savedAs = selectedType;
+      }
+      return currMessage;
+    });
     setMessages(newMessages);
+    setUnmarkedMessages(newUnmarkedMessages);
   };
 
   const handleOnPriorityChange = (newPriorityId) => {
