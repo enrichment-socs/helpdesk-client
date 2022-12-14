@@ -1,4 +1,4 @@
-import type { NextPage } from 'next';
+import type { InferGetServerSidePropsType, NextPage } from 'next';
 import { useSession } from 'next-auth/react';
 import Layout from '../widgets/_Layout';
 import { getInitialServerProps } from '../shared/libs/initialize-server-props';
@@ -9,26 +9,17 @@ import AnnouncementContainer from '../components/pages/home/AnnouncementContaine
 import AnnouncementDetailModal from '../components/announcements/AnnouncementDetailModal';
 import { useState } from 'react';
 import { SessionUser } from '../models/SessionUser';
-import { Message } from '../models/Message';
 import { ROLES } from '../shared/constants/roles';
 import { useHydrateAtoms } from 'jotai/utils';
 import AdminTicketSummaryContainer from '../components/ticket-summaries/admin/AdminTicketSummaryContainer';
 import UserTicketSummaryContainer from '../components/ticket-summaries/user/UserTicketSummaryContainer';
 import { MessageService } from '../services/MessageService';
 import { GuidelineCategoryService } from '../services/GuidelineCategoryService';
-import { GuidelineCategory } from '../models/GuidelineCategory';
 import { TicketService } from '../services/TicketService';
-import { TicketSummary } from '../models/TicketSummary';
 import IndexStore from '../stores';
 import { ReportService } from '../services/ReportService';
-import { TicketCountByCategory } from '../models/reports/TicketCountByCategory';
 import dynamic from 'next/dynamic';
-import { TicketCountByPriority } from '../models/reports/TicketCountByPriority';
-import { TicketCountByStatus } from '../models/reports/TicketCountByStatus';
-import { TicketCountByHandler } from '../models/reports/TicketCountByHandler';
 import { UserService } from '../services/UserService';
-import { TicketCountByMonth } from '../models/reports/TicketCountByMonth';
-import { User } from '../models/User';
 
 const MessageContainer = dynamic(
   () => import('../components/messages/MessageContainer')
@@ -43,33 +34,9 @@ const ReportDashboard = dynamic(
   () => import('../components/report-dashboard/ReportDashboard')
 );
 
-type Props = {
-  announcements: Announcement[];
-  faqCategories: GuidelineCategory[];
-  ticketSummary: TicketSummary;
-  admins: User[];
-  unmarkedMessage: {
-    messages: Message[] | [];
-    initialTake: number;
-    initialSkip: number;
-    messageCount: number;
-  };
-  markedMessage: {
-    messages: Message[] | [];
-    initialTake: number;
-    initialSkip: number;
-    messageCount: number;
-  };
-  reports: {
-    ticketsCountByCategories: TicketCountByCategory[];
-    ticketsCountByPriorities: TicketCountByPriority[];
-    ticketsCountByStatuses: TicketCountByStatus[];
-    ticketsCountByHandlers: TicketCountByHandler[];
-    ticketsCountByMonths: TicketCountByMonth[];
-  };
-};
-
-const Home: NextPage<Props> = ({
+const Home: NextPage<
+  InferGetServerSidePropsType<typeof getServerSideProps>
+> = ({
   announcements,
   faqCategories,
   markedMessage,
