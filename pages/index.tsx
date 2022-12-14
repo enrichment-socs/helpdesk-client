@@ -33,6 +33,9 @@ import { User } from '../models/User';
 const MessageContainer = dynamic(
   () => import('../components/messages/MessageContainer')
 );
+const UnmarkedMessageContainer = dynamic(
+  () => import('../components/messages/UnmarkedMessageContainer')
+);
 const GuidelineContainer = dynamic(
   () => import('../components/guidelines/GuidelineContainer')
 );
@@ -43,12 +46,20 @@ const ReportDashboard = dynamic(
 type Props = {
   announcements: Announcement[];
   faqCategories: GuidelineCategory[];
-  messages: Message[] | [];
-  initialTake: number;
-  initialSkip: number;
-  messageCount: number;
   ticketSummary: TicketSummary;
   admins: User[];
+  unmarkedMessage: {
+    messages: Message[] | [];
+    initialTake: number;
+    initialSkip: number;
+    messageCount: number;
+  };
+  markedMessage: {
+    messages: Message[] | [];
+    initialTake: number;
+    initialSkip: number;
+    messageCount: number;
+  };
   reports: {
     ticketsCountByCategories: TicketCountByCategory[];
     ticketsCountByPriorities: TicketCountByPriority[];
@@ -61,18 +72,21 @@ type Props = {
 const Home: NextPage<Props> = ({
   announcements,
   faqCategories,
-  messages,
-  initialTake,
-  initialSkip,
-  messageCount,
+  markedMessage,
   ticketSummary,
   admins,
   reports,
+  unmarkedMessage,
 }) => {
   useHydrateAtoms([
-    [IndexStore.messages, messages],
-    [IndexStore.skipCount, initialSkip],
-    [IndexStore.totalMessagesCount, messageCount],
+    [IndexStore.messages, markedMessage.messages],
+    [IndexStore.skipCount, markedMessage.initialSkip],
+    [IndexStore.totalMessagesCount, markedMessage.messageCount],
+
+    [IndexStore.unmarkedMessages, unmarkedMessage.messages],
+    [IndexStore.unmarkedSkipCount, unmarkedMessage.initialSkip],
+    [IndexStore.unmarkedMessagesCount, unmarkedMessage.messageCount],
+
     [IndexStore.ticketsCountByCategories, reports.ticketsCountByCategories],
     [IndexStore.ticketsCountByPriorities, reports.ticketsCountByPriorities],
     [IndexStore.ticketsCountByStatuses, reports.ticketsCountByStatuses],
@@ -117,7 +131,11 @@ const Home: NextPage<Props> = ({
         {user?.roleName === ROLES.SUPER_ADMIN && <ReportDashboard />}
 
         {user?.roleName === ROLES.ADMIN && (
-          <MessageContainer take={initialTake} />
+          <UnmarkedMessageContainer take={unmarkedMessage.initialTake} />
+        )}
+
+        {user?.roleName === ROLES.ADMIN && (
+          <MessageContainer take={markedMessage.initialTake} />
         )}
 
         {user?.roleName === ROLES.USER && (
@@ -164,6 +182,16 @@ export const getServerSideProps = withSessionSsr(
       user?.roleName !== ROLES.ADMIN
         ? { messages: [], count: 0 }
         : await messageService.getMessages(initialTake, initialSkip);
+
+    const unmarkedInitialTake = 10;
+    const unmarkedInitialSkip = 0;
+    const { messages: unmarkedMessages, count: unmarkedCount } =
+      user?.roleName !== ROLES.ADMIN
+        ? { messages: [], count: 0 }
+        : await messageService.getUnmarkedMessages(
+            unmarkedInitialTake,
+            unmarkedInitialSkip
+          );
 
     let faqCategories = null;
     if (user?.roleName === ROLES.USER) {
@@ -212,12 +240,20 @@ export const getServerSideProps = withSessionSsr(
         sessionActiveSemester,
         announcements,
         faqCategories,
-        messages,
-        messageCount: count,
-        initialTake,
-        initialSkip,
         ticketSummary,
         admins,
+        unmarkedMessage: {
+          messages: unmarkedMessages,
+          messageCount: unmarkedCount,
+          initialTake: unmarkedInitialTake,
+          initialSkip: unmarkedInitialSkip,
+        },
+        markedMessage: {
+          messages,
+          messageCount: count,
+          initialTake,
+          initialSkip,
+        },
         reports: {
           ticketsCountByCategories,
           ticketsCountByPriorities,

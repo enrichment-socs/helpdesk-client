@@ -22,6 +22,20 @@ export class MessageService extends BaseService {
     return result.data;
   }
 
+  public async getUnmarkedMessages(
+    take: number = 10,
+    skip: number = 0
+  ): Promise<GetMessagesResult> {
+    const result: AxiosResponse<GetMessagesResult> = await this.wrapper.handle(
+      axios.get(
+        `${this.BASE_URL}/messages/unmarked?take=${take}&skip=${skip}`,
+        this.headersWithToken()
+      )
+    );
+
+    return result.data;
+  }
+
   public async getMessagesByConversation(conversationId: string) {
     const result = await this.wrapper.handle(
       axios.get(

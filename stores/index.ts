@@ -11,6 +11,11 @@ const IndexStore = {
   messages: atom<Message[]>([]),
   totalMessagesCount: atom<number>(0),
   skipCount: atom<number>(0),
+
+  unmarkedMessages: atom<Message[]>([]),
+  unmarkedMessagesCount: atom<number>(0),
+  unmarkedSkipCount: atom<number>(0),
+
   ticketsCountByCategories: atom<TicketCountByCategory[]>([]),
   ticketsCountByPriorities: atom<TicketCountByPriority[]>([]),
   ticketsCountByStatuses: atom<TicketCountByStatus[]>([]),
