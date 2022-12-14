@@ -80,7 +80,7 @@ export default function UnmarkedMessageContainer({ take }: Props) {
         <div className="flex justify-between">
           <div className="text-lg font-bold mb-3 flex items-center text-red-500">
             <MailIcon className="h-5 w-5" />
-            <span className="ml-3">Unmarked Messages</span>
+            <span className="ml-3">[IMPORTANT] Unmarked Messages</span>
           </div>
 
           <div>
@@ -98,8 +98,8 @@ export default function UnmarkedMessageContainer({ take }: Props) {
         <div className="p-1">
           <ErrorAlert className="mt-2">
             <p className="text-red-500">
-              Messages listed here are messages that have not been marked 7 days
-              after it was received.
+              Messages listed here are messages that have not been marked after
+              7 days since the time it was received.
             </p>
             <p className="text-red-500">
               Please mark the messages below as <strong>Ticket</strong>,{' '}

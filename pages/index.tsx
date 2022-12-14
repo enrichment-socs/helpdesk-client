@@ -97,9 +97,10 @@ const Home: NextPage<
       <div>
         {user?.roleName === ROLES.SUPER_ADMIN && <ReportDashboard />}
 
-        {user?.roleName === ROLES.ADMIN && (
-          <UnmarkedMessageContainer take={unmarkedMessage.initialTake} />
-        )}
+        {user?.roleName === ROLES.ADMIN &&
+          unmarkedMessage.messages.length > 0 && (
+            <UnmarkedMessageContainer take={unmarkedMessage.initialTake} />
+          )}
 
         {user?.roleName === ROLES.ADMIN && (
           <MessageContainer take={markedMessage.initialTake} />
