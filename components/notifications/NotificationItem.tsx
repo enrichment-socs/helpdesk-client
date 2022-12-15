@@ -38,7 +38,10 @@ const NotificationItem = ({ showSideList = true, notification }: Props) => {
         data = JSON.parse(notification.data) as TicketAssignedNotification;
         return (
           <div>
-            <h4>A new ticket has been assigned to you.</h4>
+            <h4>
+              Ticket {data.number ? <b>#{data.number}</b> : <></>} has been
+              assigned to you.
+            </h4>
             <p>
               Subject: <span className="font-medium">{data.subject}</span>
             </p>
@@ -62,7 +65,10 @@ const NotificationItem = ({ showSideList = true, notification }: Props) => {
         ) as TicketDueDateUpdatedNotification;
         return (
           <div>
-            <h4>Ticket due date has been updated.</h4>
+            <h4>
+              Ticket {data.number ? <b>#{data.number}</b> : <></>} due date has
+              been updated.
+            </h4>
             {data.subject && (
               <p>
                 Subject: <span className="font-medium">{data.subject}</span>
@@ -88,7 +94,10 @@ const NotificationItem = ({ showSideList = true, notification }: Props) => {
         data = JSON.parse(notification.data) as TicketStatusChangedNotification;
         return (
           <div>
-            <h4>Ticket status has been changed.</h4>
+            <h4>
+              Ticket {data.number ? <b>#{data.number}</b> : <></>} status has
+              been changed.
+            </h4>
             {data.subject && (
               <p>
                 Subject: <span className="font-medium">{data.subject}</span>
@@ -108,7 +117,6 @@ const NotificationItem = ({ showSideList = true, notification }: Props) => {
       case 'TicketDueDateReminder':
         break;
       case 'TicketPendingReminder':
-        break;
         break;
     }
     return <div>No data to be displayed.</div>;

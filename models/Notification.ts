@@ -16,6 +16,7 @@ export class Notification {
 
 export class TicketAssignedNotification {
   ticketId: string;
+  number: string;
   subject: string;
   priority: string;
   dueDate: string;
@@ -25,12 +26,14 @@ export class TicketAssignedNotification {
 
 export class TicketDueDateReminderNotification {
   ticketId: string;
+  number: string;
   subject: string;
   dueDate: string;
 }
 
 export class TicketDueDateUpdatedNotification {
   ticketId: string;
+  number: string;
   subject: string;
   fromDate: string;
   toDate: string;
@@ -39,11 +42,13 @@ export class TicketDueDateUpdatedNotification {
 
 export class TicketPendingReminderNotification {
   ticketId: string;
+  number: string;
   subject: string;
 }
 
 export interface TicketStatusChangedNotification {
   ticketId: string;
+  number: string;
   subject: string;
   from: string;
   to: string;
