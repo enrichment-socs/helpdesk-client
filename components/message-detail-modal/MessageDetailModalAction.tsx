@@ -29,6 +29,8 @@ import { DateHelper } from '../../shared/libs/date-helper';
 import { TicketUtils } from '../../shared/libs/ticket-utils';
 import IndexStore from '../../stores';
 import { MessageService } from '../../services/MessageService';
+import { confirm } from '../../shared/libs/confirm-dialog-helper';
+import { InformationCircleIcon } from '@heroicons/react/outline';
 
 type Props = {
   onClose: () => void;
@@ -170,22 +172,40 @@ export default function MessageDetailModalAction({
     await messageService.markAsJunk(message.id);
   };
 
-  const updateMessageState = () => {
+  const updateMessageState = (options?: { isDeleted: boolean }) => {
     const newMessages = messages.map((currMessage) => {
       if (currMessage.id === message.id) {
-        currMessage.savedAs = selectedType;
+        currMessage.savedAs = options?.isDeleted ? 'Deleted' : selectedType;
       }
       return currMessage;
     });
 
     const newUnmarkedMessages = unmarkedMessages.map((currMessage) => {
       if (currMessage.id === message.id) {
-        currMessage.savedAs = selectedType;
+        currMessage.savedAs = options?.isDeleted ? 'Deleted' : selectedType;
       }
       return currMessage;
     });
     setMessages(newMessages);
     setUnmarkedMessages(newUnmarkedMessages);
+  };
+
+  const onDelete = async () => {
+    const msgService = new MessageService(user?.accessToken);
+    const msg = 'Are you sure you want to delete this message ?';
+    if (await confirm(msg)) {
+      toast.promise(msgService.delete(message.id), {
+        loading: 'Deleting message...',
+        success: () => {
+          updateMessageState({ isDeleted: true });
+          return 'Message deleted succesfully';
+        },
+        error: (e) => {
+          console.error(e);
+          return 'An error occured when deleting the message';
+        },
+      });
+    }
   };
 
   const handleOnPriorityChange = (newPriorityId) => {
@@ -208,6 +228,7 @@ export default function MessageDetailModalAction({
       MESSAGE_TYPE.TICKET,
       MESSAGE_TYPE.INFORMATION,
       MESSAGE_TYPE.JUNK,
+      'Deleted',
     ].includes(message?.savedAs);
   };
 
@@ -413,29 +434,56 @@ export default function MessageDetailModalAction({
                 </Else>
               </If>
 
-              <div className="flex justify-end space-x-2 pt-4">
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="inline-flex items-center px-12 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-gray-300 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300">
-                  Close
-                </button>
+              <div className="flex justify-between pt-4">
+                <div className="flex items-center">
+                  {selectedType === MESSAGE_TYPE.JUNK && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={onDelete}
+                        className="inline-flex items-center px-12 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300">
+                        Delete Message
+                      </button>
+                      <InformationCircleIcon
+                        data-tip
+                        data-for="delete-btn-desc"
+                        className="w-6 h-6 ml-2"
+                      />
 
-                <If condition={!isSaved()}>
-                  <Then>
-                    <button
-                      type="button"
-                      disabled={!canSave}
-                      onClick={onSave}
-                      className={`${
-                        canSave
-                          ? 'bg-primary hover:bg-primary-dark'
-                          : 'bg-gray-300'
-                      } inline-flex items-center px-12 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary`}>
-                      Save
-                    </button>
-                  </Then>
-                </If>
+                      <ReactTooltip
+                        id="delete-btn-desc"
+                        place="right"
+                        effect="solid">
+                        Only useful if a message is moved to another folder or
+                        deleted in the outlook app
+                      </ReactTooltip>
+                    </>
+                  )}
+                </div>
+                <div className="space-x-2">
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    className="inline-flex items-center px-12 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-gray-300 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300">
+                    Close
+                  </button>
+
+                  <If condition={!isSaved()}>
+                    <Then>
+                      <button
+                        type="button"
+                        disabled={!canSave}
+                        onClick={onSave}
+                        className={`${
+                          canSave
+                            ? 'bg-primary hover:bg-primary-dark'
+                            : 'bg-gray-300'
+                        } inline-flex items-center px-12 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary`}>
+                        Save
+                      </button>
+                    </Then>
+                  </If>
+                </div>
               </div>
             </Disclosure.Panel>
           </Transition>

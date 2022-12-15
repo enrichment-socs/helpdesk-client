@@ -76,7 +76,7 @@ export default function MessageContainer({ take }: Props) {
         <div className="flex justify-between">
           <div className="text-lg font-bold mb-3 flex items-center">
             <MailIcon className="h-5 w-5" />
-            <span className="ml-3">Messages</span>
+            <span className="ml-3">Messages (Last 7 days)</span>
           </div>
 
           <div>

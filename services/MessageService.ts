@@ -58,4 +58,15 @@ export class MessageService extends BaseService {
 
     return result.data;
   }
+
+  public async delete(messageId: string) {
+    const result = await this.wrapper.handle(
+      axios.delete<unknown>(
+        `${this.BASE_URL}/messages/${messageId}`,
+        this.headersWithToken()
+      )
+    );
+
+    return result.data;
+  }
 }
