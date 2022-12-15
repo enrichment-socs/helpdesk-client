@@ -76,9 +76,7 @@ const TicketPage: NextPage<Props> = ({
   ]);
 
   return (
-    <Layout
-      controlWidth={false}
-      className="max-w-[96rem] px-2 sm:px-6 lg:px-8 mx-auto mb-8">
+    <Layout>
       <TicketContainer take={initialTake} />
       <PendingTicketContainer take={pendingInitialTake} />
     </Layout>

@@ -26,7 +26,7 @@ export default function Layout({
       <Head>
         <title>Enrichment SoCS Helpdesk</title>
         <meta name="description" content="Enrichment SoCS Consultation App" />
-        <link rel="icon" type="image/x-icon"  href="/helpdesk/favicon.ico" />
+        <link rel="icon" type="image/x-icon" href="/helpdesk/favicon.ico" />
       </Head>
 
       {withNavbar && <Navbar />}
@@ -34,7 +34,9 @@ export default function Layout({
       <main
         style={style}
         className={`min-h-screen ${
-          controlWidth ? 'max-w-7xl px-2 sm:px-6 lg:px-8 mx-auto mb-8' : ''
+          controlWidth
+            ? 'max-w-screen-2xl px-2 sm:px-6 lg:px-8 mx-auto mb-8'
+            : ''
         } ${className ?? ''}`}>
         {children}
       </main>

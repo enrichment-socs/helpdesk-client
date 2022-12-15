@@ -91,7 +91,7 @@ export default function Navbar() {
 
   return (
     <div>
-      <div className="flex flex-col md:flex-row justify-between items-center max-w-7xl px-2 sm:px-6 lg:px-8 mx-auto">
+      <div className="flex flex-col md:flex-row justify-between items-center max-w-screen-2xl px-2 sm:px-6 lg:px-8 mx-auto">
         <div className="flex w-full">
           <div>
             <Image src={ribbon} height={110} width={38} alt="" />
@@ -113,7 +113,7 @@ export default function Navbar() {
 
       <div className="border-b border-gray-200 mt-4"></div>
 
-      <nav className="flex justify-between max-w-7xl px-2 sm:px-6 lg:px-8 mx-auto">
+      <nav className="flex justify-between max-w-screen-2xl px-2 sm:px-6 lg:px-8 mx-auto">
         <ul className="flex space-x-4">
           {links.map(
             (link) =>
