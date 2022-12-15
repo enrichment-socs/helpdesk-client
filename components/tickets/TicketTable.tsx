@@ -24,10 +24,10 @@ const TicketTable: React.FC<Props> = ({
 }) => {
   const columnHelper = createColumnHelper<Ticket>();
   const columns = [
-    // columnHelper.display({
-    //   cell: (info) => `${startNumber + info.row.index}`,
-    //   header: 'No',
-    // }),
+    columnHelper.accessor('number', {
+      cell: (info) => `#${info.getValue()}`,
+      header: 'No',
+    }),
     columnHelper.accessor('subject', {
       cell: (info) => info.getValue() || 'No Subject',
       id: 'subject',
@@ -168,7 +168,7 @@ const TicketTable: React.FC<Props> = ({
                           'transition duration-300 ease-in-out hover:bg-sky-100 cursor-pointer transition duration-300 hover:bg-sky-100 ease-in-out',
                           getRowBgColor(row.original)
                         )}
-                        onClick={rowClickHandler.bind(this, row.original)}
+                        onClick={rowClickHandler.bind(this, row.original.id)}
                         key={row.id}>
                         {row.getVisibleCells().map((cell) => (
                           <td

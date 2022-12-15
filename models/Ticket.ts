@@ -7,6 +7,7 @@ import { User } from './User';
 
 export class Ticket {
   id: string;
+  number: number;
   conversationId: string;
   public assignedTo: User;
   public semester: Semester;

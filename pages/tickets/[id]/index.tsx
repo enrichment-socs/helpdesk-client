@@ -178,7 +178,10 @@ const TicketDetailPage: NextPage<Props> = ({
               <TicketIcon className="h-10 w-10 text-gray-400" />
             </div>
             <div className="font-medium text-2xl ml-5">
-              <div>{ticket.subject}</div>
+              <div>
+                <span className="text-gray-500">[#{ticket.number}]</span>{' '}
+                {ticket.subject}
+              </div>
               <div className="flex flex-col md:flex-row md:divide-x text-sm mt-1">
                 <div className="font-normal text-gray">
                   by
