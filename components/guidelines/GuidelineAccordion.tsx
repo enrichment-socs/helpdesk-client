@@ -38,8 +38,8 @@ const GuidelineAccordion: React.FC<Props> = ({ guidelineCategory }) => {
         <>
           <Disclosure.Button
             className={`${
-              open ? 'rounded-t' : 'rounded-lg'
-            } flex justify-between items-center w-full px-4 py-2 font-medium text-left text-sky-900 bg-sky-100 hover:bg-sky-200 focus:outline-none focus-visible:ring focus-visible:ring-sky-500 focus-visible:ring-opacity-75 mt-3`}>
+              open ? 'rounded-t' : 'rounded'
+            } flex justify-between items-center w-full px-4 py-2 font-medium text-left text-gray-900 bg-gray-200 hover:bg-gray-300 focus:outline-none focus-visible:ring focus-visible:ring-gray-300 focus-visible:ring-opacity-75 mt-3`}>
             <span>{guidelineCategory.categoryName}</span>
             <ChevronUpIcon
               className={`${open ? 'rotate-180 transform' : ''} h-5 w-5`}
