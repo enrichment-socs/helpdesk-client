@@ -84,7 +84,7 @@ const MessagesTable = ({
                 ))}
               </thead>
               <tbody>
-                {table.getRowModel().rows.length == 0 && (
+                {/* {table.getRowModel().rows.length == 0 && (
                   <tr>
                     <td
                       colSpan={table.getHeaderGroups()[0].headers.length}
@@ -92,7 +92,7 @@ const MessagesTable = ({
                       There are currently no messages
                     </td>
                   </tr>
-                )}
+                )} */}
 
                 {table.getRowModel().rows.map((row, idx) => {
                   return (
