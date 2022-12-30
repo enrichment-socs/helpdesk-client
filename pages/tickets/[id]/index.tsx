@@ -160,7 +160,7 @@ const TicketDetailPage: NextPage<Props> = ({
 
   return (
     <Layout>
-      <div className="flex flex-col a space-y-4 md:flex-row md:space-y-0 md:space-x-4">
+      <div className="w-full">
         <div
           className={`mx-2 p-2 border-2 rounded divide-y transition-all ease-in-out delay-300`}>
           <div className="flex items-center pb-3">
