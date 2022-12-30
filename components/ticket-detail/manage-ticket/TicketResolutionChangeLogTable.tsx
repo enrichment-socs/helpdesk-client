@@ -35,13 +35,11 @@ export default function TicketResolutionChangeLogTable() {
                     <th
                       scope="col"
                       className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                      Changed by
+                      Created at
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                      Created at
-                    </th>
+                      className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"></th>
                     <th
                       scope="col"
                       className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"></th>
@@ -51,8 +49,7 @@ export default function TicketResolutionChangeLogTable() {
                   {resolutions.length == 0 && (
                     <tr className="text-center">
                       <td colSpan={6} className="p-4">
-                        There are currently no resolution change log for this
-                        ticket
+                        There are currently no resolution for this ticket
                       </td>
                     </tr>
                   )}
