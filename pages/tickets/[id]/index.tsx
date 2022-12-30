@@ -1,17 +1,14 @@
-import { Transition } from '@headlessui/react';
 import { TicketIcon } from '@heroicons/react/solid';
 import { NextPage } from 'next';
-import { getSession, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import React, { useEffect, useState } from 'react';
 import TicketDetailDetails from '../../../components/ticket-detail/details/TicketDetailDetails';
 import TicketDetailHistory from '../../../components/ticket-detail/histories/TicketDetailHistory';
-import TicketDetailInformation from '../../../components/ticket-detail/information/TicketDetailInformation';
 import Layout from '../../../widgets/_Layout';
 import { AuthHelper } from '../../../shared/libs/auth-helper';
 import { ROLES } from '../../../shared/constants/roles';
 import { getInitialServerProps } from '../../../shared/libs/initialize-server-props';
 import { withSessionSsr } from '../../../shared/libs/session';
-import { SemesterService } from '../../../services/SemesterService';
 import { Ticket } from '../../../models/Ticket';
 import { SessionUser } from '../../../models/SessionUser';
 import { TicketService } from '../../../services/TicketService';
@@ -89,7 +86,6 @@ const TicketDetailPage: NextPage<Props> = ({
   ]);
 
   const [currentTab, setCurrentTab] = useState('Details');
-  const [isShowInformation, setIsShowInformation] = useState(false);
 
   const session = useSession();
   const user = session?.data?.user as SessionUser;
@@ -162,17 +158,11 @@ const TicketDetailPage: NextPage<Props> = ({
     }
   };
 
-  const toggleInformation = () => {
-    setIsShowInformation((prevState) => !prevState);
-  };
-
   return (
     <Layout>
       <div className="flex flex-col a space-y-4 md:flex-row md:space-y-0 md:space-x-4">
         <div
-          className={`mx-2 p-2 border-2 ${
-            isShowInformation ? 'md:w-3/4' : 'md:w-full'
-          }  rounded divide-y transition-all ease-in-out delay-300`}>
+          className={`mx-2 p-2 border-2 rounded divide-y transition-all ease-in-out delay-300`}>
           <div className="flex items-center pb-3">
             <div className="rounded-full border border-gray-300 p-2">
               <TicketIcon className="h-10 w-10 text-gray-400" />
@@ -212,13 +202,6 @@ const TicketDetailPage: NextPage<Props> = ({
                 </span>
               </div>
             </div>
-            <div className="ml-auto mr-5 hidden md:block">
-              <button
-                className="bg-primary hover:bg-primary-dark text-sm text-white font-bold py-2 px-2 rounded"
-                onClick={toggleInformation}>
-                {isShowInformation ? 'Hide' : 'Show'} Information
-              </button>
-            </div>
           </div>
 
           <div className="pt-2">
@@ -251,17 +234,6 @@ const TicketDetailPage: NextPage<Props> = ({
             <div className="p-4">{getTabContent()}</div>
           </div>
         </div>
-
-        <Transition
-          show={isShowInformation}
-          enter="transition duration-300 ease-in-out"
-          enterFrom="transform scale-50 opacity-0"
-          enterTo="transform scale-100 opacity-100"
-          leave="transition duration-300 ease-out"
-          leaveFrom="transform scale-100 opacity-100"
-          leaveTo="transform scale-50 opacity-0">
-          <TicketDetailInformation ticket={ticket} />
-        </Transition>
       </div>
     </Layout>
   );
