@@ -77,7 +77,7 @@ export default function InformationDetailModalHeader({ message }: Props) {
             className={`${
               open ? 'rounded-t' : 'rounded'
             } flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-gray-700 bg-gray-200 hover:bg-gray-300 focus:outline-none focus-visible:ring focus-visible:ring-gray-500 focus-visible:ring-opacity-75`}>
-            <span className="font-bold">Informations</span>
+            <span className="font-bold">General Information</span>
             <ChevronUpIcon
               className={`${
                 open ? 'transform rotate-180' : ''
@@ -94,8 +94,8 @@ export default function InformationDetailModalHeader({ message }: Props) {
             <Disclosure.Panel className="p-4 text-sm text-gray-500">
               {message ? (
                 <ul className="bg-white border border-gray-200 text-gray-900">
-                  <li className="flex flex-col md:flex-row text-center px-6 border-b border-gray-200 w-full">
-                    <div className="font-semibold w-full md:w-1/4 py-2 border-b md:border-r border-gray-200">
+                  <li className="flex flex-col md:flex-row px-6 border-b border-gray-200 w-full">
+                    <div className="text-center font-semibold w-full md:w-1/4 py-2 border-b md:border-r border-gray-200">
                       Subject
                     </div>
                     <div className="w-full md:w-3/4 py-2 ml-4">
@@ -103,8 +103,8 @@ export default function InformationDetailModalHeader({ message }: Props) {
                     </div>
                   </li>
 
-                  <li className="flex flex-col md:flex-row text-center px-6 border-b border-gray-200 w-full">
-                    <div className="font-semibold w-full md:w-1/4 py-2 border-b md:border-r border-gray-200">
+                  <li className="flex flex-col md:flex-row px-6 border-b border-gray-200 w-full">
+                    <div className="text-center font-semibold w-full md:w-1/4 py-2 border-b md:border-r border-gray-200">
                       From
                     </div>
                     <div className="w-full md:w-3/4 py-2 ml-4">
@@ -112,8 +112,8 @@ export default function InformationDetailModalHeader({ message }: Props) {
                     </div>
                   </li>
 
-                  <li className="flex flex-col md:flex-row text-center px-6 border-b border-gray-200 w-full">
-                    <div className="font-semibold w-full md:w-1/4 py-2 border-b md:border-r border-gray-200">
+                  <li className="flex flex-col md:flex-row px-6 border-b border-gray-200 w-full">
+                    <div className="text-center font-semibold w-full md:w-1/4 py-2 border-b md:border-r border-gray-200">
                       To
                     </div>
                     <div className="w-full md:w-3/4 py-2 ml-4">
@@ -121,8 +121,8 @@ export default function InformationDetailModalHeader({ message }: Props) {
                     </div>
                   </li>
 
-                  <li className="flex flex-col md:flex-row text-center px-6 border-b border-gray-200 w-full">
-                    <div className="font-semibold w-full md:w-1/4 py-2 border-b md:border-r border-gray-200">
+                  <li className="flex flex-col md:flex-row px-6 border-b border-gray-200 w-full">
+                    <div className="text-center font-semibold w-full md:w-1/4 py-2 border-b md:border-r border-gray-200">
                       Cc
                     </div>
                     <div className="w-full md:w-3/4 py-2 ml-4">
@@ -130,8 +130,8 @@ export default function InformationDetailModalHeader({ message }: Props) {
                     </div>
                   </li>
 
-                  <li className="flex flex-col md:flex-row text-center px-6 border-b border-gray-200 w-full">
-                    <div className="font-semibold w-full md:w-1/4 py-2 border-b md:border-r border-gray-200">
+                  <li className="flex flex-col md:flex-row px-6 border-b border-gray-200 w-full">
+                    <div className="text-center font-semibold w-full md:w-1/4 py-2 border-b md:border-r border-gray-200">
                       Received at
                     </div>
                     <div className="w-full md:w-3/4 py-2 ml-4">
@@ -139,8 +139,8 @@ export default function InformationDetailModalHeader({ message }: Props) {
                     </div>
                   </li>
 
-                  <li className="flex flex-col md:flex-row text-center px-6 w-full">
-                    <div className="font-semibold w-full md:w-1/4 py-2 border-b md:border-r border-gray-200">
+                  <li className="flex flex-col md:flex-row px-6 w-full">
+                    <div className="text-center font-semibold w-full md:w-1/4 py-2 border-b md:border-r border-gray-200">
                       Web Link
                     </div>
                     <div className="w-full md:w-3/4 py-2 ml-4">

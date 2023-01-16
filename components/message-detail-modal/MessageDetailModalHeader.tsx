@@ -76,7 +76,7 @@ export default function MessageDetailModalHeader({ message }: Props) {
             className={`${
               open ? 'rounded-t' : 'rounded'
             } flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-gray-700 bg-gray-200 hover:bg-gray-300 focus:outline-none focus-visible:ring focus-visible:ring-gray-500 focus-visible:ring-opacity-75`}>
-            <span className="font-bold">Information</span>
+            <span className="font-bold">General Information</span>
             <ChevronUpIcon
               className={`${
                 open ? 'transform rotate-180' : ''
