@@ -95,7 +95,7 @@ export default function TicketDetailManageStatus() {
   };
 
   return (
-    <div className="border border-gray-300 rounded p-4 shadow-sm mt-8">
+    <div className="border border-gray-300 rounded p-4 shadow-sm">
       <div>
         <h2 className="font-semibold text-lg mb-2">Ticket Status Change Log</h2>
         <TicketStatusChangeLogTable ticketStatuses={ticketStatuses} />

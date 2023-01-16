@@ -21,13 +21,7 @@ export default function TicketDetailManage() {
   const session = useSession();
   const user = session?.data?.user as SessionUser;
 
-  const [ticketStatuses, setTicketStatuses] = useAtom(
-    TicketDetailStore.ticketStatuses
-  );
-  const [ticketDueDates, setTicketDueDates] = useAtom(
-    TicketDetailStore.ticketDueDates
-  );
-  const [statuses] = useAtom(TicketDetailStore.statuses);
+  const [ticketStatuses] = useAtom(TicketDetailStore.ticketStatuses);
   const [ticket] = useAtom(TicketDetailStore.ticket);
 
   return (
@@ -39,21 +33,21 @@ export default function TicketDetailManage() {
         />
       )}
 
-      <TicketResolutionChangeLogTable />
+      {TicketUtils.getCurrentStatus(ticketStatuses) === STATUS.CLOSED && (
+        <SuccessAlert
+          className="mt-2 mb-4"
+          message={`Ticket is already closed`}
+        />
+      )}
 
       <TicketDetailManageStatus />
 
       <TicketDetailManageDueDate />
 
+      <TicketResolutionChangeLogTable />
+
       {TicketUtils.isEligibleToManage(user, ticket) && (
         <TicketDetailManageAction />
-      )}
-
-      {TicketUtils.getCurrentStatus(ticketStatuses) === STATUS.CLOSED && (
-        <SuccessAlert
-          className="mt-4"
-          message={`Ticket is closed, view the resolution in <b>Resolution</b> tab`}
-        />
       )}
     </section>
   );

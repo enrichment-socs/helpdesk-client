@@ -215,7 +215,7 @@ const TicketDetailPage: NextPage<Props> = ({
                       <button
                         className={`font-medium inline-block p-4 rounded-t-lg ${
                           currentTab === menu
-                            ? 'border-b-2 border-primary active'
+                            ? 'border-b-2 border-primary text-primary active'
                             : 'border-transparent hover:text-gray-600 hover:border-gray-300'
                         }`}
                         onClick={(e) => {

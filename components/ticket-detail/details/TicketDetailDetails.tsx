@@ -52,23 +52,10 @@ const TicketDetailDetails = () => {
           />
         )}
 
-      {resolutions.length > 0 &&
-        (user?.roleName === ROLES.ADMIN ||
-          user?.roleName === ROLES.SUPER_ADMIN) && (
-          <SuccessAlert
-            className="mb-4"
-            message={`This ticket has been solved and a message has been marked as resolution${
-              latestResolution?.resolution
-                ? ` :${latestResolution?.resolution}`
-                : '.'
-            }`}
-          />
-        )}
-
-      {resolutions.length > 0 && user?.roleName === ROLES.USER && (
+      {resolutions.length > 0 && (
         <SuccessAlert
           className="mb-4"
-          message={`This ticket has been solved and a message has been marked as resolution`}
+          message={`This ticket has been resolved and a message has been marked as resolution`}
         />
       )}
 

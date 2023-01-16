@@ -80,7 +80,7 @@ export default function TicketDueDateChangeLogTable({ ticketDueDates }: Props) {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {index === ticketDueDates.length - 1 && (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary text-gray-100">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-400 text-gray-100">
                             Current
                           </span>
                         )}

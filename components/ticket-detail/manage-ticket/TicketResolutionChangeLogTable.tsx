@@ -6,7 +6,7 @@ export default function TicketResolutionChangeLogTable() {
   const [resolutions] = useAtom(TicketDetailStore.resolutions);
 
   return (
-    <div className="border border-gray-300 rounded p-4 shadow-sm">
+    <div className="border border-gray-300 rounded mt-8 p-4 shadow-sm">
       <h2 className="font-semibold text-lg mb-2">
         Ticket Resolution Change Log
       </h2>
@@ -78,7 +78,7 @@ export default function TicketResolutionChangeLogTable() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                           {index === resolutions.length - 1 && (
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary text-gray-100">
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-400 text-gray-100">
                               Current
                             </span>
                           )}
