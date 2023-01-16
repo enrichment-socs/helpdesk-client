@@ -41,7 +41,7 @@ type Props = {
   ticketStatuses: TicketStatus[];
   statuses: Status[];
   ticketDueDates: TicketDueDate[];
-  ticketHistories: TicketHistory[];
+  groupedTicketHistories: TicketHistory[];
 };
 
 const TicketDetailPage: NextPage<Props> = ({
@@ -49,7 +49,7 @@ const TicketDetailPage: NextPage<Props> = ({
   resolutions,
   ticketStatuses,
   ticketDueDates,
-  ticketHistories,
+  groupedTicketHistories,
   statuses,
 }) => {
   useHydrateAndSyncAtom([
@@ -79,9 +79,9 @@ const TicketDetailPage: NextPage<Props> = ({
       statuses,
     ],
     [
-      TicketDetailStore.ticketHistories,
-      useSetAtom(TicketDetailStore.ticketHistories),
-      ticketHistories,
+      TicketDetailStore.groupedTicketHistories,
+      useSetAtom(TicketDetailStore.groupedTicketHistories),
+      groupedTicketHistories,
     ],
   ]);
 
@@ -287,9 +287,8 @@ export const getServerSideProps = withSessionSsr(
       ticket.id
     );
 
-    const ticketHistories = await ticketHistoryService.getAllByTicketId(
-      ticket.id
-    );
+    const groupedTicketHistories =
+      await ticketHistoryService.getAllByTicketIdGroupedByDate(ticket.id);
 
     return {
       props: {
@@ -300,7 +299,7 @@ export const getServerSideProps = withSessionSsr(
         resolutions,
         ticketStatuses,
         ticketDueDates,
-        ticketHistories,
+        groupedTicketHistories,
         statuses,
       },
     };

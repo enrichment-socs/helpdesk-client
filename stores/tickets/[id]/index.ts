@@ -13,7 +13,9 @@ const TicketDetailStore = {
   resolutions: atom<TicketResolution[]>([]),
   ticketStatuses: atom<TicketStatus[]>([]),
   ticketDueDates: atom<TicketDueDate[]>([]),
-  ticketHistories: atom<TicketHistory[]>([]),
+  groupedTicketHistories: atom<{ date: string; histories: TicketHistory[] }[]>(
+    []
+  ),
   statuses: atom<Status[]>([]),
   outlookMessages: atom<OutlookMessage[]>(null),
   attachmentsArray: atom<OutlookMessageAttachmentValue[][]>([]),
