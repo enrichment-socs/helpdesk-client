@@ -46,6 +46,7 @@ const InformationDetailModal = ({
     outlookMessagesInThisConversation,
     setOutlookMessagesInThisConversation,
   ] = useState<OutlookMessage[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const close = () => {
     setIsOpen(false);
@@ -62,6 +63,7 @@ const InformationDetailModal = ({
   }, [info]);
 
   const fetchInfo = async () => {
+    setLoading(true);
     const messagesByConversation =
       await graphApiService.getMessagesByConversation(info.conversationId);
 
@@ -94,6 +96,7 @@ const InformationDetailModal = ({
       setAttachmentArrays((prev) => [...prev, attachments]);
     }
 
+    setLoading(false);
     setOutlookMessagesInThisConversation(messagesByConversation);
   };
 
@@ -150,14 +153,11 @@ const InformationDetailModal = ({
                   <InformationDetailModalHeader
                     message={outlookMessagesInThisConversation[0]}
                   />
-                  <InformationDetailModalBody
-                    message={outlookMessagesInThisConversation[0]}
-                    attachments={attachmentArrays[0]}
-                  />
 
                   <InformationDetailModalConversations
-                    outlookMessages={outlookMessagesInThisConversation.slice(1)}
-                    attachmentsArray={attachmentArrays.slice(1)}
+                    loading={loading}
+                    outlookMessages={outlookMessagesInThisConversation}
+                    attachmentsArray={attachmentArrays}
                   />
 
                   <div className="flex justify-end space-x-2 p-4">

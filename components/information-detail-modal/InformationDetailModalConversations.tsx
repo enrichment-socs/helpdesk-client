@@ -3,16 +3,19 @@ import { ChevronUpIcon } from '@heroicons/react/solid';
 import { OutlookMessage } from '../../models/OutlookMessage';
 import { OutlookMessageAttachmentValue } from '../../models/OutlookMessageAttachment';
 import MultiLineSkeletonLoading from '../../widgets/MultiLineSkeletonLoading';
+import SkeletonLoading from '../../widgets/SkeletonLoading';
 import TicketDetailConversation from '../ticket-detail/details/TicketDetailConversation';
 
 type Props = {
   outlookMessages: OutlookMessage[];
   attachmentsArray: OutlookMessageAttachmentValue[][];
+  loading: boolean;
 };
 
 export default function InformationDetailModalConversations({
   outlookMessages,
   attachmentsArray,
+  loading,
 }: Props) {
   return (
     <Disclosure
@@ -40,16 +43,17 @@ export default function InformationDetailModalConversations({
             leaveFrom="transform scale-100 opacity-100"
             leaveTo="transform scale-50 opacity-0">
             <Disclosure.Panel className="p-4 text-sm text-gray-500">
-              {outlookMessages ? (
+              {!loading && outlookMessages ? (
                 outlookMessages.length === 0 ? (
                   <span>There is no conversation yet.</span>
                 ) : (
                   outlookMessages.map((message, idx) => (
                     <TicketDetailConversation
+                      defaultOpen={idx === 0}
                       key={message.id}
                       message={message}
                       attachments={attachmentsArray[idx]}
-                      useUniqueBody={true}
+                      useUniqueBody={idx !== 0}
                     />
                   ))
                 )
