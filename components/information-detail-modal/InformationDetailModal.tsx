@@ -10,12 +10,9 @@ import { GraphApiService } from '../../services/GraphApiService';
 import toast from 'react-hot-toast';
 import { ClientPromiseWrapper } from '../../shared/libs/client-promise-wrapper';
 import { CONTENT_ID_REGEX } from '../../shared/constants/regex';
-import { Message } from '../../models/Message';
 import InformationDetailModalHeader from './InformationDetailModalHeader';
-import InformationDetailModalBody from './InformationDetailModalBody';
 import { Information } from '../../models/Information';
 import InformationDetailModalConversations from './InformationDetailModalConversations';
-import { If, Then } from 'react-if';
 import { OutlookMessageClientHelper } from '../../shared/libs/outlook-message-client-helper';
 
 type Props = {
