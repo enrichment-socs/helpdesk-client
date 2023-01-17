@@ -398,7 +398,7 @@ export default function MessageDetailModalAction({
                             </option>
                             {admins.map((admin) => (
                               <option value={admin.id} key={admin.id}>
-                                {admin.code} - {admin.name}
+                                {admin.name}
                               </option>
                             ))}
                           </select>
@@ -436,6 +436,8 @@ export default function MessageDetailModalAction({
 
               <div className="flex justify-between pt-4">
                 <div className="flex items-center">
+                  {message.savedAs === '-' && (
+                    <>
                       <button
                         type="button"
                         onClick={onDelete}
@@ -447,14 +449,16 @@ export default function MessageDetailModalAction({
                         data-for="delete-btn-desc"
                         className="w-6 h-6 ml-2"
                       />
+                    </>
+                  )}
 
-                      <ReactTooltip
-                        id="delete-btn-desc"
-                        place="right"
-                        effect="solid">
-                        Only useful if a message is moved to another folder or
-                        deleted in the outlook app
-                      </ReactTooltip>
+                  <ReactTooltip
+                    id="delete-btn-desc"
+                    place="right"
+                    effect="solid">
+                    Only useful if a message is moved to another folder or
+                    deleted in the outlook app
+                  </ReactTooltip>
                 </div>
                 <div className="space-x-2">
                   <button
