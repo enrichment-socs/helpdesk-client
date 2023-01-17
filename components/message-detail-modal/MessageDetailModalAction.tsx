@@ -436,8 +436,6 @@ export default function MessageDetailModalAction({
 
               <div className="flex justify-between pt-4">
                 <div className="flex items-center">
-                  {selectedType === MESSAGE_TYPE.JUNK && (
-                    <>
                       <button
                         type="button"
                         onClick={onDelete}
@@ -457,8 +455,6 @@ export default function MessageDetailModalAction({
                         Only useful if a message is moved to another folder or
                         deleted in the outlook app
                       </ReactTooltip>
-                    </>
-                  )}
                 </div>
                 <div className="space-x-2">
                   <button
