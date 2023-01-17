@@ -20,11 +20,8 @@ import { PriorityService } from '../../services/PriorityService';
 import { Priority } from '../../models/Priority';
 import { STATUS } from '../../shared/constants/status';
 import PendingTicketContainer from '../../components/ticket-detail/PendingTicketContainer';
-import { useHydrateAtoms } from 'jotai/utils';
 import TicketStore from '../../stores/tickets';
-import { Provider, useAtom, useSetAtom } from 'jotai';
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
+import { useSetAtom } from 'jotai';
 import useHydrateAndSyncAtom from '../../hooks/useHydrateAndSyncAtom';
 
 type Props = {

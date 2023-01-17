@@ -71,20 +71,20 @@ const TicketTable: React.FC<Props> = ({
   const router = useRouter();
   const legends = [
     {
-      color: 'bg-amber-200',
+      color: 'bg-amber-400',
       title: 'High',
     },
     {
-      color: 'bg-red-300',
+      color: 'bg-purple-500',
       title: 'Urgent',
     },
     {
-      color: 'bg-red-400',
-      title: 'Due in 12 hours / passed deadline',
+      color: 'bg-green-400',
+      title: 'Resolved / Closed',
     },
     {
-      color: 'bg-green-200',
-      title: 'Closed',
+      color: 'bg-red-500',
+      title: 'Passed due date',
     },
   ];
 
@@ -92,25 +92,36 @@ const TicketTable: React.FC<Props> = ({
     router.push(`/tickets/${id}`);
   };
 
-  const getRowBgColor = (ticket: Ticket) => {
+  const getIndicatorColor = (ticket: Ticket) => {
     const currDate = new Date();
     const dueDate = new Date(ticket.dueBy);
 
     if (ticket.status.statusName === STATUS.PENDING) {
-      return 'bg-yellow-200 hover:bg-yellow-300';
+      return '';
     }
 
     if (ticket.status.statusName === STATUS.CLOSED)
-      return 'bg-green-200 hover:bg-green-300';
-    if (
-      currDate.getTime() > dueDate.getTime() ||
-      differenceInHours(dueDate, currDate) <= 12
-    )
-      return 'bg-red-400 hover:bg-red-500';
+      return 'border-l-4 border-green-400';
+    if (currDate.getTime() >= dueDate.getTime())
+      return 'border-l-4 border-red-500';
+    if (ticket.status.statusName === STATUS.RESOLVED)
+      return 'border-l-4 border-green-400';
     if (ticket.priority.priorityName === PRIORITY.URGENT)
-      return 'bg-red-300 hover:bg-red-400';
+      return 'border-l-4 border-purple-500';
     if (ticket.priority.priorityName === PRIORITY.HIGH)
-      return 'bg-amber-200 hover:bg-amber-300';
+      return 'border-l-4 border-amber-400';
+
+    return 'border-l-4 border-gray-400';
+  };
+
+  const getRowBgColor = (ticket: Ticket) => {
+    const currDate = new Date();
+    const dueDate = new Date(ticket.dueBy);
+
+    if (ticket.status.statusName === STATUS.CLOSED)
+      return 'bg-green-200 hover:bg-green-300';
+    // if (currDate.getTime() >= dueDate.getTime())
+    //   return 'bg-red-400 hover:bg-red-500';
 
     return '';
   };
@@ -166,7 +177,8 @@ const TicketTable: React.FC<Props> = ({
                       <tr
                         className={clsx(
                           'transition duration-300 ease-in-out hover:bg-sky-100 cursor-pointer transition duration-300 hover:bg-sky-100 ease-in-out',
-                          getRowBgColor(row.original)
+                          getRowBgColor(row.original),
+                          getIndicatorColor(row.original)
                         )}
                         onClick={rowClickHandler.bind(this, row.original.id)}
                         key={row.id}>
