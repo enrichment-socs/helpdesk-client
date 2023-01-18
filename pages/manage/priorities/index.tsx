@@ -46,7 +46,7 @@ const ManageCategoriesPage: NextPage<Props> = ({ priorities }) => {
         <button
           type="button"
           onClick={() => openModal(null)}
-          className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+          className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-primary hover:bg-primary-dark focus:outline-none">
           Create
         </button>
       </div>

@@ -5,6 +5,7 @@ import { STATUS } from '../../shared/constants/status';
 import { PRIORITY } from '../../shared/constants/priority';
 import clsx from 'clsx';
 import {
+  Cell,
   createColumnHelper,
   flexRender,
   getCoreRowModel,
@@ -46,6 +47,7 @@ const TicketTable: React.FC<Props> = ({
       cell: (info) =>
         `${format(new Date(info.getValue()), 'dd MMM yyyy, kk:mm')}`,
       header: `Due By ${forPending ? '(Freezed)' : ''}`,
+      id: 'dueBy',
     }),
     columnHelper.accessor('status.statusName', {
       cell: (info) => info.getValue(),
@@ -88,6 +90,15 @@ const TicketTable: React.FC<Props> = ({
     },
   ];
 
+  const getPriorityColor = (ticket: Ticket) => {
+    if (ticket.priority.priorityName === PRIORITY.MEDIUM)
+      return 'text-blue-500';
+    if (ticket.priority.priorityName === PRIORITY.HIGH) return 'text-amber-500';
+    if (ticket.priority.priorityName === PRIORITY.URGENT)
+      return 'text-purple-500';
+    return '';
+  };
+
   const rowClickHandler = (id: string) => {
     router.push(`/tickets/${id}`);
   };
@@ -124,6 +135,16 @@ const TicketTable: React.FC<Props> = ({
     //   return 'bg-red-400 hover:bg-red-500';
 
     return '';
+  };
+
+  const isDeadlineAndNotClosed = (ticket: Ticket) => {
+    const currDate = new Date();
+    const dueDate = new Date(ticket.dueBy);
+
+    return (
+      ticket.status.statusName !== STATUS.CLOSED &&
+      currDate.getTime() >= dueDate.getTime()
+    );
   };
 
   return (
@@ -191,7 +212,12 @@ const TicketTable: React.FC<Props> = ({
                                 'max-w-[16rem]':
                                   cell.column.id === 'senderName',
                               },
-                              { 'max-w-[20rem]': cell.column.id === 'subject' }
+                              { 'max-w-[20rem]': cell.column.id === 'subject' },
+                              {
+                                'text-red-500':
+                                  cell.column.id === 'dueBy' &&
+                                  isDeadlineAndNotClosed(row.original),
+                              }
                             )}>
                             {flexRender(
                               cell.column.columnDef.cell,
