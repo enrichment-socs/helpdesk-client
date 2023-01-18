@@ -28,7 +28,8 @@ export default function Navbar() {
     },
     {
       title: 'Tickets',
-      href: `/tickets?pendingPriority=&pendingQuery=${user?.name}&priority=&status=&query=${user?.name}`,
+      href: '/tickets',
+      query: `?pendingPriority=&pendingQuery=${user?.name}&priority=&status=&query=${user?.name}`,
       roles: [ROLES.USER, ROLES.ADMIN, ROLES.SUPER_ADMIN],
     },
     {
@@ -89,6 +90,7 @@ export default function Navbar() {
     await signOut({ callbackUrl: process.env.NEXT_PUBLIC_LOGIN_ABSOLUTE_URL });
   };
 
+  console.log({ router });
   return (
     <div>
       <div className="flex flex-col md:flex-row justify-between items-center max-w-screen-2xl px-2 sm:px-6 lg:px-8 mx-auto">
@@ -124,7 +126,10 @@ export default function Navbar() {
                       <DropdownNav link={link as DropdownNavLink} />
                     </Then>
                     <Else>
-                      <Link key={link.title} href={link.href} passHref={true}>
+                      <Link
+                        key={link.title}
+                        href={`${link.href}${link.query ?? ''}`}
+                        passHref={true}>
                         {link.href === '/' ? (
                           <div
                             className={`tracking-wide text-center cursor-pointer hover:text-primary min-w-[3rem] py-4 text-gray-600 font-semibold ${
