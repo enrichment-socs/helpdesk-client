@@ -109,7 +109,7 @@ export default function PendingTicketContainer({ take }: Props) {
                 id="pending-ticket-desc"
                 place="right"
                 effect="solid">
-                <div className="bg-blue-100 p-2 border border-blue-200 rounded">
+                <div className="max-w-[60rem]">
                   Ticket which status is <b>Pending</b> means that the problem
                   depends on external factor(s) that are outside of our
                   team&lsquo;s control (ex: waiting for data from another
