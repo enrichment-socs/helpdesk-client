@@ -8,6 +8,7 @@ type Props = {
   children: ReactNode;
   defaultOpen?: boolean;
   headerClass?: string;
+  border?: boolean;
 };
 
 export const Accordion = ({
@@ -15,6 +16,7 @@ export const Accordion = ({
   children,
   defaultOpen = false,
   headerClass = 'border border-gray-300 text-gray-700 bg-gray-200 hover:bg-gray-300',
+  border = true,
 }: Props) => {
   return (
     <Disclosure defaultOpen={defaultOpen} as="div" className="mt-6">
@@ -43,7 +45,11 @@ export const Accordion = ({
             leave="transition duration-300 ease-in"
             leaveFrom="transform scale-100 opacity-100"
             leaveTo="transform scale-50 opacity-0">
-            <Disclosure.Panel className="p-4 border-r border-l border-b border-gray-300 text-sm text-gray-800">
+            <Disclosure.Panel
+              className={clsx(
+                { 'border-r border-l border-b border-gray-300': border },
+                'p-4 text-sm text-gray-800'
+              )}>
               {children}
             </Disclosure.Panel>
           </Transition>

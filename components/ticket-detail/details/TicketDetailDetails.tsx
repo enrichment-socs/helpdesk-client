@@ -100,19 +100,13 @@ const TicketDetailDetails = () => {
           </div>
         )}
 
-        <Disclosure as="div" className="mt-2">
-          {({ open }) => (
-            <>
-              <Accordion title="More Properties">
-                <TicketDetailProperties
-                  ticket={ticket}
-                  outlookMessage={outlookMessages ? outlookMessages[0] : null}
-                  resolution={latestResolution}
-                />
-              </Accordion>
-            </>
-          )}
-        </Disclosure>
+        <Accordion title="More Properties">
+          <TicketDetailProperties
+            ticket={ticket}
+            outlookMessage={outlookMessages ? outlookMessages[0] : null}
+            resolution={latestResolution}
+          />
+        </Accordion>
       </div>
     </div>
   );
