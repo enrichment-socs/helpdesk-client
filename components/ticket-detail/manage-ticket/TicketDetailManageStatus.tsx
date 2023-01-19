@@ -20,6 +20,7 @@ import ReactTooltip from 'react-tooltip';
 import { useAtom } from 'jotai';
 import TicketDetailStore from '../../../stores/tickets/[id]';
 import { Disclosure, Transition } from '@headlessui/react';
+import { Accordion } from '../../../widgets/Accordion';
 
 export default function TicketDetailManageStatus() {
   const session = useSession();
@@ -102,253 +103,202 @@ export default function TicketDetailManageStatus() {
   };
 
   return (
-    <Disclosure defaultOpen as="div" className="mt-2">
-      {({ open }) => (
-        <>
-          <Disclosure.Button
-            className={`${
-              open ? 'rounded-t' : 'rounded'
-            } flex justify-between w-full px-4 py-2 text-sm border border-gray-300 font-medium text-left text-gray-700 bg-gray-200 hover:bg-gray-300 focus:outline-none focus-visible:ring focus-visible:ring-gray-500 focus-visible:ring-opacity-75`}>
-            <span className="font-bold">Manage Ticket Status</span>
-            <ChevronUpIcon
-              className={`${
-                open ? 'transform rotate-180' : ''
-              } w-5 h-5 text-gray-500`}
-            />
-          </Disclosure.Button>
-          <Transition
-            enter="transition duration-300 ease-in-out"
-            enterFrom="transform scale-50 opacity-0"
-            enterTo="transform scale-100 opacity-100"
-            leave="transition duration-300 ease-in"
-            leaveFrom="transform scale-100 opacity-100"
-            leaveTo="transform scale-50 opacity-0">
-            <Disclosure.Panel className="p-4 border-r border-l border-b border-gray-300 text-sm text-gray-800">
-              <TicketStatusChangeLogTable ticketStatuses={ticketStatuses} />
+    <Accordion defaultOpen={true} title="Manage Ticket Statuses">
+      <TicketStatusChangeLogTable ticketStatuses={ticketStatuses} />
 
-              <If condition={TicketUtils.isEligibleToManage(user, ticket)}>
-                <Then>
-                  <div className="mt-4">
-                    <div>
-                      Current Status:{' '}
-                      <input
-                        className="border border-gray-300 rounded p-2 w-full"
-                        type="text"
-                        disabled
-                        value={TicketUtils.getCurrentStatus(ticketStatuses)}
-                      />
+      <If condition={TicketUtils.isEligibleToManage(user, ticket)}>
+        <Then>
+          <div className="mt-4">
+            <div>
+              Current Status:{' '}
+              <input
+                className="border border-gray-300 rounded p-2 w-full"
+                type="text"
+                disabled
+                value={TicketUtils.getCurrentStatus(ticketStatuses)}
+              />
+            </div>
+
+            <Switch>
+              <Case
+                condition={
+                  TicketUtils.getCurrentStatus(ticketStatuses) ===
+                  STATUS.ASSIGNED
+                }>
+                <div className="flex space-x-4 justify-end mt-3">
+                  <button
+                    onClick={() => updateStatus(STATUS.IN_PROGRESS, false)}
+                    type="button"
+                    className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 rounded-md shadow-sm text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                    <span className="hidden md:block">Change Status to </span>
+                    <span className="font-bold ml-1">{STATUS.IN_PROGRESS}</span>
+                    <ChevronRightIcon className="h-5 w-5" />
+                  </button>
+                </div>
+              </Case>
+
+              <Case
+                condition={
+                  TicketUtils.getCurrentStatus(ticketStatuses) ===
+                  STATUS.IN_PROGRESS
+                }>
+                <div>
+                  {renderReasonInputText()}
+
+                  <div className="flex justify-between mt-3 items-end">
+                    <div
+                      className="text-blue-500 text-xs font-semibold"
+                      data-tip
+                      data-for="admin-change-pending-ticket-info">
+                      WHAT DOES PENDING STATUS MEAN ? HOVER ME
                     </div>
+                    <div className="flex space-x-4">
+                      <button
+                        onClick={() => updateStatus(STATUS.PENDING, true)}
+                        type="button"
+                        className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 rounded-md shadow-sm text-gray-800 bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-600">
+                        <span className="hidden md:block">
+                          Change Status to{' '}
+                        </span>
+                        <span className="font-bold ml-1">{STATUS.PENDING}</span>
+                      </button>
 
-                    <Switch>
-                      <Case
-                        condition={
-                          TicketUtils.getCurrentStatus(ticketStatuses) ===
-                          STATUS.ASSIGNED
-                        }>
-                        <div className="flex space-x-4 justify-end mt-3">
-                          <button
-                            onClick={() =>
-                              updateStatus(STATUS.IN_PROGRESS, false)
-                            }
-                            type="button"
-                            className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 rounded-md shadow-sm text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
-                            <span className="hidden md:block">
-                              Change Status to{' '}
-                            </span>
-                            <span className="font-bold ml-1">
-                              {STATUS.IN_PROGRESS}
-                            </span>
-                            <ChevronRightIcon className="h-5 w-5" />
-                          </button>
-                        </div>
-                      </Case>
-
-                      <Case
-                        condition={
-                          TicketUtils.getCurrentStatus(ticketStatuses) ===
-                          STATUS.IN_PROGRESS
-                        }>
-                        <div>
-                          {renderReasonInputText()}
-
-                          <div className="flex justify-between mt-3 items-end">
-                            <div
-                              className="text-blue-500 text-xs font-semibold"
-                              data-tip
-                              data-for="admin-change-pending-ticket-info">
-                              WHAT DOES PENDING STATUS MEAN ? HOVER ME
-                            </div>
-                            <div className="flex space-x-4">
-                              <button
-                                onClick={() =>
-                                  updateStatus(STATUS.PENDING, true)
-                                }
-                                type="button"
-                                className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 rounded-md shadow-sm text-gray-800 bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-600">
-                                <span className="hidden md:block">
-                                  Change Status to{' '}
-                                </span>
-                                <span className="font-bold ml-1">
-                                  {STATUS.PENDING}
-                                </span>
-                              </button>
-
-                              <button
-                                onClick={() =>
-                                  updateStatus(STATUS.RESOLVED, true)
-                                }
-                                type="button"
-                                className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-600">
-                                <span className="hidden md:block">
-                                  Change Status to{' '}
-                                </span>
-                                <span className="font-bold ml-1">
-                                  {STATUS.RESOLVED}
-                                </span>
-                                <ChevronRightIcon className="h-5 w-5" />
-                              </button>
-                            </div>
-                          </div>
-
-                          <ReactTooltip
-                            id="admin-change-pending-ticket-info"
-                            place="right"
-                            effect="solid">
-                            <div>
-                              <span className="block">
-                                If you change the status to <b>Pending</b>, the
-                                due date of this ticket will be{' '}
-                                <b>frozen (invalid)</b>.
-                              </span>
-                              <span className="block">
-                                When you change the status to <b>In Progress</b>{' '}
-                                again, then the due date will be updated with
-                                the following formula:{' '}
-                              </span>
-                              <span>
-                                <b>New due date</b> = old due date + time
-                                elapsed from <b>Pending</b> to
-                                <b> In Progress</b> again
-                              </span>
-                            </div>
-                          </ReactTooltip>
-                        </div>
-                      </Case>
-
-                      <Case
-                        condition={
-                          TicketUtils.getCurrentStatus(ticketStatuses) ===
-                          STATUS.PENDING
-                        }>
-                        {renderReasonInputText()}
-
-                        <div className="flex space-x-4 justify-between mt-3">
-                          <div
-                            className="text-blue-500 text-xs font-semibold"
-                            data-tip
-                            data-for="admin-change-in-progress-ticket-info">
-                            WHAT DOES PENDING STATUS MEAN ? HOVER ME
-                          </div>
-
-                          <button
-                            onClick={() =>
-                              updateStatus(STATUS.IN_PROGRESS, true)
-                            }
-                            type="button"
-                            className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 rounded-md shadow-sm text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
-                            <span className="hidden md:block">
-                              Change Status to{' '}
-                            </span>
-                            <span className="font-bold ml-1">
-                              {STATUS.IN_PROGRESS}
-                            </span>
-                            <ChevronRightIcon className="h-5 w-5" />
-                          </button>
-                        </div>
-
-                        <ReactTooltip
-                          id="admin-change-in-progress-ticket-info"
-                          place="right"
-                          effect="solid">
-                          <div>
-                            <span className="block">
-                              If you change the status to <b>In Progress</b>,
-                              the due date of this ticket will be be updated
-                              with the following formula:.
-                            </span>
-                            <span>
-                              <b>New due date</b> = old due date + time elapsed
-                              from <b>Pending</b> to
-                              <b> In Progress</b> again
-                            </span>
-                          </div>
-                        </ReactTooltip>
-                      </Case>
-
-                      <Case
-                        condition={
-                          TicketUtils.getCurrentStatus(ticketStatuses) ===
-                          STATUS.RESOLVED
-                        }>
-                        <div>
-                          {renderReasonInputText()}
-                          {resolutions.length === 0 && (
-                            <small className="text-red-400 font-medium">
-                              *You must mark a message as resolution before the
-                              ticket can be closed. Mark it in the{' '}
-                              <b>Details</b> tab or click{' '}
-                              <button
-                                className="text-blue-500 underline"
-                                onClick={() => setCurrentTab('Details')}>
-                                here
-                              </button>
-                            </small>
-                          )}
-
-                          <div className="flex space-x-4 justify-between mt-3">
-                            <button
-                              onClick={() =>
-                                updateStatus(STATUS.IN_PROGRESS, true)
-                              }
-                              type="button"
-                              className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 rounded-md shadow-sm text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
-                              <ChevronLeftIcon className="h-5 w-5" />
-                              <span className="hidden md:block">
-                                Change Status to{' '}
-                              </span>
-                              <span className="font-bold ml-1">
-                                {STATUS.IN_PROGRESS}
-                              </span>
-                            </button>
-
-                            <button
-                              onClick={() => updateStatus(STATUS.CLOSED, false)}
-                              type="button"
-                              disabled={resolutions.length === 0}
-                              className={`${
-                                resolutions.length > 0
-                                  ? 'bg-green-600 hover:bg-green-700'
-                                  : 'bg-gray-400'
-                              } inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 rounded-md shadow-sm text-white focus:outline-none`}>
-                              <span className="hidden md:block">
-                                Change Status to{' '}
-                              </span>
-                              <span className="font-bold ml-1">
-                                {STATUS.CLOSED}
-                              </span>{' '}
-                              <ChevronRightIcon className="h-5 w-5" />
-                            </button>
-                          </div>
-                        </div>
-                      </Case>
-                    </Switch>
+                      <button
+                        onClick={() => updateStatus(STATUS.RESOLVED, true)}
+                        type="button"
+                        className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-600">
+                        <span className="hidden md:block">
+                          Change Status to{' '}
+                        </span>
+                        <span className="font-bold ml-1">
+                          {STATUS.RESOLVED}
+                        </span>
+                        <ChevronRightIcon className="h-5 w-5" />
+                      </button>
+                    </div>
                   </div>
-                </Then>
-              </If>
-            </Disclosure.Panel>
-          </Transition>
-        </>
-      )}
-    </Disclosure>
+
+                  <ReactTooltip
+                    id="admin-change-pending-ticket-info"
+                    place="right"
+                    effect="solid">
+                    <div>
+                      <span className="block">
+                        If you change the status to <b>Pending</b>, the due date
+                        of this ticket will be <b>frozen (invalid)</b>.
+                      </span>
+                      <span className="block">
+                        When you change the status to <b>In Progress</b> again,
+                        then the due date will be updated with the following
+                        formula:{' '}
+                      </span>
+                      <span>
+                        <b>New due date</b> = old due date + time elapsed from{' '}
+                        <b>Pending</b> to
+                        <b> In Progress</b> again
+                      </span>
+                    </div>
+                  </ReactTooltip>
+                </div>
+              </Case>
+
+              <Case
+                condition={
+                  TicketUtils.getCurrentStatus(ticketStatuses) ===
+                  STATUS.PENDING
+                }>
+                {renderReasonInputText()}
+
+                <div className="flex space-x-4 justify-between mt-3">
+                  <div
+                    className="text-blue-500 text-xs font-semibold"
+                    data-tip
+                    data-for="admin-change-in-progress-ticket-info">
+                    WHAT DOES PENDING STATUS MEAN ? HOVER ME
+                  </div>
+
+                  <button
+                    onClick={() => updateStatus(STATUS.IN_PROGRESS, true)}
+                    type="button"
+                    className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 rounded-md shadow-sm text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                    <span className="hidden md:block">Change Status to </span>
+                    <span className="font-bold ml-1">{STATUS.IN_PROGRESS}</span>
+                    <ChevronRightIcon className="h-5 w-5" />
+                  </button>
+                </div>
+
+                <ReactTooltip
+                  id="admin-change-in-progress-ticket-info"
+                  place="right"
+                  effect="solid">
+                  <div>
+                    <span className="block">
+                      If you change the status to <b>In Progress</b>, the due
+                      date of this ticket will be be updated with the following
+                      formula:.
+                    </span>
+                    <span>
+                      <b>New due date</b> = old due date + time elapsed from{' '}
+                      <b>Pending</b> to
+                      <b> In Progress</b> again
+                    </span>
+                  </div>
+                </ReactTooltip>
+              </Case>
+
+              <Case
+                condition={
+                  TicketUtils.getCurrentStatus(ticketStatuses) ===
+                  STATUS.RESOLVED
+                }>
+                <div>
+                  {renderReasonInputText()}
+                  {resolutions.length === 0 && (
+                    <small className="text-red-400 font-medium">
+                      *You must mark a message as resolution before the ticket
+                      can be closed. Mark it in the <b>Details</b> tab or click{' '}
+                      <button
+                        className="text-blue-500 underline"
+                        onClick={() => setCurrentTab('Details')}>
+                        here
+                      </button>
+                    </small>
+                  )}
+
+                  <div className="flex space-x-4 justify-between mt-3">
+                    <button
+                      onClick={() => updateStatus(STATUS.IN_PROGRESS, true)}
+                      type="button"
+                      className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 rounded-md shadow-sm text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                      <ChevronLeftIcon className="h-5 w-5" />
+                      <span className="hidden md:block">Change Status to </span>
+                      <span className="font-bold ml-1">
+                        {STATUS.IN_PROGRESS}
+                      </span>
+                    </button>
+
+                    <button
+                      onClick={() => updateStatus(STATUS.CLOSED, false)}
+                      type="button"
+                      disabled={resolutions.length === 0}
+                      className={`${
+                        resolutions.length > 0
+                          ? 'bg-green-600 hover:bg-green-700'
+                          : 'bg-gray-400'
+                      } inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 rounded-md shadow-sm text-white focus:outline-none`}>
+                      <span className="hidden md:block">Change Status to </span>
+                      <span className="font-bold ml-1">
+                        {STATUS.CLOSED}
+                      </span>{' '}
+                      <ChevronRightIcon className="h-5 w-5" />
+                    </button>
+                  </div>
+                </div>
+              </Case>
+            </Switch>
+          </div>
+        </Then>
+      </If>
+    </Accordion>
   );
 }

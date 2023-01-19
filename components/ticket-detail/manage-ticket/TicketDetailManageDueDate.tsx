@@ -15,6 +15,7 @@ import TicketDetailStore from '../../../stores/tickets/[id]';
 import TicketDueDateChangeLogTable from './TicketDueDateChangeLogTable';
 import { Disclosure, Transition } from '@headlessui/react';
 import { ChevronUpIcon } from '@heroicons/react/solid';
+import { Accordion } from '../../../widgets/Accordion';
 const DatePicker = dynamic(import('react-datepicker'), { ssr: false }) as any;
 
 export default function TicketDetailManageDueDate() {
@@ -67,72 +68,44 @@ export default function TicketDetailManageDueDate() {
   };
 
   return (
-    <Disclosure as="div" className="mt-6">
-      {({ open }) => (
-        <>
-          <Disclosure.Button
-            className={`${
-              open ? 'rounded-t' : 'rounded'
-            } flex justify-between w-full px-4 py-2 text-sm border border-gray-300 font-medium text-left text-gray-700 bg-gray-200 hover:bg-gray-300 focus:outline-none focus-visible:ring focus-visible:ring-gray-500 focus-visible:ring-opacity-75`}>
-            <span className="font-bold">Manage Ticket Status</span>
-            <ChevronUpIcon
-              className={`${
-                open ? 'transform rotate-180' : ''
-              } w-5 h-5 text-gray-500`}
-            />
-          </Disclosure.Button>
-          <Transition
-            enter="transition duration-300 ease-in-out"
-            enterFrom="transform scale-50 opacity-0"
-            enterTo="transform scale-100 opacity-100"
-            leave="transition duration-300 ease-in"
-            leaveFrom="transform scale-100 opacity-100"
-            leaveTo="transform scale-50 opacity-0">
-            <Disclosure.Panel className="p-4 border-r border-l border-b border-gray-300 text-sm text-gray-800">
-              <TicketDueDateChangeLogTable ticketDueDates={ticketDueDates} />
+    <Accordion title="Manage Ticket Due Dates">
+      <TicketDueDateChangeLogTable ticketDueDates={ticketDueDates} />
 
-              {TicketUtils.isEligibleToManage(user, ticket) &&
-                TicketUtils.getCurrentStatus(ticketStatuses) !==
-                  STATUS.CLOSED && (
-                  <form onSubmit={handleSubmit}>
-                    <h2 className="font-semibold text-lg mb-2 mt-8">
-                      Manage Due Date
-                    </h2>
+      {TicketUtils.isEligibleToManage(user, ticket) &&
+        TicketUtils.getCurrentStatus(ticketStatuses) !== STATUS.CLOSED && (
+          <form onSubmit={handleSubmit}>
+            <h2 className="font-semibold text-lg mb-2 mt-8">Manage Due Date</h2>
 
-                    <div className="mt-3">
-                      <label>New due date: </label>
-                      <DatePicker
-                        selected={selectedDueDate}
-                        showTimeSelect
-                        dateFormat="Pp"
-                        onChange={setSelectedDueDate}
-                        className={`${'border-gray-300 focus:ring-blue-500 focus:border-blue-500'} mt-1 block w-full outline-none p-2 text-base border sm:text-sm rounded-md`}
-                      />
-                    </div>
+            <div className="mt-3">
+              <label>New due date: </label>
+              <DatePicker
+                selected={selectedDueDate}
+                showTimeSelect
+                dateFormat="Pp"
+                onChange={setSelectedDueDate}
+                className={`${'border-gray-300 focus:ring-blue-500 focus:border-blue-500'} mt-1 block w-full outline-none p-2 text-base border sm:text-sm rounded-md`}
+              />
+            </div>
 
-                    <div className="mt-3">
-                      <label>Reason to change due date: </label>
-                      <input
-                        type="text"
-                        className="border border-gray-300 rounded p-2 w-full outline-none"
-                        onChange={(e) => setReason(e.target.value)}
-                        value={reason}
-                      />
-                    </div>
+            <div className="mt-3">
+              <label>Reason to change due date: </label>
+              <input
+                type="text"
+                className="border border-gray-300 rounded p-2 w-full outline-none"
+                onChange={(e) => setReason(e.target.value)}
+                value={reason}
+              />
+            </div>
 
-                    <div className="text-right">
-                      <button
-                        type="submit"
-                        className="mt-4 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 rounded-md shadow-sm text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
-                        Update <CalendarIcon className="w-4 h-4 ml-2" />
-                      </button>
-                    </div>
-                  </form>
-                )}
-            </Disclosure.Panel>
-          </Transition>
-        </>
-      )}
-    </Disclosure>
+            <div className="text-right">
+              <button
+                type="submit"
+                className="mt-4 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 rounded-md shadow-sm text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                Update <CalendarIcon className="w-4 h-4 ml-2" />
+              </button>
+            </div>
+          </form>
+        )}
+    </Accordion>
   );
 }
