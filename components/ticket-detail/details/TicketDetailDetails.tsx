@@ -15,6 +15,7 @@ import { ROLES } from '../../../shared/constants/roles';
 import SuccessAlert from '../../../widgets/SuccessAlert';
 import { CheckCircleIcon } from '@heroicons/react/solid';
 import { STATUS } from '../../../shared/constants/status';
+import { Accordion } from '../../../widgets/Accordion';
 
 const TicketDetailDetails = () => {
   const replyComponentRef = useRef(null);
@@ -70,114 +71,45 @@ const TicketDetailDetails = () => {
       )}
 
       <div className="w-full rounded-2xl">
-        <Disclosure defaultOpen as="div" className="mt-2">
-          {({ open }) => (
-            <>
-              <Disclosure.Button
-                className={`${
-                  open ? 'rounded-t' : 'rounded'
-                } flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-gray-700 bg-gray-200 hover:bg-gray-300 focus:outline-none focus-visible:ring focus-visible:ring-gray-500 focus-visible:ring-opacity-75`}>
-                <span className="font-bold">Conversations</span>
-                <ChevronUpIcon
-                  className={`${
-                    open ? 'transform rotate-180' : ''
-                  } w-5 h-5 text-gray-500`}
+        <Accordion title="Conversations">
+          {outlookMessages && outlookMessages.length > 0 ? (
+            outlookMessages.map((message, idx) => {
+              return (
+                <TicketDetailConversation
+                  key={message.id}
+                  defaultOpen={idx === 0}
+                  message={message}
+                  attachments={attachmentsArrays[idx]}
+                  canBeReplied
+                  replyComponentRef={replyComponentRef}
+                  renderBadge={renderBadge}
+                  showAdminAction
                 />
-              </Disclosure.Button>
-              <Transition
-                enter="transition duration-300 ease-in-out"
-                enterFrom="transform scale-50 opacity-0"
-                enterTo="transform scale-100 opacity-100"
-                leave="transition duration-300 ease-in"
-                leaveFrom="transform scale-100 opacity-100"
-                leaveTo="transform scale-50 opacity-0">
-                <Disclosure.Panel className="p-4 border border-gray-300 text-sm text-gray-500">
-                  {outlookMessages && outlookMessages.length > 0 ? (
-                    outlookMessages.map((message, idx) => {
-                      return (
-                        <TicketDetailConversation
-                          key={message.id}
-                          defaultOpen={idx === 0}
-                          message={message}
-                          attachments={attachmentsArrays[idx]}
-                          canBeReplied
-                          replyComponentRef={replyComponentRef}
-                          renderBadge={renderBadge}
-                          showAdminAction
-                        />
-                      );
-                    })
-                  ) : (
-                    <MultiLineSkeletonLoading width="100%" />
-                  )}
-                </Disclosure.Panel>
-              </Transition>
-            </>
+              );
+            })
+          ) : (
+            <MultiLineSkeletonLoading width="100%" />
           )}
-        </Disclosure>
+        </Accordion>
 
         {user?.roleName !== ROLES.USER && (
           <div ref={replyComponentRef}>
-            <Disclosure as="div" defaultOpen className="mt-2">
-              {({ open }) => (
-                <>
-                  <Disclosure.Button
-                    className={`${
-                      open ? 'rounded-t' : 'rounded'
-                    } flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-gray-700 bg-gray-200 hover:bg-gray-300 focus:outline-none focus-visible:ring focus-visible:ring-gray-500 focus-visible:ring-opacity-75`}>
-                    <span className="font-bold">Reply</span>
-                    <ChevronUpIcon
-                      className={`${
-                        open ? 'transform rotate-180' : ''
-                      } w-5 h-5 text-gray-500`}
-                    />
-                  </Disclosure.Button>
-                  <Transition
-                    enter="transition duration-300 ease-in-out"
-                    enterFrom="transform scale-50 opacity-0"
-                    enterTo="transform scale-100 opacity-100"
-                    leave="transition duration-300 ease-in"
-                    leaveFrom="transform scale-100 opacity-100"
-                    leaveTo="transform scale-50 opacity-0">
-                    <Disclosure.Panel className="p-4 border border-gray-300 text-sm text-gray-500">
-                      <TicketDetailReply />
-                    </Disclosure.Panel>
-                  </Transition>
-                </>
-              )}
-            </Disclosure>
+            <Accordion title="Reply">
+              <TicketDetailReply />
+            </Accordion>
           </div>
         )}
 
         <Disclosure as="div" className="mt-2">
           {({ open }) => (
             <>
-              <Disclosure.Button
-                className={`${
-                  open ? 'rounded-t' : 'rounded'
-                } flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-gray-700 bg-gray-200 hover:bg-gray-300 focus:outline-none focus-visible:ring focus-visible:ring-gray-500 focus-visible:ring-opacity-75`}>
-                <span className="font-bold">More Properties</span>
-                <ChevronUpIcon
-                  className={`${
-                    open ? 'transform rotate-180' : ''
-                  } w-5 h-5 text-gray-500`}
+              <Accordion title="More Properties">
+                <TicketDetailProperties
+                  ticket={ticket}
+                  outlookMessage={outlookMessages ? outlookMessages[0] : null}
+                  resolution={latestResolution}
                 />
-              </Disclosure.Button>
-              <Transition
-                enter="transition duration-300 ease-in-out"
-                enterFrom="transform scale-50 opacity-0"
-                enterTo="transform scale-100 opacity-100"
-                leave="transition duration-300 ease-in"
-                leaveFrom="transform scale-100 opacity-100"
-                leaveTo="transform scale-50 opacity-0">
-                <Disclosure.Panel className="p-4 border border-gray-300 text-sm text-gray-500">
-                  <TicketDetailProperties
-                    ticket={ticket}
-                    outlookMessage={outlookMessages ? outlookMessages[0] : null}
-                    resolution={latestResolution}
-                  />
-                </Disclosure.Panel>
-              </Transition>
+              </Accordion>
             </>
           )}
         </Disclosure>
