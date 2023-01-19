@@ -1,22 +1,34 @@
 import { Disclosure, Transition } from '@headlessui/react';
 import { ChevronUpIcon } from '@heroicons/react/solid';
+import clsx from 'clsx';
 import { ReactNode } from 'react';
 
 type Props = {
   title: string;
   children: ReactNode;
   defaultOpen?: boolean;
+  headerClass?: string;
 };
 
-export const Accordion = ({ title, children, defaultOpen = false }: Props) => {
+export const Accordion = ({
+  title,
+  children,
+  defaultOpen = false,
+  headerClass = 'border border-gray-300 text-gray-700 bg-gray-200 hover:bg-gray-300',
+}: Props) => {
   return (
     <Disclosure defaultOpen={defaultOpen} as="div" className="mt-6">
       {({ open }) => (
         <>
           <Disclosure.Button
-            className={`${
-              open ? 'rounded-t' : 'rounded'
-            } flex justify-between w-full px-4 py-2 text-sm border border-gray-300 font-medium text-left text-gray-700 bg-gray-200 hover:bg-gray-300 focus:outline-none focus-visible:ring focus-visible:ring-gray-500 focus-visible:ring-opacity-75`}>
+            className={clsx(
+              {
+                'rounded-t': open,
+                rounded: !open,
+              },
+              headerClass,
+              'flex justify-between w-full px-4 py-2 text-sm font-medium text-left focus:outline-none'
+            )}>
             <span className="font-bold">{title}</span>
             <ChevronUpIcon
               className={`${
