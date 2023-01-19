@@ -220,7 +220,9 @@ const TicketDetailPage: NextPage<Props> = ({
                         }`}
                         onClick={(e) => {
                           e.preventDefault();
-                          setCurrentTab(menu);
+                          setCurrentTab(
+                            menu as 'Details' | 'Manage Ticket' | 'History'
+                          );
                         }}>
                         {menu}
                       </button>
