@@ -9,6 +9,8 @@ import { STATUS } from '../../../shared/constants/status';
 import TicketDetailStore from '../../../stores/tickets/[id]';
 import ChangeSenderInfoModal from './ChangeSenderInfoModal';
 import { confirm } from '../../../shared/libs/confirm-dialog-helper';
+import { Disclosure, Transition } from '@headlessui/react';
+import { ChevronUpIcon } from '@heroicons/react/solid';
 
 export default function TicketDetailManageAction() {
   const [ticket] = useAtom(TicketDetailStore.ticket);
@@ -101,19 +103,42 @@ export default function TicketDetailManageAction() {
   };
 
   return (
-    <div className="mt-8 border border-gray-300 rounded p-4 shadow-sm">
-      <h2 className="font-semibold text-lg mb-2">Action</h2>
+    <Disclosure as="div" className="mt-6">
+      {({ open }) => (
+        <>
+          <Disclosure.Button
+            className={`${
+              open ? 'rounded-t' : 'rounded'
+            } flex justify-between w-full px-4 py-2 text-sm border border-gray-300 font-medium text-left text-gray-700 bg-gray-200 hover:bg-gray-300 focus:outline-none focus-visible:ring focus-visible:ring-gray-500 focus-visible:ring-opacity-75`}>
+            <span className="font-bold">Other Actions</span>
+            <ChevronUpIcon
+              className={`${
+                open ? 'transform rotate-180' : ''
+              } w-5 h-5 text-gray-500`}
+            />
+          </Disclosure.Button>
+          <Transition
+            enter="transition duration-300 ease-in-out"
+            enterFrom="transform scale-50 opacity-0"
+            enterTo="transform scale-100 opacity-100"
+            leave="transition duration-300 ease-in"
+            leaveFrom="transform scale-100 opacity-100"
+            leaveTo="transform scale-50 opacity-0">
+            <Disclosure.Panel className="p-4 border-r border-l border-b border-gray-300 text-sm text-gray-800">
+              <div className="space-y-4">
+                {renderChangeSenderInfoAction()}
+                {renderDeleteAction()}
+              </div>
 
-      <div className="space-y-4">
-        {renderChangeSenderInfoAction()}
-        {renderDeleteAction()}
-      </div>
-
-      <ChangeSenderInfoModal
-        isOpen={showChangeSenderInfoModal}
-        setIsOpen={setShowChangeSenderInfoModal}
-        ticket={ticket}
-      />
-    </div>
+              <ChangeSenderInfoModal
+                isOpen={showChangeSenderInfoModal}
+                setIsOpen={setShowChangeSenderInfoModal}
+                ticket={ticket}
+              />
+            </Disclosure.Panel>
+          </Transition>
+        </>
+      )}
+    </Disclosure>
   );
 }

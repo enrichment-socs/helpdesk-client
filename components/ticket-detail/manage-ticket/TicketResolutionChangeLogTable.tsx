@@ -8,7 +8,7 @@ export default function TicketResolutionChangeLogTable() {
   const [resolutions] = useAtom(TicketDetailStore.resolutions);
 
   return (
-    <Disclosure defaultOpen as="div" className="mt-6">
+    <Disclosure as="div" className="mt-6">
       {({ open }) => (
         <>
           <Disclosure.Button

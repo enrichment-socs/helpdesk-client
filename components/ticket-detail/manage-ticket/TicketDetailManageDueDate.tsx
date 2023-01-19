@@ -67,7 +67,7 @@ export default function TicketDetailManageDueDate() {
   };
 
   return (
-    <Disclosure defaultOpen as="div" className="mt-6">
+    <Disclosure as="div" className="mt-6">
       {({ open }) => (
         <>
           <Disclosure.Button
