@@ -1,8 +1,6 @@
 import { Disclosure, Transition } from '@headlessui/react';
 import { ChevronUpIcon } from '@heroicons/react/solid';
 import MultiLineSkeletonLoading from '../../../widgets/MultiLineSkeletonLoading';
-import TicketDetailConversationBody from './TicketDetailConversationBody';
-import TicketDetailConversationHeader from './TicketDetailConversationHeader';
 import TicketDetailProperties from './TicketDetailProperties';
 import TicketDetailConversation from './TicketDetailConversation';
 import TicketDetailReply from './TicketDetailReply';
@@ -16,6 +14,7 @@ import { SessionUser } from '../../../models/SessionUser';
 import { ROLES } from '../../../shared/constants/roles';
 import SuccessAlert from '../../../widgets/SuccessAlert';
 import { CheckCircleIcon } from '@heroicons/react/solid';
+import { STATUS } from '../../../shared/constants/status';
 
 const TicketDetailDetails = () => {
   const replyComponentRef = useRef(null);
@@ -52,10 +51,21 @@ const TicketDetailDetails = () => {
           />
         )}
 
-      {resolutions.length > 0 && (
-        <SuccessAlert
+      {resolutions.length > 0 && ticket.status.statusName !== STATUS.CLOSED && (
+        <InfoAlert
           className="mb-4"
-          message={`This ticket has been resolved and a message has been marked as resolution`}
+          message={`This ticket has been resolved and a message has been marked as resolution. <b>Please close the ticket</b> as soon as possible if you are sure that there will be no follow ups.`}
+        />
+      )}
+
+      {ticket.status.statusName === STATUS.CLOSED && (
+        <SuccessAlert className="mb-4" message={`Ticket is already closed.`} />
+      )}
+
+      {ticket.status.statusName !== STATUS.CLOSED && (
+        <InfoAlert
+          className="mb-4"
+          message={`You can update status of the ticket in the <b>Manage Ticket</b> tab above.`}
         />
       )}
 

@@ -85,7 +85,7 @@ const TicketDetailPage: NextPage<Props> = ({
     ],
   ]);
 
-  const [currentTab, setCurrentTab] = useState('Details');
+  const [currentTab, setCurrentTab] = useAtom(TicketDetailStore.currentTab);
 
   const session = useSession();
   const user = session?.data?.user as SessionUser;

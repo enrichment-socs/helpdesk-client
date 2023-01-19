@@ -22,6 +22,7 @@ const TicketDetailStore = {
   openConfirmResolutionModal: atom<boolean>(false),
   selectedOutlookMessageId: atom<string>(''),
   selectedConversationId: atom<string>(''),
+  currentTab: atom<'Details' | 'Manage Ticket' | 'History'>('Details'),
 };
 
 export default TicketDetailStore;

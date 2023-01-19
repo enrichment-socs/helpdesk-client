@@ -84,8 +84,7 @@ const TicketDetailProperties = ({
 
   return (
     <div className="divide-y">
-      <div className="font-bold text-sm pb-2">Properties</div>
-      <div className="pt-5">
+      <div>
         <table className="border w-full text-sm">
           <tbody>
             <tr className="border-b">

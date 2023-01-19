@@ -32,6 +32,8 @@ export default function TicketDetailManageStatus() {
   const ticketStatusService = new TicketStatusService(user?.accessToken);
   const ticketDueDateService = new TicketDueDateService(user?.accessToken);
 
+  const [, setCurrentTab] = useAtom(TicketDetailStore.currentTab);
+
   const renderReasonInputText = () => {
     return (
       <div className="mt-3">
@@ -143,10 +145,10 @@ export default function TicketDetailManageStatus() {
 
                   <div className="flex justify-between mt-3 items-end">
                     <div
-                      className="text-red-500 font-semibold"
+                      className="text-blue-500 text-xs font-semibold"
                       data-tip
                       data-for="admin-change-pending-ticket-info">
-                      IMPORTANT INFORMATION, HOVER ME!
+                      WHAT DOES PENDING STATUS MEAN ? HOVER ME
                     </div>
                     <div className="flex space-x-4">
                       <button
@@ -207,10 +209,10 @@ export default function TicketDetailManageStatus() {
 
                 <div className="flex space-x-4 justify-between mt-3">
                   <div
-                    className="text-red-500 font-semibold"
+                    className="text-blue-500 text-xs font-semibold"
                     data-tip
                     data-for="admin-change-in-progress-ticket-info">
-                    IMPORTANT INFORMATION, HOVER ME!
+                    WHAT DOES PENDING STATUS MEAN ? HOVER ME
                   </div>
 
                   <button
@@ -251,7 +253,13 @@ export default function TicketDetailManageStatus() {
                   {renderReasonInputText()}
                   {resolutions.length === 0 && (
                     <small className="text-red-400 font-medium">
-                      *You must create a resolution before closing this ticket.
+                      *You must mark a message as resolution before the ticket
+                      can be closed. Mark it in the <b>Details</b> tab or click{' '}
+                      <button
+                        className="text-blue-500 underline"
+                        onClick={() => setCurrentTab('Details')}>
+                        here
+                      </button>
                     </small>
                   )}
 
