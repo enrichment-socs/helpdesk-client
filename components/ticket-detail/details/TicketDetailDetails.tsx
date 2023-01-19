@@ -71,7 +71,7 @@ const TicketDetailDetails = () => {
       )}
 
       <div className="w-full rounded-2xl">
-        <Accordion title="Conversations">
+        <Accordion defaultOpen title="Conversations">
           {outlookMessages && outlookMessages.length > 0 ? (
             outlookMessages.map((message, idx) => {
               return (

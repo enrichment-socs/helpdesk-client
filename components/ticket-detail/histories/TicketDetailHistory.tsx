@@ -46,6 +46,7 @@ const TicketDetailHistory = () => {
 
           return (
             <Accordion
+              defaultOpen
               border={false}
               headerClass="border border-blue-200 text-sky-900 bg-sky-100 hover:bg-sky-200"
               key={groupedHistory.date}
