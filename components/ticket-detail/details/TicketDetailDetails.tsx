@@ -85,7 +85,7 @@ const TicketDetailDetails = () => {
                   replyComponentRef={replyComponentRef}
                   renderBadge={renderBadge}
                   showAdminAction
-                  useUniqueBody={idx === 0}
+                  useUniqueBody={idx !== 0}
                 />
               );
             })
