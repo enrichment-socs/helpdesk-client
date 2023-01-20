@@ -16,6 +16,7 @@ import SuccessAlert from '../../../widgets/SuccessAlert';
 import { CheckCircleIcon } from '@heroicons/react/solid';
 import { STATUS } from '../../../shared/constants/status';
 import { Accordion } from '../../../widgets/Accordion';
+import { TicketUtils } from '../../../shared/libs/ticket-utils';
 
 const TicketDetailDetails = () => {
   const replyComponentRef = useRef(null);
@@ -92,13 +93,14 @@ const TicketDetailDetails = () => {
           )}
         </Accordion>
 
-        {user?.roleName !== ROLES.USER && (
-          <div ref={replyComponentRef}>
-            <Accordion title="Reply">
-              <TicketDetailReply />
-            </Accordion>
-          </div>
-        )}
+        {user?.roleName !== ROLES.USER &&
+          TicketUtils.isEligibleToManage(user, ticket) && (
+            <div ref={replyComponentRef}>
+              <Accordion title="Reply">
+                <TicketDetailReply />
+              </Accordion>
+            </div>
+          )}
 
         <Accordion title="More Properties">
           <TicketDetailProperties

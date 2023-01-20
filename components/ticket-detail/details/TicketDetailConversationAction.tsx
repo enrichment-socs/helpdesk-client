@@ -6,6 +6,9 @@ import { replyRecipientsAtom } from '../../../atom';
 import { OutlookMessage } from '../../../models/OutlookMessage';
 import { STATUS } from '../../../shared/constants/status';
 import TicketDetailStore from '../../../stores/tickets/[id]';
+import { TicketUtils } from '../../../shared/libs/ticket-utils';
+import { useSession } from 'next-auth/react';
+import { SessionUser } from '../../../models/SessionUser';
 
 type Props = {
   message: OutlookMessage;
@@ -18,6 +21,9 @@ const TicketDetailConversationAction = ({
   message,
   replyComponentRef,
 }: Props) => {
+  const session = useSession();
+  const user = session?.data?.user as SessionUser;
+  const [ticket] = useAtom(TicketDetailStore.ticket);
   const [ticketStatuses] = useAtom(TicketDetailStore.ticketStatuses);
   const [, setReplyRecipients] = useAtom(replyRecipientsAtom);
   const [resolutions] = useAtom(TicketDetailStore.resolutions);
@@ -87,19 +93,23 @@ const TicketDetailConversationAction = ({
     }
   };
 
-  return (
-    <div className="flex justify-end">
-      {renderResolutionBtn()}
+  if (TicketUtils.isEligibleToManage(user, ticket)) {
+    return (
+      <div className="flex justify-end">
+        {renderResolutionBtn()}
 
-      {canBeReplied && (
-        <button
-          onClick={onReply}
-          className="ml-3 shadow flex items-center bg-primary hover:bg-primary-dark text-white rounded px-3 py-1">
-          Reply <ReplyIcon className="w-4 h-4 ml-2" />
-        </button>
-      )}
-    </div>
-  );
+        {canBeReplied && (
+          <button
+            onClick={onReply}
+            className="ml-3 shadow flex items-center bg-primary hover:bg-primary-dark text-white rounded px-3 py-1">
+            Reply <ReplyIcon className="w-4 h-4 ml-2" />
+          </button>
+        )}
+      </div>
+    );
+  }
+
+  return <></>;
 };
 
 export default TicketDetailConversationAction;
