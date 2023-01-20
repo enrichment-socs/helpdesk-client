@@ -34,6 +34,7 @@ const TicketDetailConversationAction = ({
   const [, setOpenModal] = useAtom(
     TicketDetailStore.openConfirmResolutionModal
   );
+  const [, setCurrentTab] = useAtom(TicketDetailStore.currentTab);
 
   const onReply = () => {
     const latestStatus = ticketStatuses[ticketStatuses.length - 1];
@@ -70,11 +71,12 @@ const TicketDetailConversationAction = ({
     setOpenModal(true);
   };
 
+  const isMarkedAsResolution =
+    resolutions.length > 0 &&
+    resolutions[resolutions.length - 1].messageId === message.id;
+
   const renderResolutionBtn = () => {
-    if (
-      resolutions.length > 0 &&
-      resolutions[resolutions.length - 1].messageId === message.id
-    ) {
+    if (isMarkedAsResolution) {
       return (
         <button
           disabled
@@ -95,17 +97,31 @@ const TicketDetailConversationAction = ({
 
   if (TicketUtils.isEligibleToManage(user, ticket)) {
     return (
-      <div className="flex justify-end">
-        {renderResolutionBtn()}
+      <>
+        <div className="flex justify-end">
+          {renderResolutionBtn()}
 
-        {canBeReplied && (
-          <button
-            onClick={onReply}
-            className="ml-3 shadow flex items-center bg-primary hover:bg-primary-dark text-white rounded px-3 py-1">
-            Reply <ReplyIcon className="w-4 h-4 ml-2" />
-          </button>
+          {canBeReplied && (
+            <button
+              onClick={onReply}
+              className="ml-3 shadow flex items-center bg-primary hover:bg-primary-dark text-white rounded px-3 py-1">
+              Reply <ReplyIcon className="w-4 h-4 ml-2" />
+            </button>
+          )}
+        </div>
+        {isMarkedAsResolution && (
+          <div className="text-xs text-blue-400 font-medium text-right mt-2">
+            *You have marked this message as resolution. If you are sure that
+            there will be no follow ups, you can close this ticket in the{' '}
+            <b>Manage Ticket</b> tab or click{' '}
+            <button
+              className="text-blue-500 underline"
+              onClick={() => setCurrentTab('Manage Ticket')}>
+              here
+            </button>
+          </div>
         )}
-      </div>
+      </>
     );
   }
 
