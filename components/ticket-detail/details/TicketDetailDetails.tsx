@@ -96,7 +96,7 @@ const TicketDetailDetails = () => {
         {user?.roleName !== ROLES.USER &&
           TicketUtils.isEligibleToManage(user, ticket) && (
             <div ref={replyComponentRef}>
-              <Accordion title="Reply">
+              <Accordion defaultOpen title="Reply">
                 <TicketDetailReply />
               </Accordion>
             </div>
