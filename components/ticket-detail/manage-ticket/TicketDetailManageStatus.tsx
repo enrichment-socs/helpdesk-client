@@ -253,17 +253,6 @@ export default function TicketDetailManageStatus() {
                 }>
                 <div>
                   {renderReasonInputText()}
-                  {resolutions.length === 0 && (
-                    <small className="text-red-400 font-medium">
-                      *You must mark a message as resolution before the ticket
-                      can be closed. Mark it in the <b>Details</b> tab or click{' '}
-                      <button
-                        className="text-blue-500 underline"
-                        onClick={() => setCurrentTab('Details')}>
-                        here
-                      </button>
-                    </small>
-                  )}
 
                   <div className="flex space-x-4 justify-between mt-3">
                     <button
@@ -293,6 +282,18 @@ export default function TicketDetailManageStatus() {
                       <ChevronRightIcon className="h-5 w-5" />
                     </button>
                   </div>
+
+                  {resolutions.length === 0 && (
+                    <div className="text-xs text-red-400 font-medium text-right mt-2">
+                      *You must mark a message as resolution before the ticket
+                      can be closed. Mark it in the <b>Details</b> tab or click{' '}
+                      <button
+                        className="text-blue-500 underline"
+                        onClick={() => setCurrentTab('Details')}>
+                        here
+                      </button>
+                    </div>
+                  )}
                 </div>
               </Case>
             </Switch>
