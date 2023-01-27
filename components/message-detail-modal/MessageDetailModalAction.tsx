@@ -160,7 +160,7 @@ export default function MessageDetailModalAction({
       conversationId: message.conversationId,
       senderName: currentOutlookMessage.sender.emailAddress.name,
       senderEmail: currentOutlookMessage.sender.emailAddress.address,
-      subject: firstOutlookMessageFromConversation.subject,
+      subject: firstOutlookMessageFromConversation.subject || '(No Subject)',
     };
 
     const infoService = new InformationService(user?.accessToken);
