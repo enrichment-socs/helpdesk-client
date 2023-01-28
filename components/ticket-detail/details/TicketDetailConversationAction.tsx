@@ -9,6 +9,7 @@ import TicketDetailStore from '../../../stores/tickets/[id]';
 import { TicketUtils } from '../../../shared/libs/ticket-utils';
 import { useSession } from 'next-auth/react';
 import { SessionUser } from '../../../models/SessionUser';
+import clsx from 'clsx';
 
 type Props = {
   message: OutlookMessage;
@@ -75,6 +76,8 @@ const TicketDetailConversationAction = ({
     resolutions.length > 0 &&
     resolutions[resolutions.length - 1].messageId === message.id;
 
+  const disabled = ticket.status.statusName === STATUS.ASSIGNED;
+
   const renderResolutionBtn = () => {
     if (isMarkedAsResolution) {
       return (
@@ -88,7 +91,12 @@ const TicketDetailConversationAction = ({
       return (
         <button
           onClick={onMarkAsResolution}
-          className="shadow flex items-center bg-green-600 hover:bg-green-700 text-white rounded px-3 py-1">
+          disabled={disabled}
+          className={clsx(
+            { 'bg-green-600 hover:bg-green-700': !disabled },
+            { 'bg-gray-300': disabled },
+            'shadow flex items-center text-white rounded px-3 py-1'
+          )}>
           Mark as Resolution <CheckIcon className="w-4 h-4 ml-2" />
         </button>
       );
@@ -97,14 +105,19 @@ const TicketDetailConversationAction = ({
 
   if (TicketUtils.isEligibleToManage(user, ticket)) {
     return (
-      <>
+      <div className="mt-4">
         <div className="flex justify-end">
           {renderResolutionBtn()}
 
           {canBeReplied && (
             <button
               onClick={onReply}
-              className="ml-3 shadow flex items-center bg-primary hover:bg-primary-dark text-white rounded px-3 py-1">
+              disabled={disabled}
+              className={clsx(
+                { 'bg-primary hover:bg-primary-dark': !disabled },
+                { 'bg-gray-300': disabled },
+                'ml-3 shadow flex items-center text-white rounded px-3 py-1'
+              )}>
               Reply <ReplyIcon className="w-4 h-4 ml-2" />
             </button>
           )}
@@ -121,7 +134,7 @@ const TicketDetailConversationAction = ({
             </button>
           </div>
         )}
-      </>
+      </div>
     );
   }
 

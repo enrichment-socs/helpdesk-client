@@ -15,6 +15,8 @@ import { ClientPromiseWrapper } from '../../../shared/libs/client-promise-wrappe
 import { toBase64 } from '../../../shared/libs/file-utils';
 import { AddAttachmentDto } from '../../../models/dto/messages/add-attachment.dto';
 import InfoAlert from '../../../widgets/InfoAlert';
+import TicketDetailStore from '../../../stores/tickets/[id]';
+import { STATUS } from '../../../shared/constants/status';
 
 const QuillNoSSRWrapper = dynamic(import('react-quill'), {
   ssr: false,
@@ -44,6 +46,7 @@ const TicketDetailReply = () => {
   const session = useSession();
   const user = session?.data?.user as SessionUser;
   const [replyRecipients] = useAtom(replyRecipientsAtom);
+  const [ticket] = useAtom(TicketDetailStore.ticket);
 
   const {
     register,
@@ -175,127 +178,137 @@ const TicketDetailReply = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="text-sm">
-      <div>
-        <section className="flex flex-col space-y-3">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Message ID
-            </label>
-            <div className="mt-1">
-              <input
-                disabled={true}
-                type="text"
-                className={`${
-                  errors?.messageId ? 'border-red-300' : 'border-gray-300'
-                } shadow-sm px-2 py-1 block w-full sm:text-sm border rounded outline-none`}
-                {...register('messageId', { required: true })}
-              />
-            </div>
-            {errors?.messageId && (
-              <small className="text-red-500">
-                Please select a message by clicking &lsquo;reply&rsquo; button
-                on a message
-              </small>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              To Recipients (seperated by semicolon)
-            </label>
-            <div className="mt-1">
-              <input
-                type="text"
-                className={`${
-                  errors?.toRecipients ? 'border-red-300' : 'border-gray-300'
-                } shadow-sm px-2 py-1 block w-full sm:text-sm border rounded outline-none`}
-                {...register('toRecipients', {
-                  validate: emailFormValidation(true),
-                  required: {
-                    value: true,
-                    message: 'To recipients field must be filled',
-                  },
-                })}
-              />
-            </div>
-            {errors?.toRecipients && (
-              <small className="text-red-500">
-                {errors?.toRecipients?.message}
-              </small>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              CC Recipients (seperated by semicolon)
-            </label>
-            <div className="mt-1">
-              <input
-                type="text"
-                className={`${
-                  errors?.ccRecipients ? 'border-red-300' : 'border-gray-300'
-                } shadow-sm px-2 py-1 block w-full sm:text-sm border rounded outline-none`}
-                {...register('ccRecipients', {
-                  validate: emailFormValidation(false),
-                })}
-              />
-            </div>
-            {errors?.ccRecipients && (
-              <small className="text-red-500">
-                {errors?.ccRecipients?.message}
-              </small>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Body
-            </label>
-            <InfoAlert
-              className="my-2"
-              message="Do not copy image to the text field, it will broke the message, upload attachment(s) instead!"
-            />
-            <QuillNoSSRWrapper
-              modules={modules}
-              theme="snow"
-              value={messageContent}
-              onChange={(content) => onMessageChange(content)}
-            />
-            {errors?.message && (
-              <small className="text-red-500">Message field is required</small>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Attachments
-            </label>
-            <input
-              {...register('attachments', {
-                validate: validateAttachments,
-              })}
-              type="file"
-              className="border border-gray-300 p-2 rounded w-full"
-              multiple
-            />
-            {errors?.attachments && (
-              <small className="text-red-500">
-                File size must be less than 3 MB
-              </small>
-            )}
-          </div>
-        </section>
-
-        <div className="text-right mt-4">
-          <button
-            type="submit"
-            className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
-            Send Reply
-          </button>
+    <section className="relative">
+      {ticket.status.statusName === STATUS.ASSIGNED && (
+        <div className="absolute left-0 top-p w-full h-full backdrop-filter backdrop-blur z-10 flex justify-center items-center">
+          <InfoAlert message="Ticket status should be at least <b>In Progress</b> before it can be replied." />
         </div>
-      </div>
-    </form>
+      )}
+
+      <form onSubmit={handleSubmit(onSubmit)} className="text-sm p-4">
+        <div>
+          <section className="flex flex-col space-y-3">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Message ID
+              </label>
+              <div className="mt-1">
+                <input
+                  disabled={true}
+                  type="text"
+                  className={`${
+                    errors?.messageId ? 'border-red-300' : 'border-gray-300'
+                  } shadow-sm px-2 py-1 block w-full sm:text-sm border rounded outline-none`}
+                  {...register('messageId', { required: true })}
+                />
+              </div>
+              {errors?.messageId && (
+                <small className="text-red-500">
+                  Please select a message by clicking &lsquo;reply&rsquo; button
+                  on a message
+                </small>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                To Recipients (seperated by semicolon)
+              </label>
+              <div className="mt-1">
+                <input
+                  type="text"
+                  className={`${
+                    errors?.toRecipients ? 'border-red-300' : 'border-gray-300'
+                  } shadow-sm px-2 py-1 block w-full sm:text-sm border rounded outline-none`}
+                  {...register('toRecipients', {
+                    validate: emailFormValidation(true),
+                    required: {
+                      value: true,
+                      message: 'To recipients field must be filled',
+                    },
+                  })}
+                />
+              </div>
+              {errors?.toRecipients && (
+                <small className="text-red-500">
+                  {errors?.toRecipients?.message}
+                </small>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                CC Recipients (seperated by semicolon)
+              </label>
+              <div className="mt-1">
+                <input
+                  type="text"
+                  className={`${
+                    errors?.ccRecipients ? 'border-red-300' : 'border-gray-300'
+                  } shadow-sm px-2 py-1 block w-full sm:text-sm border rounded outline-none`}
+                  {...register('ccRecipients', {
+                    validate: emailFormValidation(false),
+                  })}
+                />
+              </div>
+              {errors?.ccRecipients && (
+                <small className="text-red-500">
+                  {errors?.ccRecipients?.message}
+                </small>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Body
+              </label>
+              <InfoAlert
+                className="my-2"
+                message="Do not copy image to the text field, it will broke the message, upload attachment(s) instead!"
+              />
+              <QuillNoSSRWrapper
+                modules={modules}
+                theme="snow"
+                value={messageContent}
+                onChange={(content) => onMessageChange(content)}
+              />
+              {errors?.message && (
+                <small className="text-red-500">
+                  Message field is required
+                </small>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Attachments
+              </label>
+              <input
+                {...register('attachments', {
+                  validate: validateAttachments,
+                })}
+                type="file"
+                className="border border-gray-300 p-2 rounded w-full"
+                multiple
+              />
+              {errors?.attachments && (
+                <small className="text-red-500">
+                  File size must be less than 3 MB
+                </small>
+              )}
+            </div>
+          </section>
+
+          <div className="text-right mt-4">
+            <button
+              type="submit"
+              className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+              Send Reply
+            </button>
+          </div>
+        </div>
+      </form>
+    </section>
   );
 };
 

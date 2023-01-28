@@ -86,6 +86,7 @@ const TicketDetailPage: NextPage<Props> = ({
   ]);
 
   const [currentTab, setCurrentTab] = useAtom(TicketDetailStore.currentTab);
+  const [atomTicket] = useAtom(TicketDetailStore.ticket);
 
   const session = useSession();
   const user = session?.data?.user as SessionUser;
@@ -198,7 +199,7 @@ const TicketDetailPage: NextPage<Props> = ({
               <div className="text-sm mt-1">
                 <span className="font-normal">Current Status </span>:{' '}
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary text-gray-100">
-                  {TicketUtils.getCurrentStatus(ticketStatuses)}
+                  {atomTicket.status.statusName}
                 </span>
               </div>
             </div>

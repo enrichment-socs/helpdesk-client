@@ -4,7 +4,7 @@ import MultiLineSkeletonLoading from '../../../widgets/MultiLineSkeletonLoading'
 import TicketDetailProperties from './TicketDetailProperties';
 import TicketDetailConversation from './TicketDetailConversation';
 import TicketDetailReply from './TicketDetailReply';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useAtom } from 'jotai';
 import TicketDetailStore from '../../../stores/tickets/[id]';
 import ResolutionConfirmationModal from './ResolutionConfirmationModal';
@@ -17,9 +17,15 @@ import { CheckCircleIcon } from '@heroicons/react/solid';
 import { STATUS } from '../../../shared/constants/status';
 import { Accordion } from '../../../widgets/Accordion';
 import { TicketUtils } from '../../../shared/libs/ticket-utils';
+import { ConversationInfoOverlay } from './ConversationInfoOverlay';
 
 const TicketDetailDetails = () => {
   const replyComponentRef = useRef(null);
+
+  const [showConversationInfoOverlay, setShowConversationInfoOverlay] =
+    useState(true);
+  const onCloseConversationOverlay = () =>
+    setShowConversationInfoOverlay(false);
 
   const [outlookMessages] = useAtom(TicketDetailStore.outlookMessages);
   const [attachmentsArrays] = useAtom(TicketDetailStore.attachmentsArray);
@@ -72,32 +78,45 @@ const TicketDetailDetails = () => {
       )}
 
       <div className="w-full rounded-2xl">
-        <Accordion defaultOpen title="Conversations">
+        <Accordion defaultPadding={false} defaultOpen title="Conversations">
           {outlookMessages && outlookMessages.length > 0 ? (
-            outlookMessages.map((message, idx) => {
-              return (
-                <TicketDetailConversation
-                  key={message.id}
-                  defaultOpen={idx === 0}
-                  message={message}
-                  attachments={attachmentsArrays[idx]}
-                  canBeReplied
-                  replyComponentRef={replyComponentRef}
-                  renderBadge={renderBadge}
-                  showAdminAction
-                  useUniqueBody={idx !== 0}
-                />
-              );
-            })
+            <section className="relative">
+              {showConversationInfoOverlay &&
+                ticket.status.statusName === STATUS.ASSIGNED && (
+                  <ConversationInfoOverlay
+                    onClose={onCloseConversationOverlay}
+                  />
+                )}
+
+              <div className="p-4">
+                {outlookMessages.map((message, idx) => {
+                  return (
+                    <TicketDetailConversation
+                      key={message.id}
+                      defaultOpen={idx === 0}
+                      message={message}
+                      attachments={attachmentsArrays[idx]}
+                      canBeReplied
+                      replyComponentRef={replyComponentRef}
+                      renderBadge={renderBadge}
+                      showAdminAction
+                      useUniqueBody={idx !== 0}
+                    />
+                  );
+                })}
+              </div>
+            </section>
           ) : (
-            <MultiLineSkeletonLoading width="100%" />
+            <div className="p-4">
+              <MultiLineSkeletonLoading width="100%" />
+            </div>
           )}
         </Accordion>
 
         {user?.roleName !== ROLES.USER &&
           TicketUtils.isEligibleToManage(user, ticket) && (
             <div ref={replyComponentRef}>
-              <Accordion defaultOpen title="Reply">
+              <Accordion defaultPadding={false} defaultOpen title="Reply">
                 <TicketDetailReply />
               </Accordion>
             </div>

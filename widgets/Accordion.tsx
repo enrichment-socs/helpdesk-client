@@ -9,6 +9,7 @@ type Props = {
   defaultOpen?: boolean;
   headerClass?: string;
   border?: boolean;
+  defaultPadding?: boolean;
 };
 
 export const Accordion = ({
@@ -17,6 +18,7 @@ export const Accordion = ({
   defaultOpen = false,
   headerClass = 'border border-gray-300 text-gray-700 bg-gray-200 hover:bg-gray-300',
   border = true,
+  defaultPadding = true,
 }: Props) => {
   return (
     <Disclosure defaultOpen={defaultOpen} as="div" className="mt-6">
@@ -47,8 +49,11 @@ export const Accordion = ({
             leaveTo="transform scale-50 opacity-0">
             <Disclosure.Panel
               className={clsx(
-                { 'border-r border-l border-b border-gray-300': border },
-                'p-4 text-sm text-gray-800'
+                {
+                  'border-r border-l border-b border-gray-300': border,
+                  'p-4': defaultPadding,
+                },
+                'text-sm text-gray-800'
               )}>
               {children}
             </Disclosure.Panel>

@@ -21,6 +21,9 @@ import { useAtom } from 'jotai';
 import TicketDetailStore from '../../../stores/tickets/[id]';
 import { Disclosure, Transition } from '@headlessui/react';
 import { Accordion } from '../../../widgets/Accordion';
+import { TicketHistoryService } from '../../../services/TicketHistoryService';
+import { TicketService } from '../../../services/TicketService';
+import { Ticket } from '../../../models/Ticket';
 
 export default function TicketDetailManageStatus() {
   const session = useSession();
@@ -30,13 +33,18 @@ export default function TicketDetailManageStatus() {
   const [ticketStatuses, setTicketStatuses] = useAtom(
     TicketDetailStore.ticketStatuses
   );
+  const [, setTicketHistories] = useAtom(
+    TicketDetailStore.groupedTicketHistories
+  );
   const [, setTicketDueDates] = useAtom(TicketDetailStore.ticketDueDates);
   const [statuses] = useAtom(TicketDetailStore.statuses);
-  const [ticket] = useAtom(TicketDetailStore.ticket);
+  const [ticket, setTicket]: [Ticket, any] = useAtom(TicketDetailStore.ticket);
 
   const [reason, setReason] = useState('');
+  const ticketService = new TicketService(user?.accessToken);
   const ticketStatusService = new TicketStatusService(user?.accessToken);
   const ticketDueDateService = new TicketDueDateService(user?.accessToken);
+  const ticketHistoryService = new TicketHistoryService(user?.accessToken);
 
   const [, setCurrentTab] = useAtom(TicketDetailStore.currentTab);
 
@@ -88,16 +96,23 @@ export default function TicketDetailManageStatus() {
         );
       }
 
+      const updateToast = toast('Updating ticket status...');
+
       const wrapper = new ClientPromiseWrapper(toast);
       const addedStatus = await wrapper.handle(ticketStatusService.add(dto));
-
-      setTicketStatuses([...ticketStatuses, addedStatus]);
       const ticketDueDates = await ticketDueDateService.getAllByTicketId(
         ticket.id
       );
+      const histories = await ticketHistoryService.getAllByTicketIdGroupedByDate(ticket.id);
+      const updatedTicket = await ticketService.get(ticket.id);
+      
       setTicketDueDates(ticketDueDates);
-
+      setTicketHistories(histories);
+      setTicketStatuses([...ticketStatuses, addedStatus]);
+      setTicket(updatedTicket);
       setReason('');
+
+      toast.dismiss(updateToast);
       toast.success('Status updated succesfully');
     }
   };
