@@ -109,7 +109,7 @@ const TicketDetailConversationAction = ({
             </button>
           )}
         </div>
-        {isMarkedAsResolution && (
+        {isMarkedAsResolution && ticket.status.statusName !== STATUS.CLOSED && (
           <div className="text-xs text-blue-400 font-medium text-right mt-2">
             *You have marked this message as resolution. If you are sure that
             there will be no follow ups, you can close this ticket in the{' '}
