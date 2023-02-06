@@ -121,6 +121,8 @@ const TicketTable: React.FC<Props> = ({
       return 'border-l-4 border-purple-500';
     if (ticket.priority.priorityName === PRIORITY.HIGH)
       return 'border-l-4 border-amber-400';
+    if (ticket.status.statusName === STATUS.IN_PROGRESS)
+      return 'border-l-4 border-primary';
 
     return 'border-l-4 border-gray-400';
   };
