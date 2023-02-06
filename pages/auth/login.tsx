@@ -72,7 +72,7 @@ const LoginPage: NextPage = () => {
       withNavbar={false}
       className="flex flex-col-reverse md:flex-row justify-center items-center md:space-x-8"
       style={{
-        backgroundImage: `url('/helpdesk/assets/login_backdrop.jpg')`,
+        backgroundImage: `url('${process.env.NEXT_PUBLIC_BASE_PATH}/assets/login_backdrop.jpg')`,
         backgroundPosition: 'center',
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat',
