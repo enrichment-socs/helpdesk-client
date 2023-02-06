@@ -5,5 +5,6 @@ export interface DropdownNavLink {
   href: string;
   roles: string[];
   query?: string;
+  isExternal?: boolean;
   children: NavLink[];
 }

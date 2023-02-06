@@ -3,4 +3,5 @@ export interface NavLink {
   href: string;
   roles: string[];
   query?: string;
+  isExternal?: boolean;
 }

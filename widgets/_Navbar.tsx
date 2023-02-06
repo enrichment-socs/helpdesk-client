@@ -14,6 +14,7 @@ import { NavLink } from '../models/views/NavLink';
 import { signOut } from 'next-auth/react';
 import { useSession } from 'next-auth/react';
 import NavbarNotification from './NavbarNotification';
+import { ExternalLinkIcon } from '@heroicons/react/solid';
 
 export default function Navbar() {
   const router = useRouter();
@@ -84,6 +85,12 @@ export default function Navbar() {
       href: '/guidelines',
       roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN],
     },
+    {
+      title: 'Company Recommendations',
+      href: process.env.NEXT_PUBLIC_COMP_RECOM_URL,
+      roles: [ROLES.ADMIN, ROLES.USER, ROLES.SUPER_ADMIN],
+      isExternal: true,
+    },
   ];
 
   const logOut = async () => {
@@ -116,46 +123,57 @@ export default function Navbar() {
       <div className="border-b border-gray-200 mt-4"></div>
 
       <nav className="flex justify-between max-w-screen-2xl px-2 sm:px-6 lg:px-8 mx-auto">
-        <ul className="flex space-x-4">
+        <ul className="flex space-x-4 items-center">
           {links.map(
             (link) =>
               link.roles.includes(user?.roleName) && (
                 <li key={link.title}>
-                  <If condition={link.hasOwnProperty('children')}>
-                    <Then>
-                      <DropdownNav link={link as DropdownNavLink} />
-                    </Then>
-                    <Else>
-                      <Link
-                        key={link.title}
-                        href={`${link.href}${link.query ?? ''}`}
-                        passHref={true}>
-                        {link.href === '/' ? (
-                          <div
-                            className={`tracking-wide text-center cursor-pointer hover:text-primary min-w-[3rem] py-4 text-gray-600 font-semibold ${
-                              router.pathname === '/'
-                                ? 'border-b-2 border-primary font-bold'
-                                : ''
-                            }`}>
-                            {link.title}
-                          </div>
-                        ) : (
-                          <div
-                            className={`tracking-wide text-center cursor-pointer hover:text-primary min-w-[3rem] py-4 text-gray-600 font-semibold ${
-                              router.pathname.includes(link.href) &&
-                              router.pathname
-                                .split('/')[1]
-                                .toLowerCase()
-                                .includes(link.title.toLowerCase())
-                                ? 'border-b-2 border-primary font-bold'
-                                : ''
-                            }`}>
-                            {link.title}
-                          </div>
-                        )}
-                      </Link>
-                    </Else>
-                  </If>
+                  {link.isExternal ? (
+                    <a
+                      className="tracking-wide text-center cursor-pointer hover:text-primary min-w-[3rem] py-4 text-gray-600 font-semibold"
+                      href={link.href}
+                      target="_blank"
+                      rel="noreferrer">
+                      {link.title}{' '}
+                      <ExternalLinkIcon className="inline w-5 h-5" />
+                    </a>
+                  ) : (
+                    <If condition={link.hasOwnProperty('children')}>
+                      <Then>
+                        <DropdownNav link={link as DropdownNavLink} />
+                      </Then>
+                      <Else>
+                        <Link
+                          key={link.title}
+                          href={`${link.href}${link.query ?? ''}`}
+                          passHref={true}>
+                          {link.href === '/' ? (
+                            <div
+                              className={`tracking-wide text-center cursor-pointer hover:text-primary min-w-[3rem] py-4 text-gray-600 font-semibold ${
+                                router.pathname === '/'
+                                  ? 'border-b-2 border-primary font-bold'
+                                  : ''
+                              }`}>
+                              {link.title}
+                            </div>
+                          ) : (
+                            <div
+                              className={`tracking-wide text-center cursor-pointer hover:text-primary min-w-[3rem] py-4 text-gray-600 font-semibold ${
+                                router.pathname.includes(link.href) &&
+                                router.pathname
+                                  .split('/')[1]
+                                  .toLowerCase()
+                                  .includes(link.title.toLowerCase())
+                                  ? 'border-b-2 border-primary font-bold'
+                                  : ''
+                              }`}>
+                              {link.title}{' '}
+                            </div>
+                          )}
+                        </Link>
+                      </Else>
+                    </If>
+                  )}
                 </li>
               )
           )}
