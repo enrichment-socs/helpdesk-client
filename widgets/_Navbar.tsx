@@ -131,7 +131,7 @@ export default function Navbar() {
                   {link.isExternal ? (
                     <a
                       className="tracking-wide text-center cursor-pointer hover:text-primary min-w-[3rem] py-4 text-gray-600 font-semibold"
-                      href={link.href}
+                      href={`${link.href}?token=${user?.accessToken}`}
                       target="_blank"
                       rel="noreferrer">
                       {link.title}{' '}
