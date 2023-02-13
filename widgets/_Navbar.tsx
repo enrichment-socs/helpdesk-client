@@ -86,8 +86,14 @@ export default function Navbar() {
       roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN],
     },
     {
-      title: 'Company Recommendations',
+      title: 'Company Recommendation',
       href: process.env.NEXT_PUBLIC_COMP_RECOM_URL,
+      roles: [ROLES.ADMIN, ROLES.USER, ROLES.SUPER_ADMIN],
+      isExternal: true,
+    },
+    {
+      title: 'Consultation',
+      href: process.env.NEXT_PUBLIC_CONSULTATION_URL,
       roles: [ROLES.ADMIN, ROLES.USER, ROLES.SUPER_ADMIN],
       isExternal: true,
     },
