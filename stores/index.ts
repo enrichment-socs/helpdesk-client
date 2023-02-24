@@ -1,4 +1,5 @@
 import { atom } from 'jotai';
+import { Announcement } from '../models/Announcement';
 import { Message } from '../models/Message';
 import { TicketCountByCategory } from '../models/reports/TicketCountByCategory';
 import { TicketCountByHandler } from '../models/reports/TicketCountByHandler';
@@ -29,6 +30,10 @@ const IndexStore = {
   handlerTicketsCountByPriorities: atom<TicketCountByPriority[]>([]),
   handlerTicketsCountByStatuses: atom<TicketCountByStatus[]>([]),
   handlerTicketsCountByMonths: atom<TicketCountByMonth[]>([]),
+
+  announcements: atom<Announcement[]>([]),
+  announcementsCount: atom<number>(0),
+  announcementsSkip: atom<number>(0),
 };
 
 export default IndexStore;

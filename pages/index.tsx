@@ -37,7 +37,7 @@ const ReportDashboard = dynamic(
 const Home: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = ({
-  announcements,
+  announcement,
   faqCategories,
   markedMessage,
   ticketSummary,
@@ -53,6 +53,10 @@ const Home: NextPage<
     [IndexStore.unmarkedMessages, unmarkedMessage.messages],
     [IndexStore.unmarkedSkipCount, unmarkedMessage.initialSkip],
     [IndexStore.unmarkedMessagesCount, unmarkedMessage.messageCount],
+
+    [IndexStore.announcements, announcement.announcements],
+    [IndexStore.announcementsSkip, announcement.initialSkip],
+    [IndexStore.announcementsCount, announcement.count],
 
     [IndexStore.ticketsCountByCategories, reports.ticketsCountByCategories],
     [IndexStore.ticketsCountByPriorities, reports.ticketsCountByPriorities],
@@ -82,7 +86,7 @@ const Home: NextPage<
             <AnnouncementContainer
               setOpenAnnouncement={setOpenAnnouncement}
               setOpenAnnouncementModal={setOpenAnnouncementModal}
-              announcements={announcements}
+              initialTake={announcement.initialTake}
             />
 
             {user?.roleName === ROLES.USER ? (
@@ -136,12 +140,15 @@ export const getServerSideProps = withSessionSsr(
     const guidelineCatSvc = new GuidelineCategoryService(user?.accessToken);
     const userService = new UserService(user?.accessToken);
 
-    let announcements: Announcement[] = [];
+    let announcementsCount = 0, announcements: Announcement[] = [];
+    const initialAnnouncementsTake = 4, initialAnnouncementsSkip = 0;
 
     if (user.roleName !== ROLES.SUPER_ADMIN) {
-      ({ announcements } = await announcementService.getBySemester(
+      ({ count: announcementsCount, announcements } = await announcementService.getBySemester(
         sessionActiveSemester.id,
-        true
+        true,
+        initialAnnouncementsTake,
+        initialAnnouncementsSkip
       ));
     }
 
@@ -215,10 +222,15 @@ export const getServerSideProps = withSessionSsr(
         ...globalProps,
         session,
         sessionActiveSemester,
-        announcements,
         faqCategories,
         ticketSummary,
         admins,
+        announcement: {
+          announcements,
+          count: announcementsCount,
+          initialTake: initialAnnouncementsTake,
+          initialSkip: initialAnnouncementsSkip,
+        },
         unmarkedMessage: {
           messages: unmarkedMessages,
           messageCount: unmarkedCount,

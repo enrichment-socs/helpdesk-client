@@ -1,25 +1,47 @@
 import { Announcement } from '../../../models/Announcement';
 import { GlobeIcon, SpeakerphoneIcon } from '@heroicons/react/solid';
 import { format } from 'date-fns';
-import { Dispatch } from 'react';
-import { SetStateAction } from 'jotai';
+import { Dispatch, useState } from 'react';
+import { SetStateAction, useAtom } from 'jotai';
 import { useSession } from 'next-auth/react';
 import { SessionUser } from '../../../models/SessionUser';
 import { ROLES } from '../../../shared/constants/roles';
+import CustomPaginator from '../../../widgets/CustomPaginator';
+import { ClientPromiseWrapper } from '../../../shared/libs/client-promise-wrapper';
+import toast from 'react-hot-toast';
+import { AnnouncementService } from '../../../services/AnnouncementService';
+import { activeSemesterAtom } from '../../../atom';
+import IndexStore from '../../../stores';
 
 type Props = {
-  announcements: Announcement[];
   setOpenAnnouncementModal: Dispatch<SetStateAction<boolean>>;
   setOpenAnnouncement: Dispatch<SetStateAction<Announcement>>;
+  initialTake: number;
 };
 
 export default function AnnouncementContainer({
-  announcements,
   setOpenAnnouncement,
   setOpenAnnouncementModal,
+  initialTake,
 }: Props) {
   const session = useSession();
   const user = session?.data?.user as SessionUser;
+  const announcementService = new AnnouncementService(user.accessToken);
+  const [activeSemester] = useAtom(activeSemesterAtom);
+  const [take, setTake] = useState(initialTake);
+  const [skip, setSkip] = useAtom(IndexStore.announcementsSkip);
+  const [count, setCount] = useAtom(IndexStore.announcementsCount);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [threeFirstPageNumber, setThreeFirstPageNumber] = useState([1, 2, 3]);
+  const [announcements, setAnnouncements] = useAtom(IndexStore.announcements);
+
+  const fetchAnnouncements = async (take: number, skip: number) => {
+    const wrapper = new ClientPromiseWrapper(toast);
+    const { announcements } = await wrapper.handle(
+      announcementService.getBySemester(activeSemester.id, true, take, skip)
+    );
+    return announcements;
+  };
 
   const onAnnouncementClick = (ann: Announcement) => {
     setOpenAnnouncement(ann);
@@ -27,7 +49,7 @@ export default function AnnouncementContainer({
   };
 
   return (
-    <div className={`mx-2 p-2 border-2 md:w-3/4 min-h-[24rem] rounded`}>
+    <div className={`relative mx-2 p-2 border-2 md:w-3/4 min-h-[32rem] rounded`}>
       <div className="text-lg font-bold mb-1 flex items-center border-b border-gray-300 pb-3">
         <SpeakerphoneIcon className="h-5 w-5" />
         <span className="ml-3">Announcement</span>
@@ -75,6 +97,23 @@ export default function AnnouncementContainer({
           </div>
         </div>
       ))}
+
+      <div className="absolute inset-x-0 bottom-0">
+        <CustomPaginator
+          take={take}
+          skip={skip}
+          totalCount={count}
+          setSkip={setSkip}
+          pageNumber={pageNumber}
+          setPageNumber={setPageNumber}
+          threeFirstPageNumbers={threeFirstPageNumber}
+          setThreeFirstPageNumbers={setThreeFirstPageNumber}
+          fetchItem={fetchAnnouncements}
+          setItem={setAnnouncements}
+          isDisplayCount={false}
+          isDisplayBorderTop={false}
+        />
+      </div>
     </div>
   );
 }

@@ -20,6 +20,8 @@ type Props = {
   setThreeFirstPageNumbers: Dispatch<SetStateAction<number[]>>;
   setItem: Dispatch<SetStateAction<any[]>>;
   fetchItem: (take: number, skip: number) => Promise<any[]>;
+  isDisplayCount?: boolean;
+  isDisplayBorderTop?: boolean;
 };
 
 export default function CustomPaginator({
@@ -33,6 +35,8 @@ export default function CustomPaginator({
   setThreeFirstPageNumbers,
   setItem,
   fetchItem,
+  isDisplayCount = true,
+  isDisplayBorderTop = true,
 }: Props) {
   const session = useSession();
 
@@ -116,7 +120,7 @@ export default function CustomPaginator({
   };
 
   return (
-    <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+    <div className={`bg-white px-4 py-3 flex items-center justify-between ${isDisplayBorderTop ? "border-t border-gray-200" : ""} sm:px-6`}>
       <div className="flex-1 flex justify-between sm:hidden">
         {pageNumber !== 1 && (
           <button
@@ -134,16 +138,18 @@ export default function CustomPaginator({
           </button>
         )}
       </div>
-      <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-        <div>
-          <p className="text-sm text-gray-700">
-            Showing <span className="font-medium">{skip + 1}</span> to{' '}
-            <span className="font-medium">
-              {Math.min(skip + take, totalCount)}
-            </span>{' '}
-            of <span className="font-medium">{totalCount}</span> results
-          </p>
-        </div>
+      <div className={`hidden sm:flex-1 sm:flex sm:items-center ${isDisplayCount ? "sm:justify-between" : "sm:justify-end"}`}>
+        {isDisplayCount && (
+          <div>
+            <p className="text-sm text-gray-700">
+              Showing <span className="font-medium">{skip + 1}</span> to{' '}
+              <span className="font-medium">
+                {Math.min(skip + take, totalCount)}
+              </span>{' '}
+              of <span className="font-medium">{totalCount}</span> results
+            </p>
+          </div>
+        )}
         <div>
           <nav
             className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
