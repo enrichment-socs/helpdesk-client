@@ -71,7 +71,7 @@ export const getServerSideProps = withSessionSsr(
     const announcementService = new AnnouncementService(user.accessToken);
     const roleService = new RoleService(user.accessToken);
 
-    const initialTake = 1;
+    const initialTake = 10;
     const initialSkip = 0;
 
     const {count, announcements:currAnnouncements} = await announcementService.getBySemester(
