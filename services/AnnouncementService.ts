@@ -20,10 +20,10 @@ export class AnnouncementService extends BaseService {
     return res.data;
   }
 
-  public async getBySemester(semesterId: string, withRole: boolean = false) {
-    const res: AxiosResponse<Announcement[]> = await this.wrapper.handle(
+  public async getBySemester(semesterId: string, withRole: boolean = false, take?: number, skip?: number) : Promise<{count : number; announcements: Announcement[]}> {
+    const res: AxiosResponse<{count : number; announcements: Announcement[]}> = await this.wrapper.handle(
       axios.get(
-        `${this.BASE_URL}/announcements?semesterId=${semesterId}&withRole=${withRole}`,
+        `${this.BASE_URL}/announcements?semesterId=${semesterId}&withRole=${withRole}&take=${take}&skip=${skip}`,
         this.headersWithToken()
       )
     );

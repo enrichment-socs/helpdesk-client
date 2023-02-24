@@ -136,13 +136,22 @@ export const getServerSideProps = withSessionSsr(
     const guidelineCatSvc = new GuidelineCategoryService(user?.accessToken);
     const userService = new UserService(user?.accessToken);
 
-    const announcements =
-      user.roleName !== ROLES.SUPER_ADMIN
-        ? await announcementService.getBySemester(
-            sessionActiveSemester.id,
-            true
-          )
-        : [];
+    let announcements: Announcement[] = [];
+
+    if (user.roleName !== ROLES.SUPER_ADMIN) {
+      ({ announcements } = await announcementService.getBySemester(
+        sessionActiveSemester.id,
+        true
+      ));
+    }
+
+    // const {count:announcementCount, announcements} =
+    //   user.roleName !== ROLES.SUPER_ADMIN
+    //     ? await announcementService.getBySemester(
+    //         sessionActiveSemester.id,
+    //         true
+    //       )
+    //     : [];
 
     const initialTake = 10;
     const initialSkip = 0;

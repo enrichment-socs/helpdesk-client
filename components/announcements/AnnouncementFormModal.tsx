@@ -54,9 +54,14 @@ export default function AnnouncementFormModal({
   announcement,
   roles,
 }: Props) {
-  const [announcements, setAnnouncements] = useAtom(ManageAnnouncementStore.announcements);
+  const [announcements, setAnnouncements] = useAtom(
+    ManageAnnouncementStore.announcements
+  );
   const [loading, setLoading] = useState(false);
   const [activeSemester] = useAtom(activeSemesterAtom);
+  const [take, setTake] = useAtom(ManageAnnouncementStore.take);
+  const [skip, setSkip] = useAtom(ManageAnnouncementStore.skip);
+  const [count, setCount] = useAtom(ManageAnnouncementStore.count);
   const session = useSession();
   const user = session?.data?.user as SessionUser;
 
@@ -92,7 +97,7 @@ export default function AnnouncementFormModal({
 
     register('body', { required: true });
     setValue('body', announcement?.body);
-  }, [announcement, register, setValue]);
+  }, [announcement, isOpen, register, setValue]);
 
   const bodyContent = watch('body') || '';
   const startDateVal = watch('startDate') || new Date();
@@ -121,16 +126,19 @@ export default function AnnouncementFormModal({
           ? 'Updating announcement...'
           : 'Adding announcement...',
         success: (result) => {
-          announcement
-            ? setAnnouncements(
-                announcements.map((a) => {
-                  if (a.id === announcement.id) return result;
-                  else return a;
-                })
-              )
-            : setAnnouncements([...announcements, result]);
+          // announcement
+          //   ? setAnnouncements(
+          //       announcements.map((a) => {
+          //         if (a.id === announcement.id) return result;
+          //         else return a;
+          //       })
+          //     )
+          //   : setAnnouncements([...announcements, result]);
+          // setIsOpen(false);
+          // setValue('title', '');
+
           setIsOpen(false);
-          setValue('title', '');
+
           return announcement
             ? `Successfully updated the announcement`
             : `Succesfully added new announcement`;
@@ -138,6 +146,16 @@ export default function AnnouncementFormModal({
         error: (e) => e.toString(),
       }
     );
+
+    const { count, announcements } = await announcementService.getBySemester(
+      activeSemester.id,
+      false,
+      take,
+      skip
+    );
+    setCount(count);
+    setAnnouncements(announcements);
+
     setLoading(false);
     reset();
   };

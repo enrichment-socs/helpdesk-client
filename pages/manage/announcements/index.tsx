@@ -1,67 +1,54 @@
-import { atom, useAtom } from 'jotai';
-import { useHydrateAtoms } from 'jotai/utils';
+import { useAtom, useSetAtom } from 'jotai';
 import { NextPage } from 'next';
-import { getSession } from 'next-auth/react';
-import { useState, useEffect } from 'react';
-import AnnouncementFormModal from '../../../components/announcements/AnnouncementFormModal';
-import ManageAnnouncementsTable from '../../../components/announcements/ManageAnnouncementsTable';
 import Layout from '../../../widgets/_Layout';
 import { getInitialServerProps } from '../../../shared/libs/initialize-server-props';
 import { withSessionSsr } from '../../../shared/libs/session';
 import { Announcement } from '../../../models/Announcement';
 import { AnnouncementService } from '../../../services/AnnouncementService';
-import { SemesterService } from '../../../services/SemesterService';
 import { SessionUser } from '../../../models/SessionUser';
 import { AuthHelper } from '../../../shared/libs/auth-helper';
 import { ROLES } from '../../../shared/constants/roles';
 import { RoleService } from '../../../services/RoleService';
 import { Role } from '../../../models/Role';
 import ManageAnnouncementStore from '../../../stores/manage/announcements';
+import ManageAnnouncementsContainer from '../../../components/announcements/ManageAnnouncementsContainer';
+import useHydrateAndSyncAtom from '../../../hooks/useHydrateAndSyncAtom';
 
 type Props = {
   currAnnouncements: Announcement[];
   roles: Role[];
+  count: number;
+  initialTake: number;
+  initialSkip: number;
 };
 
-const ManageRolesPage: NextPage<Props> = ({ currAnnouncements, roles }) => {
-  useHydrateAtoms([
-    [ManageAnnouncementStore.announcements, currAnnouncements],
-  ] as const);
-  const [announcements, setAnnouncement] = useAtom(
+const ManageAnnouncementsPage: NextPage<Props> = ({
+  currAnnouncements,
+  roles,
+  count,
+  initialTake,
+  initialSkip
+}) => {
+  useHydrateAndSyncAtom([
+    [ManageAnnouncementStore.announcements, useSetAtom(ManageAnnouncementStore.announcements), currAnnouncements],
+    [ManageAnnouncementStore.take, useSetAtom(ManageAnnouncementStore.take), initialTake],
+    [ManageAnnouncementStore.skip, useSetAtom(ManageAnnouncementStore.skip), initialSkip],
+    [ManageAnnouncementStore.count, useSetAtom(ManageAnnouncementStore.count), count],
+  ]);
+
+  const [announcements, setAnnouncements] = useAtom(
     ManageAnnouncementStore.announcements
   );
-  const [openFormModal, setOpenFormModal] = useState(false);
-  const [selectedAnnouncement, setSelectedAnnouncement] =
-    useState<Announcement | null>(null);
 
-  useEffect(() => {
-    setAnnouncement(currAnnouncements);
-  }, [currAnnouncements, setAnnouncement]);
-
-  const openModal = (announcement: Announcement | null) => {
-    setSelectedAnnouncement(announcement);
-    setOpenFormModal(true);
-  };
+  // useEffect(() => {
+  //   setAnnouncements(currAnnouncements);
+  // }, [currAnnouncements, setAnnouncements]);
 
   return (
     <Layout>
-      <AnnouncementFormModal
-        isOpen={openFormModal}
-        setIsOpen={setOpenFormModal}
-        announcement={selectedAnnouncement}
+      <ManageAnnouncementsContainer 
         roles={roles}
       />
-
-      <div className="font-bold text-2xl mb-4 flex items-center justify-between  ">
-        <h1>Manage Announcements</h1>
-        <button
-          type="button"
-          onClick={() => openModal(null)}
-          className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-primary hover:bg-primary-dark focus:outline-none">
-          Create
-        </button>
-      </div>
-      <ManageAnnouncementsTable openModal={openModal} />
     </Layout>
   );
 };
@@ -84,8 +71,14 @@ export const getServerSideProps = withSessionSsr(
     const announcementService = new AnnouncementService(user.accessToken);
     const roleService = new RoleService(user.accessToken);
 
-    const currAnnouncements = await announcementService.getBySemester(
-      sessionActiveSemester.id
+    const initialTake = 1;
+    const initialSkip = 0;
+
+    const {count, announcements:currAnnouncements} = await announcementService.getBySemester(
+      sessionActiveSemester.id,
+      false,
+      initialTake,
+      initialSkip
     );
 
     const roles = await roleService.getAll();
@@ -97,9 +90,12 @@ export const getServerSideProps = withSessionSsr(
         sessionActiveSemester,
         currAnnouncements,
         roles,
+        initialTake,
+        initialSkip,
+        count,
       },
     };
   }
 );
 
-export default ManageRolesPage;
+export default ManageAnnouncementsPage;
