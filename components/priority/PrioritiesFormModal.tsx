@@ -14,6 +14,7 @@ type Props = {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   priority: Priority | null;
+  updateData: () => void;
 };
 
 type FormData = {
@@ -26,8 +27,9 @@ export default function PrioritiesFormModal({
   isOpen,
   setIsOpen,
   priority,
+  updateData,
 }: Props) {
-  const [prioritiesVal, setprioritiesVal] = useAtom(ManagePriorityStore.priorities);
+  const [prioritiesVal, setprioritiesVal] = useAtom(ManagePriorityStore.ticketPriorities);
   const [loading, setLoading] = useState(false);
   const session = useSession();
   const user = session?.data?.user as SessionUser;
@@ -55,14 +57,16 @@ export default function PrioritiesFormModal({
       {
         loading: priority ? 'Updating priority...' : 'Adding priority...',
         success: (result) => {
-          priority
-            ? setprioritiesVal(
-                prioritiesVal.map((p) => {
-                  if (p.id === priority.id) return result;
-                  else return p;
-                })
-              )
-            : setprioritiesVal([...prioritiesVal, result]);
+          // priority
+          //   ? setprioritiesVal(
+          //       prioritiesVal.map((p) => {
+          //         if (p.id === priority.id) return result;
+          //         else return p;
+          //       })
+          //     )
+          //   : setprioritiesVal([...prioritiesVal, result]);
+
+          updateData();
           setIsOpen(false);
           setValue('priorityName', '');
           setValue('priorityIndex', 0);

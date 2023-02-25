@@ -137,7 +137,7 @@ export const getServerSideProps = withSessionSsr(
       );
 
     let statuses = await statusService.getAll();
-    const priorities = await priorityService.getAll();
+    const { ticketPriorities: priorities } = await priorityService.getAll();
 
     statuses = statuses.filter(
       (status) => status.statusName !== STATUS.PENDING

@@ -10,7 +10,6 @@ import { Category } from '../../models/Category';
 import { SessionUser } from '../../models/SessionUser';
 import { CategoryService } from '../../services/CategoryService';
 import { confirm } from '../../shared/libs/confirm-dialog-helper';
-import ManageCategoryStore from '../../stores/manage/categories';
 import GeneralTable from '../GeneralTable';
 
 type Prop = {
@@ -20,7 +19,6 @@ type Prop = {
 };
 
 export default function ManageCategoriesTable({ categories, openModal, updateData }: Prop) {
-  const [, setCategoriesVal] = useAtom(ManageCategoryStore.ticketCategories);
   const columnHelper = createColumnHelper<Category>();
   const columns = [
     columnHelper.accessor('categoryName', {

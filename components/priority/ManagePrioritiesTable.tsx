@@ -3,23 +3,21 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { useAtom } from 'jotai';
 import { useSession } from 'next-auth/react';
 import toast from 'react-hot-toast';
 import { Priority } from '../../models/Priority';
 import { SessionUser } from '../../models/SessionUser';
 import { PriorityService } from '../../services/PriorityService';
 import { confirm } from '../../shared/libs/confirm-dialog-helper';
-import ManagePriorityStore from '../../stores/manage/priorities';
 import GeneralTable from '../GeneralTable';
 
 type Prop = {
   priorities: Priority[];
   openModal: (priority: Priority | null) => void;
+  updateData: () => void;
 };
 
-export default function ManagePrioritiesTable({ priorities, openModal }: Prop) {
-  const [, setPrioritiesVal] = useAtom(ManagePriorityStore.priorities);
+export default function ManagePrioritiesTable({ priorities, openModal, updateData }: Prop) {
   const columnHelper = createColumnHelper<Priority>();
   const columns = [
     columnHelper.accessor('priorityName', {
@@ -72,7 +70,10 @@ export default function ManagePrioritiesTable({ priorities, openModal }: Prop) {
       await toast.promise(prioritiesService.delete(priority.id), {
         loading: 'Deleting priority...',
         success: (r) => {
-          setPrioritiesVal(priorities.filter((cat) => cat.id !== priority.id));
+          // setPrioritiesVal(priorities.filter((cat) => cat.id !== priority.id));
+
+          updateData();
+
           return 'Sucesfully deleted the selected priority';
         },
         error: (e) => e.toString(),

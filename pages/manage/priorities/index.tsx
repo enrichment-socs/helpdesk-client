@@ -1,5 +1,4 @@
-import { atom, useAtom } from 'jotai';
-import { useHydrateAtoms } from 'jotai/utils';
+import { atom, useAtom, useSetAtom } from 'jotai';
 import { NextPage } from 'next';
 import { getSession } from 'next-auth/react';
 import { useState } from 'react';
@@ -12,46 +11,34 @@ import { getInitialServerProps } from '../../../shared/libs/initialize-server-pr
 import { withSessionSsr } from '../../../shared/libs/session';
 import { Priority } from '../../../models/Priority';
 import { PriorityService } from '../../../services/PriorityService';
-import { SemesterService } from '../../../services/SemesterService';
 import { SessionUser } from '../../../models/SessionUser';
 import ManagePriorityStore from '../../../stores/manage/priorities';
+import useHydrateAndSyncAtom from '../../../hooks/useHydrateAndSyncAtom';
+import ManagePrioritiesContainer from '../../../components/priority/ManagePrioritiesContainer';
 
 type Props = {
-  priorities: Priority[];
+  ticketPriorities: Priority[];
+  count: number;
+  initialTake: number;
+  initialSkip: number;
 };
 
-const ManageCategoriesPage: NextPage<Props> = ({ priorities }) => {
-  const [prioritiesVal] = useAtom(ManagePriorityStore.priorities);
-  const [openFormModal, setOpenFormModal] = useState(false);
-  const [selectedPriority, setSelectedPriority] = useState<Priority | null>(
-    null
-  );
-
-  useHydrateAtoms([[ManagePriorityStore.priorities, priorities]] as const);
-
-  const openModal = (priority: Priority | null) => {
-    setSelectedPriority(priority);
-    setOpenFormModal(true);
-  };
+const ManageCategoriesPage: NextPage<Props> = ({ ticketPriorities, initialTake, initialSkip, count }) => {
+  useHydrateAndSyncAtom([
+    [
+      ManagePriorityStore.ticketPriorities,
+      useSetAtom(ManagePriorityStore.ticketPriorities),
+      ticketPriorities,
+    ],
+    [ManagePriorityStore.take, useSetAtom(ManagePriorityStore.take), initialTake],
+    [ManagePriorityStore.skip, useSetAtom(ManagePriorityStore.skip), initialSkip],
+    [ManagePriorityStore.count, useSetAtom(ManagePriorityStore.count), count],
+    [ManagePriorityStore.pageNumber, useSetAtom(ManagePriorityStore.pageNumber), 1],
+  ]);
 
   return (
     <Layout>
-      <PrioritiesFormModal
-        isOpen={openFormModal}
-        setIsOpen={setOpenFormModal}
-        priority={selectedPriority}
-      />
-      <div className="font-bold text-2xl mb-4 flex items-center justify-between  ">
-        <h1>Manage Ticket Priority</h1>
-        <button
-          type="button"
-          onClick={() => openModal(null)}
-          className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-primary hover:bg-primary-dark focus:outline-none">
-          Create
-        </button>
-      </div>
-
-      <ManagePrioritiesTable priorities={prioritiesVal} openModal={openModal} />
+      <ManagePrioritiesContainer />
     </Layout>
   );
 };
@@ -71,13 +58,18 @@ export const getServerSideProps = withSessionSsr(
 
     const user = session.user as SessionUser;
     const prioritiesService = new PriorityService(user.accessToken);
-    const priorities = await prioritiesService.getAll();
+    const initialTake = 2;
+    const initialSkip = 0;
+    const {count, ticketPriorities} = await prioritiesService.getAll(initialTake, initialSkip);
 
     return {
       props: {
         ...globalProps,
-        priorities,
+        ticketPriorities,
         session,
+        initialTake,
+        initialSkip,
+        count,
       },
     };
   }

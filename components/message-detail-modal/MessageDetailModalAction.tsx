@@ -94,8 +94,10 @@ export default function MessageDetailModalAction({
       const priorityService = new PriorityService(user?.accessToken);
       const usersService = new UserService(user?.accessToken);
 
-      const {ticketCategories:fetchedCategories} = await categoryService.getAll();
-      const fetchedPriorities = await priorityService.getAll();
+      const { ticketCategories: fetchedCategories } =
+        await categoryService.getAll();
+      const { ticketPriorities: fetchedPriorities } =
+        await priorityService.getAll();
       const fetchedAdmins = await usersService.getUsersWithAdminRole();
 
       setSelectedDueDate(DateHelper.roundUpHours(new Date()));

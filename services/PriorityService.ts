@@ -4,9 +4,20 @@ import { Priority } from '../models/Priority';
 import { BaseService } from './BaseService';
 
 export class PriorityService extends BaseService {
-  public async getAll(): Promise<Priority[]> {
-    const result: AxiosResponse<Priority[]> = await this.wrapper.handle(
-      axios.get(`${this.BASE_URL}/priority`, this.headersWithToken())
+  public async getAll(take?: number, skip?: number): Promise<{count: number; ticketPriorities: Priority[]}> {
+    let url = `${this.BASE_URL}/priority`;
+
+    if (
+      take !== null &&
+      take !== undefined &&
+      skip !== null &&
+      skip !== undefined
+    ) {
+      url += `?take=${take}&skip=${skip}`;
+    }
+
+    const result: AxiosResponse<{count: number; ticketPriorities: Priority[]}> = await this.wrapper.handle(
+      axios.get(url, this.headersWithToken())
     );
     return result.data;
   }

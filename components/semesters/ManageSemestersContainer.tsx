@@ -81,6 +81,7 @@ export default function ManageSemestersContainer() {
           Create
         </button>
       </div>
+      
       <ManageSemestersTable
         openModal={openModal}
         updateData={updateSemestersData}
