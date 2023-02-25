@@ -17,12 +17,12 @@ export default function ManageSemestersContainer() {
   const [selectedSemester, setSelectedSemester] = useState<Semester | null>(
     null
   );
-  const [pageNumber, setPageNumber] = useAtom(ManageSemesterStore.pageNumber);
   const [threeFirstPageNumber, setThreeFirstPageNumber] = useState([1, 2, 3]);
   const session = useSession();
   const user = session.data.user as SessionUser;
   const semesterService = new SemesterService(user.accessToken);
   const [semesters, setSemesters] = useAtom(ManageSemesterStore.semesters);
+  const [pageNumber, setPageNumber] = useAtom(ManageSemesterStore.pageNumber);
   const [take, setTake] = useAtom(ManageSemesterStore.take);
   const [skip, setSkip] = useAtom(ManageSemesterStore.skip);
   const [count, setCount] = useAtom(ManageSemesterStore.count);

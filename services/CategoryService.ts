@@ -4,10 +4,26 @@ import { CreateCategoryDto } from '../models/dto/categories/create-category-dto'
 import { BaseService } from './BaseService';
 
 export class CategoryService extends BaseService {
-  public async getAll(): Promise<Category[]> {
-    const result: AxiosResponse<Category[]> = await this.wrapper.handle(
-      axios.get(`${this.BASE_URL}/categories`)
-    );
+  public async getAll(
+    take?: number,
+    skip?: number
+  ): Promise<{ count: number; ticketCategories: Category[] }> {
+    let url = `${this.BASE_URL}/categories`;
+
+    if (
+      take !== null &&
+      take !== undefined &&
+      skip !== null &&
+      skip !== undefined
+    ) {
+      url += `?take=${take}&skip=${skip}`;
+    }
+
+    const result: AxiosResponse<{
+      count: number;
+      ticketCategories: Category[];
+    }> = await this.wrapper.handle(axios.get(url));
+
     return result.data;
   }
 

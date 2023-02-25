@@ -16,10 +16,11 @@ import GeneralTable from '../GeneralTable';
 type Prop = {
   categories: Category[];
   openModal: (category: Category | null) => void;
+  updateData: () => void;
 };
 
-export default function ManageCategoriesTable({ categories, openModal }: Prop) {
-  const [, setCategoriesVal] = useAtom(ManageCategoryStore.categories);
+export default function ManageCategoriesTable({ categories, openModal, updateData }: Prop) {
+  const [, setCategoriesVal] = useAtom(ManageCategoryStore.ticketCategories);
   const columnHelper = createColumnHelper<Category>();
   const columns = [
     columnHelper.accessor('categoryName', {
@@ -77,7 +78,10 @@ export default function ManageCategoriesTable({ categories, openModal }: Prop) {
       await toast.promise(categoriesService.delete(category.id), {
         loading: 'Deleting category...',
         success: (r) => {
-          setCategoriesVal(categories.filter((cat) => cat.id !== category.id));
+          // setCategoriesVal(categories.filter((cat) => cat.id !== category.id));
+
+          updateData();
+
           return 'Sucesfully deleted the selected category';
         },
         error: (e) => e.toString(),

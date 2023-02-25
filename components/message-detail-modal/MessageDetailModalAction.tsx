@@ -94,7 +94,7 @@ export default function MessageDetailModalAction({
       const priorityService = new PriorityService(user?.accessToken);
       const usersService = new UserService(user?.accessToken);
 
-      const fetchedCategories = await categoryService.getAll();
+      const {ticketCategories:fetchedCategories} = await categoryService.getAll();
       const fetchedPriorities = await priorityService.getAll();
       const fetchedAdmins = await usersService.getUsersWithAdminRole();
 

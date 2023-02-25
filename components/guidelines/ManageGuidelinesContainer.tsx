@@ -14,12 +14,12 @@ import ManageGuidelinesTable from './ManageGuidelineTable';
 export default function ManageGuidelinesContainer() {
   const [openFormModal, setOpenFormModal] = useState(false);
   const [selectedFAQ, setSelectedFAQ] = useState<Guideline | null>(null);
-  const [pageNumber, setPageNumber] = useState(1);
   const [threeFirstPageNumber, setThreeFirstPageNumber] = useState([1, 2, 3]);
   const session = useSession();
   const user = session.data.user as SessionUser;
   const guidelineService = new GuidelineService(user.accessToken);
   const [guidelines, setGuidelines] = useAtom(ManageGuidelineStore.guidelines);
+  const [pageNumber, setPageNumber] = useAtom(ManageGuidelineStore.pageNumber);
   const [take, setTake] = useAtom(ManageGuidelineStore.take);
   const [skip, setSkip] = useAtom(ManageGuidelineStore.skip);
   const [count, setCount] = useAtom(ManageGuidelineStore.count);

@@ -17,11 +17,10 @@ type Props = {
   roles: Role[];
 };
 
-export default function ManageAnnouncementsContainer({ roles } : Props) {
+export default function ManageAnnouncementsContainer({ roles }: Props) {
   const [openFormModal, setOpenFormModal] = useState(false);
   const [selectedAnnouncement, setSelectedAnnouncement] =
     useState<Announcement | null>(null);
-  const [pageNumber, setPageNumber] = useState(1);
   const [threeFirstPageNumber, setThreeFirstPageNumber] = useState([1, 2, 3]);
   const session = useSession();
   const user = session.data.user as SessionUser;
@@ -29,6 +28,9 @@ export default function ManageAnnouncementsContainer({ roles } : Props) {
   const [activeSemester] = useAtom(activeSemesterAtom);
   const [announcements, setAnnouncements] = useAtom(
     ManageAnnouncementStore.announcements
+  );
+  const [pageNumber, setPageNumber] = useAtom(
+    ManageAnnouncementStore.pageNumber
   );
   const [take, setTake] = useAtom(ManageAnnouncementStore.take);
   const [skip, setSkip] = useAtom(ManageAnnouncementStore.skip);

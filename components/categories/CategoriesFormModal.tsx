@@ -15,6 +15,7 @@ type Props = {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   category: Category | null;
+  updateData: () => void;
 };
 
 type FormData = {
@@ -26,8 +27,9 @@ export default function CategoriesFormModal({
   isOpen,
   setIsOpen,
   category,
+  updateData,
 }: Props) {
-  const [categoriesVal, setCategoriesVal] = useAtom(ManageCategoryStore.categories);
+  const [categoriesVal, setCategoriesVal] = useAtom(ManageCategoryStore.ticketCategories);
   const [loading, setLoading] = useState(false);
   const session = useSession();
   const user = session?.data?.user as SessionUser;
@@ -74,14 +76,16 @@ export default function CategoriesFormModal({
       {
         loading: category ? 'Updating category...' : 'Adding category...',
         success: (result) => {
-          category
-            ? setCategoriesVal(
-                categoriesVal.map((cat) => {
-                  if (cat.id === category.id) return result;
-                  else return cat;
-                })
-              )
-            : setCategoriesVal([...categoriesVal, result]);
+          // category
+          //   ? setCategoriesVal(
+          //       categoriesVal.map((cat) => {
+          //         if (cat.id === category.id) return result;
+          //         else return cat;
+          //       })
+          //     )
+          //   : setCategoriesVal([...categoriesVal, result]);
+
+          updateData();
           setIsOpen(false);
           setValue('categoryName', '');
           remove();

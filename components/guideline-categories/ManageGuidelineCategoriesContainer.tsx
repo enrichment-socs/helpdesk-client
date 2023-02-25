@@ -16,7 +16,6 @@ export default function ManageGuidelineCategoriesContainer() {
   const [openFormModal, setOpenFormModal] = useState(false);
   const [selectedFAQCategory, setSelectedFAQCategory] =
     useState<GuidelineCategory | null>(null);
-  const [pageNumber, setPageNumber] = useState(1);
   const [threeFirstPageNumber, setThreeFirstPageNumber] = useState([1, 2, 3]);
   const session = useSession();
   const user = session.data.user as SessionUser;
@@ -25,6 +24,9 @@ export default function ManageGuidelineCategoriesContainer() {
   );
   const [guidelineCategories, setGuidelineCategories] = useAtom(
     ManageGuidelineCategoryStore.guidelineCategories
+  );
+  const [pageNumber, setPageNumber] = useAtom(
+    ManageGuidelineCategoryStore.pageNumber
   );
   const [take, setTake] = useAtom(ManageGuidelineCategoryStore.take);
   const [skip, setSkip] = useAtom(ManageGuidelineCategoryStore.skip);

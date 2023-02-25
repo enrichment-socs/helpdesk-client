@@ -1,4 +1,4 @@
-import { atom, useAtom } from 'jotai';
+import { atom, useAtom, useSetAtom } from 'jotai';
 import { useHydrateAtoms } from 'jotai/utils';
 import { NextPage } from 'next';
 import { getSession } from 'next-auth/react';
@@ -15,43 +15,29 @@ import { CategoryService } from '../../../services/CategoryService';
 import { SemesterService } from '../../../services/SemesterService';
 import { SessionUser } from '../../../models/SessionUser';
 import ManageCategoryStore from '../../../stores/manage/categories';
+import useHydrateAndSyncAtom from '../../../hooks/useHydrateAndSyncAtom';
+import ManageCategoriesContainer from '../../../components/categories/ManageCategoriesContainer';
 
 type Props = {
-  categories: Category[];
+  ticketCategories: Category[];
+  initialTake: number;
+  initialSkip: number;
+  count: number;
 };
 
-const ManageCategoriesPage: NextPage<Props> = ({ categories }) => {
-  const [categoriesVal] = useAtom(ManageCategoryStore.categories);
-  const [openFormModal, setOpenFormModal] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
-    null
-  );
-
-  useHydrateAtoms([[ManageCategoryStore.categories, categories]] as const);
-
-  const openModal = (category: Category | null) => {
-    setSelectedCategory(category);
-    setOpenFormModal(true);
-  };
+const ManageCategoriesPage: NextPage<Props> = ({ ticketCategories, initialTake, initialSkip, count }) => {
+  useHydrateAndSyncAtom([
+    [ManageCategoryStore.ticketCategories, useSetAtom(ManageCategoryStore.ticketCategories), ticketCategories],
+    [ManageCategoryStore.take, useSetAtom(ManageCategoryStore.take), initialTake],
+    [ManageCategoryStore.skip, useSetAtom(ManageCategoryStore.skip), initialSkip],
+    [ManageCategoryStore.count, useSetAtom(ManageCategoryStore.count), count],
+    [ManageCategoryStore.pageNumber, useSetAtom(ManageCategoryStore.pageNumber), 1],
+  ]);
+  
 
   return (
     <Layout>
-      <CategoriesFormModal
-        isOpen={openFormModal}
-        setIsOpen={setOpenFormModal}
-        category={selectedCategory}
-      />
-      <div className="font-bold text-2xl mb-4 flex items-center justify-between  ">
-        <h1>Manage Ticket Category</h1>
-        <button
-          type="button"
-          onClick={() => openModal(null)}
-          className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-primary hover:bg-primary-dark focus:outline-none">
-          Create
-        </button>
-      </div>
-
-      <ManageCategoriesTable categories={categoriesVal} openModal={openModal} />
+      <ManageCategoriesContainer />
     </Layout>
   );
 };
@@ -71,13 +57,19 @@ export const getServerSideProps = withSessionSsr(
 
     const user = session.user as SessionUser;
     const categoriesService = new CategoryService(user.accessToken);
-    const categories = await categoriesService.getAll();
+    
+    const initialTake = 10;
+    const initialSkip = 0; 
+    const { count, ticketCategories } = await categoriesService.getAll(initialTake, initialSkip);
 
     return {
       props: {
         ...globalProps,
         session,
-        categories,
+        ticketCategories,
+        initialTake,
+        initialSkip,
+        count,
       },
     };
   }
