@@ -11,7 +11,6 @@ import { Guideline } from '../../models/Guideline';
 import { SessionUser } from '../../models/SessionUser';
 import { GuidelineCategoryService } from '../../services/GuidelineCategoryService';
 import { GuidelineService } from '../../services/GuidelineService';
-import ManageGuidelineStore from '../../stores/manage/guidelines';
 
 const QuillNoSSRWrapper = dynamic(import('react-quill'), {
   ssr: false,
@@ -50,8 +49,6 @@ const GuidelineFormModal: React.FC<Props> = ({
   faq,
   updateData,
 }) => {
-  const [faqs, setFaqs] = useAtom(ManageGuidelineStore.guidelines);
-
   const [guidelineCategories, setGuidelineCategories] = useAtom(
     guidelineCategoriesAtom
   );

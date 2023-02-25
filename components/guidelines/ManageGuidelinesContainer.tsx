@@ -2,7 +2,6 @@ import { useAtom } from 'jotai';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-import { activeSemesterAtom } from '../../atom';
 import { Guideline } from '../../models/Guideline';
 import { SessionUser } from '../../models/SessionUser';
 import { GuidelineService } from '../../services/GuidelineService';
@@ -20,7 +19,6 @@ export default function ManageGuidelinesContainer() {
   const session = useSession();
   const user = session.data.user as SessionUser;
   const guidelineService = new GuidelineService(user.accessToken);
-  const [activeSemester] = useAtom(activeSemesterAtom);
   const [guidelines, setGuidelines] = useAtom(ManageGuidelineStore.guidelines);
   const [take, setTake] = useAtom(ManageGuidelineStore.take);
   const [skip, setSkip] = useAtom(ManageGuidelineStore.skip);
