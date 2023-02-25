@@ -34,6 +34,7 @@ const ManageAnnouncementsPage: NextPage<Props> = ({
     [ManageAnnouncementStore.take, useSetAtom(ManageAnnouncementStore.take), initialTake],
     [ManageAnnouncementStore.skip, useSetAtom(ManageAnnouncementStore.skip), initialSkip],
     [ManageAnnouncementStore.count, useSetAtom(ManageAnnouncementStore.count), count],
+    [ManageAnnouncementStore.pageNumber, useSetAtom(ManageAnnouncementStore.pageNumber), 1],
   ]);
 
   const [announcements, setAnnouncements] = useAtom(

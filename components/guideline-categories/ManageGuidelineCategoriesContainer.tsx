@@ -2,7 +2,7 @@ import { useAtom } from 'jotai';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-import { activeSemesterAtom, guidelineCategoriesAtom } from '../../atom';
+import { activeSemesterAtom } from '../../atom';
 import { GuidelineCategory } from '../../models/GuidelineCategory';
 import { SessionUser } from '../../models/SessionUser';
 import { GuidelineCategoryService } from '../../services/GuidelineCategoryService';
@@ -23,9 +23,8 @@ export default function ManageGuidelineCategoriesContainer() {
   const guidelineCategoryService = new GuidelineCategoryService(
     user.accessToken
   );
-  const [activeSemester] = useAtom(activeSemesterAtom);
   const [guidelineCategories, setGuidelineCategories] = useAtom(
-    guidelineCategoriesAtom
+    ManageGuidelineCategoryStore.guidelineCategories
   );
   const [take, setTake] = useAtom(ManageGuidelineCategoryStore.take);
   const [skip, setSkip] = useAtom(ManageGuidelineCategoryStore.skip);

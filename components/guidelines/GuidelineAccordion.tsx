@@ -2,10 +2,12 @@ import { Disclosure, Transition } from '@headlessui/react';
 import { ChevronUpIcon } from '@heroicons/react/solid';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import { Guideline } from '../../models/Guideline';
 import { GuidelineCategory } from '../../models/GuidelineCategory';
 import { SessionUser } from '../../models/SessionUser';
 import { GuidelineService } from '../../services/GuidelineService';
+import { ClientPromiseWrapper } from '../../shared/libs/client-promise-wrapper';
 import SkeletonLoading from '../../widgets/SkeletonLoading';
 
 type Props = {
@@ -21,9 +23,12 @@ const GuidelineAccordion: React.FC<Props> = ({ guidelineCategory }) => {
   const faqService = new GuidelineService(user?.accessToken);
 
   const getCurrCategoryFAQs = async () => {
+    const wrapper = new ClientPromiseWrapper(toast);
     setIsLoading(true);
 
-    const faqs = await faqService.getByFAQCategory(guidelineCategory.id);
+    const faqs = await wrapper.handle(
+      faqService.getByFAQCategory(guidelineCategory.id)
+    );
     setCurrFAQs(faqs);
     setIsLoading(false);
   };

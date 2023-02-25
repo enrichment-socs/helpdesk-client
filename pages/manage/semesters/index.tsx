@@ -1,10 +1,5 @@
-import { useAtom } from 'jotai';
+import { useSetAtom } from 'jotai';
 import { NextPage } from 'next';
-import { getSession } from 'next-auth/react';
-import { useState } from 'react';
-import { semestersAtom } from '../../../atom';
-import ManageSemestersTable from '../../../components/semesters/ManageSemestersTable';
-import SemesterFormModal from '../../../components/semesters/SemesterFormModal';
 import Layout from '../../../widgets/_Layout';
 import { getInitialServerProps } from '../../../shared/libs/initialize-server-props';
 import { withSessionSsr } from '../../../shared/libs/session';
@@ -12,37 +7,51 @@ import { Semester } from '../../../models/Semester';
 import { SemesterService } from '../../../services/SemesterService';
 import { AuthHelper } from '../../../shared/libs/auth-helper';
 import { ROLES } from '../../../shared/constants/roles';
+import { SessionUser } from '../../../models/SessionUser';
+import useHydrateAndSyncAtom from '../../../hooks/useHydrateAndSyncAtom';
+import ManageSemesterStore from '../../../stores/manage/semesters';
+import ManageSemestersContainer from '../../../components/semesters/ManageSemestersContainer';
 
-const ManageSemestersPage: NextPage = () => {
-  const [semesters] = useAtom(semestersAtom);
-  const [openFormModal, setOpenFormModal] = useState(false);
-  const [selectedSemester, setSelectedSemester] = useState<Semester | null>(
-    null
-  );
+type Props = {
+  currSemesters: Semester[];
+  semesters: Semester[];
+  initialTake: number;
+  initialSkip: number;
+  count: number;
+};
 
-  const openModal = (semester: Semester | null) => {
-    setSelectedSemester(semester);
-    setOpenFormModal(true);
-  };
+const ManageSemestersPage: NextPage<Props> = ({ currSemesters, initialTake, initialSkip, count}) => {
+  useHydrateAndSyncAtom([
+    [
+      ManageSemesterStore.semesters,
+      useSetAtom(ManageSemesterStore.semesters),
+      currSemesters,
+    ],
+    [
+      ManageSemesterStore.take,
+      useSetAtom(ManageSemesterStore.take),
+      initialTake,
+    ],
+    [
+      ManageSemesterStore.skip,
+      useSetAtom(ManageSemesterStore.skip),
+      initialSkip,
+    ],
+    [
+      ManageSemesterStore.count,
+      useSetAtom(ManageSemesterStore.count),
+      count,
+    ],
+    [
+      ManageSemesterStore.pageNumber,
+      useSetAtom(ManageSemesterStore.pageNumber),
+      1,
+    ],
+  ]);
 
   return (
     <Layout>
-      <SemesterFormModal
-        isOpen={openFormModal}
-        setIsOpen={setOpenFormModal}
-        semester={selectedSemester}
-      />
-
-      <div className="font-bold text-2xl mb-4 flex items-center justify-between  ">
-        <h1>Manage Semesters</h1>
-        <button
-          onClick={() => openModal(null)}
-          type="button"
-          className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-primary hover:bg-primary-dark focus:outline-none">
-          Create
-        </button>
-      </div>
-      <ManageSemestersTable semesters={semesters} openModal={openModal} />
+      <ManageSemestersContainer />
     </Layout>
   );
 };
@@ -60,10 +69,21 @@ export const getServerSideProps = withSessionSsr(
       };
     }
 
+    const user = session.user as SessionUser;
+    const semesterService = new SemesterService(user.accessToken);
+    const initialTake = 2;
+    const initialSkip = 0;
+
+    const { count, semesters:currSemesters } = await semesterService.getSemesters(initialTake, initialSkip);
+
     return {
       props: {
         ...globalProps,
         session,
+        currSemesters,
+        initialTake,
+        initialSkip,
+        count,
       },
     };
   }

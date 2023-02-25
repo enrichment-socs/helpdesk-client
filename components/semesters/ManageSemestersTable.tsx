@@ -3,7 +3,6 @@ import { Semester } from '../../models/Semester';
 import { SemesterService } from '../../services/SemesterService';
 import toast from 'react-hot-toast';
 import { useAtom } from 'jotai';
-import { semestersAtom } from '../../atom';
 import { useSession } from 'next-auth/react';
 import { SessionUser } from '../../models/SessionUser';
 import {
@@ -12,14 +11,15 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import GeneralTable from '../GeneralTable';
+import ManageSemesterStore from '../../stores/manage/semesters';
 
 type Props = {
-  semesters: Semester[];
   openModal: (semester: Semester | null) => void;
+  updateData: () => void;
 };
 
-export default function ManageSemestersTable({ semesters, openModal }: Props) {
-  const [, setSemesters] = useAtom(semestersAtom);
+export default function ManageSemestersTable({ openModal, updateData }: Props) {
+  const [semesters, setSemesters] = useAtom(ManageSemesterStore.semesters);
   const columnHelper = createColumnHelper<Semester>();
   const columns = [
     columnHelper.accessor('type', {
@@ -85,7 +85,10 @@ export default function ManageSemestersTable({ semesters, openModal }: Props) {
       await toast.promise(semestersService.deleteSemester(semester.id), {
         loading: 'Deleting semester...',
         success: (r) => {
-          setSemesters(semesters.filter((s) => s.id !== semester.id));
+          // setSemesters(semesters.filter((s) => s.id !== semester.id));
+
+          updateData();
+
           return 'Sucesfully deleted the selected semester';
         },
         error: (e) => e.toString(),

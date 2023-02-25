@@ -7,6 +7,7 @@ const ManageGuidelineStore = {
     take: atom<number>(0),
     skip: atom<number>(0),
     count: atom<number>(0),
+    pageNumber: atom<number>(1),
 };
 
 export default ManageGuidelineStore;

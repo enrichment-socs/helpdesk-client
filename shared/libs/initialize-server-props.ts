@@ -22,7 +22,7 @@ export const getInitialServerProps = async (
   req: IncomingMessage
 ): Promise<Props> => {
   const semesterService = new SemesterService();
-  const semesters = await semesterService.getSemesters();
+  const { semesters } = await semesterService.getSemesters();
   const dbActiveSemester = semesters.find((s) => s.isActive);
   let session = await getSession({ req });
   let activeSemester = req.session.activeSemester ?? dbActiveSemester;

@@ -111,7 +111,7 @@ const Home: NextPage<
         )}
 
         {user?.roleName === ROLES.USER && (
-          <GuidelineContainer guidelineCategories={faqCategories} />
+          <GuidelineContainer />
         )}
       </div>
     </Layout>

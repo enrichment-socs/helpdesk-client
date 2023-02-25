@@ -1,7 +1,9 @@
-import { useHydrateAtoms } from 'jotai/utils';
+import { useSetAtom } from 'jotai';
 import { NextPage } from 'next';
 import { getSession } from 'next-auth/react';
+import { guidelineCategoriesAtom } from '../../atom';
 import GuidelineContainer from '../../components/guidelines/GuidelineContainer';
+import useHydrateAndSyncAtom from '../../hooks/useHydrateAndSyncAtom';
 import { GuidelineCategory } from '../../models/GuidelineCategory';
 import { SessionUser } from '../../models/SessionUser';
 import { GuidelineCategoryService } from '../../services/GuidelineCategoryService';
@@ -18,9 +20,17 @@ type Props = {
 };
 
 const GuidelinePage: NextPage<Props> = ({ guidelineCategories }) => {
+  useHydrateAndSyncAtom([
+    [
+      guidelineCategoriesAtom,
+      useSetAtom(guidelineCategoriesAtom),
+      guidelineCategories,
+    ],
+  ]);
+
   return (
     <Layout>
-      <GuidelineContainer guidelineCategories={guidelineCategories} />
+      <GuidelineContainer />
     </Layout>
   );
 };
@@ -48,7 +58,7 @@ export const getServerSideProps = withSessionSsr(
       user?.accessToken
     );
 
-    const {guidelineCategories} = await guidelineCategoryService.getAll();
+    const { guidelineCategories } = await guidelineCategoryService.getAll();
 
     return {
       props: {

@@ -4,7 +4,6 @@ import { useSession } from 'next-auth/react';
 import { Dispatch, Fragment, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { semestersAtom } from '../../atom';
 import { CreateSemesterDto } from '../../models/dto/semesters/create-semester.dto';
 import { Semester } from '../../models/Semester';
 import { SessionUser } from '../../models/SessionUser';
@@ -14,6 +13,7 @@ type Props = {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   semester: Semester | null;
+  updateData: () => void;
 };
 
 type FormData = {
@@ -27,8 +27,8 @@ export default function SemesterFormModal({
   isOpen,
   setIsOpen,
   semester,
+  updateData,
 }: Props) {
-  const [semesters, setSemesters] = useAtom(semestersAtom);
   const [loading, setLoading] = useState(false);
   const session = useSession();
   const user = session?.data?.user as SessionUser;
@@ -77,15 +77,18 @@ export default function SemesterFormModal({
       {
         loading: semester ? 'Updating semester...' : 'Adding semester...',
         success: (result) => {
-          semester
-            ? setSemesters(
-                semesters.map((s) => {
-                  if (s.id === semester.id) return result;
-                  else return s;
-                })
-              )
-            : setSemesters([result, ...semesters]);
+          // semester
+          //   ? setSemesters(
+          //       semesters.map((s) => {
+          //         if (s.id === semester.id) return result;
+          //         else return s;
+          //       })
+          //     )
+          //   : setSemesters([result, ...semesters]);
+
+          updateData();
           setIsOpen(false);
+
           return semester
             ? `Succesfully updated the semester`
             : `Successfully added new semester`;

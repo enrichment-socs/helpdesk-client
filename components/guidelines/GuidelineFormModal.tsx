@@ -5,12 +5,12 @@ import dynamic from 'next/dynamic';
 import { Dispatch, Fragment, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { guidelineCategoriesAtom } from '../../atom';
 import { CreateGuidelineDto } from '../../models/dto/guidelines/create-guideline.dto';
 import { Guideline } from '../../models/Guideline';
 import { SessionUser } from '../../models/SessionUser';
 import { GuidelineCategoryService } from '../../services/GuidelineCategoryService';
 import { GuidelineService } from '../../services/GuidelineService';
+import ManageGuidelineCategoryStore from '../../stores/manage/guideline-categories';
 
 const QuillNoSSRWrapper = dynamic(import('react-quill'), {
   ssr: false,
@@ -50,7 +50,7 @@ const GuidelineFormModal: React.FC<Props> = ({
   updateData,
 }) => {
   const [guidelineCategories, setGuidelineCategories] = useAtom(
-    guidelineCategoriesAtom
+    ManageGuidelineCategoryStore.guidelineCategories
   );
   const [loading, setLoading] = useState(false);
   const session = useSession();

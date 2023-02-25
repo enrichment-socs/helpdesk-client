@@ -1,13 +1,13 @@
 import { Disclosure, Transition } from '@headlessui/react';
 import { ChatAlt2Icon, ChevronUpIcon } from '@heroicons/react/solid';
+import { useAtom } from 'jotai';
+import { guidelineCategoriesAtom } from '../../atom';
 import { GuidelineCategory } from '../../models/GuidelineCategory';
 import GuidelineAccordion from './GuidelineAccordion';
 
-type Props = {
-  guidelineCategories: GuidelineCategory[];
-};
+const GuidelineContainer: React.FC = () => {
+  const [guidelineCategories] = useAtom(guidelineCategoriesAtom);
 
-const GuidelineContainer: React.FC<Props> = ({ guidelineCategories }) => {
   return (
     <div className={`ml-2 mt-5 p-2 border-2 rounded divide-y transition`}>
       <div className="text-lg font-bold mb-3 flex items-center">

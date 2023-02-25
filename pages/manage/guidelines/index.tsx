@@ -1,3 +1,4 @@
+
 import { useSetAtom } from 'jotai';
 import { NextPage } from 'next';
 import { guidelineCategoriesAtom } from '../../../atom';
@@ -36,6 +37,7 @@ const ManageFAQCategoriesPage: NextPage<Props> = ({
     [ManageGuidelineStore.take, useSetAtom(ManageGuidelineStore.take), initialTake],
     [ManageGuidelineStore.skip, useSetAtom(ManageGuidelineStore.skip), initialSkip],
     [ManageGuidelineStore.count, useSetAtom(ManageGuidelineStore.count), count],
+    [ManageGuidelineStore.pageNumber, useSetAtom(ManageGuidelineStore.pageNumber), 1],
   ]);
 
   return (

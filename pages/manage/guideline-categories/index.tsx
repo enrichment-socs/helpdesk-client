@@ -9,7 +9,6 @@ import { withSessionSsr } from '../../../shared/libs/session';
 import { GuidelineCategory } from '../../../models/GuidelineCategory';
 import { GuidelineCategoryService } from '../../../services/GuidelineCategoryService';
 import { SessionUser } from '../../../models/SessionUser';
-import { guidelineCategoriesAtom } from '../../../atom';
 import useHydrateAndSyncAtom from '../../../hooks/useHydrateAndSyncAtom';
 
 import ManageGuidelineCategoriesContainer from '../../../components/guideline-categories/ManageGuidelineCategoriesContainer';
@@ -25,8 +24,8 @@ type Props = {
 const ManageFAQCategoriesPage: NextPage<Props> = ({ currFAQCategories, initialTake, initialSkip, count }) => {
   useHydrateAndSyncAtom([
     [
-      guidelineCategoriesAtom,
-      useSetAtom(guidelineCategoriesAtom),
+      ManageGuidelineCategoryStore.guidelineCategories,
+      useSetAtom(ManageGuidelineCategoryStore.guidelineCategories),
       currFAQCategories,
     ],
     [
@@ -43,6 +42,11 @@ const ManageFAQCategoriesPage: NextPage<Props> = ({ currFAQCategories, initialTa
       ManageGuidelineCategoryStore.count,
       useSetAtom(ManageGuidelineCategoryStore.count),
       count,
+    ],
+    [
+      ManageGuidelineCategoryStore.pageNumber,
+      useSetAtom(ManageGuidelineCategoryStore.pageNumber),
+      1,
     ],
   ]);
 
@@ -67,11 +71,11 @@ export const getServerSideProps = withSessionSsr(
     }
 
     const user = session.user as SessionUser;
-    const faqCategoriesService = new GuidelineCategoryService(user.accessToken);
+    const faqCategoryService = new GuidelineCategoryService(user.accessToken);
     const initialTake = 10;
     const initialSkip = 0;
     const { count, guidelineCategories: currFAQCategories } =
-      await faqCategoriesService.getAll(initialTake, initialSkip);
+      await faqCategoryService.getAll(initialTake, initialSkip);
 
     return {
       props: {

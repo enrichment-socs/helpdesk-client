@@ -4,10 +4,24 @@ import { Semester } from '../models/Semester';
 import { BaseService } from './BaseService';
 
 export class SemesterService extends BaseService {
-  public async getSemesters(): Promise<Semester[]> {
-    const result: AxiosResponse<Semester[]> = await this.wrapper.handle(
-      axios.get(`${this.BASE_URL}/semesters`)
-    );
+  public async getSemesters(
+    take?: number,
+    skip?: number
+  ): Promise<{ count: number; semesters: Semester[] }> {
+    let url = `${this.BASE_URL}/semesters`;
+
+    if (
+      take !== null &&
+      take !== undefined &&
+      skip !== null &&
+      skip !== undefined
+    ) {
+      url += `?take=${take}&skip=${skip}`;
+    }
+
+    const result: AxiosResponse<{ count: number; semesters: Semester[] }> =
+      await this.wrapper.handle(axios.get(url));
+
     return result.data;
   }
 
