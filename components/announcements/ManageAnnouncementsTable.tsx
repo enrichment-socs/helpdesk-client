@@ -16,9 +16,10 @@ import GeneralTable from '../GeneralTable';
 
 type Props = {
   openModal: (announcement: Announcement | null) => void;
+  updateData: () => void;
 };
 
-export default function ManageAnnouncementsTable({ openModal }: Props) {
+export default function ManageAnnouncementsTable({ openModal, updateData }: Props) {
   const [announcements, setAnnouncements] = useAtom(
     ManageAnnouncementStore.announcements
   );
@@ -88,9 +89,11 @@ export default function ManageAnnouncementsTable({ openModal }: Props) {
         {
           loading: 'Deleting announcement...',
           success: (r) => {
-            setAnnouncements(
-              announcements.filter((a) => a.id !== announcement.id)
-            );
+            // setAnnouncements(
+            //   announcements.filter((a) => a.id !== announcement.id)
+            // );
+
+            updateData();
             return 'Sucesfully deleted the selected announcement';
           },
           error: (e) => e.toString(),

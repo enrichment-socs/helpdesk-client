@@ -17,9 +17,7 @@ type Props = {
   roles: Role[];
 };
 
-export default function ManageAnnouncementsContainer({
-  roles,
-}) {
+export default function ManageAnnouncementsContainer({ roles }) {
   const [openFormModal, setOpenFormModal] = useState(false);
   const [selectedAnnouncement, setSelectedAnnouncement] =
     useState<Announcement | null>(null);
@@ -29,22 +27,51 @@ export default function ManageAnnouncementsContainer({
   const user = session.data.user as SessionUser;
   const announcementService = new AnnouncementService(user.accessToken);
   const [activeSemester] = useAtom(activeSemesterAtom);
-  const [announcements, setAnnouncements] = useAtom(ManageAnnouncementStore.announcements);
+  const [announcements, setAnnouncements] = useAtom(
+    ManageAnnouncementStore.announcements
+  );
   const [take, setTake] = useAtom(ManageAnnouncementStore.take);
   const [skip, setSkip] = useAtom(ManageAnnouncementStore.skip);
   const [count, setCount] = useAtom(ManageAnnouncementStore.count);
 
-  const fetchAnnouncements = async (take: number, skip: number) => {
+  const getAnnouncementsBySemester = async (take: number, skip: number) => {
     const wrapper = new ClientPromiseWrapper(toast);
-    const { announcements } = await wrapper.handle(
+
+    return wrapper.handle(
       announcementService.getBySemester(activeSemester.id, false, take, skip)
     );
+  };
+
+  const fetchAnnouncements = async (take: number, skip: number) => {
+    const { announcements } = await getAnnouncementsBySemester(take, skip);
     return announcements;
   };
 
   const openModal = (announcement: Announcement | null) => {
     setSelectedAnnouncement(announcement);
     setOpenFormModal(true);
+  };
+
+  const updateAnnouncementsData = async () => {
+    let count = 0,
+      announcements = [];
+
+    ({ count, announcements } = await getAnnouncementsBySemester(take, skip));
+
+    if (announcements.length === 0 && pageNumber > 1) {
+      let newSkip = skip - take;
+
+      ({ count, announcements } = await getAnnouncementsBySemester(
+        take,
+        newSkip
+      ));
+
+      setPageNumber((prev) => prev - 1);
+      setSkip(newSkip);
+    }
+
+    setCount(count);
+    setAnnouncements(announcements);
   };
 
   return (
@@ -54,6 +81,7 @@ export default function ManageAnnouncementsContainer({
         setIsOpen={setOpenFormModal}
         announcement={selectedAnnouncement}
         roles={roles}
+        updateData={updateAnnouncementsData}
       />
 
       <div className="font-bold text-2xl mb-4 flex items-center justify-between  ">
@@ -65,7 +93,10 @@ export default function ManageAnnouncementsContainer({
           Create
         </button>
       </div>
-      <ManageAnnouncementsTable openModal={openModal} />
+      <ManageAnnouncementsTable
+        openModal={openModal}
+        updateData={updateAnnouncementsData}
+      />
 
       <CustomPaginator
         take={take}

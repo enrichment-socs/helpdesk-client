@@ -14,6 +14,7 @@ import { SessionUser } from '../../models/SessionUser';
 import { DateHelper } from '../../shared/libs/date-helper';
 import { Role } from '../../models/Role';
 import ManageAnnouncementStore from '../../stores/manage/announcements';
+import { ClientPromiseWrapper } from '../../shared/libs/client-promise-wrapper';
 const QuillNoSSRWrapper = dynamic(import('react-quill'), {
   ssr: false,
   loading: () => <p>Loading ...</p>,
@@ -38,6 +39,7 @@ type Props = {
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   announcement: Announcement | null;
   roles: Role[];
+  updateData: () => void;
 };
 
 type FormData = {
@@ -53,6 +55,7 @@ export default function AnnouncementFormModal({
   setIsOpen,
   announcement,
   roles,
+  updateData,
 }: Props) {
   const [announcements, setAnnouncements] = useAtom(
     ManageAnnouncementStore.announcements
@@ -134,10 +137,10 @@ export default function AnnouncementFormModal({
           //       })
           //     )
           //   : setAnnouncements([...announcements, result]);
-          // setIsOpen(false);
-          // setValue('title', '');
 
+          updateData();
           setIsOpen(false);
+          setValue('title', '');
 
           return announcement
             ? `Successfully updated the announcement`
@@ -146,15 +149,6 @@ export default function AnnouncementFormModal({
         error: (e) => e.toString(),
       }
     );
-
-    const { count, announcements } = await announcementService.getBySemester(
-      activeSemester.id,
-      false,
-      take,
-      skip
-    );
-    setCount(count);
-    setAnnouncements(announcements);
 
     setLoading(false);
     reset();

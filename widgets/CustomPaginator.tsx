@@ -142,7 +142,7 @@ export default function CustomPaginator({
         {isDisplayCount && (
           <div>
             <p className="text-sm text-gray-700">
-              Showing <span className="font-medium">{skip + 1}</span> to{' '}
+              Showing <span className="font-medium">{totalCount !== 0 ? skip + 1 : 0}</span> to{' '}
               <span className="font-medium">
                 {Math.min(skip + take, totalCount)}
               </span>{' '}
