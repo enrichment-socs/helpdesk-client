@@ -58,7 +58,7 @@ export const getServerSideProps = withSessionSsr(
 
     const user = session.user as SessionUser;
     const prioritiesService = new PriorityService(user.accessToken);
-    const initialTake = 2;
+    const initialTake = 10;
     const initialSkip = 0;
     const {count, ticketPriorities} = await prioritiesService.getAll(initialTake, initialSkip);
 
