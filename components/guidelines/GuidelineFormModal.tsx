@@ -74,8 +74,8 @@ const GuidelineFormModal: React.FC<Props> = ({ isOpen, setIsOpen, faq }) => {
 
   useEffect(() => {
     const fetchGuidelineCategory = async () => {
-      const categories = await guidelineCategorySvc.getAll();
-      setGuidelineCategories(categories);
+      const { guidelineCategories } = await guidelineCategorySvc.getAll();
+      setGuidelineCategories(guidelineCategories);
     };
 
     if (user) {

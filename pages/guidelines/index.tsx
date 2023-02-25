@@ -48,7 +48,7 @@ export const getServerSideProps = withSessionSsr(
       user?.accessToken
     );
 
-    const guidelineCategories = await guidelineCategoryService.getAll();
+    const {guidelineCategories} = await guidelineCategoryService.getAll();
 
     return {
       props: {

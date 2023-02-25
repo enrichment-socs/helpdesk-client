@@ -80,7 +80,7 @@ export const getServerSideProps = withSessionSsr(
     const faqCategoriesService = new GuidelineCategoryService(user.accessToken);
     const faqsService = new GuidelineService(user.accessToken);
 
-    const currFAQCategories = await faqCategoriesService.getAll();
+    const {guidelineCategories: currFAQCategories} = await faqCategoriesService.getAll();
     const currFAQs = await faqsService.getAll();
 
     return {

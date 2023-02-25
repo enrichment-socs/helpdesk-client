@@ -179,7 +179,7 @@ export const getServerSideProps = withSessionSsr(
 
     let faqCategories = null;
     if (user?.roleName === ROLES.USER) {
-      faqCategories = await guidelineCatSvc.getAll();
+      ({guidelineCategories: faqCategories} = await guidelineCatSvc.getAll());
     }
 
     const ticketSummary =

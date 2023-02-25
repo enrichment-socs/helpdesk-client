@@ -57,14 +57,8 @@ export default function AnnouncementFormModal({
   roles,
   updateData,
 }: Props) {
-  const [announcements, setAnnouncements] = useAtom(
-    ManageAnnouncementStore.announcements
-  );
   const [loading, setLoading] = useState(false);
   const [activeSemester] = useAtom(activeSemesterAtom);
-  const [take, setTake] = useAtom(ManageAnnouncementStore.take);
-  const [skip, setSkip] = useAtom(ManageAnnouncementStore.skip);
-  const [count, setCount] = useAtom(ManageAnnouncementStore.count);
   const session = useSession();
   const user = session?.data?.user as SessionUser;
 

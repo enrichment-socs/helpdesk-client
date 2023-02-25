@@ -58,7 +58,7 @@ export default function ManageAnnouncementsContainer({ roles }) {
 
     ({ count, announcements } = await getAnnouncementsBySemester(take, skip));
 
-    if (announcements.length === 0 && pageNumber > 1) {
+    if (announcements.length === 0 && count > 0 && pageNumber > 1) {
       let newSkip = skip - take;
 
       ({ count, announcements } = await getAnnouncementsBySemester(

@@ -1,5 +1,5 @@
 import { Dialog, Transition } from '@headlessui/react';
-import { SetStateAction, useAtom } from 'jotai';
+import { SetStateAction } from 'jotai';
 import { Dispatch, Fragment, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
@@ -8,12 +8,12 @@ import { GuidelineCategory } from '../../models/GuidelineCategory';
 import { GuidelineCategoryService } from '../../services/GuidelineCategoryService';
 import { useSession } from 'next-auth/react';
 import { SessionUser } from '../../models/SessionUser';
-import { guidelineCategoriesAtom } from '../../atom';
 
 type Props = {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   faqCategory: GuidelineCategory | null;
+  updateData: () => void;
 };
 
 type FormData = {
@@ -24,8 +24,8 @@ export default function GuidelineCategoryFormModal({
   isOpen,
   setIsOpen,
   faqCategory,
+  updateData,
 }: Props) {
-  const [faqCategories, setFAQCategories] = useAtom(guidelineCategoriesAtom);
   const [loading, setLoading] = useState(false);
   const session = useSession();
   const user = session?.data?.user as SessionUser;
@@ -58,16 +58,19 @@ export default function GuidelineCategoryFormModal({
           ? 'Updating Guideline category...'
           : 'Adding Guideline category...',
         success: (result) => {
-          faqCategory
-            ? setFAQCategories(
-                faqCategories.map((fc) => {
-                  if (fc.id === faqCategory.id) return result;
-                  else return fc;
-                })
-              )
-            : setFAQCategories([result, ...faqCategories]);
+          // faqCategory
+          //   ? setFAQCategories(
+          //       faqCategories.map((fc) => {
+          //         if (fc.id === faqCategory.id) return result;
+          //         else return fc;
+          //       })
+          //     )
+          //   : setFAQCategories([result, ...faqCategories]);
+
+          updateData();
           setIsOpen(false);
           setValue('categoryName', '');
+
           return faqCategory
             ? `Successfully updated the Guideline category`
             : `Succesfully added new Guideline category`;

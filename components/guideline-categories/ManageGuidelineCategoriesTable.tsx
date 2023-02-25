@@ -1,11 +1,9 @@
-import { useAtom } from 'jotai';
 import toast from 'react-hot-toast';
 import { confirm } from '../../shared/libs/confirm-dialog-helper';
 import { GuidelineCategory } from '../../models/GuidelineCategory';
 import { GuidelineCategoryService } from '../../services/GuidelineCategoryService';
 import { useSession } from 'next-auth/react';
 import { SessionUser } from '../../models/SessionUser';
-import { guidelineCategoriesAtom } from '../../atom';
 import {
   createColumnHelper,
   getCoreRowModel,
@@ -16,13 +14,14 @@ import GeneralTable from '../GeneralTable';
 type Props = {
   faqCategories: GuidelineCategory[];
   openModal: (faqCategories: GuidelineCategory | null) => void;
+  updateData: () => void;
 };
 
 export default function ManageGuidelineCategoriesTable({
   faqCategories,
   openModal,
+  updateData,
 }: Props) {
-  const [, setFAQCategories] = useAtom(guidelineCategoriesAtom);
   const columnHelper = createColumnHelper<GuidelineCategory>();
   const columns = [
     columnHelper.accessor('categoryName', {
@@ -67,12 +66,15 @@ export default function ManageGuidelineCategoriesTable({
       await toast.promise(
         faqCategoriesService.deleteFAQCategory(faqCategory.id),
         {
-          loading: 'Deleting FAQ category...',
+          loading: 'Deleting Guideline category...',
           success: (r) => {
-            setFAQCategories(
-              faqCategories.filter((fc) => fc.id !== faqCategory.id)
-            );
-            return 'Sucesfully deleted the selected FAQ category';
+            // setFAQCategories(
+            //   faqCategories.filter((fc) => fc.id !== faqCategory.id)
+            // );
+
+            updateData();
+
+            return 'Sucesfully deleted the selected Guideline category';
           },
           error: (e) => e.toString(),
         }
