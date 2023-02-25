@@ -4,6 +4,9 @@ import { GuidelineCategory } from "../../../models/GuidelineCategory";
 
 const ManageGuidelineStore = {
     guidelines: atom<Guideline[]>([]),
+    take: atom<number>(0),
+    skip: atom<number>(0),
+    count: atom<number>(0),
 };
 
 export default ManageGuidelineStore;

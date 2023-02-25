@@ -11,10 +11,24 @@ export class GuidelineService extends BaseService {
     return res.data;
   }
 
-  public async getAll() {
-    const res: AxiosResponse<Guideline[]> = await this.wrapper.handle(
-      axios.get(`${this.BASE_URL}/guidelines`, this.headersWithToken())
-    );
+  public async getAll(
+    take?: number,
+    skip?: number
+  ): Promise<{ count: number; guidelines: Guideline[] }> {
+    let url = `${this.BASE_URL}/guidelines`;
+
+    if (
+      take !== null &&
+      take !== undefined &&
+      skip !== null &&
+      skip !== undefined
+    ) {
+      url += `?take=${take}&skip=${skip}`;
+    }
+
+    const res: AxiosResponse<{ count: number; guidelines: Guideline[] }> =
+      await this.wrapper.handle(axios.get(url, this.headersWithToken()));
+
     return res.data;
   }
 

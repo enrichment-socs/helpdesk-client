@@ -15,9 +15,10 @@ import GeneralTable from '../GeneralTable';
 
 type Props = {
   openModal: (faqs: Guideline | null) => void;
+  updateData: () => void;
 };
 
-const ManageGuidelinesTable: React.FC<Props> = ({ openModal }) => {
+const ManageGuidelinesTable: React.FC<Props> = ({ openModal, updateData }) => {
   const [guidelines, setGuidelines] = useAtom(ManageGuidelineStore.guidelines);
   const columnHelper = createColumnHelper<Guideline>();
   const columns = [
@@ -67,7 +68,10 @@ const ManageGuidelinesTable: React.FC<Props> = ({ openModal }) => {
       await toast.promise(guidelineService.deleteFAQ(guideline.id), {
         loading: 'Deleting guideline...',
         success: (r) => {
-          setGuidelines(guidelines.filter((f) => f.id !== guideline.id));
+          // setGuidelines(guidelines.filter((f) => f.id !== guideline.id));
+
+          updateData();
+
           return 'Sucesfully deleted the selected guideline';
         },
         error: (e) => e.toString(),

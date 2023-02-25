@@ -17,7 +17,7 @@ type Props = {
   roles: Role[];
 };
 
-export default function ManageAnnouncementsContainer({ roles }) {
+export default function ManageAnnouncementsContainer({ roles } : Props) {
   const [openFormModal, setOpenFormModal] = useState(false);
   const [selectedAnnouncement, setSelectedAnnouncement] =
     useState<Announcement | null>(null);

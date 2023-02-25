@@ -1,11 +1,14 @@
-import { atom, useAtom } from 'jotai';
+import { count } from 'console';
+import { atom, useAtom, useSetAtom } from 'jotai';
 import { useHydrateAtoms } from 'jotai/utils';
 import { NextPage } from 'next';
 import { getSession } from 'next-auth/react';
 import { useState } from 'react';
 import { guidelineCategoriesAtom } from '../../../atom';
 import GuidelineFormModal from '../../../components/guidelines/GuidelineFormModal';
+import ManageGuidelinesContainer from '../../../components/guidelines/ManageGuidelinesContainer';
 import ManageGuidelinesTable from '../../../components/guidelines/ManageGuidelineTable';
+import useHydrateAndSyncAtom from '../../../hooks/useHydrateAndSyncAtom';
 import { Guideline } from '../../../models/Guideline';
 import { GuidelineCategory } from '../../../models/GuidelineCategory';
 import { SessionUser } from '../../../models/SessionUser';
@@ -22,19 +25,28 @@ import Layout from '../../../widgets/_Layout';
 type Props = {
   currFAQCategories: GuidelineCategory[];
   currFAQs: Guideline[];
+  initialTake: number;
+  initialSkip: number;
+  count: number;
 };
 
 const ManageFAQCategoriesPage: NextPage<Props> = ({
   currFAQCategories,
   currFAQs,
+  initialTake,
+  initialSkip,
+  count
 }) => {
   const [openFormModal, setOpenFormModal] = useState(false);
   const [selectedFAQ, setSelectedFAQ] = useState<Guideline | null>(null);
 
-  useHydrateAtoms([
-    [guidelineCategoriesAtom, currFAQCategories],
-    [ManageGuidelineStore.guidelines, currFAQs],
-  ] as const);
+  useHydrateAndSyncAtom([
+    [guidelineCategoriesAtom, useSetAtom(guidelineCategoriesAtom), currFAQCategories],
+    [ManageGuidelineStore.guidelines, useSetAtom(ManageGuidelineStore.guidelines), currFAQs],
+    [ManageGuidelineStore.take, useSetAtom(ManageGuidelineStore.take), initialTake],
+    [ManageGuidelineStore.skip, useSetAtom(ManageGuidelineStore.skip), initialSkip],
+    [ManageGuidelineStore.count, useSetAtom(ManageGuidelineStore.count), count],
+  ]);
 
   const openModal = (faq: Guideline | null) => {
     setSelectedFAQ(faq);
@@ -43,22 +55,7 @@ const ManageFAQCategoriesPage: NextPage<Props> = ({
 
   return (
     <Layout>
-      <GuidelineFormModal
-        isOpen={openFormModal}
-        setIsOpen={setOpenFormModal}
-        faq={selectedFAQ}
-      />
-
-      <div className="font-bold text-2xl mb-4 flex items-center justify-between  ">
-        <h1>Manage Guideline</h1>
-        <button
-          type="button"
-          onClick={() => openModal(null)}
-          className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-primary hover:bg-primary-dark focus:outline-none">
-          Create
-        </button>
-      </div>
-      <ManageGuidelinesTable openModal={openModal} />
+      <ManageGuidelinesContainer />
     </Layout>
   );
 };
@@ -80,8 +77,15 @@ export const getServerSideProps = withSessionSsr(
     const faqCategoriesService = new GuidelineCategoryService(user.accessToken);
     const faqsService = new GuidelineService(user.accessToken);
 
-    const {guidelineCategories: currFAQCategories} = await faqCategoriesService.getAll();
-    const currFAQs = await faqsService.getAll();
+    const { guidelineCategories: currFAQCategories } =
+      await faqCategoriesService.getAll();
+    const initialTake = 10;
+    const initialSkip = 0;
+
+    const { count, guidelines: currFAQs } = await faqsService.getAll(
+      initialTake,
+      initialSkip
+    );
 
     return {
       props: {
@@ -89,6 +93,9 @@ export const getServerSideProps = withSessionSsr(
         session,
         currFAQCategories,
         currFAQs,
+        initialTake,
+        initialSkip,
+        count,
       },
     };
   }

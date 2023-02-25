@@ -35,6 +35,7 @@ type Props = {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   faq: Guideline | null;
+  updateData: () => void;
 };
 
 type FormData = {
@@ -43,7 +44,12 @@ type FormData = {
   guidelineCategoryId: string;
 };
 
-const GuidelineFormModal: React.FC<Props> = ({ isOpen, setIsOpen, faq }) => {
+const GuidelineFormModal: React.FC<Props> = ({
+  isOpen,
+  setIsOpen,
+  faq,
+  updateData,
+}) => {
   const [faqs, setFaqs] = useAtom(ManageGuidelineStore.guidelines);
 
   const [guidelineCategories, setGuidelineCategories] = useAtom(
@@ -97,14 +103,17 @@ const GuidelineFormModal: React.FC<Props> = ({ isOpen, setIsOpen, faq }) => {
       {
         loading: faq ? 'Updating Guideline...' : 'Adding Guideline...',
         success: (result) => {
-          faq
-            ? setFaqs(
-                faqs.map((fc) => {
-                  if (fc.id === faq.id) return result;
-                  else return fc;
-                })
-              )
-            : setFaqs([result, ...faqs]);
+          // faq
+          //   ? setFaqs(
+          //       faqs.map((fc) => {
+          //         if (fc.id === faq.id) return result;
+          //         else return fc;
+          //       })
+          //     )
+          //   : setFaqs([result, ...faqs]);
+
+          updateData();
+
           setIsOpen(false);
           setValue('question', '');
           setValue('answer', '');

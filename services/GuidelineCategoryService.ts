@@ -11,18 +11,25 @@ export class GuidelineCategoryService extends BaseService {
     return res.data;
   }
 
-  public async getAll(take?: number, skip?: number) : Promise <{count: number; guidelineCategories: GuidelineCategory[]}> {
-
+  public async getAll(
+    take?: number,
+    skip?: number
+  ): Promise<{ count: number; guidelineCategories: GuidelineCategory[] }> {
     let url = `${this.BASE_URL}/guideline-categories`;
 
-    if(take !== null && take !== undefined && skip !== null && skip !== undefined)
-    {
+    if (
+      take !== null &&
+      take !== undefined &&
+      skip !== null &&
+      skip !== undefined
+    ) {
       url += `?take=${take}&skip=${skip}`;
     }
 
-    const res: AxiosResponse<{count: number; guidelineCategories : GuidelineCategory[]}> = await this.wrapper.handle(
-      axios.get(url)
-    );
+    const res: AxiosResponse<{
+      count: number;
+      guidelineCategories: GuidelineCategory[];
+    }> = await this.wrapper.handle(axios.get(url));
 
     return res.data;
   }

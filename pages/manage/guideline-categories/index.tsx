@@ -13,7 +13,7 @@ import { guidelineCategoriesAtom } from '../../../atom';
 import useHydrateAndSyncAtom from '../../../hooks/useHydrateAndSyncAtom';
 
 import ManageGuidelineCategoriesContainer from '../../../components/guideline-categories/ManageGuidelineCategoriesContainer';
-import ManageGuidelineCategoriesStore from '../../../stores/manage/guideline-categories';
+import ManageGuidelineCategoryStore from '../../../stores/manage/guideline-categories';
 
 type Props = {
   currFAQCategories: GuidelineCategory[];
@@ -30,18 +30,18 @@ const ManageFAQCategoriesPage: NextPage<Props> = ({ currFAQCategories, initialTa
       currFAQCategories,
     ],
     [
-      ManageGuidelineCategoriesStore.take,
-      useSetAtom(ManageGuidelineCategoriesStore.take),
+      ManageGuidelineCategoryStore.take,
+      useSetAtom(ManageGuidelineCategoryStore.take),
       initialTake,
     ],
     [
-      ManageGuidelineCategoriesStore.skip,
-      useSetAtom(ManageGuidelineCategoriesStore.skip),
+      ManageGuidelineCategoryStore.skip,
+      useSetAtom(ManageGuidelineCategoryStore.skip),
       initialSkip,
     ],
     [
-      ManageGuidelineCategoriesStore.count,
-      useSetAtom(ManageGuidelineCategoriesStore.count),
+      ManageGuidelineCategoryStore.count,
+      useSetAtom(ManageGuidelineCategoryStore.count),
       count,
     ],
   ]);
@@ -68,7 +68,7 @@ export const getServerSideProps = withSessionSsr(
 
     const user = session.user as SessionUser;
     const faqCategoriesService = new GuidelineCategoryService(user.accessToken);
-    const initialTake = 5;
+    const initialTake = 10;
     const initialSkip = 0;
     const { count, guidelineCategories: currFAQCategories } =
       await faqCategoriesService.getAll(initialTake, initialSkip);

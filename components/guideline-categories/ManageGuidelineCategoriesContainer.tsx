@@ -7,7 +7,7 @@ import { GuidelineCategory } from '../../models/GuidelineCategory';
 import { SessionUser } from '../../models/SessionUser';
 import { GuidelineCategoryService } from '../../services/GuidelineCategoryService';
 import { ClientPromiseWrapper } from '../../shared/libs/client-promise-wrapper';
-import ManageGuidelineCategoriesStore from '../../stores/manage/guideline-categories';
+import ManageGuidelineCategoryStore from '../../stores/manage/guideline-categories';
 import CustomPaginator from '../../widgets/CustomPaginator';
 import GuidelineCategoryFormModal from './GuidelineCategoryFormModal';
 import ManageGuidelineCategoriesTable from './ManageGuidelineCategoriesTable';
@@ -27,9 +27,9 @@ export default function ManageGuidelineCategoriesContainer() {
   const [guidelineCategories, setGuidelineCategories] = useAtom(
     guidelineCategoriesAtom
   );
-  const [take, setTake] = useAtom(ManageGuidelineCategoriesStore.take);
-  const [skip, setSkip] = useAtom(ManageGuidelineCategoriesStore.skip);
-  const [count, setCount] = useAtom(ManageGuidelineCategoriesStore.count);
+  const [take, setTake] = useAtom(ManageGuidelineCategoryStore.take);
+  const [skip, setSkip] = useAtom(ManageGuidelineCategoryStore.skip);
+  const [count, setCount] = useAtom(ManageGuidelineCategoryStore.count);
 
   const getGuidelineCategories = async (take: number, skip: number) => {
     const wrapper = new ClientPromiseWrapper(toast);
