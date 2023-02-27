@@ -20,6 +20,7 @@ import IndexStore from '../stores';
 import { ReportService } from '../services/ReportService';
 import dynamic from 'next/dynamic';
 import { UserService } from '../services/UserService';
+import { guidelineCategoriesAtom } from '../atom';
 
 const MessageContainer = dynamic(
   () => import('../components/messages/MessageContainer')
@@ -38,7 +39,7 @@ const Home: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = ({
   announcement,
-  faqCategories,
+  guidelineCategories,
   markedMessage,
   ticketSummary,
   admins,
@@ -64,6 +65,8 @@ const Home: NextPage<
     [IndexStore.ticketsCountByHandlers, reports.ticketsCountByHandlers],
     [IndexStore.ticketsCountByMonths, reports.ticketsCountByMonths],
     [IndexStore.admins, admins],
+
+    [guidelineCategoriesAtom, guidelineCategories],
   ] as const);
 
   const [openAnnouncementModal, setOpenAnnouncementModal] = useState(false);
@@ -110,9 +113,7 @@ const Home: NextPage<
           <MessageContainer take={markedMessage.initialTake} />
         )}
 
-        {user?.roleName === ROLES.USER && (
-          <GuidelineContainer />
-        )}
+        {user?.roleName === ROLES.USER && <GuidelineContainer />}
       </div>
     </Layout>
   );
@@ -140,16 +141,19 @@ export const getServerSideProps = withSessionSsr(
     const guidelineCatSvc = new GuidelineCategoryService(user?.accessToken);
     const userService = new UserService(user?.accessToken);
 
-    let announcementsCount = 0, announcements: Announcement[] = [];
-    const initialAnnouncementsTake = 4, initialAnnouncementsSkip = 0;
+    let announcementsCount = 0,
+      announcements: Announcement[] = [];
+    const initialAnnouncementsTake = 4,
+      initialAnnouncementsSkip = 0;
 
     if (user.roleName !== ROLES.SUPER_ADMIN) {
-      ({ count: announcementsCount, announcements } = await announcementService.getBySemester(
-        sessionActiveSemester.id,
-        true,
-        initialAnnouncementsTake,
-        initialAnnouncementsSkip
-      ));
+      ({ count: announcementsCount, announcements } =
+        await announcementService.getBySemester(
+          sessionActiveSemester.id,
+          true,
+          initialAnnouncementsTake,
+          initialAnnouncementsSkip
+        ));
     }
 
     // const {count:announcementCount, announcements} =
@@ -177,9 +181,9 @@ export const getServerSideProps = withSessionSsr(
             unmarkedInitialSkip
           );
 
-    let faqCategories = null;
+    let guidelineCategories = null;
     if (user?.roleName === ROLES.USER) {
-      ({guidelineCategories: faqCategories} = await guidelineCatSvc.getAll());
+      ({ guidelineCategories } = await guidelineCatSvc.getAll());
     }
 
     const ticketSummary =
@@ -222,7 +226,7 @@ export const getServerSideProps = withSessionSsr(
         ...globalProps,
         session,
         sessionActiveSemester,
-        faqCategories,
+        guidelineCategories,
         ticketSummary,
         admins,
         announcement: {
